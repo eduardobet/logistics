@@ -10,7 +10,14 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::group(['domain' => 'logistics.test'], function () {
+    Route::get('/', function () {
+        return view('welcome');
+    });
+});
 
-Route::get('/', function () {
-    return view('welcome');
+Route::group(['tenant-domain' => '{tenant-domain}'], function () {
+    Route::get('/', function () {
+        return "Hello Tenant";
+    });
 });

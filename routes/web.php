@@ -1,5 +1,9 @@
 <?php
 
+if (!app()->runningInConsole()) {
+    get_exe_queries();
+}
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,10 +17,10 @@
 Route::group(['domain' => 'logistics.test'], function () {
     Route::get('/', function () {
         return view('welcome');
-    });
+    })->name('app.home');
 });
 
-Route::group(['tenant-domain' => '{tenant-domain}'], function () {
+Route::group(['tenant-domain' => '{tenant-domain}', 'middleware' => 'tenant'], function () {
     Route::get('/', function () {
         return "Hello Tenant";
     });

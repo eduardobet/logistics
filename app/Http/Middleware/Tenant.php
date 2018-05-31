@@ -21,31 +21,29 @@ class Tenant
         $tenant = $this->getTenant();
 
         if (empty($tenant)) {
-            return redirect()->route('app.home');
+            abort(404);
         } elseif (isset($tenant) && $tenant->status != 'A') {
             auth()->logout();
 
-            return redirect()->route('app.home')->with('flash_inactive_tenant', __('This client is inactive. Please contact your administrator!'));
+            return redirect()
+                ->route('app.home')
+                ->with('flash_inactive_tenant', __('This client is inactive. Please contact your administrator!'));
         } else {
             view()->share([
                 'tenant' => $tenant,
             ]);
-        }
-
-        if (auth()->check()) {
-            if (auth()->user()->tenant_id != $tenant->id) {
-                auth()->logout();
-
-                if ($request->routeIs('tenant.home')) {
-                    return redirect()->route('tenant.home');
+            
+            if (auth()->check()) {
+                if (auth()->user()->tenant_id != $tenant->id) {
+                    return redirect()
+                        ->route('app.home')
+                        ->withErrors([__('You cannot access this site!')]);
+                } else {
+                    view()->share('user', auth()->user());
                 }
-
-                return redirect()->guest('auth/login')->withErrors([__('You cannot access this site!')]);
-            } else {
-                view()->share('user', auth()->user());
             }
         }
-
+        
         return $next($request);
     }
 }

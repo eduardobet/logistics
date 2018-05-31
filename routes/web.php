@@ -22,6 +22,6 @@ Route::group(['domain' => 'logistics.test'], function () {
 
 Route::group(['tenant-domain' => '{tenant-domain}', 'middleware' => 'tenant'], function () {
     Route::get('/', function () {
-        return "Hello Tenant";
+        return view()->shared('tenant');
     });
 });

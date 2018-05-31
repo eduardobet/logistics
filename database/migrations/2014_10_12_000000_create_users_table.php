@@ -17,8 +17,11 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->integer('tenant_id')->unsigned()->nullable();
             $table->string('name');
+            $table->string('type', 1); // A[dmin], E[mployee], U[App user]
+            $table->string('status', 1)->default('L'); // L[ocked], I[nactive], A[ctive]
             $table->string('email')->unique();
             $table->string('password');
+            $table->boolean('is_main_admin')->default(false)->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

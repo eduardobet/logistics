@@ -67,7 +67,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => Logistics\User::class,
+            'model' => Logistics\DB\Tenant\User::class,
         ],
 
         // 'users' => [

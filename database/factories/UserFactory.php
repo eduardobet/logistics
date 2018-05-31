@@ -17,8 +17,22 @@ $factory->define(Logistics\DB\Tenant\User::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
-        'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
+        'password' => '$2y$10$Ca6FGHO9VPFpCuOyKFEVnO8nwU4UJGdYDEbXE2resVxYZ25jcnrRO', //secret123
         'remember_token' => str_random(10),
         'tenant_id' => null,
+        'status' => 'A',
+    ];
+});
+
+$factory->state(Logistics\DB\Tenant\User::class, 'admin', function (Faker $faker) {
+    return [
+        'type' => 'A',
+        'is_main_admin' => true,
+    ];
+});
+
+$factory->state(Logistics\DB\Tenant\User::class, 'employee', function (Faker $faker) {
+    return [
+        'type' => 'E',
     ];
 });

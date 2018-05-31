@@ -23,5 +23,31 @@ Route::group(['domain' => 'logistics.test'], function () {
 Route::group(['tenant-domain' => '{tenant-domain}', 'middleware' => 'tenant'], function () {
     Route::get('/', function () {
         return view()->shared('tenant');
+    })->name('tenant.home');
+
+    // auth
+    Route::group(['prefix' => 'auth'], function () {
+        // Authentication Routes...
+        Route::get('login', 'Tenant\Auth\LoginController@showLoginForm')->name('tenant.auth.get.login');
+        Route::post('login', 'Tenant\Auth\LoginController@login')->name('tenant.auth.post.login');
+        Route::post('logout', 'Tenant\Auth\LoginController@logout')->name('tenant.auth.post.logout');
+
+        // TODO: password reset
+        /*Route::get('password/reset', 'Auth\Tenant\ForgotPasswordController@showLinkRequestForm')->name('Tenant.user.password.request');
+        Route::post('password/email', 'Auth\Tenant\ForgotPasswordController@sendResetLinkEmail')->name('Tenant.user.password.email');
+        Route::get('password/reset/{token}', 'Auth\Tenant\ResetPasswordController@showResetForm')->name('Tenant.user.password.reset');
+        Route::post('password/reset', 'Auth\Tenant\ResetPasswordController@reset')->name('client.user.password.post.reset');*/
+    });
+
+    Route::group(['prefix' => 'admin'], function () {
+        Route::get('dashboard', 'Tenant\Admin\DashboardController@index')->name('tenant.admin.dashboard');
+    });
+
+    Route::group(['prefix' => 'employee'], function () {
+        Route::get('dashboard', 'Tenant\Employee\DashboardController@index')->name('tenant.employee.dashboard');
     });
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

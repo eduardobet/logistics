@@ -39,8 +39,12 @@ Route::group(['tenant-domain' => '{tenant-domain}', 'middleware' => 'tenant'], f
         Route::post('password/reset', 'Auth\Tenant\ResetPasswordController@reset')->name('client.user.password.post.reset');*/
     });
 
-    Route::group(['prefix' => 'admin'], function () {
+    Route::group(['middleware' => ['auth', 'admin'], 'prefix' => 'admin'], function () {
         Route::get('dashboard', 'Tenant\Admin\DashboardController@index')->name('tenant.admin.dashboard');
+
+        // employee creation
+        Route::get('employee/create', 'Tenant\Admin\EmployeeController@create')->name('tenant.admin.employee.create');
+        Route::post('employee/store', 'Tenant\Admin\EmployeeController@store')->name('tenant.admin.employee.store');
     });
 
     Route::group(['prefix' => 'employee'], function () {
@@ -48,6 +52,6 @@ Route::group(['tenant-domain' => '{tenant-domain}', 'middleware' => 'tenant'], f
     });
 });
 
-Auth::routes();
+//Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+//Route::get('/home', 'HomeController@index')->name('home');

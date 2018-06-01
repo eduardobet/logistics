@@ -3,6 +3,7 @@
 namespace Logistics\Exceptions;
 
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -13,7 +14,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        //
+        \Illuminate\Auth\AuthenticationException::class,
     ];
 
     /**
@@ -46,6 +47,33 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof AuthenticationException) {
+            return $this->unauthenticated($request, $exception);
+        }
+
+
         return parent::render($request, $exception);
+    }
+
+    /**
+     * Convert an authentication exception into an unauthenticated response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Auth\AuthenticationException  $exception
+     * @return \Illuminate\Http\Response
+     */
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        if ($request->expectsJson()) {
+            return response()->json(['error' => __('Unauthenticated.')], 401);
+        }
+
+        if (starts_with($request->route()->getName(), 'tenant.')) {
+            $loginRoute = route('tenant.auth.get.login');
+        } else {
+            $loginRoute = route('app.auth.get.login');
+        }
+
+        return redirect()->guest($loginRoute);
     }
 }

@@ -92,6 +92,8 @@ class LoginController extends Controller
         $type = $request->user()->type;
         $tenant = $this->getTenant();
 
+        $this->clearLoginAttempts($request);
+
         if (!$tenant) {
             return redirect()->route('app.home')->with('flash_error', __('Invalid Client.'));
         }
@@ -117,9 +119,6 @@ class LoginController extends Controller
         }
 
         auth()->logout();
-
-        $request->session()->regenerate();
-        $this->clearLoginAttempts($request);
 
         return redirect()->route('app.home')->with('flash_error', __('Invalid user type.'));
     }

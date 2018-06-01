@@ -8,5 +8,6 @@ $factory->define(Tenant::class, function (Faker $faker) {
         'domain' => 'https://middleton-services.test',
         'name' => 'Middleton Services S.A.',
         'status' => 'A',
+        'lang' => 'en',
     ];
 });

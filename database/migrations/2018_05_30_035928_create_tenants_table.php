@@ -18,6 +18,7 @@ class CreateTenantsTable extends Migration
             $table->string('domain')->unique();
             $table->string('name')->unique();
             $table->string('status', 1);
+            $table->string('lang', 1);
             $table->timestamps();
         });
     }

@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'tenant_id',
+        'first_name', 'last_name', 'email', 'password', 'tenant_id', 'is_main_admin', 'status', 'type',
     ];
 
     /**
@@ -26,4 +26,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function branches()
+    {
+        return $this->belongsToMany(\Logistics\DB\Tenant\Branch::class);
+    }
 }

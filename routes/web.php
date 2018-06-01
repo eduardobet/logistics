@@ -43,8 +43,10 @@ Route::group(['tenant-domain' => '{tenant-domain}', 'middleware' => 'tenant'], f
         Route::get('dashboard', 'Tenant\Admin\DashboardController@index')->name('tenant.admin.dashboard');
 
         // employee creation
-        Route::get('employee/create', 'Tenant\Admin\EmployeeController@create')->name('tenant.admin.employee.create');
-        Route::post('employee/store', 'Tenant\Admin\EmployeeController@store')->name('tenant.admin.employee.store');
+        Route::get('dashboard/employees', 'Tenant\Admin\EmployeeController@index')->name('tenant.admin.employee.list');
+        Route::get('dashboard/employees/create', 'Tenant\Admin\EmployeeController@create')->name('tenant.admin.employee.create');
+        Route::post('dashboard/employees/store', 'Tenant\Admin\EmployeeController@store')->name('tenant.admin.employee.store');
+
     });
 
     Route::group(['prefix' => 'employee'], function () {

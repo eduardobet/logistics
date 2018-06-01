@@ -13,8 +13,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'Logistics\Events\Event' => [
-            'Logistics\Listeners\EventListener',
+        \Logistics\Events\Tenant\EmployeeWasCreatedEvent::class => [
+            \Logistics\Listeners\Tenant\SendEmployeeWelcomeEmail::class,
         ],
     ];
 

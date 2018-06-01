@@ -15,7 +15,8 @@ use Faker\Generator as Faker;
 
 $factory->define(Logistics\DB\Tenant\User::class, function (Faker $faker) {
     return [
-        'name' => $faker->name,
+        'first_name' => $faker->firstname,
+        'last_name' => $faker->lastname,
         'email' => $faker->unique()->safeEmail,
         'password' => '$2y$10$Ca6FGHO9VPFpCuOyKFEVnO8nwU4UJGdYDEbXE2resVxYZ25jcnrRO', //secret123
         'remember_token' => str_random(10),

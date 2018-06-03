@@ -17,7 +17,7 @@ class Tenant extends Model
 
     public function employees()
     {
-    	return $this->hasMany(\Logistics\DB\Tenant\User::class);
+        return $this->hasMany(\Logistics\DB\User::class);
     }
 
     // to be implemented

@@ -40,6 +40,11 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    public function showLoginForm()
+    {
+        return view('tenant.auth.login');
+    }
+
     /**
      * Handle a login request to the application.
      *
@@ -52,7 +57,7 @@ class LoginController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'email'   => 'required|email',
-            'password' => 'required|string|min:6',
+            'password' => 'required|alpha_num_pwd',
         ]);
 
         if ($validator->fails()) {

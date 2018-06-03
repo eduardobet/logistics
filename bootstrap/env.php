@@ -10,8 +10,7 @@
         $host = $hostParts[1] . '.' . $hostParts[2];
     }
 
-    if (file_exists($env_dir.$host));
-    {
+    if (file_exists($env_dir.$host)) {
         $dotenv = new \Dotenv\Dotenv($env_dir, $host);
         $dotenv->load();
     }

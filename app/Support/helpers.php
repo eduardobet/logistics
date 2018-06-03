@@ -60,3 +60,31 @@ if (!function_exists('get_host')) {
         return $host;
     }
 }
+
+if (!function_exists('array_has_dupes')) {
+    /**
+     * Checks if array has dups.
+     *
+     * @param array $array
+     *
+     * @return bool
+     */
+    function array_has_dupes($array)
+    {
+        return count(array_keys(array_flip($array))) !== count($array);
+    }
+}
+
+if (!function_exists('is_valid_phone')) {
+    /**
+     * Validates a phone number (507/509).
+     *
+     * @param string $phone
+     *
+     * @return bool
+     */
+    function is_valid_phone($phone)
+    {
+        return preg_match("/^(00\s)?(\(509\)[\s]|\(507\)[\s])?(\d{3,4})[\s.-]\d{4}$/", $phone);
+    }
+}

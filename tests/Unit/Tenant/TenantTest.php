@@ -34,7 +34,7 @@ class TenantTest extends TestCase
         // $this->withExceptionHandling();
 
         $tenant = factory(TenantModel::class)->create(['status' => 'I']);
-        $user = factory(\Logistics\DB\Tenant\User::class)->create(['tenant_id' => $tenant->id]);
+        $user = factory(\Logistics\DB\User::class)->states('admin')->create(['tenant_id' => $tenant->id]);
 
         $this->actingAs($user);
 
@@ -94,7 +94,7 @@ class TenantTest extends TestCase
             'status' => 'A',
         ]);
 
-        $user = factory(\Logistics\DB\Tenant\User::class)->create(['tenant_id' => $tenantB->id]);
+        $user = factory(\Logistics\DB\User::class)->states('admin')->create(['tenant_id' => $tenantB->id]);
 
         $request = $this->actingAs($user)->get($tenantA->domain);
 
@@ -113,7 +113,7 @@ class TenantTest extends TestCase
         // $this->withExceptionHandling();
 
         $tenant = factory(TenantModel::class)->create();
-        $user = factory(\Logistics\DB\Tenant\User::class)->create(['tenant_id' => $tenant->id]);
+        $user = factory(\Logistics\DB\User::class)->states('admin')->create(['tenant_id' => $tenant->id]);
 
         $request = $this->actingAs($user)->get($tenant->domain);
 

@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('status', 1)->default('L'); // L[ocked], I[nactive], A[ctive]
             $table->string('email')->unique();
             $table->string('password')->nullable();
+            $table->string('token')->nullable();
             $table->boolean('is_main_admin')->default(false)->nullable();
             $table->rememberToken();
             $table->timestamps();

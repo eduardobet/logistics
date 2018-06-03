@@ -29,10 +29,9 @@ class EmployeeCreationRequest extends AppFormRequest
         $rules = [
             'first_name' => 'required|string|between:3,255',
             'last_name' => 'required|string|between:3,255',
-            'avatar' => 'sometimes|mimes:png,jpg,jpeg|max:1024',
             'email' => 'required|string|email|max:255|unique:users',
             'type' => 'required|string|in:A,E',
-            'status' => 'required|string',
+            'status' => 'required|string|in:L',
             'branches' => 'required',
         ];
 

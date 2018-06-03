@@ -1,4 +1,5 @@
 --ref: Feature/Admin/AdminTest.php
-1) Testing employee unlocking
-2) Testing WelcomeEmployeeEmail
-3) Testing employee edition
+1) (OK) Testing employee unlocking
+2) (OK) Testing WelcomeEmployeeEmail
+3) (O) Testing employee edition
+4) Test main admin can mark an employee as to be disconnected (middleware, red msg: You've have been locked)

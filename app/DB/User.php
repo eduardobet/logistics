@@ -1,6 +1,6 @@
 <?php
 
-namespace Logistics\DB\Tenant;
+namespace Logistics\DB;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -27,8 +27,34 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'is_main_admin' => 'boolean',
+    ];
+
+    /**
+     * Boot the model.
+     */
+    public static function boot()
+    {
+        static::creating(function ($user) {
+            $user->token = str_random(30);
+        });
+        
+        parent::boot();
+    }
+
     public function branches()
     {
         return $this->belongsToMany(\Logistics\DB\Tenant\Branch::class);
+    }
+
+    public function isAdmin()
+    {
+        return $this->type === 'A';
     }
 }

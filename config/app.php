@@ -157,6 +157,7 @@ return [
         Logistics\Providers\AppServiceProvider::class,
         Logistics\Providers\AuthServiceProvider::class,
         // Logistics\Providers\BroadcastServiceProvider::class,
+        Logistics\Providers\CustomValidationServiceProvider::class,
         Logistics\Providers\EventServiceProvider::class,
         Logistics\Providers\RouteServiceProvider::class,
 

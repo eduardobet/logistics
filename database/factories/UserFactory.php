@@ -13,7 +13,7 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(Logistics\DB\Tenant\User::class, function (Faker $faker) {
+$factory->define(Logistics\DB\User::class, function (Faker $faker) {
     return [
         'first_name' => $faker->firstname,
         'last_name' => $faker->lastname,
@@ -25,14 +25,14 @@ $factory->define(Logistics\DB\Tenant\User::class, function (Faker $faker) {
     ];
 });
 
-$factory->state(Logistics\DB\Tenant\User::class, 'admin', function (Faker $faker) {
+$factory->state(Logistics\DB\User::class, 'admin', function (Faker $faker) {
     return [
         'type' => 'A',
         'is_main_admin' => true,
     ];
 });
 
-$factory->state(Logistics\DB\Tenant\User::class, 'employee', function (Faker $faker) {
+$factory->state(Logistics\DB\User::class, 'employee', function (Faker $faker) {
     return [
         'type' => 'E',
     ];

@@ -1,0 +1,95 @@
+<?php
+
+namespace Tests\Feature\Tenant\Employee;
+
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Logistics\DB\Tenant\Tenant as TenantModel;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Logistics\DB\User;
+use Logistics\DB\Tenant\Branch;
+
+class ProfileTest extends TestCase
+{
+    use RefreshDatabase;
+
+    /** @test */
+    public function it_redirects_to_login_if_not_logged_in_employee()
+    {
+        // $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create();
+
+        $response = $this->get(route('tenant.employee.profile.edit'));
+        $response->assertRedirect(route('tenant.auth.get.login'));
+    }
+
+    /** @test */
+    public function employee_cannot_update_status_is_main_admin_branch_type()
+    {
+        // $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branchA = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch Name B', ]);
+        $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, 'status' => 'L', ]);
+        $employee->branches()->sync([$branchA->id]);
+
+        $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update'), [
+            'first_name' => 'Employee f name update',
+            'last_name' => 'Employee l name update',
+            'email' => $employee->email,
+            'type' => 'A',
+            'status' => 'A',
+            'branches' => [$branchB->id],
+            'is_main_admin' => true,
+            '_method' => 'PATCH',
+        ]);
+
+        $response->assertRedirect(route('tenant.employee.profile.edit'));
+        $response->assertSessionHasErrors(['status', 'is_main_admin', 'branches', 'type']);
+        $this->assertDatabaseMissing('users', [
+            'type' => 'A',
+            'status' => 'A',
+        ]);
+    }
+
+    /** @test */
+    public function employee_can_update_his_basic_information()
+    {
+        // $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id,]);
+        $employee->branches()->sync([$branch->id]);
+
+        $response = $this->actingAs($employee)->get(route('tenant.employee.profile.edit'));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.employee.profile');
+
+        $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update'), [
+            'first_name' => 'Employee f name update',
+            'last_name' => 'Employee l name update',
+            '_method' => 'PATCH',
+        ]);
+
+        $this->assertDatabaseHas('users', [
+            'first_name' => 'Employee f name update',
+            'last_name' => 'Employee l name update',
+            'email' => $employee->email,
+            'type' => 'E',
+            'status' => 'A',
+            'is_main_admin' => false,
+        ]);
+        
+        $response->assertRedirect(route('tenant.employee.profile.edit'));
+    }
+    /** @test */
+    public function employee_can_upload_an_avatar()
+    {
+        // $this->withoutExceptionHandling();
+
+        $this->markTestIncomplete();
+    }
+}

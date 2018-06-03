@@ -3,7 +3,7 @@
 namespace Tests\Feature\Tenant\Admin;
 
 use Tests\TestCase;
-use Logistics\DB\Tenant\User;
+use Logistics\DB\User;
 use Logistics\DB\Tenant\Branch;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Event;
@@ -15,6 +15,16 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class EmployeeCreationTest extends TestCase
 {
     use RefreshDatabase;
+
+    /** @test */
+    public function it_redirects_to_login_if_not_logged_in_administrator()
+    {
+        // $this->withoutExceptionHandling();
+        $tenant = factory(TenantModel::class)->create();
+
+        $response = $this->get(route('tenant.admin.employee.create'), []);
+        $response->assertRedirect(route('tenant.auth.get.login'));
+    }
 
     /** @test */
     public function employee_can_only_be_created_by_authenticated_admin()
@@ -67,7 +77,7 @@ class EmployeeCreationTest extends TestCase
         ]);
     }
 
-     /** @test */
+    /** @test */
     public function user_email_must_be_unique()
     {
         // $this->withoutExceptionHandling();
@@ -101,6 +111,10 @@ class EmployeeCreationTest extends TestCase
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
 
+        $response = $this->actingAs($admin)->get(route('tenant.admin.employee.create'));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.employee.create');
+
         $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store'), [
             'first_name' => 'Firstname',
             'last_name' => 'Lastname',
@@ -125,6 +139,42 @@ class EmployeeCreationTest extends TestCase
         $employee = $tenant->employees->where('type', 'E')->fresh()->first();
 
         $this->assertCount(1, $employee->branches);
+    }
+
+    /** @test */
+    public function it_successfully_creates_a_main_administrator()
+    {
+        $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create();
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+
+        $response = $this->actingAs($admin)->get(route('tenant.admin.employee.create'));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.employee.create');
+
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store'), [
+            'first_name' => 'Main',
+            'last_name' => 'Administrator',
+            'email' => 'main-admin@tenant.test',
+            'type' => 'A',
+            'status' => 'L',
+            'branches' => [$branch->id],
+            'is_main_admin' => true,
+        ]);
+
+        $response->assertRedirect(route('tenant.admin.employee.list'));
+        $response->assertSessionHas(['flash_success']);
+        $this->assertDatabaseHas('users', [
+            'first_name' => 'Main',
+            'last_name' => 'Administrator',
+            'email' => 'main-admin@tenant.test',
+            'type' => 'A',
+            'status' => 'L',
+            'password' => null,
+            'is_main_admin' => true,
+        ]);
     }
 
     /** @test */

@@ -3,7 +3,7 @@
 namespace Tests\Feature\Tenant\Auth;
 
 use Tests\TestCase;
-use Logistics\DB\Tenant\User;
+use Logistics\DB\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -51,6 +51,10 @@ class LoginTest extends TestCase
 
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
+
+        $response = $this->get(route('tenant.auth.get.login'));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.auth.login');
 
         $response = $this->post(route('tenant.auth.post.login'), ['email' => $admin->email, 'password' => 'secret123']);
         $response->assertRedirect(route('tenant.admin.dashboard'));

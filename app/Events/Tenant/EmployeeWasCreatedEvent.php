@@ -2,7 +2,7 @@
 
 namespace Logistics\Events\Tenant;
 
-use Logistics\DB\Tenant\User;
+use Logistics\DB\User;
 use Logistics\DB\Tenant\Tenant;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;

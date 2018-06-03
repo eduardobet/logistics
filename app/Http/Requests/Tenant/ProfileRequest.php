@@ -2,9 +2,9 @@
 
 namespace Logistics\Http\Requests\Tenant;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Logistics\Http\Requests\AppFormRequest;
 
-class ProfileRequest extends FormRequest
+class ProfileRequest extends AppFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -22,6 +22,7 @@ $factory->define(Logistics\DB\User::class, function (Faker $faker) {
         'remember_token' => str_random(10),
         'tenant_id' => null,
         'status' => 'A',
+        'avatar' => null,
     ];
 });
 

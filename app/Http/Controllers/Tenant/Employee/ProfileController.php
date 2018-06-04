@@ -20,12 +20,24 @@ class ProfileController extends Controller
             'last_name' => $request->last_name,
         ]);
 
+
         if ($updated) {
+            $this->uploadAvatar($request->avatar);
+
             return redirect()->route('tenant.employee.profile.edit')
                 ->with('flash_success', __('Your profile has been edited.'));
         }
 
         return redirect()->back()
             ->with('flash_error', __('Error while trying to proceed with this action.'));
+    }
+
+    protected function uploadAvatar($avatar)
+    {
+        $user = auth()->user();
+
+        $user->update([
+            'avatar' => $avatar->store("tenant/{$user->tenant_id}/images/avatars", 'public'),
+        ]);
     }
 }

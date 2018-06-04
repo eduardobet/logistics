@@ -3,11 +3,13 @@
 namespace Tests\Feature\Tenant\Employee;
 
 use Tests\TestCase;
+use Logistics\DB\User;
+use Logistics\DB\Tenant\Branch;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Logistics\DB\User;
-use Logistics\DB\Tenant\Branch;
 
 class ProfileTest extends TestCase
 {
@@ -85,11 +87,55 @@ class ProfileTest extends TestCase
         
         $response->assertRedirect(route('tenant.employee.profile.edit'));
     }
+
     /** @test */
     public function employee_can_upload_an_avatar()
     {
-        // $this->withoutExceptionHandling();
+        $this->withoutExceptionHandling();
 
-        $this->markTestIncomplete();
+        Storage::fake('public');
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id,]);
+        $file = UploadedFile::fake()->image('avatar.jpg');
+
+        $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update'), [
+            'first_name' => 'Employee f name update',
+            'last_name' => 'Employee l name update',
+            'avatar' => $file,
+            '_method' => 'PATCH',
+        ]);
+
+        $employee = $employee->fresh()->first();
+
+        $this->assertEquals("tenant/{$tenant->id}/images/avatars/{$file->hashName()}", $employee->avatar);
+        Storage::disk('public')->assertExists("tenant/{$tenant->id}/images/avatars/{$file->hashName()}");
+    }
+
+    /** @test */
+    public function employee_old_avatar_is_removed()
+    {
+        $this->withoutExceptionHandling();
+
+        Storage::fake('public');
+
+        $file = UploadedFile::fake()->image('avatar.jpg');
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $employee = factory(User::class)->states('employee')
+            ->create(['tenant_id' => $tenant->id, 'avatar' => $file ]);
+
+        $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update'), [
+            'first_name' => 'Employee f name update',
+            'last_name' => 'Employee l name update',
+            'avatar' => $file,
+            '_method' => 'PATCH',
+        ]);
+
+        $employee = $employee->fresh()->first();
+
+        $this->assertEquals("tenant/{$tenant->id}/images/avatars/{$file->hashName()}", $employee->avatar);
+        Storage::disk('public')->assertExists("tenant/{$tenant->id}/images/avatars/{$file->hashName()}");
     }
 }

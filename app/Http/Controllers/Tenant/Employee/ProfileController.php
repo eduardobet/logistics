@@ -5,6 +5,7 @@ namespace Logistics\Http\Controllers\Tenant\Employee;
 use Illuminate\Http\Request;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Http\Requests\Tenant\ProfileRequest;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -22,7 +23,7 @@ class ProfileController extends Controller
 
 
         if ($updated) {
-            $this->uploadAvatar($request->avatar);
+            $this->uploadAvatar($request);
 
             return redirect()->route('tenant.employee.profile.edit')
                 ->with('flash_success', __('Your profile has been edited.'));
@@ -32,12 +33,18 @@ class ProfileController extends Controller
             ->with('flash_error', __('Error while trying to proceed with this action.'));
     }
 
-    protected function uploadAvatar($avatar)
+    protected function uploadAvatar($request)
     {
-        $user = auth()->user();
+        if ($request->hasFile('avatar')) {
+            $user = auth()->user();
 
-        $user->update([
-            'avatar' => $avatar->store("tenant/{$user->tenant_id}/images/avatars", 'public'),
-        ]);
+            if (Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+            
+            $user->update([
+                'avatar' => $request->avatar->store("tenant/{$user->tenant_id}/images/avatars", 'public'),
+            ]);
+        }
     }
 }

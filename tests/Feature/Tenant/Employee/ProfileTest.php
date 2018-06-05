@@ -123,8 +123,15 @@ class ProfileTest extends TestCase
         $file = UploadedFile::fake()->image('avatar.jpg');
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+
+
+        Storage::disk('public')->put(
+            "tenant/{$tenant->id}/images/avatars/avatar.png",
+            file_get_contents(storage_path('fixtures/less-than-200px-wide-image.png'))
+        );
+
         $employee = factory(User::class)->states('employee')
-            ->create(['tenant_id' => $tenant->id, 'avatar' => $file ]);
+            ->create(['tenant_id' => $tenant->id, 'avatar' => "tenant/{$tenant->id}/images/avatars/avatar.png" ]);
 
         $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update'), [
             'first_name' => 'Employee f name update',
@@ -135,6 +142,7 @@ class ProfileTest extends TestCase
 
         $employee = $employee->fresh()->first();
 
+        Storage::disk('public')->assertMissing("tenant/{$tenant->id}/images/avatars/avatar.png");
         $this->assertEquals("tenant/{$tenant->id}/images/avatars/{$file->hashName()}", $employee->avatar);
         Storage::disk('public')->assertExists("tenant/{$tenant->id}/images/avatars/{$file->hashName()}");
     }

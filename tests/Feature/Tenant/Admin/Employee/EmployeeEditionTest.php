@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Tenant\Admin;
+namespace Tests\Feature\Tenant\Admin\Employee;
 
 use Tests\TestCase;
 use Logistics\DB\User;

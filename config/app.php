@@ -210,6 +210,11 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        /*
+         * Application Aliases...
+         */
+        'Image' => Intervention\Image\Facades\Image::class
+
     ],
 
 ];

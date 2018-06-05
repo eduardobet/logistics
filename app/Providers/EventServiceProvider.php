@@ -16,6 +16,10 @@ class EventServiceProvider extends ServiceProvider
         \Logistics\Events\Tenant\EmployeeWasCreatedEvent::class => [
             \Logistics\Listeners\Tenant\SendEmployeeWelcomeEmail::class,
         ],
+        
+        \Logistics\Events\Tenant\EmployeeAvatarAdded::class => [
+            \Logistics\Listeners\Tenant\ScheduleEmployeeLogoProcessing::class,
+        ],
     ];
 
     /**

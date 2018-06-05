@@ -3,9 +3,10 @@
 namespace Logistics\Http\Controllers\Tenant\Employee;
 
 use Illuminate\Http\Request;
-use Logistics\Http\Controllers\Controller;
-use Logistics\Http\Requests\Tenant\ProfileRequest;
 use Illuminate\Support\Facades\Storage;
+use Logistics\Http\Controllers\Controller;
+use Logistics\Events\Tenant\EmployeeAvatarAdded;
+use Logistics\Http\Requests\Tenant\ProfileRequest;
 
 class ProfileController extends Controller
 {
@@ -45,6 +46,8 @@ class ProfileController extends Controller
             $user->update([
                 'avatar' => $request->avatar->store("tenant/{$user->tenant_id}/images/avatars", 'public'),
             ]);
+
+            event(new EmployeeAvatarAdded($user));
         }
     }
 }

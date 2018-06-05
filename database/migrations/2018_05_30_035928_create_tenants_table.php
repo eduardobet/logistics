@@ -19,6 +19,12 @@ class CreateTenantsTable extends Migration
             $table->string('name')->unique()->nullable();
             $table->string('status', 1);
             $table->string('lang', 2)->nullable();
+            $table->string('telephones')->nullable();
+            $table->string('emails')->nullable();
+            $table->string('ruc')->nullable();
+            $table->string('dv')->nullable();
+            $table->string('address')->nullable();
+            $table->string('logo')->nullable();
             $table->timestamps();
         });
     }

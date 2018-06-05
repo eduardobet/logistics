@@ -12,7 +12,7 @@ use Logistics\DB\Tenant\Tenant as TenantModel;
 use Logistics\Events\Tenant\EmployeeAvatarAdded;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ScheduleEmployeeLogoProcessingTest extends TestCase
+class ScheduleEmployeeAvatarProcessingTest extends TestCase
 {
     use RefreshDatabase;
 

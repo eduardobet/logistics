@@ -126,13 +126,13 @@ return [
 
     'custom' => [
         'emails' => [
-            'mass_email' => 'The field :attribute is invalid.',
+            'mass_email' => 'El campo :attribute es inv&aacute;lido.',
         ],
         'telephones' => [
-            'mass_phone' => 'The field :attribute is invalid.',
+            'mass_phone' => 'El campo :attribute es inv&aacute;lido.',
         ],
         'urls' => [
-            'mass_url' => 'The field :attribute is invalid.',
+            'mass_url' => 'El campo :attribute es inv&aacute;lido.',
         ],
     ],
 

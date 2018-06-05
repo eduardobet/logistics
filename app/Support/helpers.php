@@ -71,7 +71,9 @@ if (!function_exists('array_has_dupes')) {
      */
     function array_has_dupes($array)
     {
-        return count(array_keys(array_flip($array))) !== count($array);
+        $trimmedArray = array_map('trim', $array);
+
+        return count(array_keys(array_flip($trimmedArray))) !== count($trimmedArray);
     }
 }
 
@@ -85,6 +87,6 @@ if (!function_exists('is_valid_phone')) {
      */
     function is_valid_phone($phone)
     {
-        return preg_match("/^(00\s)?(\(509\)[\s]|\(507\)[\s])?(\d{3,4})[\s.-]\d{4}$/", $phone);
+        return preg_match("/^(00\s)?(\(509\)[\s]|\(507\)[\s])?(\d{3,4})[\s.-]\d{4}$/", trim($phone));
     }
 }

@@ -12,7 +12,7 @@ class Tenant extends Model
      * @var array
      */
     protected $fillable = [
-        'domain', 'name', 'status',
+        'domain', 'name', 'status', 'ruc', 'dv', 'telephones', 'emails', 'address', 'lang', 'logo',
     ];
 
     public function employees()

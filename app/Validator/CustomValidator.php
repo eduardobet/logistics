@@ -21,7 +21,7 @@ class CustomValidator extends \Illuminate\Validation\Validator
     }
 
     /**
-     * Validates panama phone numbers
+     * Validates panama one phone or multiples numbers separated by comma
      *
      * @param  array $attribute
      * @param  string $value
@@ -44,6 +44,33 @@ class CustomValidator extends \Illuminate\Validation\Validator
 
         foreach ($value as $val) {
             if (!is_valid_phone($val)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates one or multiple emails separated by comma
+     *
+     * @param  array $attribute
+     * @param  string $value
+     * @param  array $parameters
+     * @param  array $message
+     * @return boolean
+     */
+    public function validateMassEmail($attribute, $value, $parameters, $message)
+    {
+        $value = explode(',', $value);
+        if (count($value) > 2) {
+            return false;
+        }
+        if (array_has_dupes($value)) {
+            return false;
+        }
+        foreach ($value as $key => $val) {
+            if (!filter_var(trim($val), FILTER_VALIDATE_EMAIL)) {
                 return false;
             }
         }

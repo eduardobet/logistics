@@ -98,6 +98,27 @@ class CustomValidarTest extends TestCase
     }
 
     /** @test */
+    public function validate_invalid_emails()
+    {
+        $rules = ['emails' => 'mass_email', ];
+
+        $data = ['emails' => '123', ];
+
+        $v = $this->app['validator']->make($data, $rules);
+        $this->assertTrue($v->fails());
+    }
+
+    /** @test */
+    public function validate_valid_emails()
+    {
+        $rules = ['emails' => 'mass_email'];
+        $data = ['emails' => 'valid@company.com'];
+
+        $v = $this->app['validator']->make($data, $rules);
+        $this->assertTrue($v->passes());
+    }
+
+    /** @test */
     public function validate_user_status_cannot_be_updated_from_locked_to_active()
     {
         $tenant = factory(Tenant::class)->create();

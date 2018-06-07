@@ -213,7 +213,8 @@ return [
         /*
          * Application Aliases...
          */
-        'Image' => Intervention\Image\Facades\Image::class
+        'Breadcrumbs' => Watson\Breadcrumbs\Facade::class,
+        'Image' => Intervention\Image\Facades\Image::class,
 
     ],
 

@@ -9,11 +9,11 @@
     <meta name="description" content="{{ config('app.description', 'Seal Control Panel.') }}">
     <meta name="author" content="Josu&eacute; Artaud and Eduardobet">
 
-    <title>{{ config('app.name', 'Seal Logistics Control Panel') }}</title>
+    <title>@yield('title', config('app.name', ''))</title>
 
-    <link href="{{ asset('css/slim.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/tenant.css') }}" rel="stylesheet">
 </head>
-<body>
+<body class="dasbhoard-3">
     
         @yield('content')
 

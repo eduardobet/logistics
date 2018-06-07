@@ -134,6 +134,9 @@ return [
         'urls' => [
             'mass_url' => 'The field :attribute is invalid.',
         ],
+        'password' => [
+            'alpha_num_pwd' => 'The :attribute field must be at least 6 characters long and contain at least one letter and one digit.',
+        ],
     ],
 
     /*

@@ -12968,8 +12968,7 @@ Popper.Defaults = Defaults;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(3);
-__webpack_require__(8);
-module.exports = __webpack_require__(9);
+module.exports = __webpack_require__(8);
 
 
 /***/ }),
@@ -16972,24 +16971,21 @@ $(function () {
   // inject template options content
   /* $.get('../settings.html', function(data){
        $('body').append(data);
-  
-       
+        
        // set direction value in settings
        if(isRtl) {
          $('.slim-direction[value="rtl"]').prop('checked', true);
        } else {
          $('.slim-direction[value="ltr"]').prop('checked', true);
        }
-  
-       //check if header set to sticky
+        //check if header set to sticky
        if($.cookie('sticky-header')) {
          $('body').addClass('slim-sticky-header');
          $('.sticky-header[value="yes"]').prop('checked', true);
        } else {
          $('.sticky-header[value="no"]').prop('checked', true);
        }
-  
-       //check if header have skin
+        //check if header have skin
        if($.cookie('header-skin')) {
          var sk = $.cookie('header-skin');
          $('body').addClass(sk);
@@ -16998,8 +16994,7 @@ $(function () {
        } else {
          $('.header-skin[value="default"]').prop('checked', true);
        }
-  
-       //check if page set to wide
+        //check if page set to wide
        if($.cookie('full-width')) {
          $('body').addClass('slim-full-width');
          $('.full-width[value="yes"]').prop('checked', true);
@@ -17097,12 +17092,6 @@ $(function () {
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 9 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

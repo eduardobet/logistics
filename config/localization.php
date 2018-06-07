@@ -9,7 +9,7 @@ return [
 
     'supported-locales' => ['en', 'es', 'fr'],
 
-    'accept-language-header' => false,
+    'accept-language-header' => true,
 
     'hide-default-in-url' => false,
 

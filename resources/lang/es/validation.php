@@ -134,6 +134,9 @@ return [
         'urls' => [
             'mass_url' => 'El campo :attribute es inv&aacute;lido.',
         ],
+        'password' => [
+            'alpha_num_pwd' => 'El campo :attribute debe tener al menos 6 caracteres y debe contener al menos un d&iacute;gito.',
+        ],
     ],
 
     /*

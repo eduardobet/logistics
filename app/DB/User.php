@@ -58,6 +58,11 @@ class User extends Authenticatable
         return $this->belongsTo(\Logistics\DB\Tenant\Tenant::class, 'tenant_id', 'id');
     }
 
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
     public function isAdmin()
     {
         return $this->type === 'A';

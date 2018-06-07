@@ -7,7 +7,15 @@ Route::group(['middleware' => ['auth', 'admin'], 'prefix' => 'admin'], function 
     Route::get('dashboard/company/edit', 'Tenant\Admin\CompanyController@edit')->name('tenant.admin.company.edit');
     Route::patch('dashboard/company/update', 'Tenant\Admin\CompanyController@update')->name('tenant.admin.company.update');
 
-    // employee creation
+    //Branches
+    Route::get('dashboard/branches/list', 'Tenant\Admin\BranchController@index')->name('tenant.admin.branch.list');
+    Route::get('dashboard/branches/create', 'Tenant\Admin\BranchController@create')->name('tenant.admin.branch.create');
+    Route::post('dashboard/branches/store', 'Tenant\Admin\BranchController@store')->name('tenant.admin.branch.store');
+    Route::get('dashboard/branch/{id}/edit', 'Tenant\Admin\BranchController@edit')->name('tenant.admin.branch.edit');
+    Route::patch('dashboard/branch/update', 'Tenant\Admin\BranchController@update')->name('tenant.admin.branch.update');
+    
+
+    // employees
     Route::get('dashboard/employees', 'Tenant\Admin\EmployeeController@index')->name('tenant.admin.employee.list');
     Route::get('dashboard/employees/create', 'Tenant\Admin\EmployeeController@create')->name('tenant.admin.employee.create');
     Route::post('dashboard/employees/store', 'Tenant\Admin\EmployeeController@store')->name('tenant.admin.employee.store');

@@ -20,6 +20,11 @@ class Tenant extends Model
         return $this->hasMany(\Logistics\DB\User::class);
     }
 
+    public function branches()
+    {
+        return $this->hasMany(\Logistics\DB\Tenant\Branch::class);
+    }
+
     // to be implemented
     public function hasActiveSubscription()
     {

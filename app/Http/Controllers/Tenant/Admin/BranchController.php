@@ -13,7 +13,19 @@ class BranchController extends Controller
 
     public function index()
     {
-    	//
+    	$branches = $this->getTenant()->branches();
+
+    	if ($filter = request('filter')) {
+            if (is_numeric($filter)) {
+                $branches = $branches->where('id', $filter);
+            } else {
+                $branches = $branches->where('name', 'like', "%{$filter}%");
+            }
+        }
+        
+        $branches = $branches->paginate(15);
+
+    	return view('tenant.branch.index', compact('branches'));
     }
 
     public function create()

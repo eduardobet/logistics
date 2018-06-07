@@ -1,4 +1,4 @@
 1) (OK) Admin testing tenant edition (Logo, RUC, DV)
-2) Admin testing Branch CRUL (RUC, DV, Address, Phones, Emails, lat, lng)
+2) (OK) Admin testing Branch CRUL (RUC, DV, Address, Phones, Emails, lat, lng)
 3) Admin testing employee has permissions (json column)
 4) Admin testing Employee listing

@@ -5,20 +5,21 @@
 
           <div class="search-box">
             <input type="text" class="form-control" placeholder="{{ __('Search') }}">
-            <button class="btn btn-primary bg-reef"><i class="icon fa fa-search"></i></button>
+            <button class="btn btn-primary bg-reef"><i class="fa fa-search"></i></button>
           </div><!-- search-box -->
         </div><!-- slim-header-left -->
         <div class="slim-header-right">
 
             <div class="dropdown">
                 <a href="#!" class="header-notification">
-                    <i class="icon fa fa-bell"></i>
+                    <i class="icon ion-ios-bell-outline"></i>
+                    <span class="indicator"></span>
                 </a>
                 <div class="dropdown-menu"></div>
             </div>
 
             <div class="dropdown">
-                <a href="" class="header-notification" data-toggle="dropdown">
+                <a href="#" class="header-notification" data-toggle="dropdown">
                     <i class="icon fa fa-globe"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">

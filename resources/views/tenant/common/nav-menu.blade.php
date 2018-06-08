@@ -2,9 +2,9 @@
       <div class="container">
         <ul class="nav">
 
-          <li class="nav-item with-sub active">
+          <li class="nav-item with-sub {{ active(['tenant.admin.dashboard']) }}">
             <a class="nav-link" href="#">
-              <i class="icon fa fa-user"></i>
+              <i class="icon ion-ios-person-outline"></i>
               <span>{{ __('Clients') }}</span>
             </a>
             <div class="sub-item">
@@ -18,7 +18,7 @@
 
           <li class="nav-item with-sub">
             <a class="nav-link" href="#">
-              <i class="icon fa fa-warehouse"></i>
+              <i class="icon ion-ios-box-outline"></i>
               <span>{{ __('Warehouse' )}}</span>
             </a>
             <div class="sub-item">
@@ -33,7 +33,7 @@
 
           <li class="nav-item with-sub">
             <a class="nav-link" href="#">
-              <i class="icon fa fa-calculator"></i>
+              <i class="icon ion-ios-calculator-outline"></i>
               <span>{{ __('Invoices') }}</span>
             </a>
             <div class="sub-item">
@@ -48,7 +48,7 @@
 
           <li class="nav-item with-sub">
             <a class="nav-link" href="#">
-              <i class="icon fa fa-money-bill-alt"></i>
+              <i class="icon ion-ios-paper-outline"></i>
               <span>{{ __('Accounting') }}</span>
             </a>
             <div class="sub-item">
@@ -61,15 +61,15 @@
             </div><!-- dropdown-menu -->
           </li>
 
-          <li class="nav-item with-sub">
+          <li class="nav-item with-sub {{ active(['tenant.admin.branch.list']) }}">
             <a class="nav-link" href="#">
-              <i class="icon fa fa-cog"></i>
+              <i class="icon ion-ios-gear-outline"></i>
               <span>{{ __('System') }}</span>
             </a>
             <div class="sub-item">
               <ul>
                 <li><a href="#">{{ __('Configuration') }}</a></li>
-                <li><a href="#">{{ __('Branches') }}</a></li>
+                <li><a href="{{ route('tenant.admin.branch.list') }}">{{ __('Branches') }}</a></li>
                 <li><a href="#">{{ __('Users') }}</a></li>
                 <li><a href="#">{{ __('Activity') }}</a></li>
               </ul>

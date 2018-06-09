@@ -22,10 +22,19 @@ class CreateClientsTable extends Migration
             $table->string('status', 1)->default('A'); //I[nactive], A[ctive]
             $table->string('email')->unique();
             $table->string('telephones');
-            $table->string('org_name');
+            $table->string('org_name')->nullable();
             $table->string('pid');
             $table->unsignedInteger('created_by_code')->nullable();
             $table->unsignedInteger('updated_by_code')->nullable();
+
+            $table->unsignedInteger('country_id')->nullable();
+            $table->unsignedInteger('department_id')->nullable();
+            $table->unsignedInteger('city_id')->nullable();
+            $table->text('notes')->nullable();
+            $table->string('pay_volume')->nullable();
+            $table->string('special_rate')->nullable();
+            $table->string('special_maritime')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
         });

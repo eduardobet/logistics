@@ -24,6 +24,10 @@ class EventServiceProvider extends ServiceProvider
         \Logistics\Events\Tenant\CompanyLogoAdded::class => [
             \Logistics\Listeners\Tenant\ScheduleCompanyLogoProcessing::class,
         ],
+
+        \Logistics\Events\Tenant\ClientWasCreatedEvent::class => [
+            \Logistics\Listeners\Tenant\SendClientWelcomeEmail::class,
+        ],
     ];
 
     /**

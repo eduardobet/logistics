@@ -35,6 +35,7 @@ class ClientRequest extends AppFormRequest
             'org_name' => 'required_if:type,==,E|string',
             'status' => 'required|string|in:A,I',
             'branch_id' => 'required',
+            'branch_code' => 'required',
         ];
 
         if ($this->isEdit()) {

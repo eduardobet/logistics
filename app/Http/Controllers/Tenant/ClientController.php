@@ -19,7 +19,13 @@ class ClientController extends Controller
      */
     public function index()
     {
-        //
+        $tenant = $this->getTenant();
+
+        $clients = $tenant->clients()->with('boxes')->paginate(15);
+
+        return view('tenant.client.index', [
+            'clients' => $clients,
+        ]);
     }
 
     /**
@@ -58,9 +64,9 @@ class ClientController extends Controller
             'department_id' => $request->department_id,
             'city_id' => $request->city_id,
             'notes' => $request->notes,
-            'pay_volume' => $request->pay_volume,
-            'special_rate' => $request->special_rate,
-            'special_maritime' => $request->special_maritime,
+            'pay_volume' => $request->has('pay_volume'),
+            'special_rate' => $request->has('special_rate'),
+            'special_maritime' => $request->has('special_maritime'),
         ]);
 
         if ($client) {
@@ -99,19 +105,66 @@ class ClientController extends Controller
      */
     public function edit($id)
     {
-        //
+        $client = $this->getTenant()->clients()->with('boxes')->findOrFail($id);
+
+        return view('tenant.client.edit', [
+            'client' => $client,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Logistics\Http\Requests\Tenant\ClientRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ClientRequest $request, $id)
     {
-        //
+        $tenant = $this->getTenant();
+        $client =$tenant->clients()->findOrFail($id);
+        $oldEmail = $client->email;
+
+        $client->updated_by_code = auth()->id();
+        $client->first_name  = $request->first_name;
+        $client->last_name  = $request->last_name;
+        $client->pid  = $request->pid;
+        $client->email  = $request->email;
+        $client->telephones  = $request->telephones;
+        $client->type  = $request->type;
+        $client->org_name  = $request->org_name;
+        $client->status  = $request->status;
+
+        // optionals
+        $client->country_id         = $request->country_id;
+        $client->department_id  = $request->department_id;
+        $client->city_id  = $request->city_id;
+        $client->notes  = $request->notes;
+        $client->pay_volume  = $request->has('pay_volume');
+        $client->special_rate  = $request->has('special_rate');
+        $client->special_maritime  = $request->has('special_maritime');
+
+        if ($oldEmail !== $request->email) {
+            $client->email = $request->email;
+        }
+
+        $updated = $client->save();
+
+        if ($updated) {
+            if ($oldEmail !== $request->email) {
+                event(new ClientWasCreatedEvent($tenant, $client));
+            }
+
+            return redirect()->route('tenant.client.list')
+                ->with('flash_success', __('The client has been updated.'));
+        }
+
+        return redirect()->route('tenant.client.edit', $id)
+            ->withInput()
+            ->with('flash_error', __('Error while trying to :action :what', [
+                'action' => __('Update'),
+                'what' => __('The client'),
+            ]));
     }
 
     /**

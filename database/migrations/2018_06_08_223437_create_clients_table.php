@@ -31,11 +31,10 @@ class CreateClientsTable extends Migration
             $table->unsignedInteger('department_id')->nullable();
             $table->unsignedInteger('city_id')->nullable();
             $table->text('notes')->nullable();
-            $table->string('pay_volume')->nullable();
-            $table->string('special_rate')->nullable();
-            $table->string('special_maritime')->nullable();
+            $table->boolean('pay_volume')->nullable()->default(false);
+            $table->boolean('special_rate')->nullable()->default(false);
+            $table->boolean('special_maritime')->nullable()->default(false);
 
-            $table->rememberToken();
             $table->timestamps();
         });
     }

@@ -30,6 +30,11 @@ class Tenant extends Model
         return $this->hasMany(\Logistics\DB\Tenant\Client::class);
     }
 
+    public function remoteAddresses()
+    {
+        return $this->hasMany(\Logistics\DB\Tenant\RemoteAddress::class);
+    }
+
     // to be implemented
     public function hasActiveSubscription()
     {

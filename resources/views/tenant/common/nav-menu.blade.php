@@ -2,14 +2,14 @@
       <div class="container">
         <ul class="nav">
 
-          <li class="nav-item with-sub {{ active(['tenant.admin.dashboard']) }}">
+          <li class="nav-item with-sub {{ active(['tenant.admin.dashboard', 'tenant.client.create', 'tenant.client.list','tenant.client.edit']) }}">
             <a class="nav-link" href="#">
               <i class="icon ion-ios-person-outline"></i>
               <span>{{ __('Clients') }}</span>
             </a>
             <div class="sub-item">
               <ul>
-                <li><a href="#!">{{ __('New client') }}</a></li>
+                <li><a href="{{ route('tenant.client.create') }}">{{ __('New client') }}</a></li>
                 <li><a href="#!">{{ __('Search client') }}</a></li>
                 <li><a href="#!">{{ __('Client list') }}</a></li>
               </ul>

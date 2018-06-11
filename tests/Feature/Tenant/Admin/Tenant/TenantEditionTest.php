@@ -28,7 +28,7 @@ class TenantEditionTest extends TestCase
     /** @test */
     public function admin_can_update_the_company()
     {
-        //$this->withoutExceptionHandling();
+        $this->withoutExceptionHandling();
 
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
@@ -46,6 +46,10 @@ class TenantEditionTest extends TestCase
             'emails' => ' contact@tenant.com, sales@tenant.com ',
             'address' => 'In the middle of nowhere',
             'lang' => 'es',
+            'remote_addresses' => [
+                ['type' => 'A', 'address' => 'In the middle of remote air', 'telephones' => '555-5555',  'status' => 'A', ],
+                ['type' => 'M', 'address' => 'In the middle of remote maritimes', 'telephones' => '555-5555','status' => 'A',  ],
+            ],
         ]);
 
         $this->assertDatabaseHas('tenants', [
@@ -58,6 +62,12 @@ class TenantEditionTest extends TestCase
             'emails' => 'contact@tenant.com, sales@tenant.com',
             'address' => 'In the middle of nowhere',
             'lang' => 'es',
+        ]);
+
+        
+        $this->assertDatabaseHas('remote_addresses', [
+            'type' => 'M', 'address' => 'In the middle of remote maritimes', 'telephones' => '555-5556', 'created_by_code' => $admin->id,
+            'type' => 'A', 'address' => 'In the middle of remote air', 'telephones' => '555-5555', 'created_by_code' => $admin->id,
         ]);
 
         $this->assertNotNull(view()->shared('tenant'));
@@ -86,6 +96,10 @@ class TenantEditionTest extends TestCase
             'lang' => 'es',
             'domain' => 'https://other-domain.test',
             'status' => 'I',
+            'remote_addresses' => [
+                ['type' => 'A', 'address' => 'In the middle of remote air', 'telephones' => '555-5555', 'status' => 'A', ],
+                ['type' => 'M', 'address' => 'In the middle of remote maritimes', 'telephones' => '555-5555', 'status' => 'A', ],
+            ],
         ]);
 
         $response->assertSessionHasErrors(['domain', 'status']);
@@ -109,9 +123,16 @@ class TenantEditionTest extends TestCase
             'emails' => '555,545',
             'address' => '123',
             'lang' => 'xx',
+            'remote_addresses' => [[]],
         ]);
 
-        $response->assertSessionHasErrors(['name', 'telephones', 'emails', 'address', 'lang', ]);
+        $response->assertSessionHasErrors([
+            'name', 'telephones', 'emails', 'address', 'lang',
+            'remote_addresses.*.type',
+            'remote_addresses.*.address',
+            'remote_addresses.*.telephones',
+            'remote_addresses.*.status',
+        ]);
         $response->assertRedirect(route('tenant.admin.company.edit'));
         $this->assertEquals('https://middleton-services.test', ($tenant = $tenant->fresh()->first())->domain);
         $this->assertEquals('Middleton Services S.A.', $tenant->name);
@@ -137,6 +158,10 @@ class TenantEditionTest extends TestCase
             'address' => 'In the middle of nowhere',
             'lang' => 'es',
             'logo' => $file,
+            'remote_addresses' => [
+                ['type' => 'A', 'address' => 'In the middle of remote air', 'telephones' => '555-5555', 'status' => 'A', ],
+                ['type' => 'M', 'address' => 'In the middle of remote maritimes', 'telephones' => '555-5555', 'status' => 'A', ],
+            ],
             '_method' => 'PATCH',
         ]);
 
@@ -175,6 +200,10 @@ class TenantEditionTest extends TestCase
             'address' => 'In the middle of nowhere',
             'lang' => 'es',
             'logo' => $file,
+            'remote_addresses' => [
+                ['type' => 'A', 'address' => 'In the middle of remote air', 'telephones' => '555-5555', 'status' => 'A', ],
+                ['type' => 'M', 'address' => 'In the middle of remote maritimes', 'telephones' => '555-5555', 'status' => 'A', ],
+            ],
             '_method' => 'PATCH',
         ]);
 

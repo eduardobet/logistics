@@ -39,7 +39,10 @@ class Tenant
                         ->route('app.home')
                         ->withErrors([__('You cannot access this site!')]);
                 } else {
-                    view()->share('user', auth()->user());
+                    view()->share([
+                        'user' => auth()->user(),
+                        'branch' => auth()->user()->currentBranch()
+                    ]);
                 }
             }
         }

@@ -1,8 +1,3 @@
-<div class="signin-box" style="width:500px">
-            
-            
-
-
 @if (!$errors->any())
 	@if (isset($info))
 		<div class="notification{{ isset($info_class) ? " ".$info_class : null }}">

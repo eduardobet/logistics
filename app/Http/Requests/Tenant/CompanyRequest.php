@@ -32,6 +32,11 @@ class CompanyRequest extends FormRequest
             'address' => 'required|string|between:10,255',
             'lang' => 'required|in:en,es',
             'logo' => 'sometimes|mimes:png,jpg,jpeg|max:1024',
+            'remote_addresses' => 'required',
+            'remote_addresses.*.type' => 'required',
+            'remote_addresses.*.address' => 'required',
+            'remote_addresses.*.telephones' => 'required',
+            'remote_addresses.*.status' => 'required',
         ];
     }
 

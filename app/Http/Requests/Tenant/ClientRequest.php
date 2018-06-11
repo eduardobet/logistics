@@ -2,6 +2,7 @@
 
 namespace Logistics\Http\Requests\Tenant;
 
+use Illuminate\Validation\Rule;
 use Logistics\Http\Requests\AppFormRequest;
 
 class ClientRequest extends AppFormRequest

@@ -49,13 +49,20 @@ class WelcomeClientEmail extends Mailable
     public function build()
     {
         $box = $this->client->boxes()->active()->get()->first();
+        $branch = $box->branch;
+        $addresses = $this->tenant->remoteAddresses;
+        $air = $addresses->where('type', 'A')->first();
+        $maritime = $addresses->where('type', 'M')->first();
 
         return $this->subject(__('Welcome') . ' ' . $this->client->full_name)
-            ->text('tenant.mails.welcome-client')
+            ->markdown('tenant.mails.welcome-client')
             ->with([
                 'tenant' => $this->tenant,
                 'client' => $this->client,
                 'box_code' => $box->branch_code,
+                'air' => $air,
+                'maritime' => $maritime,
+                'branch' => $branch,
             ]);
     }
 }

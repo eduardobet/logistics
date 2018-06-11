@@ -22,6 +22,11 @@ class WelcomeClientEmailTest extends TestCase
     public function email_has_the_correct_data()
     {
         $tenant = factory(TenantModel::class)->create();
+        $tenant->remoteAddresses()->createMany([
+            ['type' => 'A', 'address' => 'In the middle of remote air', 'telephones' => '555-5555', 'status' => 'A', ],
+            ['type' => 'M', 'address' => 'In the middle of remote maritimes', 'telephones' => '555-5555', 'status' => 'A', ],
+        ]);
+
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
         $client = factory(Client::class)->create(['tenant_id' => $tenant->id, ]);
         $box = factory(Box::class)->create([
@@ -34,6 +39,8 @@ class WelcomeClientEmailTest extends TestCase
         $email = new WelcomeClientEmail($tenant, $client);
         $data = $email->buildViewData();
         $content = $this->render($email);
+        $air =$tenant->remoteAddresses->where('type', 'A')->first();
+        $maritime =$tenant->remoteAddresses->where('type', 'M')->first();
 
         $this->assertTrue($data['tenant']->is($tenant));
         $this->assertTrue($data['client']->is($client));
@@ -42,7 +49,22 @@ class WelcomeClientEmailTest extends TestCase
         $this->assertContains("Hello {$client->full_name}", $content);
         $this->assertContains("welcome to {$tenant->name}", $content);
         $this->assertContains("Below, your box information:", $content);
-        $this->assertContains("Box number: {$box->branch_code}{$client->id}", $content);
+        $this->assertContains("Box number:", $content);
+        $this->assertContains("{$box->branch_code}{$client->id}", $content);
+        $this->assertContains("This is the address you should use when making your purchases:", $content);
+        $this->assertContains("For Aerial Shipments:", $content);
+        $this->assertContains("{$client->first_name} {$box->branch_code}{$client->id} {$client->last_name}", $content);
+        $this->assertContains("{$air->address}", $content);
+        $this->assertContains("{$air->telephones}", $content);
+
+        $this->assertContains("For Maritime Shipments:", $content);
+        $this->assertContains("{$client->first_name} {$box->branch_code}{$client->id} {$client->last_name}", $content);
+        $this->assertContains("{$maritime->address}", $content);
+        $this->assertContains("{$maritime->telephones}", $content);
+
+        $this->assertContains("Remember your purchases must always contain your box", $content);
+        $this->assertContains("{$box->branch_code}{$client->id}", $content);
+        $this->assertContains(" number.", $content);
     }
 
     /** @test */

@@ -14,15 +14,18 @@ class UserSeeder extends Seeder
     public function run()
     {
         $tenant = Tenant::whereDomain('https://middleton-services.test')->first();
+        $branch = $tenant->branches->first();
 
-        factory(User::class)->states('admin')->create([
+        $admin1 = factory(User::class)->states('admin')->create([
             'tenant_id' => $tenant->id,
             'email' => 'main-admin@middleton-services.test',
         ]);
+        $admin1->branches()->sync([$branch->id]);
 
-        factory(User::class)->states('employee')->create([
+        $employee1 = factory(User::class)->states('employee')->create([
             'tenant_id' => $tenant->id,
             'email' => 'employee1@middleton-services.test',
         ]);
+        $employee1->branches()->sync([$branch->id]);
     }
 }

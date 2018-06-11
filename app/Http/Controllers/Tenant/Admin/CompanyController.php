@@ -12,37 +12,37 @@ class CompanyController extends Controller
 {
     public function edit()
     {
-    	return view('tenant.company.edit');
+        return view('tenant.company.edit');
     }
 
     public function update(CompanyRequest $request)
     {
-    	$company = auth()->user()->company;
+        $company = auth()->user()->company;
 
-    	$company->name = $request->name;
-    	$company->telephones = $request->telephones;
-    	$company->emails = $request->emails;
-    	$company->ruc = $request->ruc;
-    	$company->dv = $request->dv;
-    	$company->address = $request->address;
-    	$company->lang = $request->lang;
+        $company->name = $request->name;
+        $company->telephones = $request->telephones;
+        $company->emails = $request->emails;
+        $company->ruc = $request->ruc;
+        $company->dv = $request->dv;
+        $company->address = $request->address;
+        $company->lang = $request->lang;
 
-    	if($company->save()) {
-    		view()->share([
+        if ($company->save()) {
+            view()->share([
                 'tenant' => $company,
             ]);
 
             $this->uploadLogo($request, $company);
+            $this->saveRemoteAddr($request, $company);
 
-    		return redirect()->route('tenant.admin.company.edit')
-    			->with('flash_success', __('The company has been updated.'));
-    	}
+            return redirect()->route('tenant.admin.company.edit')
+                ->with('flash_success', __('The company has been updated.'));
+        }
     }
 
     protected function uploadLogo($request, $tenant)
     {
         if ($request->hasFile('logo')) {
-
             if (Storage::disk('public')->exists($tenant->logo)) {
                 Storage::disk('public')->delete($tenant->logo);
             }
@@ -52,6 +52,23 @@ class CompanyController extends Controller
             ]);
 
             event(new CompanyLogoAdded($tenant));
+        }
+    }
+
+    protected function saveRemoteAddr($request, $tenant)
+    {
+        if ($remoteAddrs = $request->remote_addresses) {
+            if (!is_array($remoteAddrs)) {
+                $remoteAddrs = [];
+            }
+            
+            foreach ($remoteAddrs as $remoteAddr) {
+                $data = array_merge($remoteAddr, [
+                    'created_by_code' => auth()->id(),
+                ]);
+                
+                $tenant->remoteAddresses()->create($data);
+            }
         }
     }
 }

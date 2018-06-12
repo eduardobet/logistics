@@ -110,6 +110,8 @@ class BranchEditionTest extends TestCase
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
+        $admin->branches()->sync([$branch->id]);
+        
         $response = $this->actingAs($admin)->get(route('tenant.admin.branch.edit', [$tenant->id]));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.branch.edit');

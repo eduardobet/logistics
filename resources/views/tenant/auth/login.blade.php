@@ -9,6 +9,8 @@
       <form method="post" action="{{ route('tenant.auth.post.login')  }}">
         <div class="signin-wrapper">
 
+         <div class="signin-box" style="width: 500px">
+
           @include('tenant.common._notifications')
             
             <h2 class="slim-logo"><a href="#!">{{ config('app.name', '') }}</a></h2>

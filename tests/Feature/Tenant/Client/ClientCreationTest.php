@@ -59,7 +59,9 @@ class ClientCreationTest extends TestCase
         Event::fake();
 
         $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
 
         $response = $this->actingAs($admin)->get(route('tenant.client.create'));
         $response->assertStatus(200);
@@ -104,9 +106,9 @@ class ClientCreationTest extends TestCase
             'department_id' => 1,
             'city_id' => 1,
             'notes' => 'Aditional notes',
-            'pay_volume' => 'N',
-            'special_rate' => 'N',
-            'special_maritime' => 'N',
+            'pay_volume' => '1',
+            'special_rate' => '1',
+            'special_maritime' => '1',
         ]);
 
         $response->assertRedirect(route('tenant.client.list'));
@@ -124,9 +126,14 @@ class ClientCreationTest extends TestCase
     /** @test */
     public function the_client_cannot_have_more_than_one_active_box_at_a_time()
     {
-        // $this->withoutExceptionHandling();
+        $this->withoutExceptionHandling();
 
         $tenant = factory(TenantModel::class)->create();
+        $tenant->remoteAddresses()->createMany([
+            ['type' => 'A', 'address' => 'In the middle of remote air', 'telephones' => '555-5555', 'status' => 'A', ],
+            ['type' => 'M', 'address' => 'In the middle of remote maritimes', 'telephones' => '555-5555', 'status' => 'A', ],
+        ]);
+
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $box = factory(Box::class)->create([
@@ -135,6 +142,7 @@ class ClientCreationTest extends TestCase
             'branch_id' => $branch->id,
             'branch_code' => $branch->code,
         ]);
+        $admin->branches()->sync([$branch->id]);
 
         $response = $this->actingAs($admin)->get(route('tenant.client.create'));
         $response->assertStatus(200);

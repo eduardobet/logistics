@@ -89,6 +89,7 @@ class EmployeeEditionTest extends TestCase
             'type' => 'A',
             'status' => 'A',
             'email' => $employee->email,
+            'full_name' => 'Employee f name update Employee l name update',
         ]);
             
         $response->assertSessionHas(['flash_success']);

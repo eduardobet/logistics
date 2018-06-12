@@ -16,39 +16,38 @@
           
             {{ Breadcrumbs::render() }}
 
-
-
-           <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.admin.branch.create') }}">
+           <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.admin.employee.create') }}">
                <i class="fa fa-plus mg-r-5"></i> {{ __('Create') }}
             </a>
 
           
         </div><!-- slim-pageheader -->
 
-        <div class="table table-responsive">
+        <div class="table-responsive">
             <table class="table table-hover mg-b-0">
               <thead>
                 <tr>
                   <th>{{ __('ID') }}</th>
-                  <th>{{ __('Code') }}</th>
-                  <th>{{ __('Name') }}</th>
-                  <th>{{ __('Address') }}</th>
-                  <th>{{ __('Telephones') }}</th>
+                  <th>{{ __('First Name') }}</th>
+                  <th>{{ __('Last Name') }}</th>
+                  <th>{{ __('Branch') }}</th>
+                  <th>{{ __('Type') }}</th>
+                  <th>{{ __('Status') }}</th>
                   <th class="text-center">{{ __('Actions') }}</th>
                 </tr>
               </thead>
               <tbody>
                   
-                  @foreach ($branches as $branch)
-                      
+                  @foreach ($employees as $employee)
                     <tr>
-                      <th scope="row">{{ $branch->id }}</th>
-                      <td>{{ $branch->code }}</td>
-                      <td>{{ $branch->name }}</td>
-                      <td>{{ $branch->address }}</td>
-                      <td>{{ $branch->telephones }}</td>
+                      <th scope="row">{{ $employee->id }}</th>
+                      <td>{{ $employee->first_name }}</td>
+                      <td>{{ $employee->last_name }}</td>
+                      <td>{{ $employee->branches->first()->name }}</td>
+                      <td>{{ $employee->type }}</td>
+                      <td>{{ $employee->status }}</td>
                       <td>
-                        <a href="{{ route('tenant.admin.branch.edit', $branch->id) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                        <a href="{{ route('tenant.admin.employee.edit', $employee->id) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                       </td>
                     </tr>
 

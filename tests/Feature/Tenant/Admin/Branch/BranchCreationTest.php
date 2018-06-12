@@ -104,6 +104,8 @@ class BranchCreationTest extends TestCase
 
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $admin->branches()->sync([$branch->id]);
 
         $response = $this->actingAs($admin)->get(route('tenant.admin.branch.create'));
         $response->assertStatus(200);

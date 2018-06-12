@@ -12,6 +12,23 @@ class EmployeeController extends Controller
 {
     use Tenant;
 
+    public function index()
+    {
+        $employees = $this->getTenant()->employees()->with('branches');
+
+        if ($filter = request('filter')) {
+            if (is_numeric($filter)) {
+                $employees = $employees->where('id', $filter);
+            } else {
+                $employees = $employees->where('full_name', 'like', "%{$filter}%");
+            }
+        }
+
+        $employees = $employees->paginate(15);
+
+        return view('tenant.employee.index', compact('employees'));
+    }
+
     public function create()
     {
         return view('tenant.employee.create');
@@ -27,6 +44,7 @@ class EmployeeController extends Controller
             'email' => $request->email,
             'type' => $request->type,
             'is_main_admin' => $request->has('is_main_admin'),
+            'full_name' => $request->first_name . ' ' . $request->last_name,
             'status' => 'L',
         ]);
 
@@ -60,6 +78,7 @@ class EmployeeController extends Controller
         $employee->type  = $request->type;
         $employee->status = $request->status;
         $employee->is_main_admin = $request->has('is_main_admin');
+        $employee->full_name = $request->first_name . ' ' . $request->last_name;
 
         $updated = $employee->update();
 

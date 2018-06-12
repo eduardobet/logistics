@@ -134,6 +134,7 @@ class EmployeeCreationTest extends TestCase
             'status' => 'L',
             'password' => null,
             'is_main_admin' => false,
+            'full_name' => 'Firstname Lastname',
         ]);
 
         $employee = $tenant->employees->where('type', 'E')->fresh()->first();
@@ -162,18 +163,19 @@ class EmployeeCreationTest extends TestCase
             'status' => 'L',
             'branches' => [$branch->id],
             'is_main_admin' => true,
-        ]);
-
+            ]);
+            
         $response->assertRedirect(route('tenant.admin.employee.list'));
         $response->assertSessionHas(['flash_success']);
         $this->assertDatabaseHas('users', [
-            'first_name' => 'Main',
-            'last_name' => 'Administrator',
-            'email' => 'main-admin@tenant.test',
-            'type' => 'A',
-            'status' => 'L',
-            'password' => null,
-            'is_main_admin' => true,
+                'first_name' => 'Main',
+                'last_name' => 'Administrator',
+                'email' => 'main-admin@tenant.test',
+                'type' => 'A',
+                'status' => 'L',
+                'password' => null,
+                'is_main_admin' => true,
+                'full_name' => 'Main Administrator',
         ]);
     }
 
@@ -206,6 +208,7 @@ class EmployeeCreationTest extends TestCase
             'status' => 'L',
             'password' => null,
             'is_main_admin' => false,
+            'full_name' => 'Firstname Lastname',
         ]);
     }
 

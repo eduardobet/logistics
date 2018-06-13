@@ -70,7 +70,10 @@ class EmployeeCreationTest extends TestCase
         $response->assertSessionHasErrors([
             'first_name',
             'last_name',
+            'pid',
             'email',
+            'telephones',
+            'position',
             'type',
             'status',
             'branches'
@@ -110,10 +113,12 @@ class EmployeeCreationTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $admin->branches()->sync([$branch->id]);
 
         $response = $this->actingAs($admin)->get(route('tenant.admin.employee.create'));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.employee.create');
+        $response->assertViewHas(['positions']);
 
         $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store'), [
             'first_name' => 'Firstname',
@@ -122,24 +127,29 @@ class EmployeeCreationTest extends TestCase
             'type' => 'E',
             'status' => 'L',
             'branches' => [$branch->id],
+            'pid' => 'PID',
+            'telephones' => '555-5555',
+            'position' => 1,
         ]);
 
         $response->assertRedirect(route('tenant.admin.employee.list'));
         $response->assertSessionHas(['flash_success']);
-        $this->assertDatabaseHas('users', [
-            'first_name' => 'Firstname',
-            'last_name' => 'Lastname',
-            'email' => 'employee@tenant.test',
-            'type' => 'E',
-            'status' => 'L',
-            'password' => null,
-            'is_main_admin' => false,
-            'full_name' => 'Firstname Lastname',
-        ]);
-
-        $employee = $tenant->employees->where('type', 'E')->fresh()->first();
-
-        $this->assertCount(1, $employee->branches);
+ 
+        tap($tenant->employees->where('type', 'E')->fresh()->first(), function ($employee) {
+            $this->assertEquals($employee->first_name, 'Firstname');
+            $this->assertEquals($employee->last_name, 'Lastname');
+            $this->assertEquals($employee->email, 'employee@tenant.test');
+            $this->assertEquals($employee->type, 'E');
+            $this->assertEquals($employee->status, 'L');
+            $this->assertNull($employee->password);
+            $this->assertEquals($employee->is_main_admin, false);
+            $this->assertEquals($employee->full_name, 'Firstname Lastname');
+            $this->assertEquals($employee->pid, 'PID');
+            $this->assertEquals($employee->telephones, '555-5555');
+            $this->assertEquals($employee->position, 1);
+            
+            $this->assertCount(1, $employee->branches);
+        });
     }
 
     /** @test */
@@ -150,6 +160,7 @@ class EmployeeCreationTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $admin->branches()->sync([$branch->id]);
 
         $response = $this->actingAs($admin)->get(route('tenant.admin.employee.create'));
         $response->assertStatus(200);
@@ -163,20 +174,19 @@ class EmployeeCreationTest extends TestCase
             'status' => 'L',
             'branches' => [$branch->id],
             'is_main_admin' => true,
-            ]);
+            'pid' => 'PID',
+            'telephones' => '555-5555',
+            'position' => 1,
+        ]);
             
         $response->assertRedirect(route('tenant.admin.employee.list'));
         $response->assertSessionHas(['flash_success']);
-        $this->assertDatabaseHas('users', [
-                'first_name' => 'Main',
-                'last_name' => 'Administrator',
-                'email' => 'main-admin@tenant.test',
-                'type' => 'A',
-                'status' => 'L',
-                'password' => null,
-                'is_main_admin' => true,
-                'full_name' => 'Main Administrator',
-        ]);
+
+        tap($tenant->employees->where('email', 'main-admin@tenant.test')->fresh()->first(), function ($employee) use ($branch) {
+            $this->assertEquals($employee->is_main_admin, true);
+
+            $this->assertTrue($employee->branches->contains($branch));
+        });
     }
 
     /** @test */
@@ -187,6 +197,7 @@ class EmployeeCreationTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $admin->branches()->sync([$branch->id]);
 
         $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store'), [
             'first_name' => 'Firstname',
@@ -195,21 +206,13 @@ class EmployeeCreationTest extends TestCase
             'type' => 'A',
             'status' => 'L',
             'branches' => [$branch->id],
+            'pid' => 'PID',
+            'telephones' => '555-5555',
+            'position' => 1,
         ]);
 
         $response->assertRedirect(route('tenant.admin.employee.list'));
         $response->assertSessionHas(['flash_success']);
-
-        $this->assertDatabaseHas('users', [
-            'first_name' => 'Firstname',
-            'last_name' => 'Lastname',
-            'email' => 'admin@tenant.test',
-            'type' => 'A',
-            'status' => 'L',
-            'password' => null,
-            'is_main_admin' => false,
-            'full_name' => 'Firstname Lastname',
-        ]);
     }
 
     /** @test */
@@ -222,6 +225,7 @@ class EmployeeCreationTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $admin->branches()->sync([$branch->id]);
 
         $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store'), [
             'first_name' => 'Firstname',
@@ -230,6 +234,9 @@ class EmployeeCreationTest extends TestCase
             'type' => 'E',
             'status' => 'L',
             'branches' => [$branch->id],
+            'pid' => 'PID',
+            'telephones' => '555-5555',
+            'position' => 1,
         ]);
 
         $employee = $tenant->employees->where('type', 'E')->fresh()->first();
@@ -250,6 +257,7 @@ class EmployeeCreationTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $admin->branches()->sync([$branch->id]);
 
         $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store'), [
             'first_name' => 'Firstname',
@@ -258,6 +266,9 @@ class EmployeeCreationTest extends TestCase
             'type' => 'E',
             'status' => 'L',
             'branches' => [$branch->id],
+            'pid' => 'PID',
+            'telephones' => '555-5555',
+            'position' => 1,
         ]);
 
         $employee = $tenant->employees->where('type', 'E')->fresh()->first();

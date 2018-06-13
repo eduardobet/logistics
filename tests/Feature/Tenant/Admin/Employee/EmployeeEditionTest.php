@@ -59,7 +59,7 @@ class EmployeeEditionTest extends TestCase
     /** @test */
     public function admin_can_update_the_employee()
     {
-        // $this->withoutExceptionHandling();
+        $this->withoutExceptionHandling();
 
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
@@ -67,10 +67,12 @@ class EmployeeEditionTest extends TestCase
         $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch Name B',]);
         $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, ]);
         $employee->branches()->sync([$branchA->id]);
+        $admin->branches()->sync([$branchA->id]);
 
         $response = $this->actingAs($admin)->get(route('tenant.admin.employee.edit', ['id' => $employee->id]));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.employee.edit');
+        $response->assertViewHas('positions');
 
         $response = $this->actingAs($admin)->post(route('tenant.admin.employee.update'), [
             'id' => $employee->id,
@@ -80,6 +82,9 @@ class EmployeeEditionTest extends TestCase
             'type' => 'A',
             'status' => 'A',
             'branches' => [$branchB->id],
+            'pid' => 'PID',
+            'telephones' => '555-5555',
+            'position' => 1,
             '_method' => 'PATCH',
         ]);
 
@@ -90,6 +95,9 @@ class EmployeeEditionTest extends TestCase
             'status' => 'A',
             'email' => $employee->email,
             'full_name' => 'Employee f name update Employee l name update',
+            'pid' => 'PID',
+            'telephones' => '555-5555',
+            'position' => 1,
         ]);
             
         $response->assertSessionHas(['flash_success']);
@@ -111,10 +119,7 @@ class EmployeeEditionTest extends TestCase
         $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch Name B', ]);
         $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, ]);
         $employee->branches()->sync([$branchA->id]);
-
-        $response = $this->actingAs($admin)->get(route('tenant.admin.employee.edit', ['id' => $employee->id]));
-        $response->assertStatus(200);
-        $response->assertViewIs('tenant.employee.edit');
+        $admin->branches()->sync([$branchA->id]);
 
         $response = $this->actingAs($admin)->post(route('tenant.admin.employee.update'), [
             'id' => $employee->id,
@@ -125,6 +130,9 @@ class EmployeeEditionTest extends TestCase
             'status' => 'A',
             'branches' => [$branchB->id],
             'is_main_admin' => true,
+            'pid' => 'PID',
+            'telephones' => '555-5555',
+            'position' => 1,
             '_method' => 'PATCH',
         ]);
 
@@ -148,6 +156,7 @@ class EmployeeEditionTest extends TestCase
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
         $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, ]);
         $employee->branches()->sync([$branch->id]);
+        $admin->branches()->sync([$branch->id]);
 
         $response = $this->actingAs($admin)->post(route('tenant.admin.employee.update'), [
             'id' => $employee->id,
@@ -157,6 +166,9 @@ class EmployeeEditionTest extends TestCase
             'type' => 'E',
             'status' => 'L',
             'branches' => [$branch->id],
+            'pid' => 'PID',
+            'telephones' => '555-5555',
+            'position' => 1,
             '_method' => 'PATCH',
         ]);
 

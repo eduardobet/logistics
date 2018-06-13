@@ -19,7 +19,12 @@
 
          <div class="section-wrapper">
             {!! Form::model($employee, ['route' => ['tenant.admin.employee.update'], 'method' => 'PATCH']) !!}
-                @include('tenant.employee._fields')
+            {!! Form::hidden('branches[]', $branch->id) !!}
+            {!! Form::hidden('id', $employee->id) !!}
+            
+                @include('tenant.employee._fields',  [
+                    'status' => ['A' => __('Active'), 'I' => __('Inactive'), 'L' => __('Lock'),]
+                ])
             </form>
          </div>
     

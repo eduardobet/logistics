@@ -33,11 +33,14 @@ class EmployeeCreationRequest extends AppFormRequest
             'type' => 'required|string|in:A,E',
             'status' => 'required|string|in:L',
             'branches' => 'required',
+            'pid' => 'required',
+            'position' => 'required',
+            'telephones' => 'required|mass_phone',
         ];
 
         if ($this->isEdit()) {
             $rules['email'] = ['required', 'string', 'email', 'between:6,255', Rule::unique('users')->ignore($this->id)];
-            $rules['status'] = 'required|string|in:A,I,L|user_status:email';
+            $rules['status'] = 'required|string|in:A,I,L|user_status:id';
 
             $this->redirectRoute = 'tenant.admin.employee.edit';
         }

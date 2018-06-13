@@ -19,7 +19,12 @@
 
          <div class="section-wrapper">
             {!! Form::open(['route' => 'tenant.admin.employee.store']) !!}
-                @include('tenant.employee._fields')
+            
+            {!! Form::hidden('branches[]', $branch->id) !!}
+            
+                @include('tenant.employee._fields', [
+                    'status' => ['L' => __('Lock'),]
+                ])
             </form>
          </div>
     

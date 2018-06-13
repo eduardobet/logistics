@@ -31,7 +31,9 @@ class EmployeeController extends Controller
 
     public function create()
     {
-        return view('tenant.employee.create');
+        return view('tenant.employee.create', [
+            'positions' => $this->positions(),
+        ]);
     }
 
     public function store(EmployeeCreationRequest $request)
@@ -46,6 +48,9 @@ class EmployeeController extends Controller
             'is_main_admin' => $request->has('is_main_admin'),
             'full_name' => $request->first_name . ' ' . $request->last_name,
             'status' => 'L',
+            'pid' => $request->pid,
+            'telephones' => $request->telephones,
+            'position' => $request->position,
         ]);
 
         $employee->branches()->sync($request->branches);
@@ -63,6 +68,7 @@ class EmployeeController extends Controller
 
         return view('tenant.employee.edit', [
             'employee' => $employee,
+            'positions' => $this->positions(),
         ]);
     }
 
@@ -79,6 +85,9 @@ class EmployeeController extends Controller
         $employee->status = $request->status;
         $employee->is_main_admin = $request->has('is_main_admin');
         $employee->full_name = $request->first_name . ' ' . $request->last_name;
+        $employee->pid = $request->pid;
+        $employee->position = $request->position;
+        $employee->telephones = $request->telephones;
 
         $updated = $employee->update();
 

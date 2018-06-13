@@ -16,5 +16,8 @@
         "jquery": "^3.2",
         "laravel-mix": "^2.0",
         "popper.js": "^1.12"
+    },
+    "dependencies": {
+        "noty": "^3.2.0-beta"
     }
 }

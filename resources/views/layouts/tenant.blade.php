@@ -14,10 +14,47 @@
     <link href="{{ asset('css/tenant.css') }}" rel="stylesheet">
 </head>
 <body class="dasbhoard-3">
+
+     <div class="noty-container"></div>   
     
         @yield('content')
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/app.js') }}"></script>
+    <script>
+        
+        @if ($success = session()->get('flash_success'))
+        new Noty({
+            type: 'success',
+            layout: 'top',
+            text: '{{ $success }}',
+            container: '.noty-container',
+            killer: true,
+            timeout: 2000,
+        }).show();
+        @endif
+
+        @if ($error = session()->get('flash_error'))
+        new Noty({
+            type: 'error',
+            layout: 'top',
+            text: '{{ $error }}',
+            container: '.noty-container',
+            killer: true,
+            timeout: 2000,
+        }).show();
+        @endif
+
+        @if ($info = session()->get('flash_info'))
+        new Noty({
+            type: 'info',
+            layout: 'top',
+            text: '{{ $info }}',
+            container: '.noty-container',
+            killer: true,
+            timeout: 2000,
+        }).show();
+        @endif
+    </script>
 </body>
 </html>

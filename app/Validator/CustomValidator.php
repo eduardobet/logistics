@@ -89,7 +89,7 @@ class CustomValidator extends \Illuminate\Validation\Validator
      */
     public function validateUserStatus($attribute, $value, $parameters, $message)
     {
-        $user = User::whereEmail(array_get($this->data, $parameters[0]))
+        $user = User::whereId(array_get($this->data, $parameters[0]))
             ->select(['status'])
             ->first();
 

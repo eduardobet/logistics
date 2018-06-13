@@ -6,6 +6,8 @@ use Logistics\DB\Tenant\Tenant as Model;
 
 trait Tenant
 {
+    use Positions;
+
     /**
      * Get the actual tenant based on the url
      * @return Eloquent

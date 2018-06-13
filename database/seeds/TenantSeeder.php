@@ -20,6 +20,14 @@ class TenantSeeder extends Seeder
             ['type' => 'M', 'address' => 'In the middle of remote maritimes', 'telephones' => '555-5555', 'status' => 'A', ],
         ]);
 
-        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $tenant->branches()->createMany([
+            [
+                'name' => 'Los Andes 2',
+                'address' => 'Centro Comercial Los Andes, Local G9-4, Arriba de las oficinas de Claro Pasillo de Cable Onda',
+                'telephones' => '399-5706 / 394-2899  Whatsapp: 6519-4037',
+                'emails' => "prla@tenant.com",
+                'code' => 'PRLA',
+            ]
+        ]);
     }
 }

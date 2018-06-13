@@ -7,6 +7,13 @@ Route::group(['middleware' => ['auth', 'admin'], 'prefix' => 'admin'], function 
     Route::get('dashboard/company/edit', 'Tenant\Admin\CompanyController@edit')->name('tenant.admin.company.edit');
     Route::patch('dashboard/company/update', 'Tenant\Admin\CompanyController@update')->name('tenant.admin.company.update');
 
+    // Positions
+    Route::get('dashboard/positions/list', 'Tenant\Admin\PositionController@index')->name('tenant.admin.position.list');
+    Route::get('dashboard/positions/create', 'Tenant\Admin\PositionController@create')->name('tenant.admin.position.create');
+    Route::post('dashboard/positions/store', 'Tenant\Admin\PositionController@store')->name('tenant.admin.position.store');
+    Route::get('dashboard/position/{id}/edit', 'Tenant\Admin\PositionController@edit')->name('tenant.admin.position.edit');
+    Route::patch('dashboard/position/{id}/update', 'Tenant\Admin\PositionController@update')->name('tenant.admin.position.update');
+
     //Branches
     Route::get('dashboard/branches/list', 'Tenant\Admin\BranchController@index')->name('tenant.admin.branch.list');
     Route::get('dashboard/branches/create', 'Tenant\Admin\BranchController@create')->name('tenant.admin.branch.create');

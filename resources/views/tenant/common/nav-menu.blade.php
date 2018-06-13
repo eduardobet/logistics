@@ -61,7 +61,7 @@
             </div><!-- dropdown-menu -->
           </li>
 
-          <li class="nav-item with-sub {{ active(['tenant.admin.branch.list','tenant.admin.branch.create', 'tenant.admin.branch.edit', 'tenant.admin.employee.list','tenant.admin.employee.create', 'tenant.admin.employee.edit']) }}">
+          <li class="nav-item with-sub {{ active(['tenant.admin.branch.list','tenant.admin.branch.create', 'tenant.admin.branch.edit', 'tenant.admin.employee.list','tenant.admin.employee.create', 'tenant.admin.employee.edit', 'tenant.admin.position.list','tenant.admin.position.create', 'tenant.admin.position.edit']) }}">
             <a class="nav-link" href="#">
               <i class="icon ion-ios-gear-outline"></i>
               <span>{{ __('System') }}</span>
@@ -70,6 +70,7 @@
               <ul>
                 <li><a href="#">{{ __('Configuration') }}</a></li>
                 <li><a href="{{ route('tenant.admin.branch.list') }}">{{ __('Branches') }}</a></li>
+                <li><a href="{{ route('tenant.admin.position.list') }}">{{ __('Positions') }}</a></li>
                 <li><a href="{{ route('tenant.admin.employee.list') }}">{{ __('Users') }}</a></li>
                 <li><a href="#">{{ __('Activity') }}</a></li>
               </ul>

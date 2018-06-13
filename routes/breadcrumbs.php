@@ -21,6 +21,24 @@ Breadcrumbs::for('tenant.admin.branch.edit', function ($trail) {
     $trail->add(__('Editing branch'), '');
 });
 
+//Positions
+Breadcrumbs::for('tenant.admin.position.list', function ($trail) {
+    $trail->parent('tenant.admin.dashboard');
+    $trail->add(__('Positions'), route('tenant.admin.position.list'));
+});
+Breadcrumbs::for('tenant.admin.position.create', function ($trail) {
+    $trail->parent('tenant.admin.dashboard');
+    $trail->add(__('Positions'), route('tenant.admin.position.list'));
+    $trail->add(__('Creating position'), '');
+});
+
+Breadcrumbs::for('tenant.admin.position.edit', function ($trail) {
+    $trail->parent('tenant.admin.dashboard');
+    $trail->add(__('Positions'), route('tenant.admin.position.list'));
+    $trail->add(__('Editing position'), '');
+});
+
+
 // Employees
 Breadcrumbs::for('tenant.admin.employee.list', function ($trail) {
     $trail->parent('tenant.admin.dashboard');

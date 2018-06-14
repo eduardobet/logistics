@@ -16,6 +16,8 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('tenant_id')->unsigned()->nullable();
+            $table->unsignedInteger('created_by_code')->nullable();
+            $table->unsignedInteger('updated_by_code')->nullable();
             $table->string('first_name');
             $table->string('last_name');
             $table->string('type', 1); // A[dmin], E[mployee], U[App user]
@@ -29,6 +31,9 @@ class CreateUsersTable extends Migration
             $table->string('telephones')->nullable();
             $table->integer('position')->unsigned()->nullable();
             $table->boolean('is_main_admin')->default(false)->nullable();
+            $table->string('address')->nullable();
+            $table->text('notes')->nullable();
+            $table->text('permissions')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

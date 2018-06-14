@@ -40,6 +40,11 @@ class Tenant extends Model
         return $this->hasMany(\Logistics\DB\Tenant\Position::class);
     }
 
+    public function permissions()
+    {
+        return $this->hasMany(\Logistics\DB\Tenant\Permission::class);
+    }
+
     // to be implemented
     public function hasActiveSubscription()
     {

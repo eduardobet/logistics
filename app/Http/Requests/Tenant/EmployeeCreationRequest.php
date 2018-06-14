@@ -36,6 +36,7 @@ class EmployeeCreationRequest extends AppFormRequest
             'pid' => 'required',
             'position' => 'required',
             'telephones' => 'required|mass_phone',
+            'permissions' => 'sometimes|array',
         ];
 
         if ($this->isEdit()) {

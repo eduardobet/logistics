@@ -101,6 +101,23 @@
     </div> <!-- tab informations -->
 
     <div class="tab-pane" id="permissions">
+
+        <div class="mg-t-25"></div>
+
+                @foreach ($permissions->groupBy('header') as $group => $permissions)
+                    <b>{{ $group }}</b>
+
+                    <div class="row">
+                        @foreach ($permissions as $permission)
+                            <div class="col-lg-12">{{ $permission->name }}</div>
+                        @endforeach
+                    </div>
+                @endforeach
+
+        
+        
+        
+        
     </div> <!-- tab permissions -->
 
     

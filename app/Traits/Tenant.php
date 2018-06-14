@@ -6,7 +6,7 @@ use Logistics\DB\Tenant\Tenant as Model;
 
 trait Tenant
 {
-    use Positions;
+    use Positions, Permissions;
 
     /**
      * Get the actual tenant based on the url

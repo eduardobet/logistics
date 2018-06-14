@@ -5,6 +5,7 @@ namespace Tests\Feature\Tenant\Admin\Employee;
 use Tests\TestCase;
 use Logistics\DB\User;
 use Logistics\DB\Tenant\Branch;
+use Logistics\DB\Tenant\Permission;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -63,7 +64,9 @@ class EmployeeCreationTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store'), []);
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store'), [
+            'permissions' => 'XXX'
+        ]);
         $response->assertStatus(302);
         $response->assertRedirect(route('tenant.admin.employee.create'));
 
@@ -76,7 +79,8 @@ class EmployeeCreationTest extends TestCase
             'position',
             'type',
             'status',
-            'branches'
+            'branches',
+            'permissions',
         ]);
     }
 
@@ -111,14 +115,16 @@ class EmployeeCreationTest extends TestCase
         $this->withoutExceptionHandling();
 
         $tenant = factory(TenantModel::class)->create();
+        $permission = factory(Permission::class)->create(['tenant_id' => $tenant->id, ]);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
         $admin->branches()->sync([$branch->id]);
-
+        
         $response = $this->actingAs($admin)->get(route('tenant.admin.employee.create'));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.employee.create');
         $response->assertViewHas(['positions']);
+        $response->assertViewHas(['permissions']);
 
         $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store'), [
             'first_name' => 'Firstname',
@@ -130,12 +136,16 @@ class EmployeeCreationTest extends TestCase
             'pid' => 'PID',
             'telephones' => '555-5555',
             'position' => 1,
+            'address' => 'In the middle of nowhere',
+            'notes' => 'Some notes about the employee',
+            'permissions' => [ $permission->slug ],
+            
         ]);
 
         $response->assertRedirect(route('tenant.admin.employee.list'));
         $response->assertSessionHas(['flash_success']);
  
-        tap($tenant->employees->where('type', 'E')->fresh()->first(), function ($employee) {
+        tap($tenant->employees->where('type', 'E')->fresh()->first(), function ($employee) use ($admin, $permission) {
             $this->assertEquals($employee->first_name, 'Firstname');
             $this->assertEquals($employee->last_name, 'Lastname');
             $this->assertEquals($employee->email, 'employee@tenant.test');
@@ -147,6 +157,12 @@ class EmployeeCreationTest extends TestCase
             $this->assertEquals($employee->pid, 'PID');
             $this->assertEquals($employee->telephones, '555-5555');
             $this->assertEquals($employee->position, 1);
+            $this->assertEquals($employee->address, 'In the middle of nowhere');
+            $this->assertEquals($employee->notes, 'Some notes about the employee');
+            $this->assertNull($employee->updated_by_code);
+            $this->assertEquals($employee->created_by_code, $admin->id);
+
+            $this->assertEquals($employee->permissions, [$permission->slug]);
             
             $this->assertCount(1, $employee->branches);
         });

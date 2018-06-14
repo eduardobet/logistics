@@ -1,0 +1,51 @@
+<?php
+
+use Illuminate\Database\Seeder;
+use Logistics\DB\Tenant\Tenant;
+
+class PermissionTableSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        $tenant = Tenant::whereDomain('https://middleton-services.test')->first();
+
+        $tenant->permissions()->createMany([
+            // warehouse
+            ["name" => "Registrar Warehouse", "slug" => "create-warehouse", "header" => "Warehouse",],
+            ["name" => "Editar Warehouse", "slug" => "edit-warehouse", "header" => "Warehouse",],
+            ["name" => "Ver Warehouse", "slug" => "show-warehouse", "header" => "Warehouse",],
+
+            // Package
+            ["name" => "Registrar Paquetes", "slug" => "create-package", "header" => "Paquetes",],
+            ["name" => "Editar Paquetes", "slug" => "edit-package", "header" => "Paquetes",],
+            ["name" => "Ver Paquetes", "slug" => "show-package", "header" => "Paquetes",],
+
+            // Client
+            ["name" => "Registrar Clientes", "slug" => "create-client", "header" => "Clientes",],
+            ["name" => "Editar Clientes", "slug" => "edit-client", "header" => "Clientes",],
+            ["name" => "Ver Clientes", "slug" => "show-client", "header" => "Clientes",],
+
+            // invoice
+            ["name" => "Registrar Facturas", "slug" => "create-invoice", "header" => "Facturas",],
+            ["name" => "Editar Facturas", "slug" => "edit-invoice", "header" => "Facturas",],
+            ["name" => "Ver Facturas", "slug" => "show-invoice", "header" => "Facturas",],
+
+            // Petty cach
+            ["name" => "Registrar Caja chica", "slug" => "create-petty-cash", "header" => "Caja chica",],
+            ["name" => "Editar Caja chica", "slug" => "edit-petty-cash", "header" => "Caja chica",],
+            ["name" => "Ver Caja chica", "slug" => "show-petty-cash", "header" => "Caja chica",],
+
+            // Accountant
+            ["name" => "Ver movimientos monetarios", "slug" => "show-money-movments", "header" => "Movimientos monetarios",],
+            ["name" => "Ver historial de compras", "slug" => "show-purchases-history", "header" => "Movimientos monetarios",],
+            ["name" => "Ver historial de cobros", "slug" => "show-charges-history", "header" => "Movimientos monetarios",],
+            ["name" => "Ver historial de gastos", "slug" => "show-expenses-history", "header" => "Movimientos monetarios",],
+            ["name" => "Ver estatus de cuentas pendientes", "slug" => "show-pending-accounts", "header" => "Movimientos monetarios",],
+        ]);
+    }
+}

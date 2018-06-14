@@ -33,6 +33,7 @@ class EmployeeController extends Controller
     {
         return view('tenant.employee.create', [
             'positions' => $this->positions(),
+            'permissions' => $this->permissions(),
         ]);
     }
 
@@ -51,14 +52,27 @@ class EmployeeController extends Controller
             'pid' => $request->pid,
             'telephones' => $request->telephones,
             'position' => $request->position,
+            'address' => $request->address,
+            'notes' => $request->notes,
+            'created_by_code' => auth()->id(),
+            'permissions' => $request->permissions && is_array($request->permissions) ? $request->permissions : [],
         ]);
 
-        $employee->branches()->sync($request->branches);
+        if ($employee) {
+            $employee->branches()->sync($request->branches);
 
-        event(new EmployeeWasCreatedEvent($tenant, $employee));
+            event(new EmployeeWasCreatedEvent($tenant, $employee));
 
-        return redirect()->route('tenant.admin.employee.list')
-            ->with('flash_success', __('The employee has been created.'));
+            return redirect()->route('tenant.admin.employee.list')
+                ->with('flash_success', __('The employee has been created.'));
+        }
+
+        return redirect()->route('tenant.admin.employee.create')
+            ->withInput()
+            ->with('flash_error', __('Error while trying to :action :what', [
+                'action' => __('Save'),
+                'what' => __('The employee'),
+            ]));
     }
 
     public function edit($id)
@@ -69,6 +83,7 @@ class EmployeeController extends Controller
         return view('tenant.employee.edit', [
             'employee' => $employee,
             'positions' => $this->positions(),
+            'permissions' => $this->permissions(),
         ]);
     }
 
@@ -88,6 +103,10 @@ class EmployeeController extends Controller
         $employee->pid = $request->pid;
         $employee->position = $request->position;
         $employee->telephones = $request->telephones;
+        $employee->notes = $request->notes;
+        $employee->address = $request->address;
+        $employee->updated_by_code = auth()->id();
+        $employee->permissions = $request->permissions && is_array($request->permissions) ? $request->permissions : [];
 
         $updated = $employee->update();
 
@@ -97,5 +116,12 @@ class EmployeeController extends Controller
             return redirect()->route('tenant.admin.employee.list')
                 ->with('flash_success', __('The employee has been updated.'));
         }
+
+        return redirect()->route('tenant.admin.employee.edit', $request->id)
+            ->withInput()
+            ->with('flash_error', __('Error while trying to :action :what', [
+                'action' => __('Update'),
+                'what' => __('The employee'),
+            ]));
     }
 }

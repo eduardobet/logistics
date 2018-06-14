@@ -17,7 +17,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'first_name', 'last_name', 'email', 'password', 'tenant_id', 'is_main_admin', 'status', 'type', 'avatar',
-        'full_name', 'pid', 'telephones', 'position',
+        'full_name', 'pid', 'telephones', 'position', 'notes', 'address', 'created_by_code', 'updated_by_code',
+        'permissions',
     ];
 
     /**
@@ -48,6 +49,29 @@ class User extends Authenticatable
         });
         
         parent::boot();
+    }
+
+    /**
+     * Format user permissions.
+     *
+     * @param array $permissions
+     */
+    public function setPermissionsAttribute($permissions)
+    {
+        $data = is_null($permissions) || $permissions == '[]' ? [] : $permissions;
+
+        $this->attributes['permissions'] = json_encode($data);
+    }
+
+    /**
+     * [getSettingsAttribute description]
+     *
+     * @param  string $value
+     * @return Array
+     */
+    public function getPermissionsAttribute($value)
+    {
+        return $value && $value != 'null' ? json_decode($value, true) : [];
     }
 
     public function branches()

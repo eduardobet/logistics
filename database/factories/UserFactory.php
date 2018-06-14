@@ -23,6 +23,7 @@ $factory->define(Logistics\DB\User::class, function (Faker $faker) {
         'tenant_id' => null,
         'status' => 'A',
         'avatar' => null,
+        'permissions' => [],
     ];
 });
 

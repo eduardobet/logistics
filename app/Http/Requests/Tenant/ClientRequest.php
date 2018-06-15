@@ -37,6 +37,10 @@ class ClientRequest extends AppFormRequest
             'status' => 'required|string|in:A,I',
             'branch_id' => 'required',
             'branch_code' => 'required',
+            'country_id' => 'sometimes|integer',
+            'department_id' => 'sometimes|integer',
+            'city_id' => 'sometimes|integer',
+            'address' => 'sometimes|between:5,255',
         ];
 
         if ($this->isEdit()) {

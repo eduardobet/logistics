@@ -30,6 +30,7 @@ class CreateClientsTable extends Migration
             $table->unsignedInteger('country_id')->nullable();
             $table->unsignedInteger('department_id')->nullable();
             $table->unsignedInteger('city_id')->nullable();
+            $table->text('address')->nullable();
             $table->text('notes')->nullable();
             $table->boolean('pay_volume')->nullable()->default(false);
             $table->boolean('special_rate')->nullable()->default(false);

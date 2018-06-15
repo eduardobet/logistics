@@ -14,4 +14,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('client/store', 'Tenant\ClientController@store')->name('tenant.client.store');
     Route::get('client/{id}/edit', 'Tenant\ClientController@edit')->name('tenant.client.edit');
     Route::patch('client/{id}/update', 'Tenant\ClientController@update')->name('tenant.client.update');
+    Route::get('client/extra-contacts-tmpl', 'Tenant\ClientController@econtactTmpl')->name('tenant.client.contact-tmpl');
 });

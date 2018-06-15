@@ -4,10 +4,12 @@ namespace Logistics\Http\Controllers\Tenant;
 
 use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
+use Logistics\DB\Tenant\Zone;
+use Logistics\DB\Tenant\Country;
+use Logistics\DB\Tenant\Department;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Http\Requests\Tenant\ClientRequest;
 use Logistics\Events\Tenant\ClientWasCreatedEvent;
-use Logistics\DB\Tenant\Country;
 
 class ClientController extends Controller
 {
@@ -66,6 +68,7 @@ class ClientController extends Controller
             'country_id' => $request->country_id,
             'department_id' => $request->department_id,
             'city_id' => $request->city_id,
+            'address' => $request->address,
             'notes' => $request->notes,
             'pay_volume' => $request->has('pay_volume'),
             'special_rate' => $request->has('special_rate'),
@@ -112,6 +115,9 @@ class ClientController extends Controller
 
         return view('tenant.client.edit', [
             'client' => $client,
+            'countries' => (new Country())->getCountryAsList($this->getTenantId()),
+            'departments' => (new Department())->getDepartmentAsList($client->country_id),
+            'zones' => (new Zone())->getZoneAsList($client->department_id),
         ]);
     }
 
@@ -142,6 +148,7 @@ class ClientController extends Controller
         $client->country_id         = $request->country_id;
         $client->department_id  = $request->department_id;
         $client->city_id  = $request->city_id;
+        $client->address  = $request->address;
         $client->notes  = $request->notes;
         $client->pay_volume  = $request->has('pay_volume');
         $client->special_rate  = $request->has('special_rate');
@@ -179,5 +186,12 @@ class ClientController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function econtactTmpl()
+    {
+        return response()->json([
+            'view' => view('tenant.client.extra-contacts')->render(),
+        ]);
     }
 }

@@ -34,7 +34,12 @@ class ClientCreationTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.client.store'), []);
+        $response = $this->actingAs($admin)->post(route('tenant.client.store'), [
+            'country_id' => 'xxx',
+            'department_id' => 'xxx',
+            'city_id' => 'xxx',
+            'address' => 'AA',
+        ]);
         $response->assertStatus(302);
         $response->assertRedirect(route('tenant.client.create'));
 
@@ -48,6 +53,10 @@ class ClientCreationTest extends TestCase
             'status',
             'branch_id',
             'branch_code',
+            'country_id',
+            'department_id',
+            'city_id',
+            'address',
         ]);
     }
 
@@ -83,6 +92,7 @@ class ClientCreationTest extends TestCase
             'country_id' => 1,
             'department_id' => 1,
             'city_id' => 1,
+            'address' => 'In the middle of nowhere',
             'notes' => 'Aditional notes',
             'pay_volume' => 'N',
             'special_rate' => 'N',
@@ -105,6 +115,7 @@ class ClientCreationTest extends TestCase
             'country_id' => 1,
             'department_id' => 1,
             'city_id' => 1,
+            'address' => 'In the middle of nowhere',
             'notes' => 'Aditional notes',
             'pay_volume' => '1',
             'special_rate' => '1',

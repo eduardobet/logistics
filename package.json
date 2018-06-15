@@ -15,7 +15,8 @@
         "font-awesome": "^4.7.0",
         "jquery": "^3.2",
         "laravel-mix": "^2.0",
-        "popper.js": "^1.12"
+        "popper.js": "^1.12",
+        "select2": "^4.0.6-rc.1"
     },
     "dependencies": {
         "noty": "^3.2.0-beta"

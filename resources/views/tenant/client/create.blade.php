@@ -112,26 +112,32 @@
                     <div class="col-lg-3">
                         <div class="form-group mg-b-10-force">
                             <label class="form-control-label">{{ __('Country') }}:</label>
-                                <select name="country_id" class="form-control select2 select2-hidden-accessible" data-placeholder="{{ __('Search') }}" tabindex="-1" aria-hidden="true">
+                                <select name="country_id" class="form-control select2ize" data-placeholder="{{ __('Search') }}" tabindex="-1" aria-hidden="true" data-apiurl="{{ route('tenant.api.department', ':parentId:') }}" data-child="#department_id">
+                                    <option value="0" label="---"></option>
+                                    @foreach ($countries as $key => $country)
+                                        <option value="{{ $key }}">{{ $country }}</option>
+                                    @endforeach
+                                </select>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3">
+                        <div class="form-group mg-b-10-force">
+                            <label class="form-control-label">{{ __('Department') }}: 
+                            <strong id="loader-department_id"></strong>    
+                            </label>
+                                <select id="department_id" name="department_id" class="form-control select2 select2ize" data-placeholder="{{ __('Search') }}" data-apiurl="{{ route('tenant.api.zone', ':parentId:') }}" data-child="#city_id">
                                 <option value="0" label="---"></option>
-                                <option value="1">Panam&aacute;</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="col-lg-3">
                         <div class="form-group mg-b-10-force">
-                            <label class="form-control-label">{{ __('Department') }}:</label>
-                                <select name="department_id" class="form-control select2 select2-hidden-accessible" data-placeholder="{{ __('Search') }}" tabindex="-1" aria-hidden="true">
-                                <option value="0" label="---"></option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3">
-                        <div class="form-group mg-b-10-force">
-                            <label class="form-control-label">{{ __('City') }}:</label>
-                                <select name="city_id" class="form-control select2 select2-hidden-accessible" data-placeholder="{{ __('Search') }}" tabindex="-1" aria-hidden="true">
+                            <label class="form-control-label">{{ __('City') }}:
+                                <strong id="loader-department_id"></strong> 
+                            </label>
+                            <select id="city_id" name="city_id" class="form-control select2" data-placeholder="{{ __('Search') }}">
                                 <option value="0" label="---"></option>
                             </select>
                         </div>
@@ -223,4 +229,49 @@
 
 @include('tenant.common._footer')
 
+@endsection
+
+@section('xtra_scripts')
+    <script>
+        var cache = {};
+        $(function() {
+            $(".select2ize").change(function() {
+                var $self = $(this);
+                var value = $self.val();
+                var apiurl = $self.data('apiurl');
+                var $child = $($self.data('child'));
+                var childId = $child.attr('id');
+                var $loader = $("#loader-"+childId);
+                if (value && value != "0") {
+                    $loader.html('<i class="fa fa-spinner fa-spin"></i>');
+                    $child.prop("disabled", true).select2();
+                    apiurl = apiurl.replace(":parentId:", value)
+
+                    if ( items = cache[childId + '.' + value ] ) {
+                        select2ize($child, items);
+                        return;
+                    }
+
+
+                    $.getJSON(apiurl, function(items) {
+                        $loader.empty();
+                        select2ize($child, items);
+                        cache[childId + '.' + value] = items;
+                    });
+                } else {
+                    select2ize($child, []);
+                }
+            });
+        });
+
+        function select2ize($child, items) {
+            var newOptions = '<option value="0">---</option>';
+            for(var key in items) {
+                newOptions += '<option value="'+ key +'">'+ items[key] +'</option>';
+            }
+            
+            $child.select2('destroy').html(newOptions).prop("disabled", false)
+            .select2({});
+        }
+    </script>
 @endsection

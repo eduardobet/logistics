@@ -13,7 +13,7 @@ class PositionTableSeeder extends Seeder
      */
     public function run()
     {
-        $tenant = Tenant::whereDomain('https://middleton-services.test')->first();
+        $tenant = Tenant::whereId(1)->first();
 
         $tenant->positions()->createMany([
             [ "name" => "Super Administrador", "status" => "A", ],

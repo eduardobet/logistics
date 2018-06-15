@@ -7,6 +7,7 @@ use Logistics\Traits\Tenant;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Http\Requests\Tenant\ClientRequest;
 use Logistics\Events\Tenant\ClientWasCreatedEvent;
+use Logistics\DB\Tenant\Country;
 
 class ClientController extends Controller
 {
@@ -35,7 +36,9 @@ class ClientController extends Controller
      */
     public function create()
     {
-        return view('tenant.client.create');
+        return view('tenant.client.create', [
+            'countries' => (new Country())->getCountryAsList($this->getTenantId()),
+        ]);
     }
 
     /**

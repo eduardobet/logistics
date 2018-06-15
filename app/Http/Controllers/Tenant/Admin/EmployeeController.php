@@ -2,6 +2,7 @@
 
 namespace Logistics\Http\Controllers\Tenant\Admin;
 
+use Logistics\DB\User;
 use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
 use Logistics\Http\Controllers\Controller;
@@ -34,6 +35,7 @@ class EmployeeController extends Controller
         return view('tenant.employee.create', [
             'positions' => $this->positions(),
             'permissions' => $this->permissions(),
+            'employee' => new User(),
         ]);
     }
 

@@ -13,7 +13,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $tenant = Tenant::whereDomain('https://middleton-services.test')->first();
+        $tenant = Tenant::whereId(1)->first();
         $branch = $tenant->branches->first();
 
         $admin1 = factory(User::class)->states('admin')->create([

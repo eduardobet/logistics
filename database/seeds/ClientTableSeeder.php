@@ -13,7 +13,7 @@ class ClientTableSeeder extends Seeder
      */
     public function run()
     {
-        $tenant = Tenant::whereDomain('https://middleton-services.test')->first();
+        $tenant = Tenant::whereId(1)->first();
 
         $client = factory(Client::class)->create(['tenant_id' => $tenant->id, ]);
         $branch = $tenant->branches->first();

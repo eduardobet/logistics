@@ -56,5 +56,6 @@
         }).show();
         @endif
     </script>
+    @yield('xtra_scripts')
 </body>
 </html>

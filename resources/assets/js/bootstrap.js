@@ -6,4 +6,5 @@ try {
     window.Noty = require('noty');
 
     require('bootstrap');
+    require('select2');
 } catch (e) {}

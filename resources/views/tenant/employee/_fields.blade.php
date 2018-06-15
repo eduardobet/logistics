@@ -102,17 +102,26 @@
 
     <div class="tab-pane" id="permissions">
 
-        <div class="mg-t-25"></div>
+        <div class="mg-t-25">
+        </div>
 
-                @foreach ($permissions->groupBy('header') as $group => $permissions)
-                    <b>{{ $group }}</b>
+        @foreach ($permissions->groupBy('header') as $group => $permissions)
+            <label class="section-title">{{ $group }}</label>
 
-                    <div class="row">
-                        @foreach ($permissions as $permission)
-                            <div class="col-lg-12">{{ $permission->name }}</div>
-                        @endforeach
-                    </div>
+            <ul class="list-group">
+                @foreach ($permissions as $permission)
+                    <li class="list-group-item">
+                        
+                        <label class="ckbox">
+                            <input type="checkbox" name="permissions[]" value="{{ $permission->slug }}"
+                            {{ in_array($permission->slug, $employee->permissions) ? ' checked' : '' }}
+                            >
+                            <span>{{ $permission->name }}</span>
+                        </label>
+                    </li>
                 @endforeach
+            </ul>
+        @endforeach
 
         
         

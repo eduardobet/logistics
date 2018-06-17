@@ -128,6 +128,109 @@ class ClientEditionTest extends TestCase
     }
 
     /** @test */
+    public function client_extra_contacts_can_be_updated()
+    {
+        $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, ]);
+
+        $admin->branches()->sync([$branch->id]);
+
+        $this->actingAs($admin);
+
+        $extraContact = $client->extraContacts()->create([
+            'full_name' => 'Extra Contact',
+            'pid' => '1253-587',
+            'email' => 'extra-contact@email.test',
+            'telephones' => '555-5555',
+            'tenant_id' => $tenant->id,
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('tenant.client.edit', $client->id));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.client.edit');
+        $response->assertViewHas(['client']);
+
+        $response = $this->patch(route('tenant.client.update', $client->id), [
+            'first_name' => 'The updated',
+            'last_name' => 'Client updated',
+            'pid' => 'E-8-124925',
+            'telephones' => '555-5555',
+            'email' => 'client@company.com',
+            'type' => 'C',
+            'status' => 'I',
+            'branch_id' => 1,
+            'branch_code' => 'B-CODE',
+
+            // xtra contacts
+            'econtacts' => [
+                ['efull_name' => 'Extra Contact update', 'epid' => '1253-587', 'eemail' => 'extra-contact@email.test', 'etelephones' => '555-5556', 'eid' => $extraContact->id, ],
+                ['efull_name' => 'New Extra contact', 'epid' => '145', 'eemail' => 'new-extra-contact@email.test', 'etelephones' => '555-5557', 'eid' => null, ]
+            ],
+
+        ]);
+
+        $response->assertRedirect(route('tenant.client.list'));
+        $response->assertSessionHas(['flash_success']);
+         
+        tap($client->extraContacts()->where('email', 'extra-contact@email.test')->first(), function ($econtact) use ($admin) {
+            $this->assertEquals($admin->id, $econtact->created_by_code);
+            $this->assertEquals($admin->id, $econtact->updated_by_code);
+        });
+
+        tap($client->fresh()->extraContacts()->where('email', 'new-extra-contact@email.test')->first(), function ($econtact) use ($admin) {
+            $this->assertNull($econtact->updated_by_code);
+            $this->assertEquals($admin->id, $econtact->created_by_code);
+            $this->assertEquals('New Extra contact', $econtact->full_name);
+            $this->assertEquals('145', $econtact->pid);
+            $this->assertEquals('555-5557', $econtact->telephones);
+        });
+    }
+
+    /** @test */
+    public function client_extra_contacts_can_be_deleted()
+    {
+        $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, ]);
+
+        $admin->branches()->sync([$branch->id]);
+
+        $this->actingAs($admin);
+
+        $extraContact = $client->extraContacts()->create([
+            'full_name' => 'Extra Contact',
+            'pid' => '1253-587',
+            'email' => 'extra-contact@email.test',
+            'telephones' => '555-5555',
+            'tenant_id' => $tenant->id,
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('tenant.client.edit', $client->id));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.client.edit');
+        $response->assertViewHas(['client']);
+
+        $response = $this->delete(route('tenant.client.extra-contact.destroy'), [
+            'id' => $extraContact->id,
+            'client_id' => $client->id,
+        ], $this->headers());
+
+        $response->assertStatus(200);
+        $this->assertCount(0, $client->fresh()->extraContacts);
+        $response->assertJson([
+            'error' => false,
+            'msg' => __("Deleted successfully"),
+        ]);
+    }
+
+    /** @test */
     public function event_is_fired_is_the_email_has_changed()
     {
         $this->withoutExceptionHandling();

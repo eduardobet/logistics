@@ -80,6 +80,8 @@ class ClientController extends Controller
 
             event(new ClientWasCreatedEvent($tenant, $client));
 
+            $client->saveExtraContacts($request, $tenant->id);
+
             return redirect()->route('tenant.client.list')
                 ->with('flash_success', __('The client has been created.'));
         }
@@ -165,6 +167,8 @@ class ClientController extends Controller
                 event(new ClientWasCreatedEvent($tenant, $client));
             }
 
+            $client->saveExtraContacts($request, $tenant->id);
+
             return redirect()->route('tenant.client.list')
                 ->with('flash_success', __('The client has been updated.'));
         }
@@ -193,5 +197,39 @@ class ClientController extends Controller
         return response()->json([
             'view' => view('tenant.client.extra-contacts')->render(),
         ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteExtraContact(Request $request)
+    {
+        $tenant = $this->getTenant();
+        $client =$tenant->clients()->find($request->client_id);
+
+        if (!$client) {
+            return response()->json(['error' => true, 'msg' => __('Not Found.1'), ], 404);
+        }
+
+        $econtact = $client->extraContacts()->find($request->id);
+
+        if (!$econtact) {
+            return response()->json(['error' => true, 'msg' => __('Not Found.2'), ], 404);
+        }
+
+        $deleted = $econtact->delete();
+
+        if ($deleted) {
+            return response()->json(['error' => false, 'msg' => __('Deleted successfully'), ]);
+        }
+
+        return response()->json(['error' => false, 'msg' =>
+            __('Error while trying to :action :what', [
+                'action' => __('Delete'),
+                'what' => __('The extra contact'),
+            ])
+        , ]);
     }
 }

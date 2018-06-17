@@ -20,4 +20,16 @@ abstract class TestCase extends BaseTestCase
 
         return $mailable->render();
     }
+
+    /**
+     * Set the correct headers for ajax request
+     *
+     * @return array
+     */
+    protected function headers()
+    {
+        $headers = ['X-Requested-With' => 'XMLHttpRequest', 'Accept' => 'application/json'];
+
+        return $headers;
+    }
 }

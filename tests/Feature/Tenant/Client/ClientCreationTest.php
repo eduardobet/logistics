@@ -135,6 +135,52 @@ class ClientCreationTest extends TestCase
     }
 
     /** @test */
+    public function client_extra_contacts_can_be_created()
+    {
+        //$this->withoutExceptionHandling();
+        Event::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+
+        $this->actingAs($admin);
+
+        $response = $this->post(route('tenant.client.store'), [
+            'first_name' => 'The',
+            'last_name' => 'Client',
+            'pid' => 'E-8-124925',
+            'telephones' => '555-5555',
+            'email' => 'client.xx@company.com',
+            'type' => 'C',
+            'status' => 'I',
+            'branch_id' => 1,
+            'branch_code' => 'B-CODE',
+
+            // xtra contacts
+            'econtacts' => [
+                ['efull_name' => 'Extra contact', 'epid' => '145', 'eemail' => 'extra-contact@email.test', 'etelephones' => '555-5557', 'eid' => null, ]
+            ],
+
+        ]);
+
+        $response->assertRedirect(route('tenant.client.list'));
+        $response->assertSessionHas(['flash_success']);
+
+        $client = $tenant->clients->first();
+
+        $this->assertCount(1, $client->extraContacts);
+         
+        tap($client->extraContacts->first(), function ($econtact) use ($admin) {
+            $this->assertNull($econtact->updated_by_code);
+            $this->assertEquals('Extra contact', $econtact->full_name);
+            $this->assertEquals('145', $econtact->pid);
+            $this->assertEquals('555-5557', $econtact->telephones);
+        });
+    }
+
+    /** @test */
     public function the_client_cannot_have_more_than_one_active_box_at_a_time()
     {
         $this->withoutExceptionHandling();

@@ -15,14 +15,15 @@
             var childId = $child.attr('id');
             var $loader = $("#loader-"+childId);
             if (value && value != "0") {
-                $loader.html('<i class="fa fa-spinner fa-spin"></i>');
-                $child.prop("disabled", true).select2();
-                apiurl = apiurl.replace(":parentId:", value)
-
+                
                 if ( items = cache[childId + '.' + value ] ) {
                     select2ize($child, items);
                     return;
                 }
+
+                $loader.html('<i class="fa fa-spinner fa-spin"></i>');
+                $child.prop("disabled", true).select2();
+                apiurl = apiurl.replace(":parentId:", value)
 
                 $.getJSON(apiurl, function(items) {
                     $loader.empty();

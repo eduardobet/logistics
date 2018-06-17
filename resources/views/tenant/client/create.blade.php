@@ -26,6 +26,7 @@
                 @include('tenant.client._fields', [
                     'departments' => [],
                     'zones' => [],
+                    'client' => new Logistics\DB\Tenant\Client,
                 ])
             </form>
         </div>
@@ -39,4 +40,5 @@
 
 @section('xtra_scripts')
     @include('common._select2ize')
+    @include('common._add_more')
 @endsection

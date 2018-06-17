@@ -2,6 +2,7 @@
 
 namespace Logistics\DB\Tenant;
 
+use Illuminate\Support\Fluent;
 use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
@@ -19,6 +20,34 @@ class Client extends Model
     public function boxes()
     {
         return $this->hasMany(\Logistics\DB\Tenant\Box::class);
+    }
+
+    public function extraContacts()
+    {
+        return $this->hasMany(\Logistics\DB\Tenant\ExtraContact::class);
+    }
+
+    public function saveExtraContacts($request, $tenantId)
+    {
+        if ($request->econtacts && is_array($request->econtacts)) {
+            foreach ($request->econtacts as $key => $econtact) {
+                $econtact = new Fluent($econtact);
+                
+                if (trim($econtact->efull_name)) {
+                    $this->extraContacts()->updateOrCreate([
+                        'tenant_id' => $tenantId,
+                        'client_id' => $this->id,
+                        'id' => $econtact->eid
+                    ], [
+                        'full_name' => $econtact->efull_name,
+                        'pid' => $econtact->epid,
+                        'email' => $econtact->eemail,
+                        'telephones' => $econtact->etelephones,
+                        'tenant_id' => $tenantId,
+                    ]);
+                }
+            }
+        }
     }
 
     public function getFullNameAttribute()

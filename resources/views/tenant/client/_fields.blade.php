@@ -162,7 +162,12 @@
             </button>
         </div>
 
-        <div id="details-container"></div>
+        <div id="details-container">
+            <div class="mg-t-25"></div>
+            @foreach ($client->extraContacts as $key => $econtact)
+                @include('tenant.client.extra-contacts', ['econtact' => $econtact])
+            @endforeach
+        </div>
 
     </div><!-- tab extra-contacts -->
 

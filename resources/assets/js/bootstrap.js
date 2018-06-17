@@ -7,4 +7,5 @@ try {
 
     require('bootstrap');
     require('select2');
+    require('bootstrap-sweetalert');
 } catch (e) {}

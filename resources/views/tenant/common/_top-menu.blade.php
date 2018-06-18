@@ -51,7 +51,7 @@
                     <nav class="nav">
                         <a href="{{ route('tenant.employee.profile.edit') }}" class="nav-link"><i class="icon fa fa-user"></i> {{ __('Profile') }} </a>
                         <a href="#" class="nav-link"><i class="icon fa fa-bolt"></i> {{ __('Actitity') }} </a>
-                        <a href="#" class="nav-link"><i class="icon fa fa-power-off"></i> {{ __('Logout') }} </a>
+                        <a href="#" onclick="document.getElementById('form-logout').submit()" class="nav-link"><i class="icon fa fa-power-off"></i> {{ __('Logout') }} </a>
                     </nav>
                 </div><!-- dropdown-menu -->
             </div><!-- dropdown -->
@@ -59,3 +59,4 @@
         </div><!-- header-right -->
       </div><!-- container -->
 </div>
+<form id="form-logout" action="{{ route('tenant.auth.post.logout') }}" method="post" style="display: none">{!! csrf_field()  !!}</form>

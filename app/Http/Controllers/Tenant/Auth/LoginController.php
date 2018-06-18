@@ -109,14 +109,12 @@ class LoginController extends Controller
             if ($type == 'A') {
                 $prefix = 'admin';
             }
-            /*$url = localization()->getLocalizedURL(
-                auth()->user()->lang ?: localization()->getCurrentLocale(),
-                redirect()->intended(route("{$prefix}.dashboard", $request->client))->getTargetUrl()
+            $url = localization()->getLocalizedURL(
+                $tenant->lang ?: localization()->getCurrentLocale(),
+                redirect()->intended(route("tenant.{$prefix}.dashboard"))->getTargetUrl()
             );
 
             return redirect($url);
-            */
-            return redirect()->route("tenant.{$prefix}.dashboard");
         } else {
             if ($request->user()->is_main_admin) {
                 // return redirect()->route('client.registration.edit', $request->client);

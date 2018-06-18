@@ -7,5 +7,6 @@ try {
 
     require('bootstrap');
     require('select2');
-    require('bootstrap-sweetalert');
+    //require('bootstrap-sweetalert');
+    window.swal = require('sweetalert2');
 } catch (e) {}

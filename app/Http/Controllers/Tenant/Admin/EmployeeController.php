@@ -66,7 +66,7 @@ class EmployeeController extends Controller
             event(new EmployeeWasCreatedEvent($tenant, $employee));
 
             return redirect()->route('tenant.admin.employee.list')
-                ->with('flash_success', __('The employee has been created.'));
+                ->with('flash_success', __('The :what has been created.', ['what' => __('Employee') ]));
         }
 
         return redirect()->route('tenant.admin.employee.create')
@@ -116,7 +116,7 @@ class EmployeeController extends Controller
 
         if ($updated) {
             return redirect()->route('tenant.admin.employee.list')
-                ->with('flash_success', __('The employee has been updated.'));
+                ->with('flash_success', __('The :what has been updated.', ['what' => __('Employee')]));
         }
 
         return redirect()->route('tenant.admin.employee.edit', $request->id)

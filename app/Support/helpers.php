@@ -90,3 +90,45 @@ if (!function_exists('is_valid_phone')) {
         return preg_match("/^(00\s)?(\(509\)[\s]|\(507\)[\s])?(\d{3,4})[\s.-]\d{4}$/", trim($phone));
     }
 }
+
+if (!function_exists('do_forget_cache')) {
+    /**
+     * Forgets cache. Called on model events.
+     *
+     * @param Model $model
+     * @param array $cacheNames cache keys
+     * @param array $xtras      extra keys part form model
+     */
+    function do_forget_cache($model, array $cacheNames, array $xtras = [])
+    {
+        $model::saved(function ($mod) use ($cacheNames, $xtras) {
+            __do_forget_cache($mod, $cacheNames, $xtras);
+        });
+
+        $model::deleted(function ($mod) use ($cacheNames, $xtras) {
+            __do_forget_cache($mod, $cacheNames, $xtras);
+        });
+    }
+}
+
+/**
+ * Forget cache. Called on model events.
+ *
+ * @param Model $model
+ * @param array $cacheNames cache keys
+ * @param array $xtras      extra keys part form model
+ */
+function __do_forget_cache($mod, $cacheNames, $xtras)
+{
+    foreach ($cacheNames as $k => $cacheName) {
+        $extra_name = '';
+        if (isset($xtras[$k])) {
+            foreach ($xtras[$k] as $exval) {
+                $extra_name .= '.' . $mod->{$exval};
+            }
+        }
+        $key = $cacheName . $extra_name;
+
+        Cache::forget($key);
+    }
+}

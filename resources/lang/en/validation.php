@@ -131,6 +131,9 @@ return [
         'telephones' => [
             'mass_phone' => 'The field :attribute is invalid.',
         ],
+        'faxes' => [
+            'mass_phone' => 'The field :attribute is invalid.',
+        ],
         'urls' => [
             'mass_url' => 'The field :attribute is invalid.',
         ],
@@ -150,6 +153,51 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'name' => __('Name'),
+        'names' => __('Names'),
+        'username' => __('User'),
+        'email' => __('Email'),
+        'first_name' => __('Names'),
+        'last_name' => __('Surnames'),
+        'password' => __('Password'),
+        'password_confirmation' => __('Password confirmation'),
+        'city_id' => __('City'),
+        'country_id' => __('Country'),
+        'Department_id' => __('Department'),
+        'address' => __('Address'),
+        'telephone' => __('Telephone'),
+        'telephones' => __('Telephones'),
+        'year' => __('Year'),
+        'month' => __('Month'),
+        'day' => __('Day'),
+        'hour' => __('Hour'),
+        'minute' => __('Minute'),
+        'second' => __('Second'),
+        'title' => __('Title'),
+        'content' => __('Content'),
+        'description' => __('Description'),
+        'excerpt' => __('Excerpt'),
+        'date' => __('Date'),
+        'time' => __('Hour'),
+        'subject' => __('Subject'),
+        'message' => __('Message'),
+
+        //
+        'org_name' => __('Enterprise name'),
+        'type' => __('Client type'),
+        'pid' => __('PID'),
+        'notes' => __('Notes'),
+        'position' => __('Gargo'),
+        'code' => __('Code'),
+        'emails' => __('Emails'),
+        'faxes' => __('Fax'),
+        'remote_addresses.*.type' => __('Type'),
+        'remote_addresses.*.address' => __('Address'),
+        'remote_addresses.*.telephones' => __('Telephones'),
+        'remote_addresses.*.status' => __('Status'),
+        'logo' => __('Logo'),
+        'avatar' => __('Avatar'),
+    ],
 
 ];

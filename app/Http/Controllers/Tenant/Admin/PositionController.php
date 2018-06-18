@@ -62,7 +62,7 @@ class PositionController extends Controller
 
         if ($position) {
             return redirect()->route('tenant.admin.position.list')
-                ->with('flash_success', __('The position has been created.'));
+                ->with('flash_success', __('The :what has been created.', ['what' => __('Position')]));
         }
 
         return redirect()->route('tenant.admin.position.create')
@@ -117,7 +117,7 @@ class PositionController extends Controller
 
         if ($updated) {
             return redirect()->route('tenant.admin.position.list')
-                ->with('flash_success', __('The position has been updated.'));
+                ->with('flash_success', __('The :what has been updated.', ['what' => __('Position')]));
         }
 
         return redirect()->route('tenant.admin.position.edit', $request->id)

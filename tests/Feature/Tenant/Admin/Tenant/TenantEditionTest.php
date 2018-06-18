@@ -4,6 +4,7 @@ namespace Tests\Feature\Tenant\Admin\Tenant;
 
 use Tests\TestCase;
 use Logistics\DB\User;
+use Logistics\DB\Tenant\Branch;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -31,7 +32,10 @@ class TenantEditionTest extends TestCase
         $this->withoutExceptionHandling();
 
         $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+
+        $admin->branches()->sync([$branch->id]);
 
         $response = $this->actingAs($admin)->get(route('tenant.admin.company.edit'));
         $response->assertStatus(200);
@@ -127,7 +131,7 @@ class TenantEditionTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors([
-            'name', 'telephones', 'emails', 'address', 'lang',
+            'name', 'telephones', 'emails', 'address', 'lang', 'ruc', 'dv',
             'remote_addresses.*.type',
             'remote_addresses.*.address',
             'remote_addresses.*.telephones',

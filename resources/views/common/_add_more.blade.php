@@ -40,12 +40,12 @@
             if (id && id !== ':id:') {
 
                 swal({
-                    title: "{{ __('Are you sure?') }}",
+                    title: "{{ __('Are you sure') }}?",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonClass: "btn-danger",
-                    confirmButtonText: "{{ _('Yes, delete it') }}!",
-                    cancelButtonText: "{{ _('Cancel') }}!",
+                    confirmButtonText: "{{ __('Yes, delete it') }}!",
+                    cancelButtonText: "{{ __('Cancel') }}!",
                     closeOnConfirm: false
                 },
                 function(){

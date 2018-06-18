@@ -52,7 +52,7 @@ class BranchController extends Controller
 
         if ($branch) {
             return redirect()->route('tenant.admin.branch.list')
-                ->with('flash_success', __('The branch has been created.'));
+                ->with('flash_success', __('The :what has been created.', ['what' => __('Branch') ]));
         }
 
         return redirect()->route('tenant.admin.branch.create')
@@ -91,7 +91,7 @@ class BranchController extends Controller
 
         if ($updated) {
             return redirect()->route('tenant.admin.branch.list')
-                ->with('flash_success', __('The branch has been updated.'));
+                ->with('flash_success', __('The :what has been updated.', ['what' => __('Branch')]));
         }
 
         return redirect()->route('tenant.admin.branch.edit', $request->id)

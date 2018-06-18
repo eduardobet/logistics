@@ -3,6 +3,7 @@
 namespace Tests\Unit\Tenant;
 
 use Tests\TestCase;
+use Illuminate\Support\Facades\File;
 use Logistics\Http\Middleware\Tenant;
 use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
@@ -122,5 +123,41 @@ class TenantTest extends TestCase
         });
 
         $this->assertNotNull(view()->shared('user'));
+    }
+
+    /** @test */
+    public function it_touches_the_env_file_in_the_right_place()
+    {
+        $tenant = factory(TenantModel::class)->create();
+
+        $domain = explode('//', $tenant->domain);
+
+        $tenant->touchEnvFile();
+
+        $envFile = base_path("envs/{$domain[1]}");
+
+        $this->assertFileExists($envFile);
+
+        File::delete($envFile);
+    }
+
+    /** @test */
+    public function it_touches_the_env_file_with_the_right_content()
+    {
+        $tenant = factory(TenantModel::class)->create();
+        $domain = explode('//', $tenant->domain)[1];
+        $envFile = $tenant->touchEnvFile();
+        $contentArray = file($envFile);
+
+        $this->assertGreaterThan(0, count($contentArray));
+
+        $this->assertEquals([
+            "APP_URL={$tenant->domain}\n",
+            "APP_DOMAIN={$tenant->domain}\n",
+            "APP_NAME=\"{$tenant->name}\"\n",
+            "SESSION_DOMAIN={$domain}",
+        ], $contentArray);
+
+        File::delete($envFile);
     }
 }

@@ -41,4 +41,5 @@
 @section('xtra_scripts')
     @include('common._select2ize')
     @include('common._add_more')
+    @include('common._toogle-for-text')
 @endsection

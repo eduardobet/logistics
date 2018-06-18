@@ -64,14 +64,14 @@
             <div class="col-lg-3">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{__('Client type')}}: <span class="tx-danger">*</span></label>
-                    {!! Form::select('type', ['C' => __('Common') , 'V' => __('Vendor') , 'E' => __('Enterprise') ], null, ['class' => 'form-control toggle-text', 'required' => '', 'data-target' => '#org_name', 'data-toogle-when' => 'E' ]) !!}
+                    {!! Form::select('type',['' => '----'] + ['C' => __('Common') , 'V' => __('Vendor') , 'E' => __('Enterprise') ], null, ['class' => 'form-control toggle-text', 'required' => '', 'data-target' => '#org_name', 'data-toogle-when' => 'E', 'data-required' => 'Y', 'data-tmp-value' => $client->org_name ]) !!}
                 </div>
             </div>
 
             <div class="col-lg-3">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Enterprise name') }}:</label>
-                    {!! Form::text("org_name", null, ['class' => 'form-control', 'readonly' => '' ]) !!}
+                    {!! Form::text("org_name", null, ['class' => 'form-control', $client->org_name ? null : 'readonly' => '', 'id' => 'org_name' ]) !!}
                 </div>
             </div>
 
@@ -117,7 +117,7 @@
             <div class="col-lg-12">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Notes') }}</label>
-                    {!! Form::textarea('notes', null, ['class' => 'form-control', 'placeholder' => __('Agregar detalles extras de cliente') , 'rows' => 3,]) !!}
+                    {!! Form::textarea('notes', null, ['class' => 'form-control', 'placeholder' => __('Details of the client') , 'rows' => 3,]) !!}
                 </div>
             </div>
         </div> <!-- row -->

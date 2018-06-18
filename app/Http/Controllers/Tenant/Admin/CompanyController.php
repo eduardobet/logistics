@@ -3,6 +3,7 @@
 namespace Logistics\Http\Controllers\Tenant\Admin;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Fluent;
 use Illuminate\Support\Facades\Storage;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Events\Tenant\CompanyLogoAdded;
@@ -12,7 +13,9 @@ class CompanyController extends Controller
 {
     public function edit()
     {
-        return view('tenant.company.edit');
+        $company = auth()->user()->company;
+
+        return view('tenant.company.edit', compact('company'));
     }
 
     public function update(CompanyRequest $request)
@@ -35,8 +38,10 @@ class CompanyController extends Controller
             $this->uploadLogo($request, $company);
             $this->saveRemoteAddr($request, $company);
 
+            $company->touchEnvFile();
+
             return redirect()->route('tenant.admin.company.edit')
-                ->with('flash_success', __('The company has been updated.'));
+                ->with('flash_success', __('The :what has been updated.', ['what' => __('Company')]));
         }
     }
 
@@ -63,12 +68,22 @@ class CompanyController extends Controller
             }
             
             foreach ($remoteAddrs as $remoteAddr) {
-                $data = array_merge($remoteAddr, [
-                    'created_by_code' => auth()->id(),
-                ]);
+                $inputs = new Fluent($remoteAddr);
                 
-                $tenant->remoteAddresses()->create($data);
+                $tenant->remoteAddresses()->updateOrCreate(['id' => $inputs->rid], [
+                    'type' => $inputs->type,
+                    'address' => $inputs->address,
+                    'telephones' => $inputs->telephones,
+                    'status' => $inputs->status,
+                ]);
             }
         }
+    }
+
+    public function getRemoteTpl()
+    {
+        return response()->json([
+            'view' => view('tenant.company.remote-addresses')->render(),
+        ]);
     }
 }

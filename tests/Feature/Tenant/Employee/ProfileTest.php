@@ -59,7 +59,7 @@ class ProfileTest extends TestCase
     /** @test */
     public function employee_can_update_his_basic_information()
     {
-        // $this->withoutExceptionHandling();
+        $this->withoutExceptionHandling();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
@@ -69,10 +69,15 @@ class ProfileTest extends TestCase
         $response = $this->actingAs($employee)->get(route('tenant.employee.profile.edit'));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.employee.profile');
+        $response->assertViewHas(['employee']);
 
         $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update'), [
             'first_name' => 'Employee f name update',
             'last_name' => 'Employee l name update',
+            'pid' => 'PID',
+            'telephones' => '555-5555',
+            'address' => 'In the middle of nowhere',
+            'notes' => 'Some notes about the employee',
             '_method' => 'PATCH',
         ]);
 
@@ -80,9 +85,14 @@ class ProfileTest extends TestCase
             'first_name' => 'Employee f name update',
             'last_name' => 'Employee l name update',
             'email' => $employee->email,
+            'full_name' => 'Employee f name update Employee l name update' ,
+            'pid' => 'PID',
+            'telephones' => '555-5555',
             'type' => 'E',
             'status' => 'A',
             'is_main_admin' => false,
+            'address' => 'In the middle of nowhere',
+            'notes' => 'Some notes about the employee',
         ]);
         
         $response->assertRedirect(route('tenant.employee.profile.edit'));

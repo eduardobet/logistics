@@ -43,13 +43,13 @@
 
             <div class="dropdown dropdown-c">
                 <a href="#" class="logged-user" data-toggle="dropdown">
-                    <img src="{{ auth()->user()->avatar }}" alt="Avatar">
+                    <img src="{{ asset(auth()->user()->avatar) }}" alt="Avatar">
                     <span>{{ auth()->user()->full_name }}</span>
                     <i class="icon fa fa-angle-down"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <nav class="nav">
-                        <a href="#" class="nav-link"><i class="icon fa fa-user"></i> {{ __('Profile') }} </a>
+                        <a href="{{ route('tenant.employee.profile.edit') }}" class="nav-link"><i class="icon fa fa-user"></i> {{ __('Profile') }} </a>
                         <a href="#" class="nav-link"><i class="icon fa fa-bolt"></i> {{ __('Actitity') }} </a>
                         <a href="#" class="nav-link"><i class="icon fa fa-power-off"></i> {{ __('Logout') }} </a>
                     </nav>

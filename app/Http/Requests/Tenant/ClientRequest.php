@@ -33,7 +33,7 @@ class ClientRequest extends AppFormRequest
             'email' => 'required|string|email|max:255|unique:clients',
             'telephones' => 'required|mass_phone',
             'type' => 'required|string|in:C,V,E',
-            'org_name' => 'required_if:type,==,E|string',
+            'org_name' => 'required_if:type,==,E|string|between:3,255',
             'status' => 'required|string|in:A,I',
             'branch_id' => 'required',
             'branch_code' => 'required',
@@ -41,6 +41,7 @@ class ClientRequest extends AppFormRequest
             'department_id' => 'sometimes|integer',
             'city_id' => 'sometimes|integer',
             'address' => 'sometimes|between:5,255',
+            'notes' => 'sometimes|between:5,1000',
         ];
 
         if ($this->isEdit()) {

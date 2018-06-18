@@ -45,6 +45,17 @@
         }).show();
         @endif
 
+        @if ($error = session()->get('flash_lock_error'))
+        new Noty({
+            type: 'error',
+            layout: 'top',
+            text: '{{ $error }}',
+            container: '.noty-container',
+            killer: true,
+            timeout: 2000,
+        }).show();
+        @endif
+
         @if ($info = session()->get('flash_info'))
         new Noty({
             type: 'info',

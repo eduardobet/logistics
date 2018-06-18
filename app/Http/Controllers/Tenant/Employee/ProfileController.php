@@ -12,7 +12,9 @@ class ProfileController extends Controller
 {
     public function edit()
     {
-        return view('tenant.employee.profile');
+        return view('tenant.employee.profile', [
+            'employee' => auth()->user(),
+        ]);
     }
 
     public function update(ProfileRequest $request)
@@ -20,6 +22,11 @@ class ProfileController extends Controller
         $updated = auth()->user()->update([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
+            'telephones' => $request->telephones,
+            'pid' => $request->pid,
+            'full_name' => $request->first_name . ' ' . $request->last_name,
+            'address' => $request->address,
+            'notes' => $request->notes,
         ]);
 
 
@@ -31,7 +38,10 @@ class ProfileController extends Controller
         }
 
         return redirect()->back()
-            ->with('flash_error', __('Error while trying to proceed with this action.'));
+            ->with('flash_error', __('Error while trying to :action :what', [
+                'action' => __('Edit'),
+                'what' => __('The profile'),
+            ]));
     }
 
     protected function uploadAvatar($request)

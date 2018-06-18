@@ -44,7 +44,7 @@
 
     <div class="col-lg-4">
         <div class="form-group">
-            <label class="form-control-label">{{ __('Email') }}: <span class="tx-danger">*</span></label>
+            <label class="form-control-label">{{ __('Emails') }}: <span class="tx-danger">*</span></label>
             {{ Form::text('emails', null, ['class' => 'form-control', 'required' => 'required']) }}
         </div>
     </div>

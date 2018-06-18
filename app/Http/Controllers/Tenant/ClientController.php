@@ -83,7 +83,7 @@ class ClientController extends Controller
             $client->saveExtraContacts($request, $tenant->id);
 
             return redirect()->route('tenant.client.list')
-                ->with('flash_success', __('The client has been created.'));
+                ->with('flash_success', __('The :what has been created.', ['what' => __('Client') ]));
         }
 
         return redirect()->route('tenant.client.create')
@@ -170,7 +170,7 @@ class ClientController extends Controller
             $client->saveExtraContacts($request, $tenant->id);
 
             return redirect()->route('tenant.client.list')
-                ->with('flash_success', __('The client has been updated.'));
+                ->with('flash_success', __('The :what has been updated.', ['what' => __('Client') ]));
         }
 
         return redirect()->route('tenant.client.edit', $id)
@@ -210,13 +210,13 @@ class ClientController extends Controller
         $client =$tenant->clients()->find($request->client_id);
 
         if (!$client) {
-            return response()->json(['error' => true, 'msg' => __('Not Found.1'), ], 404);
+            return response()->json(['error' => true, 'msg' => __('Not Found.'), ], 404);
         }
 
         $econtact = $client->extraContacts()->find($request->id);
 
         if (!$econtact) {
-            return response()->json(['error' => true, 'msg' => __('Not Found.2'), ], 404);
+            return response()->json(['error' => true, 'msg' => __('Not Found.'), ], 404);
         }
 
         $deleted = $econtact->delete();

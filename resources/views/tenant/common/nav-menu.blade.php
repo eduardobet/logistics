@@ -11,7 +11,7 @@
               <ul>
                 <li><a href="{{ route('tenant.client.create') }}">{{ __('New client') }}</a></li>
                 <li><a href="#!">{{ __('Search client') }}</a></li>
-                <li><a href="#!">{{ __('Client list') }}</a></li>
+                <li><a href="{{ route('tenant.client.list') }}">{{ __('Client list') }}</a></li>
               </ul>
             </div><!-- dropdown-menu -->
           </li>
@@ -61,20 +61,22 @@
             </div><!-- dropdown-menu -->
           </li>
 
-          <li class="nav-item with-sub {{ active(['tenant.admin.branch.list','tenant.admin.branch.create', 'tenant.admin.branch.edit', 'tenant.admin.employee.list','tenant.admin.employee.create', 'tenant.admin.employee.edit', 'tenant.admin.position.list','tenant.admin.position.create', 'tenant.admin.position.edit']) }}">
+          <li class="nav-item with-sub {{ active(['tenant.admin.branch.list','tenant.admin.branch.create', 'tenant.admin.branch.edit', 'tenant.admin.employee.list','tenant.admin.employee.create', 'tenant.admin.employee.edit', 'tenant.admin.position.list','tenant.admin.position.create', 'tenant.admin.position.edit', 'tenant.admin.company.edit']) }}">
             <a class="nav-link" href="#">
               <i class="icon ion-ios-gear-outline"></i>
               <span>{{ __('System') }}</span>
             </a>
+            @if ($user->isAdmin())
             <div class="sub-item">
               <ul>
-                <li><a href="#">{{ __('Configuration') }}</a></li>
+                <li><a href="{{ route('tenant.admin.company.edit') }}">{{ __('Configuration') }}</a></li>
                 <li><a href="{{ route('tenant.admin.branch.list') }}">{{ __('Branches') }}</a></li>
                 <li><a href="{{ route('tenant.admin.position.list') }}">{{ __('Positions') }}</a></li>
                 <li><a href="{{ route('tenant.admin.employee.list') }}">{{ __('Users') }}</a></li>
                 <li><a href="#">{{ __('Activity') }}</a></li>
               </ul>
             </div><!-- dropdown-menu -->
+            @endif
           </li>
 
         </ul>

@@ -1,3 +1,4 @@
 APP_URL=https://middleton-services.test
 APP_DOMAIN=https://middleton-services.test
-APP_NAME="Seal Logistics"
+APP_NAME="PREMIUMRUSH"
+SESSION_DOMAIN=middleton-services.test

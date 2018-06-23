@@ -232,4 +232,18 @@ class ClientController extends Controller
             ])
         , ]);
     }
+
+    public function resentWelcomeEmail()
+    {
+        $tenant = $this->getTenant();
+        $client = $tenant->clients()->find(request()->client_id);
+
+        if (!$client) {
+            return response()->json(['error' => true, 'msg' => __('Not Found.'), ], 404);
+        }
+
+        event(new ClientWasCreatedEvent($tenant, $client));
+
+        return response()->json(['error' => false, 'msg' => __('Success'), ]);
+    }
 }

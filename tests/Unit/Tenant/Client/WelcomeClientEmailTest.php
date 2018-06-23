@@ -62,9 +62,8 @@ class WelcomeClientEmailTest extends TestCase
         $this->assertContains("{$maritime->address}", $content);
         $this->assertContains("{$maritime->telephones}", $content);
 
-        $this->assertContains("Remember your purchases must always contain your box", $content);
+        $this->assertContains("Remember your purchases must always contain your box:", $content);
         $this->assertContains("{$box->branch_code}{$client->id}", $content);
-        $this->assertContains(" number.", $content);
     }
 
     /** @test */

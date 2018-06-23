@@ -25,4 +25,9 @@ class Box extends Model
     {
         return $query->where('status', 'A');
     }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
 }

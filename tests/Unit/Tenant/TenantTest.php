@@ -138,7 +138,7 @@ class TenantTest extends TestCase
 
         $this->assertFileExists($envFile);
 
-        File::delete($envFile);
+        // File::delete($envFile);
     }
 
     /** @test */
@@ -158,6 +158,6 @@ class TenantTest extends TestCase
             "SESSION_DOMAIN={$domain}",
         ], $contentArray);
 
-        File::delete($envFile);
+        // File::delete($envFile);
     }
 }

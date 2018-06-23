@@ -63,6 +63,8 @@ class WelcomeClientEmail extends Mailable
                 'air' => $air,
                 'maritime' => $maritime,
                 'branch' => $branch,
+                'lang' => $this->tenant->lang ? : localization()->getCurrentLocale(),
+                'subcopy' => $branch->address . '<br>' . $branch->telephones
             ]);
     }
 }

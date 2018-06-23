@@ -15,6 +15,11 @@ class Handler extends ExceptionHandler
      */
     protected $dontReport = [
         \Illuminate\Auth\AuthenticationException::class,
+        \Illuminate\Auth\Access\AuthorizationException::class,
+        \Symfony\Component\HttpKernel\Exception\HttpException::class,
+        \Illuminate\Database\Eloquent\ModelNotFoundException::class,
+        \Illuminate\Session\TokenMismatchException::class,
+        \Illuminate\Validation\ValidationException::class,
     ];
 
     /**
@@ -51,6 +56,32 @@ class Handler extends ExceptionHandler
             return $this->unauthenticated($request, $exception);
         }
 
+        if ($request->expectsJson()) {
+            $status = 400;
+
+            $response = [
+                'errors' => __('Sorry, something went wrong. :ref', ['ref' => "({$status})" ])
+            ];
+
+            if (config('app.debug')) {
+                $response['exception'] = get_class($exception);
+                $response['message'] = $exception->getMessage();
+                $response['trace'] = $exception->getTrace();
+            }
+
+
+            if ($this->isHttpException($exception)) {
+                $status = $exception->getStatusCode();
+            }
+
+            return response()->json($response, $status);
+        }
+
+        if ($this->isHttpException($exception)) {
+            if (view()->exists('errors.' . $exception->getStatusCode())) {
+                return response()->view('errors.' . $exception->getStatusCode(), [], $exception->getStatusCode());
+            }
+        }
 
         return parent::render($request, $exception);
     }

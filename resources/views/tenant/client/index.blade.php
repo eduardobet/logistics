@@ -47,8 +47,14 @@
                       <td>{{ $client->boxes->first()->branch_code }}{{ $client->id }}</td>
                       <td>{{ $client->email }}</td>
                       <td>{{ $client->telephones }}</td>
-                      <td>
-                        <a href="{{ route('tenant.client.edit', $client->id) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                      <td class="text-center">
+                        <a href="{{ route('tenant.client.edit', $client->id) }}"><i class="fa fa-pencil-square-o"></i></a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="#!" class="resend-email-box" data-url="{{ route('tenant.client.welcome.email.resend') }}"
+                          data-toggle="tooltip" data-placement="left" title="{{ __('Resend welcome email') }}" data-client-id="{{ $client->id }}"
+                          >
+                          <i class="fa fa-envelope"></i>
+                        </a>
                       </td>
                     </tr>
 
@@ -58,19 +64,50 @@
             </table>
           </div>
 
-
-
-
-
-
-
-
-
-
       </div><!-- container -->
 </div><!-- slim-mainpanel -->
 
 
  @include('tenant.common._footer')
 
+@endsection
+
+@section('xtra_scripts')
+    <script>
+      $(function() {
+        $('[data-toggle="tooltip"]').tooltip();
+        $(".resend-email-box").click(function() {
+          var $self = $(this);
+          var url = $self.data('url');
+          var clientId = $self.data('client-id');
+
+          if (!$self.hasClass('resending')) {
+            $self.addClass('resending');
+            $.ajax({
+              url: url,
+              data: {client_id: clientId, _token: "{{ csrf_token() }}"},
+              method: 'POST',
+            })
+            .done(function(data) {
+              if (data.error == true) {
+                swal("", data.msg, "error");
+              } else {
+                swal("", data.msg, "success");
+              }
+              $self.removeClass('resending');
+            })
+            .fail(function(hxr) {
+              if (error = (hxr.responseJSON.errors || hxr.responseJSON.msg  ) ) {
+                swal("", error, "error")
+              } else {
+                swal("", "{{ __('Error') }}", "error")
+              }
+              $self.removeClass('resending');
+            });
+
+          }
+
+        });
+      });
+    </script>
 @endsection

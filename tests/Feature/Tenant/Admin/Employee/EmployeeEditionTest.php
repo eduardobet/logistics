@@ -138,17 +138,17 @@ class EmployeeEditionTest extends TestCase
         $response->assertRedirect(route('tenant.admin.employee.list'));
         $employee = $tenant->employees->where('email', $employee->email)->fresh()->first();
 
-        tap($employee, function($employee) use($tenant, $admin, $permissionA, $permissionB) {
+        tap($employee, function ($employee) use ($tenant, $admin, $permissionA, $permissionB) {
             $this->assertEquals($employee->first_name, 'Employee f name update');
-            $this->assertEquals($employee->last_name  ,'Employee l name update');
-            $this->assertEquals($employee->type  ,'A');
-            $this->assertEquals($employee->status  ,'A');
-            $this->assertEquals($employee->full_name  ,'Employee f name update Employee l name update');
-            $this->assertEquals($employee->pid  ,'PID');
-            $this->assertEquals($employee->telephones  ,'555-5555');
+            $this->assertEquals($employee->last_name, 'Employee l name update');
+            $this->assertEquals($employee->type, 'A');
+            $this->assertEquals($employee->status, 'A');
+            $this->assertEquals($employee->full_name, 'Employee f name update Employee l name update');
+            $this->assertEquals($employee->pid, 'PID');
+            $this->assertEquals($employee->telephones, '555-5555');
             $this->assertEquals($employee->position, 1);
-            $this->assertEquals($employee->address  ,'In the middle of nowhere');
-            $this->assertEquals($employee->notes  ,'Some notes about the employee');
+            $this->assertEquals($employee->address, 'In the middle of nowhere');
+            $this->assertEquals($employee->notes, 'Some notes about the employee');
             $this->assertEquals($employee->tenant_id, $tenant->id);
             $this->assertNull($employee->created_by_code);
             $this->assertEquals($employee->updated_by_code, $admin->id);

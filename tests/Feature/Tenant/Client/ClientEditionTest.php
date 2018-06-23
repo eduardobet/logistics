@@ -278,4 +278,38 @@ class ClientEditionTest extends TestCase
             return $event->client->id === $client->id;
         });
     }
+
+    /** @test */
+    public function the_welcome_email_can_be_resent()
+    {
+        $this->withoutExceptionHandling();
+
+        Event::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, ]);
+
+        $admin->branches()->sync([$branch->id]);
+
+        $response = $this->actingAs($admin)->get(route('tenant.client.edit', $client->id));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.client.edit');
+        $response->assertViewHas(['client']);
+
+        $response = $this->actingAs($admin)->post(route('tenant.client.welcome.email.resend'), [
+            'client_id' => $client->id,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'error' => false,
+            'msg' => __("Success"),
+        ]);
+
+        Event::assertDispatched(\Logistics\Events\Tenant\ClientWasCreatedEvent::class, function ($event) use ($client) {
+            return $event->client->id === $client->id;
+        });
+    }
 }

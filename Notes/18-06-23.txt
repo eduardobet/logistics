@@ -1,0 +1,2 @@
+1) Test and implemented employee can active their account
+2) Test and implemented employee can change their password

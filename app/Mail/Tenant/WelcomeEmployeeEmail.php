@@ -49,8 +49,12 @@ class WelcomeEmployeeEmail extends Mailable
      */
     public function build()
     {
-        return $this->subject(__('Welcome'))
-            ->text('tenant.mails.welcome-employee')
-            ->with(['tenant' => $this->tenant, 'employee' => $this->employee]);
+        return $this->subject(__('Welcome') . ' ' . $this->employee->full_name)
+            ->markdown('tenant.mails.welcome-employee')
+            ->with([
+                'tenant' => $this->tenant,
+                'employee' => $this->employee,
+                'lang' => $this->tenant->lang ? : localization()->getCurrentLocale(),
+            ]);
     }
 }

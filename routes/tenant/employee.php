@@ -16,4 +16,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::patch('client/{id}/update', 'Tenant\ClientController@update')->name('tenant.client.update');
     Route::get('client/extra-contacts-tmpl', 'Tenant\ClientController@econtactTmpl')->name('tenant.client.contact-tmpl');
     Route::delete('client/extra-contacts-destroy', 'Tenant\ClientController@deleteExtraContact')->name('tenant.client.extra-contact.destroy');
+    Route::post('client/resend-welcome-email', 'Tenant\ClientController@resentWelcomeEmail')->name('tenant.client.welcome.email.resend');
 });

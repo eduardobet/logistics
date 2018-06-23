@@ -26,4 +26,8 @@ Route::group(['tenant-domain' => '{tenant-domain}', 'middleware' => 'tenant'], f
 
     require __DIR__ . '/admin.php';
     require __DIR__ . '/employee.php';
+
+    if (app()->environment('local')) {
+        require __DIR__ . '/../test-mails.php';
+    }
 });

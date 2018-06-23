@@ -81,7 +81,7 @@ class BranchListTest extends TestCase
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
         $response = $this->actingAs($admin)->get(route('tenant.admin.branch.list', [
-        	'filter' => 2
+            'filter' => 2
         ]));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.branch.index');

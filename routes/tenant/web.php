@@ -19,7 +19,8 @@ Route::group(['tenant-domain' => '{tenant-domain}', 'middleware' => 'tenant'], f
         Route::post('password/reset', 'Auth\Tenant\ResetPasswordController@reset')->name('client.user.password.post.reset');*/
 
         Route::get('unlock/{email}/{token}', 'Tenant\Auth\AccountActivationController@showUnlockForm')
-            ->name('tenant.employee.get.unlock');
+            ->name('tenant.employee.get.unlock')
+            ->middleware('signed');
         Route::post('unlock', 'Tenant\Auth\AccountActivationController@unlock')
             ->name('tenant.employee.post.unlock');
     });

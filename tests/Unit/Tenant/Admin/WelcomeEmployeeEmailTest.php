@@ -5,6 +5,7 @@ namespace Tests\Unit\Tenant\Admin;
 use Tests\TestCase;
 use Logistics\DB\User;
 use Logistics\DB\Tenant\Branch;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
@@ -38,7 +39,7 @@ class WelcomeEmployeeEmailTest extends TestCase
         $this->assertContains("Hello {$employee->full_name}", $content);
         $this->assertContains("welcome to {$tenant->name}", $content);
         $this->assertContains("Please click the following link to activate your account.", $content);
-        $this->assertContains(route('tenant.employee.get.unlock', [$employee->email, $employee->token]), $content);
+        $this->assertContains(URL::signedRoute('tenant.employee.get.unlock', [$employee->email, $employee->token]), $content);
         $this->assertContains("Some other interesting links:", $content);
         $this->assertContains(route('tenant.home'), $content);
         $this->assertContains(route("tenant.{$type}.dashboard"), $content);

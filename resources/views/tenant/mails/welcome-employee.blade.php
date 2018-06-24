@@ -5,7 +5,7 @@
         @endcomponent
 @endslot
 
-{{ __('Hello :who welcome to :what', ['who' => $employee->full_name, 'what' => $tenant->name ] ) }}. <br><br>{{ __('Please click the following link to activate your account.') }}: <a href="{{ route('tenant.employee.get.unlock', [$employee->email, $employee->token]) }}">{{ route('tenant.employee.get.unlock', [$employee->email, $employee->token]) }}</a><br><br>
+{{ __('Hello :who welcome to :what', ['who' => $employee->full_name, 'what' => $tenant->name ] ) }}. <br><br>{{ __('Please click the following link to activate your account.') }}: <a href="{{ URL::signedRoute('tenant.employee.get.unlock', [$employee->email, $employee->token]) }}">{{ route('tenant.employee.get.unlock', [$employee->email, $employee->token]) }}</a><br><br>
 
 <h3>{{ __('Some other interesting links') }}:</h3>
 * {{ route('tenant.home') }}

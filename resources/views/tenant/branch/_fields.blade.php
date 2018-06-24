@@ -90,6 +90,26 @@
 
 </div>
 
+<div class="row mg-t-10">
+
+    <div class="col-lg-6">
+        <div class="form-group">
+            <label class="ckbox">
+                {!! Form::checkbox('should_invoice') !!} <span>{{ __('Activate warehouse invoice') }}</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="form-group">
+            <label class="ckbox">
+                {!! Form::checkbox('reception_branch') !!} <span>{{ __('Activate reception branch') }}</span>
+            </label>
+        </div>
+    </div>
+    
+</div>
+
 <div class="row mg-t-25 justify-content-between">
     <div class="col-lg-12">
         <button type="submit" class="btn btn-primary bg-royal bd-1 bd-gray-400">{{ __('Save') }}</button>

@@ -8,6 +8,9 @@
     <li class="nav-item">
         <a class="nav-link" href="#permissions" data-toggle="tab">{{ __('Permissions') }}</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#branch-list" data-toggle="tab">{{ __('Branch list') }}</a>
+    </li>
 </ul>
 
  <div class="tab-content">
@@ -122,12 +125,31 @@
                 @endforeach
             </ul>
         @endforeach
-
-        
-        
-        
         
     </div> <!-- tab permissions -->
+
+     <div class="tab-pane" id="branch-list">
+        <div class="mg-t-25"></div>
+
+        <div class="row">
+            <div class="col">
+                <ul class="list-group">
+                    @foreach ($branches as $branchForInvoice)
+                        <li class="list-group-item">
+                            
+                            <label class="ckbox">
+                                <input type="checkbox" name="branches_for_invoices[]" value="{{ $branchForInvoice->id }}"
+                                {{ in_array($branchForInvoice->id, $employee->branchesForInvoice->pluck('id')->toArray()) ? ' checked' : '' }}
+                                >
+                                <span>{{ $branchForInvoice->name }}</span>
+                            </label>
+                        </li>
+                    @endforeach
+                 </ul>
+            </div>
+        </div>
+
+    </div> <!-- tab invoice branch list -->
 
     
 </div> <!-- tab-content -->

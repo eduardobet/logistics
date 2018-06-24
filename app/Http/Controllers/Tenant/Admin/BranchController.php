@@ -48,6 +48,8 @@ class BranchController extends Controller
             'lng' => $request->lng,
             'ruc' => $request->ruc,
             'dv' => $request->dv,
+            'should_invoice' => $request->has('should_invoice'),
+            'reception_branch' => $request->has('reception_branch'),
         ]);
 
         if ($branch) {
@@ -86,6 +88,8 @@ class BranchController extends Controller
         $branch->lng = $request->lng;
         $branch->ruc = $request->ruc;
         $branch->dv = $request->dv;
+        $branch->should_invoice = $request->has('should_invoice');
+        $branch->reception_branch = $request->has('reception_branch');
 
         $updated = $branch->save();
 

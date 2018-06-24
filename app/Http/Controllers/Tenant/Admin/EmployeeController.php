@@ -35,6 +35,7 @@ class EmployeeController extends Controller
         return view('tenant.employee.create', [
             'positions' => $this->positions(),
             'permissions' => $this->permissions(),
+            'branches' => $this->branches(),
             'employee' => new User(),
         ]);
     }
@@ -65,6 +66,8 @@ class EmployeeController extends Controller
 
             event(new EmployeeWasCreatedEvent($tenant, $employee));
 
+            $employee->branchesForInvoice()->sync($request->branches_for_invoices);
+
             return redirect()->route('tenant.admin.employee.list')
                 ->with('flash_success', __('The :what has been created.', ['what' => __('Employee') ]));
         }
@@ -86,6 +89,7 @@ class EmployeeController extends Controller
             'employee' => $employee,
             'positions' => $this->positions(),
             'permissions' => $this->permissions(),
+            'branches' => $this->branches(),
         ]);
     }
 
@@ -113,6 +117,7 @@ class EmployeeController extends Controller
         $updated = $employee->update();
 
         $employee->branches()->sync($request->branches);
+        $employee->branchesForInvoice()->sync($request->branches_for_invoices);
 
         if ($updated) {
             return redirect()->route('tenant.admin.employee.list')

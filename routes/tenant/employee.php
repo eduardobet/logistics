@@ -17,4 +17,18 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('client/extra-contacts-tmpl', 'Tenant\ClientController@econtactTmpl')->name('tenant.client.contact-tmpl');
     Route::delete('client/extra-contacts-destroy', 'Tenant\ClientController@deleteExtraContact')->name('tenant.client.extra-contact.destroy');
     Route::post('client/resend-welcome-email', 'Tenant\ClientController@resentWelcomeEmail')->name('tenant.client.welcome.email.resend');
+
+    //mailers
+    Route::get('mailer/list', 'Tenant\MailerController@index')->name('tenant.mailer.list');
+    Route::get('mailer/create', 'Tenant\MailerController@create')->name('tenant.mailer.create');
+    Route::post('mailer/store', 'Tenant\MailerController@store')->name('tenant.mailer.store');
+    Route::get('mailer/{id}/edit', 'Tenant\MailerController@edit')->name('tenant.mailer.edit');
+    Route::patch('mailer/{id}/update', 'Tenant\MailerController@update')->name('tenant.mailer.update');
+
+    //warehouse
+    Route::get('warehouse/list', 'Tenant\WarehouseController@index')->name('tenant.warehouse.list');
+    Route::get('warehouse/create', 'Tenant\WarehouseController@create')->name('tenant.warehouse.create');
+    Route::post('warehouse/store', 'Tenant\WarehouseController@store')->name('tenant.warehouse.store');
+    Route::get('warehouse/{id}/edit', 'Tenant\WarehouseController@edit')->name('tenant.warehouse.edit');
+    Route::patch('warehouse/{id}/update', 'Tenant\WarehouseController@update')->name('tenant.warehouse.update');
 });

@@ -84,6 +84,11 @@ class User extends Authenticatable
         return $this->belongsTo(\Logistics\DB\Tenant\Tenant::class, 'tenant_id', 'id');
     }
 
+    public function branchesForInvoice()
+    {
+        return $this->belongsToMany(\Logistics\DB\Tenant\Branch::class, 'branch_for_invoice');
+    }
+
     public function getFullNameAttribute()
     {
         return $this->first_name . ' ' . $this->last_name;

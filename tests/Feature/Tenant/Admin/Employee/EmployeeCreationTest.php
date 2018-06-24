@@ -125,6 +125,7 @@ class EmployeeCreationTest extends TestCase
         $response->assertViewIs('tenant.employee.create');
         $response->assertViewHas(['positions']);
         $response->assertViewHas(['permissions']);
+        $response->assertViewHas(['branches']);
 
         $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store'), [
             'first_name' => 'Firstname',
@@ -139,7 +140,7 @@ class EmployeeCreationTest extends TestCase
             'address' => 'In the middle of nowhere',
             'notes' => 'Some notes about the employee',
             'permissions' => [ $permission->slug ],
-            
+            'branches_for_invoices' => [ $branch->id ],
         ]);
 
         $response->assertRedirect(route('tenant.admin.employee.list'));
@@ -165,6 +166,7 @@ class EmployeeCreationTest extends TestCase
             $this->assertEquals($employee->permissions, [$permission->slug]);
             
             $this->assertCount(1, $employee->branches);
+            $this->assertCount(1, $employee->branchesForInvoice);
         });
     }
 

@@ -4,7 +4,6 @@ namespace Tests\Feature\Tenant\Client;
 
 use Tests\TestCase;
 use Logistics\DB\User;
-use Logistics\DB\Tenant\Box;
 use Logistics\DB\Tenant\Branch;
 use Logistics\DB\Tenant\Client;
 use Illuminate\Support\Facades\Event;

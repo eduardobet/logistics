@@ -30,6 +30,8 @@ class CreateBranchesTable extends Migration
             $table->string('ruc')->nullable();
             $table->string('dv')->nullable();
             $table->string('status', 1)->default('A');
+            $table->boolean('reception_branch')->nullable()->default(false);
+            $table->boolean('should_invoice')->nullable()->default(false);
             $table->timestamps();
         });
     }

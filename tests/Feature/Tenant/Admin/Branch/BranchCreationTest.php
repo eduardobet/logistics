@@ -123,6 +123,8 @@ class BranchCreationTest extends TestCase
             "ruc" => 'RUC',
             "dv" => 'DV',
             'status' => 'A',
+            'reception_branch' => '1',
+            'should_invoice' => '1',
         ]);
 
         $this->assertDatabaseHas('branches', [
@@ -139,6 +141,8 @@ class BranchCreationTest extends TestCase
             "ruc" => 'RUC',
             "dv" => 'DV',
             "status" => "A",
+            'reception_branch' => 1,
+            'should_invoice' => 1,
         ]);
 
         $response->assertRedirect(route('tenant.admin.branch.list'));

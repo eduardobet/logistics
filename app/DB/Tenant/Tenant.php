@@ -59,6 +59,16 @@ class Tenant extends Model
         return $this->hasMany(\Logistics\DB\Tenant\Permission::class);
     }
 
+    public function mailers()
+    {
+        return $this->hasMany(\Logistics\DB\Tenant\Mailer::class);
+    }
+
+    public function warehouses()
+    {
+        return $this->hasMany(\Logistics\DB\Tenant\Warehouse::class);
+    }
+
     // to be implemented
     public function hasActiveSubscription()
     {

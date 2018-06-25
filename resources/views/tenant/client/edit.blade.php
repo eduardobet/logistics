@@ -18,7 +18,7 @@
          </div><!-- slim-pageheader -->
 
          <div class="section-wrapper">
-            {!! Form::model($client, ['route' => ['tenant.client.update', $client->id], 'method' => 'PATCH', ]) !!}
+            {!! Form::model($client, ['route' => ['tenant.client.update', $tenant->domain, $client->id], 'method' => 'PATCH', ]) !!}
             <input type="hidden" name="branch_id" value="{{ $branch->id }}">
             <input type="hidden" name="branch_code" value="{{ $branch->code }}">
             @include('tenant.client._fields', [

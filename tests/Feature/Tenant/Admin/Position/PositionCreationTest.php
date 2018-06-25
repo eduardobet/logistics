@@ -20,8 +20,8 @@ class PositionCreationTest extends TestCase
         // $this->withoutExceptionHandling();
         $tenant = factory(TenantModel::class)->create();
 
-        $response = $this->get(route('tenant.admin.position.create'), []);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response = $this->get(route('tenant.admin.position.create', $tenant->domain), []);
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
     }
 
     /** @test */
@@ -32,9 +32,9 @@ class PositionCreationTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->get(route('tenant.admin.position.create'), []);
+        $response = $this->get(route('tenant.admin.position.create', $tenant->domain), []);
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
 
         $this->assertFalse(auth()->check());
     }
@@ -47,9 +47,9 @@ class PositionCreationTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $employee = factory(User::class)->states('employee')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->actingAs($employee)->get(route('tenant.admin.position.create'), []);
+        $response = $this->actingAs($employee)->get(route('tenant.admin.position.create', $tenant->domain), []);
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
         $this->assertFalse(auth()->check());
     }
 
@@ -61,9 +61,9 @@ class PositionCreationTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.position.store'), []);
+        $response = $this->actingAs($admin)->post(route('tenant.admin.position.store', $tenant->domain), []);
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.admin.position.create'));
+        $response->assertRedirect(route('tenant.admin.position.create', $tenant->domain));
 
         $response->assertSessionHasErrors([
             'name',
@@ -80,13 +80,13 @@ class PositionCreationTest extends TestCase
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
         $position = factory(Position::class)->create(['tenant_id' => $tenant->id]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.position.store'), [
+        $response = $this->actingAs($admin)->post(route('tenant.admin.position.store', $tenant->domain), [
             'name' => $position->name,
             'status' => 'A',
         ]);
 
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.admin.position.create'));
+        $response->assertRedirect(route('tenant.admin.position.create', $tenant->domain));
         $response->assertSessionHasErrors('name');
     }
 
@@ -100,11 +100,11 @@ class PositionCreationTest extends TestCase
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
         $admin->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($admin)->get(route('tenant.admin.position.create'));
+        $response = $this->actingAs($admin)->get(route('tenant.admin.position.create', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.position.create');
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.position.store'), [
+        $response = $this->actingAs($admin)->post(route('tenant.admin.position.store', $tenant->domain), [
             'name' => 'Position Name',
             'status' => 'A',
             'description' => 'Some description of the position',
@@ -118,7 +118,7 @@ class PositionCreationTest extends TestCase
             'description' => 'Some description of the position',
         ]);
 
-        $response->assertRedirect(route('tenant.admin.position.list'));
+        $response->assertRedirect(route('tenant.admin.position.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
     }
 }

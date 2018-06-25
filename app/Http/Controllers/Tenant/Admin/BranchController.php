@@ -53,11 +53,11 @@ class BranchController extends Controller
         ]);
 
         if ($branch) {
-            return redirect()->route('tenant.admin.branch.list')
+            return redirect()->route('tenant.admin.branch.list', $request->domain)
                 ->with('flash_success', __('The :what has been created.', ['what' => __('Branch') ]));
         }
 
-        return redirect()->route('tenant.admin.branch.create')
+        return redirect()->route('tenant.admin.branch.create', $request->domain)
                 ->withInput()
                 ->with('flash_error', __('Error while trying to :action :what', [
                     'action' => __('Save'),
@@ -65,7 +65,7 @@ class BranchController extends Controller
                 ]));
     }
 
-    public function edit($id)
+    public function edit($domain, $id)
     {
         $branchData = $this->getTenant()->branches()->findOrFail($id);
 
@@ -94,11 +94,11 @@ class BranchController extends Controller
         $updated = $branch->save();
 
         if ($updated) {
-            return redirect()->route('tenant.admin.branch.list')
+            return redirect()->route('tenant.admin.branch.list', $request->domain)
                 ->with('flash_success', __('The :what has been updated.', ['what' => __('Branch')]));
         }
 
-        return redirect()->route('tenant.admin.branch.edit', $request->id)
+        return redirect()->route('tenant.admin.branch.edit', [$request->domain, $request->id])
                 ->withInput()
                 ->with('flash_error', __('Error while trying to :action :what', [
                     'action' => __('Update'),

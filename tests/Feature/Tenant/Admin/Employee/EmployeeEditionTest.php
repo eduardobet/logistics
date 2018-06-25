@@ -21,8 +21,8 @@ class EmployeeEditionTest extends TestCase
 
         $tenant = factory(TenantModel::class)->create();
 
-        $response = $this->get(route('tenant.admin.employee.edit', [1]), []);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response = $this->get(route('tenant.admin.employee.edit', [$tenant->domain, 1]), []);
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
     }
 
     /** @test */
@@ -36,7 +36,7 @@ class EmployeeEditionTest extends TestCase
         $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, 'status' => 'L', ]);
         $employee->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.update', ['id' => $employee->id]), [
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.update', [$tenant->domain, 'id' => $employee->id]), [
             'first_name' => 'Employee f name update',
             'last_name' => 'Employee l name update',
             'email' => $employee->email,
@@ -46,7 +46,7 @@ class EmployeeEditionTest extends TestCase
             '_method' => 'PATCH',
         ]);
 
-        $response->assertRedirect(route('tenant.admin.employee.edit', ['id' => $employee->id]));
+        $response->assertRedirect(route('tenant.admin.employee.edit', [ $tenant->domain, 'id' => $employee->id]));
         $response->assertSessionHasErrors(['status']);
         $this->assertDatabaseMissing('users', [
             'first_name' => 'Employee f name update',
@@ -73,13 +73,13 @@ class EmployeeEditionTest extends TestCase
         $employee->branches()->sync([$branchA->id]);
         $admin->branches()->sync([$branchA->id]);
 
-        $response = $this->actingAs($admin)->patch(route('tenant.admin.employee.update'), [
+        $response = $this->actingAs($admin)->patch(route('tenant.admin.employee.update', $tenant->domain), [
             'id' => $employee->id,
             'permissions' => 'XXX',
         ]);
 
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.admin.employee.edit', $employee->id));
+        $response->assertRedirect(route('tenant.admin.employee.edit', [$tenant->domain, $employee->id]));
 
         $response->assertSessionHasErrors([
             'first_name',
@@ -111,13 +111,13 @@ class EmployeeEditionTest extends TestCase
         $employee->branches()->sync([$branchA->id]);
         $admin->branches()->sync([$branchA->id]);
 
-        $response = $this->actingAs($admin)->get(route('tenant.admin.employee.edit', ['id' => $employee->id]));
+        $response = $this->actingAs($admin)->get(route('tenant.admin.employee.edit', [ $tenant->domain, 'id' => $employee->id]));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.employee.edit');
         $response->assertViewHas('positions');
         $response->assertViewHas('permissions');
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.update'), [
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.update', $tenant->domain), [
             'id' => $employee->id,
             'first_name' => 'Employee f name update',
             'last_name' => 'Employee l name update',
@@ -135,7 +135,7 @@ class EmployeeEditionTest extends TestCase
         ]);
 
         $response->assertSessionHas(['flash_success']);
-        $response->assertRedirect(route('tenant.admin.employee.list'));
+        $response->assertRedirect(route('tenant.admin.employee.list', $tenant->domain));
         $employee = $tenant->employees->where('email', $employee->email)->fresh()->first();
 
         tap($employee, function ($employee) use ($tenant, $admin, $permissionA, $permissionB) {
@@ -173,7 +173,7 @@ class EmployeeEditionTest extends TestCase
         $employee->branches()->sync([$branchA->id]);
         $admin->branches()->sync([$branchA->id]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.update'), [
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.update', $tenant->domain), [
             'id' => $employee->id,
             'first_name' => 'The main',
             'last_name' => 'Administrator',
@@ -210,7 +210,7 @@ class EmployeeEditionTest extends TestCase
         $employee->branches()->sync([$branch->id]);
         $admin->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.update'), [
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.update', $tenant->domain), [
             'id' => $employee->id,
             'first_name' => 'Employee f name update',
             'last_name' => 'Employee l name update',
@@ -231,6 +231,6 @@ class EmployeeEditionTest extends TestCase
         ]);
 
         $response->assertSessionHas(['flash_success']);
-        $response->assertRedirect(route('tenant.admin.employee.list'));
+        $response->assertRedirect(route('tenant.admin.employee.list', $tenant->domain));
     }
 }

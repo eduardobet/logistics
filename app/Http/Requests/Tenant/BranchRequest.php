@@ -54,7 +54,7 @@ class BranchRequest extends AppFormRequest
     {
         $url = $this->redirector->getUrlGenerator();
 
-        $params = [];
+        $params = ['domain' => $this->domain];
 
         if ($this->isEdit()) {
             $params['id'] = $this->id;

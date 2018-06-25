@@ -22,6 +22,6 @@ class Admin
         auth()->logout();
         
         return redirect()
-            ->route('tenant.auth.get.login')->with('flash_error', __('This is an admin only module.'));
+            ->route('tenant.auth.get.login', $request->domain)->with('flash_error', __('This is an admin only module.'));
     }
 }

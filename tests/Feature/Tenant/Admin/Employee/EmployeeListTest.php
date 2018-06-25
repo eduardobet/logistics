@@ -19,8 +19,8 @@ class EmployeeListTest extends TestCase
         // $this->withoutExceptionHandling();
         $tenant = factory(TenantModel::class)->create();
 
-        $response = $this->get(route('tenant.admin.employee.list'));
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response = $this->get(route('tenant.admin.employee.list', $tenant->domain));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
     }
 
     /** @test */
@@ -31,9 +31,9 @@ class EmployeeListTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->get(route('tenant.admin.employee.list'));
+        $response = $this->get(route('tenant.admin.employee.list', $tenant->domain));
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
 
         $this->assertFalse(auth()->check());
     }
@@ -46,9 +46,9 @@ class EmployeeListTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $employee = factory(User::class)->states('employee')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->actingAs($employee)->get(route('tenant.admin.employee.list'));
+        $response = $this->actingAs($employee)->get(route('tenant.admin.employee.list', $tenant->domain));
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
         $this->assertFalse(auth()->check());
     }
 
@@ -67,7 +67,7 @@ class EmployeeListTest extends TestCase
         $employeeA->branches()->sync([$branch->id]);
         $employeeB->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($admin)->get(route('tenant.admin.employee.list'));
+        $response = $this->actingAs($admin)->get(route('tenant.admin.employee.list', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.employee.index');
 
@@ -94,6 +94,7 @@ class EmployeeListTest extends TestCase
         $employeeB->branches()->sync([$branch->id]);
 
         $response = $this->actingAs($admin)->get(route('tenant.admin.employee.list', [
+            $tenant->domain,
             'filter' => 'Full'
         ]));
         $response->assertStatus(200);

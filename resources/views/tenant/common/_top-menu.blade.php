@@ -1,7 +1,7 @@
 <div class="slim-header">
       <div class="container">
         <div class="slim-header-left">
-          <h2 class="slim-logo"><a href="{{ route('tenant.home') }}">{{ config('app.name', '') }}</a></h2>
+          <h2 class="slim-logo"><a href="{{ route('tenant.home', $tenant->domain) }}">{{ config('app.name', '') }}</a></h2>
 
           <div class="search-box">
             <input type="text" class="form-control" placeholder="{{ __('Search') }}">
@@ -49,7 +49,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <nav class="nav">
-                        <a href="{{ route('tenant.employee.profile.edit') }}" class="nav-link"><i class="icon fa fa-user"></i> {{ __('Profile') }} </a>
+                        <a href="{{ route('tenant.employee.profile.edit', $tenant->domain) }}" class="nav-link"><i class="icon fa fa-user"></i> {{ __('Profile') }} </a>
                         <a href="#" class="nav-link"><i class="icon fa fa-bolt"></i> {{ __('Actitity') }} </a>
                         <a href="#" onclick="document.getElementById('form-logout').submit()" class="nav-link"><i class="icon fa fa-power-off"></i> {{ __('Logout') }} </a>
                     </nav>
@@ -59,4 +59,4 @@
         </div><!-- header-right -->
       </div><!-- container -->
 </div>
-<form id="form-logout" action="{{ route('tenant.auth.post.logout') }}" method="post" style="display: none">{!! csrf_field()  !!}</form>
+<form id="form-logout" action="{{ route('tenant.auth.post.logout', $tenant->domain) }}" method="post" style="display: none">{!! csrf_field()  !!}</form>

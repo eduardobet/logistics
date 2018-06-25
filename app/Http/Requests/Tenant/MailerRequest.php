@@ -52,7 +52,7 @@ class MailerRequest extends AppFormRequest
     protected function getRedirectUrl()
     {
         $url = $this->redirector->getUrlGenerator();
-        $params = [];
+        $params = ['domain' => $this->domain];
 
         if ($this->isEdit()) {
             $params['id'] = $this->id;

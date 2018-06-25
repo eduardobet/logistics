@@ -18,7 +18,7 @@
          </div><!-- slim-pageheader -->
 
          <div class="section-wrapper">
-            {!! Form::model($employee, ['route' => ['tenant.admin.employee.update'], 'method' => 'PATCH']) !!}
+            {!! Form::model($employee, ['route' => ['tenant.admin.employee.update', $tenant->domain], 'method' => 'PATCH']) !!}
             {!! Form::hidden('branches[]', $branch->id) !!}
             {!! Form::hidden('id', $employee->id) !!}
             

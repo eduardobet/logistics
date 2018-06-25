@@ -19,8 +19,8 @@ class BranchListTest extends TestCase
         // $this->withoutExceptionHandling();
         $tenant = factory(TenantModel::class)->create();
 
-        $response = $this->get(route('tenant.admin.branch.list'));
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response = $this->get(route('tenant.admin.branch.list', $tenant->domain));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
     }
 
     /** @test */
@@ -31,9 +31,9 @@ class BranchListTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->get(route('tenant.admin.branch.list'));
+        $response = $this->get(route('tenant.admin.branch.list', $tenant->domain));
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
 
         $this->assertFalse(auth()->check());
     }
@@ -46,9 +46,9 @@ class BranchListTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $employee = factory(User::class)->states('employee')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->actingAs($employee)->get(route('tenant.admin.branch.list'));
+        $response = $this->actingAs($employee)->get(route('tenant.admin.branch.list', $tenant->domain));
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
         $this->assertFalse(auth()->check());
     }
 
@@ -62,7 +62,7 @@ class BranchListTest extends TestCase
         $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch Name B']);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->actingAs($admin)->get(route('tenant.admin.branch.list'));
+        $response = $this->actingAs($admin)->get(route('tenant.admin.branch.list', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.branch.index');
 
@@ -81,6 +81,7 @@ class BranchListTest extends TestCase
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
         $response = $this->actingAs($admin)->get(route('tenant.admin.branch.list', [
+            $tenant->domain,
             'filter' => 2
         ]));
         $response->assertStatus(200);

@@ -16,7 +16,7 @@
           
             {{ Breadcrumbs::render() }}
 
-           <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.admin.position.create') }}">
+           <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.admin.position.create', $tenant->domain) }}">
                <i class="fa fa-plus mg-r-5"></i> {{ __('Create') }}
             </a>
 
@@ -44,7 +44,7 @@
                       <td>{{ $position->description }}</td>
                       <td>{{ $position->status }}</td>
                       <td>
-                        <a href="{{ route('tenant.admin.position.edit', $position->id) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                        <a href="{{ route('tenant.admin.position.edit', [$tenant->domain, $position->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                       </td>
                     </tr>
 

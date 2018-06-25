@@ -18,7 +18,7 @@
          </div><!-- slim-pageheader -->
 
          <div class="section-wrapper">
-            {!! Form::model($position, ['route' => ['tenant.admin.position.update', $position->id], 'method' => 'PATCH']) !!}
+            {!! Form::model($position, ['route' => [ 'tenant.admin.position.update', $tenant->domain, $position->id], 'method' => 'PATCH']) !!}
                 @include('tenant.position._fields')
             </form>
          </div>

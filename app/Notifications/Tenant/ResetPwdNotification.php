@@ -49,12 +49,12 @@ class ResetPwdNotification extends Notification implements ShouldQueue
 
         $tenant->touchEnvFileForConsole();
 
-        URL::forceRootUrl($tenant->domain);
+        // URL::forceRootUrl($tenant->domain);
 
         $url = URL::temporarySignedRoute(
             'tenant.user.password.reset',
             now()->addHour(),
-            ['token' => $this->token, 'e' => $notifiable->email,]
+            [$tenant->domain, 'token' => $this->token, 'e' => $notifiable->email,]
         );
 
         return (new MailMessage)

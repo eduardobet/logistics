@@ -18,7 +18,7 @@
 
 
 
-           <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.admin.branch.create') }}">
+           <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.admin.branch.create', $tenant->domain) }}">
                <i class="fa fa-plus mg-r-5"></i> {{ __('Create') }}
             </a>
 
@@ -48,7 +48,7 @@
                       <td>{{ $branch->address }}</td>
                       <td>{{ $branch->telephones }}</td>
                       <td>
-                        <a href="{{ route('tenant.admin.branch.edit', $branch->id) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                        <a href="{{ route('tenant.admin.branch.edit', [$tenant->domain, $branch->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                       </td>
                     </tr>
 

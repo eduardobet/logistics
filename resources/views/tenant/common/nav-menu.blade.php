@@ -9,9 +9,9 @@
             </a>
             <div class="sub-item">
               <ul>
-                <li><a href="{{ route('tenant.client.create') }}">{{ __('New client') }}</a></li>
+                <li><a href="{{ route('tenant.client.create', $tenant->domain) }}">{{ __('New client') }}</a></li>
                 <li><a href="#!">{{ __('Search client') }}</a></li>
-                <li><a href="{{ route('tenant.client.list') }}">{{ __('Client list') }}</a></li>
+                <li><a href="{{ route('tenant.client.list', $tenant->domain) }}">{{ __('Client list') }}</a></li>
               </ul>
             </div><!-- dropdown-menu -->
           </li>
@@ -69,10 +69,10 @@
             @if ($user->isAdmin())
             <div class="sub-item">
               <ul>
-                <li><a href="{{ route('tenant.admin.company.edit') }}">{{ __('Configuration') }}</a></li>
-                <li><a href="{{ route('tenant.admin.branch.list') }}">{{ __('Branches') }}</a></li>
-                <li><a href="{{ route('tenant.admin.position.list') }}">{{ __('Positions') }}</a></li>
-                <li><a href="{{ route('tenant.admin.employee.list') }}">{{ __('Users') }}</a></li>
+                <li><a href="{{ route('tenant.admin.company.edit', $tenant->domain) }}">{{ __('Configuration') }}</a></li>
+                <li><a href="{{ route('tenant.admin.branch.list', $tenant->domain) }}">{{ __('Branches') }}</a></li>
+                <li><a href="{{ route('tenant.admin.position.list', $tenant->domain) }}">{{ __('Positions') }}</a></li>
+                <li><a href="{{ route('tenant.admin.employee.list', $tenant->domain) }}">{{ __('Users') }}</a></li>
                 <li><a href="#">{{ __('Activity') }}</a></li>
               </ul>
             </div><!-- dropdown-menu -->

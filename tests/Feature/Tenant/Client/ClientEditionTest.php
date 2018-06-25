@@ -21,8 +21,8 @@ class ClientEditionTest extends TestCase
         // $this->withoutExceptionHandling();
         $tenant = factory(TenantModel::class)->create();
 
-        $response = $this->get(route('tenant.client.edit', 1), []);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response = $this->get(route('tenant.client.edit', [ $tenant->domain, 1]), []);
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
     }
 
     /** @test */
@@ -33,14 +33,14 @@ class ClientEditionTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
 
-        $response = $this->actingAs($admin)->patch(route('tenant.client.update', 1), [
+        $response = $this->actingAs($admin)->patch(route('tenant.client.update', [$tenant->domain, 1]), [
             'country_id' => 'xxx',
             'department_id' => 'xxx',
             'city_id' => 'xxx',
             'address' => 'AA',
         ]);
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.client.edit', 1));
+        $response->assertRedirect(route('tenant.client.edit', [ $tenant->domain, 1]));
 
         $response->assertSessionHasErrors([
             'first_name',
@@ -62,7 +62,7 @@ class ClientEditionTest extends TestCase
     /** @test */
     public function it_successfully_updates_the_client()
     {
-        // $this->withoutExceptionHandling();
+        $this->withoutExceptionHandling();
 
         Event::fake();
 
@@ -73,12 +73,12 @@ class ClientEditionTest extends TestCase
 
         $admin->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($admin)->get(route('tenant.client.edit', $client->id));
+        $response = $this->actingAs($admin)->get(route('tenant.client.edit', [ $tenant->domain, $client->id]));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.client.edit');
         $response->assertViewHas(['client']);
 
-        $response = $this->actingAs($admin)->patch(route('tenant.client.update', $client->id), [
+        $response = $this->actingAs($admin)->patch(route('tenant.client.update', [$tenant->domain, $client->id]), [
             'first_name' => 'The updated',
             'last_name' => 'Client updated',
             'pid' => 'E-8-124925',
@@ -120,7 +120,7 @@ class ClientEditionTest extends TestCase
             'special_maritime' => '1',
         ]);
 
-        $response->assertRedirect(route('tenant.client.list'));
+        $response->assertRedirect(route('tenant.client.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
 
         Event::assertNotDispatched(\Logistics\Events\Tenant\ClientWasCreatedEvent::class);
@@ -148,12 +148,12 @@ class ClientEditionTest extends TestCase
             'tenant_id' => $tenant->id,
         ]);
 
-        $response = $this->actingAs($admin)->get(route('tenant.client.edit', $client->id));
+        $response = $this->actingAs($admin)->get(route('tenant.client.edit', [ $tenant->domain, $client->id]));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.client.edit');
         $response->assertViewHas(['client']);
 
-        $response = $this->patch(route('tenant.client.update', $client->id), [
+        $response = $this->patch(route('tenant.client.update', [$tenant->domain, $client->id]), [
             'first_name' => 'The updated',
             'last_name' => 'Client updated',
             'pid' => 'E-8-124925',
@@ -172,7 +172,7 @@ class ClientEditionTest extends TestCase
 
         ]);
 
-        $response->assertRedirect(route('tenant.client.list'));
+        $response->assertRedirect(route('tenant.client.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
          
         tap($client->extraContacts()->where('email', 'extra-contact@email.test')->first(), function ($econtact) use ($admin) {
@@ -211,12 +211,12 @@ class ClientEditionTest extends TestCase
             'tenant_id' => $tenant->id,
         ]);
 
-        $response = $this->actingAs($admin)->get(route('tenant.client.edit', $client->id));
+        $response = $this->actingAs($admin)->get(route('tenant.client.edit', [ $tenant->domain, $client->id]));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.client.edit');
         $response->assertViewHas(['client']);
 
-        $response = $this->delete(route('tenant.client.extra-contact.destroy'), [
+        $response = $this->delete(route('tenant.client.extra-contact.destroy', $tenant->domain), [
             'id' => $extraContact->id,
             'client_id' => $client->id,
         ], $this->headers());
@@ -243,12 +243,12 @@ class ClientEditionTest extends TestCase
 
         $admin->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($admin)->get(route('tenant.client.edit', $client->id));
+        $response = $this->actingAs($admin)->get(route('tenant.client.edit', [ $tenant->domain, $client->id]));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.client.edit');
         $response->assertViewHas(['client']);
 
-        $response = $this->actingAs($admin)->patch(route('tenant.client.update', $client->id), [
+        $response = $this->actingAs($admin)->patch(route('tenant.client.update', [$tenant->domain, $client->id]), [
             'first_name' => 'The updated',
             'last_name' => 'Client updated',
             'pid' => 'E-8-124925',
@@ -270,7 +270,7 @@ class ClientEditionTest extends TestCase
             'email' => 'client.update@company.com',
         ]);
 
-        $response->assertRedirect(route('tenant.client.list'));
+        $response->assertRedirect(route('tenant.client.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
 
         Event::assertDispatched(\Logistics\Events\Tenant\ClientWasCreatedEvent::class, function ($event) use ($client) {
@@ -292,12 +292,12 @@ class ClientEditionTest extends TestCase
 
         $admin->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($admin)->get(route('tenant.client.edit', $client->id));
+        $response = $this->actingAs($admin)->get(route('tenant.client.edit', [ $tenant->domain, $client->id]));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.client.edit');
         $response->assertViewHas(['client']);
 
-        $response = $this->actingAs($admin)->post(route('tenant.client.welcome.email.resend'), [
+        $response = $this->actingAs($admin)->post(route('tenant.client.welcome.email.resend', $tenant->domain), [
             'client_id' => $client->id,
         ]);
 

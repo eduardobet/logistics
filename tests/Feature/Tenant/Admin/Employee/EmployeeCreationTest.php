@@ -23,8 +23,8 @@ class EmployeeCreationTest extends TestCase
         // $this->withoutExceptionHandling();
         $tenant = factory(TenantModel::class)->create();
 
-        $response = $this->get(route('tenant.admin.employee.create'), []);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response = $this->get(route('tenant.admin.employee.create', $tenant->domain), []);
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
     }
 
     /** @test */
@@ -35,9 +35,9 @@ class EmployeeCreationTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->get(route('tenant.admin.employee.create'), []);
+        $response = $this->get(route('tenant.admin.employee.create', $tenant->domain), []);
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
 
         $this->assertFalse(auth()->check());
     }
@@ -50,9 +50,9 @@ class EmployeeCreationTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $employee = factory(User::class)->states('employee')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->actingAs($employee)->get(route('tenant.admin.employee.create'), []);
+        $response = $this->actingAs($employee)->get(route('tenant.admin.employee.create', $tenant->domain), []);
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
         $this->assertFalse(auth()->check());
     }
 
@@ -64,11 +64,11 @@ class EmployeeCreationTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store'), [
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store', $tenant->domain), [
             'permissions' => 'XXX'
         ]);
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.admin.employee.create'));
+        $response->assertRedirect(route('tenant.admin.employee.create', $tenant->domain));
 
         $response->assertSessionHasErrors([
             'first_name',
@@ -93,7 +93,7 @@ class EmployeeCreationTest extends TestCase
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
         $employee = factory(User::class)->states('employee')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store'), [
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store', $tenant->domain), [
             'first_name' => $employee->first_name,
             'last_name' => $employee->last_name,
             'email' => $employee->email,
@@ -104,7 +104,7 @@ class EmployeeCreationTest extends TestCase
         ]);
 
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.admin.employee.create'));
+        $response->assertRedirect(route('tenant.admin.employee.create', $tenant->domain));
         $response->assertSessionHasErrors('email');
     }
 
@@ -120,14 +120,14 @@ class EmployeeCreationTest extends TestCase
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
         $admin->branches()->sync([$branch->id]);
         
-        $response = $this->actingAs($admin)->get(route('tenant.admin.employee.create'));
+        $response = $this->actingAs($admin)->get(route('tenant.admin.employee.create', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.employee.create');
         $response->assertViewHas(['positions']);
         $response->assertViewHas(['permissions']);
         $response->assertViewHas(['branches']);
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store'), [
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store', $tenant->domain), [
             'first_name' => 'Firstname',
             'last_name' => 'Lastname',
             'email' => 'employee@tenant.test',
@@ -143,7 +143,7 @@ class EmployeeCreationTest extends TestCase
             'branches_for_invoices' => [ $branch->id ],
         ]);
 
-        $response->assertRedirect(route('tenant.admin.employee.list'));
+        $response->assertRedirect(route('tenant.admin.employee.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
  
         tap($tenant->employees->where('type', 'E')->fresh()->first(), function ($employee) use ($admin, $permission) {
@@ -180,11 +180,11 @@ class EmployeeCreationTest extends TestCase
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
         $admin->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($admin)->get(route('tenant.admin.employee.create'));
+        $response = $this->actingAs($admin)->get(route('tenant.admin.employee.create', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.employee.create');
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store'), [
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store', $tenant->domain), [
             'first_name' => 'Main',
             'last_name' => 'Administrator',
             'email' => 'main-admin@tenant.test',
@@ -197,7 +197,7 @@ class EmployeeCreationTest extends TestCase
             'position' => 1,
         ]);
             
-        $response->assertRedirect(route('tenant.admin.employee.list'));
+        $response->assertRedirect(route('tenant.admin.employee.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
 
         tap($tenant->employees->where('email', 'main-admin@tenant.test')->fresh()->first(), function ($employee) use ($branch) {
@@ -217,7 +217,7 @@ class EmployeeCreationTest extends TestCase
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
         $admin->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store'), [
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store', $tenant->domain), [
             'first_name' => 'Firstname',
             'last_name' => 'Lastname',
             'email' => 'admin@tenant.test',
@@ -229,7 +229,7 @@ class EmployeeCreationTest extends TestCase
             'position' => 1,
         ]);
 
-        $response->assertRedirect(route('tenant.admin.employee.list'));
+        $response->assertRedirect(route('tenant.admin.employee.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
     }
 
@@ -245,7 +245,7 @@ class EmployeeCreationTest extends TestCase
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
         $admin->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store'), [
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store', $tenant->domain), [
             'first_name' => 'Firstname',
             'last_name' => 'Lastname',
             'email' => 'employee@tenant.test',
@@ -277,7 +277,7 @@ class EmployeeCreationTest extends TestCase
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
         $admin->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store'), [
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store', $tenant->domain), [
             'first_name' => 'Firstname',
             'last_name' => 'Lastname',
             'email' => 'employee@tenant.test',

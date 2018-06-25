@@ -6,7 +6,7 @@
 
 @section('content')    
 
-      <form method="post" action="{{ route('tenant.auth.post.login')  }}">
+      <form method="post" action="{{ route('tenant.auth.post.login', $tenant->domain)  }}">
         <div class="signin-wrapper">
 
          <div class="signin-box" style="width: 500px">
@@ -27,7 +27,7 @@
             <button class="btn btn-primary btn-block btn-signin">{{ __('Login') }}</button>
 
 
-            <a href="{{ route('tenant.user.password.request') }}" class="button is-tomato">{{__('Forgot password')}}</a>
+            <a href="{{ route('tenant.user.password.request', $tenant->domain) }}" class="button is-tomato">{{__('Forgot password')}}</a>
 
           </div><!-- signin-box -->
 

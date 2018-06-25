@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['tenant-domain' => '{tenant-domain}', 'middleware' => 'tenant'], function () {
+Route::group(['domain' => '{domain}', 'middleware' => 'tenant'], function () {
     Route::get('/', function () {
         return view()->shared('tenant');
     })->name('tenant.home');

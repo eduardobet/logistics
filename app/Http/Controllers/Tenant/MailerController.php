@@ -67,7 +67,7 @@ class MailerController extends Controller
             );
         }
 
-        return redirect()->route('tenant.mailer.list')
+        return redirect()->route('tenant.mailer.list', $tenant->domain)
                 ->with('flash_success', __('The :what has been created.', ['what' => __('Mailers') ]));
     }
 }

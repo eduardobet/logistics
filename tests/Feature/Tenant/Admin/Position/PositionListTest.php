@@ -20,8 +20,8 @@ class PositionListTest extends TestCase
         // $this->withoutExceptionHandling();
         $tenant = factory(TenantModel::class)->create();
 
-        $response = $this->get(route('tenant.admin.position.list'));
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response = $this->get(route('tenant.admin.position.list', $tenant->domain));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
     }
 
     /** @test */
@@ -32,9 +32,9 @@ class PositionListTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->get(route('tenant.admin.position.list'));
+        $response = $this->get(route('tenant.admin.position.list', $tenant->domain));
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
 
         $this->assertFalse(auth()->check());
     }
@@ -47,9 +47,9 @@ class PositionListTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $employee = factory(User::class)->states('employee')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->actingAs($employee)->get(route('tenant.admin.position.list'));
+        $response = $this->actingAs($employee)->get(route('tenant.admin.position.list', $tenant->domain));
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
         $this->assertFalse(auth()->check());
     }
 
@@ -63,7 +63,7 @@ class PositionListTest extends TestCase
         $positionB = factory(Position::class)->create(['tenant_id' => $tenant->id, 'name' => 'Position Name B']);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->actingAs($admin)->get(route('tenant.admin.position.list'));
+        $response = $this->actingAs($admin)->get(route('tenant.admin.position.list', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.position.index');
 
@@ -82,6 +82,7 @@ class PositionListTest extends TestCase
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
         $response = $this->actingAs($admin)->get(route('tenant.admin.position.list', [
+            $tenant->domain,
             'filter' => 2
         ]));
         $response->assertStatus(200);

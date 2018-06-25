@@ -61,7 +61,7 @@ class LoginController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('tenant.auth.get.login')
+            return redirect()->route('tenant.auth.get.login', $request->domain)
               ->withErrors($validator)
               ->withInput($request->only('email', 'remember'));
         }
@@ -86,7 +86,7 @@ class LoginController extends Controller
 
         $this->incrementLoginAttempts($request);
 
-        return redirect()->route('tenant.auth.get.login')
+        return redirect()->route('tenant.auth.get.login', $request->domain)
                 ->with('flash_error', __("Invalid Email and/or password or you've haven't unlocked your account yet."))
                 ->withErrors($validator)
                 ->withInput($request->only('email', 'remember'));
@@ -111,7 +111,7 @@ class LoginController extends Controller
             }
             $url = localization()->getLocalizedURL(
                 $tenant->lang ?: localization()->getCurrentLocale(),
-                redirect()->intended(route("tenant.{$prefix}.dashboard"))->getTargetUrl()
+                redirect()->intended(route("tenant.{$prefix}.dashboard", $request->domain))->getTargetUrl()
             );
 
             return redirect($url);
@@ -130,7 +130,7 @@ class LoginController extends Controller
     {
         auth()->logout();
 
-        return redirect()->route('tenant.auth.get.login');
+        return redirect()->route('tenant.auth.get.login', request()->domain);
     }
 
     /**
@@ -163,7 +163,7 @@ class LoginController extends Controller
             return response()->json($errors, 423);
         }
 
-        return redirect()->route('tenant.auth.get.login')
+        return redirect()->route('tenant.auth.get.login', $request->domain)
             ->withErrors($errors)->with('flash_lock_error', $message);
     }
 }

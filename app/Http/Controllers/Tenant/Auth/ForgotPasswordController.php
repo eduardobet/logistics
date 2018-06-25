@@ -48,6 +48,6 @@ class ForgotPasswordController extends Controller
      */
     protected function sendResetLinkResponse($response)
     {
-        return redirect()->route('tenant.home')->with('status', trans($response));
+        return redirect()->route('tenant.home', request()->domain)->with('status', trans($response));
     }
 }

@@ -24,11 +24,12 @@ class EmployeeActivationTest extends TestCase
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
 
         $response = $this->get(URL::signedRoute('tenant.employee.get.unlock', [
+            $tenant->domain,
             'email' => 'unknown_employee@tenant.test',
             'token' => $employee->token
         ]));
 
-        $response->assertRedirect(route('tenant.home'));
+        $response->assertRedirect(route('tenant.home', $tenant->domain));
         $response->assertSessionHas('flash_error');
     }
 
@@ -41,9 +42,9 @@ class EmployeeActivationTest extends TestCase
         $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, 'status' => 'L', ]);
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
 
-        $response = $this->post(route('tenant.employee.post.unlock', []));
+        $response = $this->post(route('tenant.employee.post.unlock', [$tenant->domain]));
 
-        $response->assertRedirect(route('tenant.home'));
+        $response->assertRedirect(route('tenant.home', $tenant->domain));
         $response->assertSessionHas('errors');
         $this->assertDatabaseHas('users', [
             'email' => $employee->email,
@@ -63,16 +64,16 @@ class EmployeeActivationTest extends TestCase
         $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, 'status' => 'L', ]);
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
 
-        $response = $this->get(URL::signedRoute('tenant.employee.get.unlock', ['email' => $employee->email, 'token' => $employee->token]));
+        $response = $this->get(URL::signedRoute('tenant.employee.get.unlock', [$tenant->domain, 'email' => $employee->email, 'token' => $employee->token]));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.auth.unlock');
 
 
         $response = $this->post(
-            route('tenant.employee.post.unlock'),
+            route('tenant.employee.post.unlock', $tenant->domain),
             ['email' => $employee->email, 'password' => 'secrect123', 'token' => $employee->token]
         );
-        $response->assertRedirect(route('tenant.employee.dashboard'));
+        $response->assertRedirect(route('tenant.employee.dashboard', $tenant->domain));
         $this->assertTrue(auth()->check());
 
         $this->assertDatabaseHas('users', [
@@ -92,7 +93,7 @@ class EmployeeActivationTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, 'status' => 'L', ]);
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
-        $url = URL::signedRoute('tenant.employee.get.unlock', ['email' => $employee->email, 'token' => $employee->token]);
+        $url = URL::signedRoute('tenant.employee.get.unlock', [$tenant->domain, 'email' => $employee->email, 'token' => $employee->token]);
 
         $response = $this->get($url . 'XXX');
         $response->assertStatus(403);

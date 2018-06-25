@@ -22,8 +22,8 @@ class TenantEditionTest extends TestCase
 
         $tenant = factory(TenantModel::class)->create();
 
-        $response = $this->get(route('tenant.admin.company.edit'), []);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response = $this->get(route('tenant.admin.company.edit', $tenant->domain), []);
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
     }
 
     /** @test */
@@ -37,11 +37,11 @@ class TenantEditionTest extends TestCase
 
         $admin->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($admin)->get(route('tenant.admin.company.edit'));
+        $response = $this->actingAs($admin)->get(route('tenant.admin.company.edit', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.company.edit');
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.company.update'), [
+        $response = $this->actingAs($admin)->post(route('tenant.admin.company.update', $tenant->domain), [
             '_method' => 'PATCH',
             'name' => 'Company Name Updated',
             'ruc' => 'RUC',
@@ -58,7 +58,7 @@ class TenantEditionTest extends TestCase
 
         $this->assertDatabaseHas('tenants', [
             'name' => 'Company Name Updated',
-            'domain' => 'https://middleton-services.test',
+            'domain' => 'middleton-services.test',
             'status' => 'A',
             'ruc' => 'RUC',
             'dv' => 'DV',
@@ -78,7 +78,7 @@ class TenantEditionTest extends TestCase
         $this->assertEquals('Company Name Updated', view()->shared('tenant')->name);
             
         $response->assertSessionHas(['flash_success']);
-        $response->assertRedirect(route('tenant.admin.company.edit'));
+        $response->assertRedirect(route('tenant.admin.company.edit', $tenant->domain));
     }
 
     /** @test */
@@ -89,16 +89,17 @@ class TenantEditionTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.company.update'), [
+        $response = $this->actingAs($admin)->post(route('tenant.admin.company.update', $tenant->domain), [
             '_method' => 'PATCH',
             'name' => 'Company Name Updated',
             'ruc' => 'RUC',
             'dv' => 'DV',
             'telephones' => '555-3454,545-5435',
-            'emails' => '555-3454,545-5435',
+            'emails' => 'email@test.com',
             'address' => 'In the middle of nowhere',
             'lang' => 'es',
-            'domain' => 'https://other-domain.test',
+            'domain' => 'other-domain.test',
+            'current_domain' => $tenant->domain,
             'status' => 'I',
             'remote_addresses' => [
                 ['type' => 'A', 'address' => 'In the middle of remote air', 'telephones' => '555-5555', 'status' => 'A', ],
@@ -107,8 +108,8 @@ class TenantEditionTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors(['domain', 'status']);
-        $response->assertRedirect(route('tenant.admin.company.edit'));
-        $this->assertEquals('https://middleton-services.test', $tenant->fresh()->first()->domain);
+        $response->assertRedirect(route('tenant.admin.company.edit', $tenant->domain));
+        $this->assertEquals('middleton-services.test', $tenant->fresh()->first()->domain);
         $this->assertEquals('Middleton Services S.A.', $tenant->fresh()->first()->name);
     }
 
@@ -120,7 +121,7 @@ class TenantEditionTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.company.update'), [
+        $response = $this->actingAs($admin)->post(route('tenant.admin.company.update', $tenant->domain), [
             '_method' => 'PATCH',
             'name' => 'C',
             'telephones' => '555,543',
@@ -137,8 +138,8 @@ class TenantEditionTest extends TestCase
             'remote_addresses.*.telephones',
             'remote_addresses.*.status',
         ]);
-        $response->assertRedirect(route('tenant.admin.company.edit'));
-        $this->assertEquals('https://middleton-services.test', ($tenant = $tenant->fresh()->first())->domain);
+        $response->assertRedirect(route('tenant.admin.company.edit', $tenant->domain));
+        $this->assertEquals('middleton-services.test', ($tenant = $tenant->fresh()->first())->domain);
         $this->assertEquals('Middleton Services S.A.', $tenant->name);
     }
 
@@ -153,7 +154,7 @@ class TenantEditionTest extends TestCase
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $file = UploadedFile::fake()->image('logo.jpg');
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.company.update'), [
+        $response = $this->actingAs($admin)->post(route('tenant.admin.company.update', $tenant->domain), [
             'name' => 'Company Name Updated',
             'ruc' => 'RUC',
             'dv' => 'DV',
@@ -195,7 +196,7 @@ class TenantEditionTest extends TestCase
         $tenant->logo = "tenant/{$tenant->id}/images/logos/logo.png";
         $tenant->save();
 
-        $response = $this->actingAs($admin)->post(route('tenant.admin.company.update'), [
+        $response = $this->actingAs($admin)->post(route('tenant.admin.company.update', $tenant->domain), [
             'name' => 'Company Name Updated',
             'ruc' => 'RUC',
             'dv' => 'DV',

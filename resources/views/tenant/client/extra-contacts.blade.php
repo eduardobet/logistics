@@ -40,7 +40,7 @@ $key = isset($key) ? $key : ':index:';
             
             <div class="col-2">
                 <div class="form-group mg-t-30-force">
-                    <button class="btn btn-sm btn-outline-danger rem-row" type="button" data-id="{{ $econtact->id ? $econtact->id : ':id:' }}" data-del-url="{{ route('tenant.client.extra-contact.destroy') }}" data-params='{"id" : "{{$econtact->id}}", "client_id" :"{{$econtact->client_id}}" }'>
+                    <button class="btn btn-sm btn-outline-danger rem-row" type="button" data-id="{{ $econtact->id ? $econtact->id : ':id:' }}" data-del-url="{{ route('tenant.client.extra-contact.destroy', $tenant->domain) }}" data-params='{"id" : "{{$econtact->id}}", "client_id" :"{{$econtact->client_id}}" }'>
                         <i class="fa fa-times"></i>
                     </button>
                 </div>

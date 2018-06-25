@@ -61,11 +61,11 @@ class PositionController extends Controller
         ]);
 
         if ($position) {
-            return redirect()->route('tenant.admin.position.list')
+            return redirect()->route('tenant.admin.position.list', $request->domain)
                 ->with('flash_success', __('The :what has been created.', ['what' => __('Position')]));
         }
 
-        return redirect()->route('tenant.admin.position.create')
+        return redirect()->route('tenant.admin.position.create', $request->domain)
             ->withInput()
             ->with('flash_error', __('Error while trying to :action :what', [
                 'action' => __('Save'),
@@ -90,7 +90,7 @@ class PositionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($domain, $id)
     {
         $position = $this->getTenant()->positions()->findOrFail($id);
 
@@ -116,11 +116,11 @@ class PositionController extends Controller
         $updated = $position->save();
 
         if ($updated) {
-            return redirect()->route('tenant.admin.position.list')
+            return redirect()->route('tenant.admin.position.list', $request->domain)
                 ->with('flash_success', __('The :what has been updated.', ['what' => __('Position')]));
         }
 
-        return redirect()->route('tenant.admin.position.edit', $request->id)
+        return redirect()->route('tenant.admin.position.edit', [$request->domain, $request->id])
             ->withInput()
             ->with('flash_error', __('Error while trying to :action :what', [
                 'action' => __('Update'),

@@ -18,7 +18,7 @@
          </div><!-- slim-pageheader -->
 
          <div class="section-wrapper">
-            {!! Form::model($branchData, ['route' => ['tenant.admin.branch.update'], 'method' => 'PATCH']) !!}
+            {!! Form::model($branchData, ['route' => ['tenant.admin.branch.update', $tenant->domain], 'method' => 'PATCH']) !!}
             {!! Form::hidden('id', $branchData->id) !!}
                 @include('tenant.branch._fields')
             </form>

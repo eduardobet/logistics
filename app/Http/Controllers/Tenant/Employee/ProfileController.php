@@ -39,7 +39,7 @@ class ProfileController extends Controller
         if ($updated) {
             $this->uploadAvatar($request);
 
-            return redirect()->route('tenant.employee.profile.edit')
+            return redirect()->route('tenant.employee.profile.edit', $request->domain)
                 ->with('flash_success', __('Your profile has been edited.'));
         }
 

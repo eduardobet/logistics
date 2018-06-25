@@ -20,8 +20,8 @@ class MailerListTest extends TestCase
         // $this->withoutExceptionHandling();
         $tenant = factory(TenantModel::class)->create();
 
-        $response = $this->get(route('tenant.mailer.list'));
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response = $this->get(route('tenant.mailer.list', $tenant->domain));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
     }
 
 
@@ -38,7 +38,7 @@ class MailerListTest extends TestCase
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
         $admin->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($admin)->get(route('tenant.mailer.list'));
+        $response = $this->actingAs($admin)->get(route('tenant.mailer.list', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.mailer.index');
 
@@ -60,6 +60,7 @@ class MailerListTest extends TestCase
         $admin->branches()->sync([$branch->id]);
 
         $response = $this->actingAs($admin)->get(route('tenant.mailer.list', [
+            $tenant->domain,
             'filter' => 'The Mailer'
         ]));
 

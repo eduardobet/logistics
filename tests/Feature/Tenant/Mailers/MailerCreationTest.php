@@ -18,8 +18,8 @@ class MailerCreationTest extends TestCase
         // $this->withoutExceptionHandling();
         $tenant = factory(TenantModel::class)->create();
 
-        $response = $this->get(route('tenant.mailer.create'), []);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response = $this->get(route('tenant.mailer.create', $tenant->domain), []);
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
     }
 
     /** @test */
@@ -30,13 +30,13 @@ class MailerCreationTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.mailer.store'), [
+        $response = $this->actingAs($admin)->post(route('tenant.mailer.store', $tenant->domain), [
             'mailers' => [
                 ['description' => '1']
             ],
         ]);
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.mailer.create'));
+        $response->assertRedirect(route('tenant.mailer.create', $tenant->domain));
 
         $response->assertSessionHasErrors([
             'mailers.*.name',
@@ -55,11 +55,11 @@ class MailerCreationTest extends TestCase
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $admin->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($admin)->get(route('tenant.mailer.create'));
+        $response = $this->actingAs($admin)->get(route('tenant.mailer.create', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.mailer.create');
 
-        $response = $this->actingAs($admin)->post(route('tenant.mailer.store'), [
+        $response = $this->actingAs($admin)->post(route('tenant.mailer.store', $tenant->domain), [
             'tenant_id' => $tenant->id,
             'mailers' => [
                 ['name' => 'The Mailer', 'status' => 'A', 'description' => 'The description of the mailer', ],
@@ -74,7 +74,7 @@ class MailerCreationTest extends TestCase
             'status' => 'A',
         ]);
 
-        $response->assertRedirect(route('tenant.mailer.list'));
+        $response->assertRedirect(route('tenant.mailer.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
     }
 }

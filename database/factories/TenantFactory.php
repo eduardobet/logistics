@@ -5,7 +5,7 @@ use Logistics\DB\Tenant\Tenant;
 
 $factory->define(Tenant::class, function (Faker $faker) {
     return [
-        'domain' => 'https://middleton-services.test',
+        'domain' => 'middleton-services.test',
         'name' => 'Middleton Services S.A.',
         'status' => 'A',
         'lang' => 'en',

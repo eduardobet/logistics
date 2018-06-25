@@ -16,7 +16,7 @@
           
             {{ Breadcrumbs::render() }}
 
-           <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.client.create') }}">
+           <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.client.create', $tenant->domain) }}">
                <i class="fa fa-plus mg-r-5"></i> {{ __('Create') }}
             </a>
 
@@ -48,9 +48,9 @@
                       <td>{{ $client->email }}</td>
                       <td>{{ $client->telephones }}</td>
                       <td class="text-center">
-                        <a href="{{ route('tenant.client.edit', $client->id) }}"><i class="fa fa-pencil-square-o"></i></a>
+                        <a href="{{ route('tenant.client.edit', [$tenant->domain, $client->id]) }}"><i class="fa fa-pencil-square-o"></i></a>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <a href="#!" class="resend-email-box" data-url="{{ route('tenant.client.welcome.email.resend') }}"
+                        <a href="#!" class="resend-email-box" data-url="{{ route('tenant.client.welcome.email.resend', $tenant->domain) }}"
                           data-toggle="tooltip" data-placement="left" title="{{ __('Resend welcome email') }}" data-client-id="{{ $client->id }}"
                           >
                           <i class="fa fa-envelope"></i>

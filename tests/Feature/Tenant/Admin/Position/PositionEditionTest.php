@@ -20,8 +20,8 @@ class PositionEditionTest extends TestCase
         // $this->withoutExceptionHandling();
         $tenant = factory(TenantModel::class)->create();
 
-        $response = $this->get(route('tenant.admin.position.edit', [1]));
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response = $this->get(route('tenant.admin.position.edit', [$tenant->domain, 1]));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
     }
 
     /** @test */
@@ -32,9 +32,9 @@ class PositionEditionTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->get(route('tenant.admin.position.edit', 1));
+        $response = $this->get(route('tenant.admin.position.edit', [ $tenant->domain, 1]));
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
 
         $this->assertFalse(auth()->check());
     }
@@ -47,9 +47,9 @@ class PositionEditionTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $employee = factory(User::class)->states('employee')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->actingAs($employee)->get(route('tenant.admin.position.edit', 1));
+        $response = $this->actingAs($employee)->get(route('tenant.admin.position.edit', [ $tenant->domain, 1]));
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
         $this->assertFalse(auth()->check());
     }
 
@@ -61,11 +61,11 @@ class PositionEditionTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->actingAs($admin)->patch(route('tenant.admin.position.update', 1), [
+        $response = $this->actingAs($admin)->patch(route('tenant.admin.position.update', [$tenant->domain, 1]), [
             'id' => 1
         ]);
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.admin.position.edit', [1]));
+        $response->assertRedirect(route('tenant.admin.position.edit', [$tenant->domain, 1]));
 
         $response->assertSessionHasErrors([
             'name',
@@ -83,13 +83,13 @@ class PositionEditionTest extends TestCase
         $positionA = factory(Position::class)->create(['tenant_id' => $tenant->id]);
         $positionB = factory(Position::class)->create(['tenant_id' => $tenant->id, 'name' => 'Position Name B']);
 
-        $response = $this->actingAs($admin)->patch(route('tenant.admin.position.update', $positionA->id), [
+        $response = $this->actingAs($admin)->patch(route('tenant.admin.position.update', [$tenant->domain, $positionA->id]), [
             'name' => $positionB->name,
             'status' => 'A',
         ]);
 
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.admin.position.edit', [$positionA->id]));
+        $response->assertRedirect(route('tenant.admin.position.edit', [$tenant->domain, $positionA->id]));
         $response->assertSessionHasErrors('name');
     }
 
@@ -105,11 +105,11 @@ class PositionEditionTest extends TestCase
 
         $admin->branches()->sync([$branch->id]);
         
-        $response = $this->actingAs($admin)->get(route('tenant.admin.position.edit', [$position->id]));
+        $response = $this->actingAs($admin)->get(route('tenant.admin.position.edit', [$tenant->domain, $position->id]));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.position.edit');
 
-        $response = $this->actingAs($admin)->patch(route('tenant.admin.position.update', $position->id), [
+        $response = $this->actingAs($admin)->patch(route('tenant.admin.position.update', [$tenant->domain, $position->id]), [
             'name' => 'Position Name Updated',
             'id' => $branch->id,
             'description' => 'Description of the position',
@@ -125,7 +125,7 @@ class PositionEditionTest extends TestCase
             'description' => 'Description of the position',
         ]);
 
-        $response->assertRedirect(route('tenant.admin.position.list'));
+        $response->assertRedirect(route('tenant.admin.position.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
     }
 }

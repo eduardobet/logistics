@@ -6,7 +6,7 @@
 
 @section('content')    
 
-      <form method="post" action="{{ route('tenant.user.password.email')  }}">
+      <form method="post" action="{{ route('tenant.user.password.email', $tenant->domain)  }}">
         <div class="signin-wrapper">
 
          <div class="signin-box" style="width: 500px">

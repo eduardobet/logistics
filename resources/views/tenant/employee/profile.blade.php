@@ -30,7 +30,7 @@
                 </li>
             </ul>
 
-            {!! Form::model($employee, ['route' => ['tenant.employee.profile.update'], 'method' => 'PATCH', 'files' => true, ]) !!}
+            {!! Form::model($employee, ['route' => ['tenant.employee.profile.update', $tenant->domain], 'method' => 'PATCH', 'files' => true, ]) !!}
 
             <div class="tab-content">
 

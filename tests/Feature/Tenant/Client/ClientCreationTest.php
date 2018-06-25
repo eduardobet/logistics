@@ -22,8 +22,8 @@ class ClientCreationTest extends TestCase
         // $this->withoutExceptionHandling();
         $tenant = factory(TenantModel::class)->create();
 
-        $response = $this->get(route('tenant.client.create'), []);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response = $this->get(route('tenant.client.create', $tenant->domain), []);
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
     }
 
     /** @test */
@@ -34,14 +34,14 @@ class ClientCreationTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.client.store'), [
+        $response = $this->actingAs($admin)->post(route('tenant.client.store', $tenant->domain), [
             'country_id' => 'xxx',
             'department_id' => 'xxx',
             'city_id' => 'xxx',
             'address' => 'AA',
         ]);
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.client.create'));
+        $response->assertRedirect(route('tenant.client.create', $tenant->domain));
 
         $response->assertSessionHasErrors([
             'first_name',
@@ -72,11 +72,11 @@ class ClientCreationTest extends TestCase
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $admin->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($admin)->get(route('tenant.client.create'));
+        $response = $this->actingAs($admin)->get(route('tenant.client.create', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.client.create');
 
-        $response = $this->actingAs($admin)->post(route('tenant.client.store'), [
+        $response = $this->actingAs($admin)->post(route('tenant.client.store', $tenant->domain), [
             'first_name' => 'The',
             'last_name' => 'Client',
             'pid' => 'E-8-124926',
@@ -122,7 +122,7 @@ class ClientCreationTest extends TestCase
             'special_maritime' => '1',
         ]);
 
-        $response->assertRedirect(route('tenant.client.list'));
+        $response->assertRedirect(route('tenant.client.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
 
         $client = $tenant->clients->first();
@@ -147,7 +147,7 @@ class ClientCreationTest extends TestCase
 
         $this->actingAs($admin);
 
-        $response = $this->post(route('tenant.client.store'), [
+        $response = $this->post(route('tenant.client.store', $tenant->domain), [
             'first_name' => 'The',
             'last_name' => 'Client',
             'pid' => 'E-8-124925',
@@ -165,7 +165,7 @@ class ClientCreationTest extends TestCase
 
         ]);
 
-        $response->assertRedirect(route('tenant.client.list'));
+        $response->assertRedirect(route('tenant.client.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
 
         $client = $tenant->clients->first();
@@ -201,11 +201,11 @@ class ClientCreationTest extends TestCase
         ]);
         $admin->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($admin)->get(route('tenant.client.create'));
+        $response = $this->actingAs($admin)->get(route('tenant.client.create', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.client.create');
 
-        $response = $this->actingAs($admin)->post(route('tenant.client.store'), [
+        $response = $this->actingAs($admin)->post(route('tenant.client.store', $tenant->domain), [
             'first_name' => 'The',
             'last_name' => 'Client',
             'pid' => 'E-8-124926',

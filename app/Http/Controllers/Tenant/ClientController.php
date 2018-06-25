@@ -82,11 +82,11 @@ class ClientController extends Controller
 
             $client->saveExtraContacts($request, $tenant->id);
 
-            return redirect()->route('tenant.client.list')
+            return redirect()->route('tenant.client.list', $tenant->domain)
                 ->with('flash_success', __('The :what has been created.', ['what' => __('Client') ]));
         }
 
-        return redirect()->route('tenant.client.create')
+        return redirect()->route('tenant.client.create', $tenant->domain)
             ->withInput()
             ->with('flash_error', __('Error while trying to :action :what', [
                 'action' => __('Save'),
@@ -111,7 +111,7 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($tenant, $id)
     {
         $client = $this->getTenant()->clients()->with('boxes')->findOrFail($id);
 
@@ -130,7 +130,7 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ClientRequest $request, $id)
+    public function update(ClientRequest $request, $tenant, $id)
     {
         $tenant = $this->getTenant();
         $client =$tenant->clients()->findOrFail($id);
@@ -169,11 +169,11 @@ class ClientController extends Controller
 
             $client->saveExtraContacts($request, $tenant->id);
 
-            return redirect()->route('tenant.client.list')
+            return redirect()->route('tenant.client.list', $tenant->domain)
                 ->with('flash_success', __('The :what has been updated.', ['what' => __('Client') ]));
         }
 
-        return redirect()->route('tenant.client.edit', $id)
+        return redirect()->route('tenant.client.edit', [$tenant->domain, $id])
             ->withInput()
             ->with('flash_error', __('Error while trying to :action :what', [
                 'action' => __('Update'),

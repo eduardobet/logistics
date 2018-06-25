@@ -52,7 +52,7 @@ class ResetPasswordController extends Controller
      */
     protected function sendResetLinkFailedResponse(Request $request, $response)
     {
-        return redirect()->route('tenant.user.password.reset')->withErrors(
+        return redirect()->route('tenant.user.password.reset', $request->domain)->withErrors(
             ['email' => trans($response)]
         );
     }
@@ -68,7 +68,7 @@ class ResetPasswordController extends Controller
         $tenant = $this->getTenant();
 
         if (!$tenant) {
-            return redirect()->route('tenant.home')->with('flash_error', __('Invalid Tenant.'));
+            return redirect()->route('tenant.home', $tenant->domain)->with('flash_error', __('Invalid Tenant.'));
         }
 
         if ($tenant->hasActiveSubscription()) {
@@ -80,7 +80,7 @@ class ResetPasswordController extends Controller
 
             $url = localization()->getLocalizedURL(
                 auth()->user()->lang ? : localization()->getCurrentLocale(),
-                redirect()->intended(route("tenant.{$prefix}.dashboard"))->getTargetUrl()
+                redirect()->intended(route("tenant.{$prefix}.dashboard", $tenant->domain))->getTargetUrl()
             );
 
             return redirect($url);
@@ -89,6 +89,6 @@ class ResetPasswordController extends Controller
 
         auth()->logout();
 
-        return redirect()->route('tenant.home')->with('flash_error', __('Invalid user type.'));
+        return redirect()->route('tenant.home', $tenant->domain)->with('flash_error', __('Invalid user type.'));
     }
 }

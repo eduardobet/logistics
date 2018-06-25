@@ -19,8 +19,8 @@ class BranchEditionTest extends TestCase
         // $this->withoutExceptionHandling();
         $tenant = factory(TenantModel::class)->create();
 
-        $response = $this->get(route('tenant.admin.branch.edit', [1]));
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response = $this->get(route('tenant.admin.branch.edit', [$tenant->domain, 1]));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
     }
 
     /** @test */
@@ -31,9 +31,9 @@ class BranchEditionTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->get(route('tenant.admin.branch.edit', 1));
+        $response = $this->get(route('tenant.admin.branch.edit', [$tenant->domain, 1]));
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
 
         $this->assertFalse(auth()->check());
     }
@@ -46,9 +46,9 @@ class BranchEditionTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $employee = factory(User::class)->states('employee')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->actingAs($employee)->get(route('tenant.admin.branch.edit', 1));
+        $response = $this->actingAs($employee)->get(route('tenant.admin.branch.edit', [$tenant->domain, 1]));
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
         $this->assertFalse(auth()->check());
     }
 
@@ -60,11 +60,11 @@ class BranchEditionTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->actingAs($admin)->patch(route('tenant.admin.branch.update'), [
+        $response = $this->actingAs($admin)->patch(route('tenant.admin.branch.update', $tenant->domain), [
             'id' => 1
         ]);
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.admin.branch.edit', [1]));
+        $response->assertRedirect(route('tenant.admin.branch.edit', [$tenant->domain, 1]));
 
         $response->assertSessionHasErrors([
             'name',
@@ -86,7 +86,7 @@ class BranchEditionTest extends TestCase
         $branchA = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
         $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch Name B']);
 
-        $response = $this->actingAs($admin)->patch(route('tenant.admin.branch.update'), [
+        $response = $this->actingAs($admin)->patch(route('tenant.admin.branch.update', $tenant->domain), [
             'name' => $branchB->name,
             'address' => 'In the middle of nowhere',
             'emails' => 'contact@branch.test, sales@branch.test',
@@ -97,7 +97,7 @@ class BranchEditionTest extends TestCase
         ]);
 
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.admin.branch.edit', [$branchA->id]));
+        $response->assertRedirect(route('tenant.admin.branch.edit', [$tenant->domain, $branchA->id]));
         $response->assertSessionHasErrors('name');
     }
 
@@ -112,11 +112,11 @@ class BranchEditionTest extends TestCase
 
         $admin->branches()->sync([$branch->id]);
         
-        $response = $this->actingAs($admin)->get(route('tenant.admin.branch.edit', [$tenant->id]));
+        $response = $this->actingAs($admin)->get(route('tenant.admin.branch.edit', [$tenant->domain, $tenant->id]));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.branch.edit');
 
-        $response = $this->actingAs($admin)->patch(route('tenant.admin.branch.update'), [
+        $response = $this->actingAs($admin)->patch(route('tenant.admin.branch.update', $tenant->domain), [
             'name' => 'Branch Name Updated',
             'address' => 'In the middle of nowhere',
             'emails' => 'contact@branch.test, sales@branch.test',
@@ -152,7 +152,7 @@ class BranchEditionTest extends TestCase
             'should_invoice' => 1,
         ]);
 
-        $response->assertRedirect(route('tenant.admin.branch.list'));
+        $response->assertRedirect(route('tenant.admin.branch.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
     }
 }

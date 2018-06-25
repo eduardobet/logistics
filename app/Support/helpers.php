@@ -29,7 +29,9 @@ if (!function_exists('get_host')) {
     function get_host(string $host = null)
     {
         if (is_null($host)) {
-            $host = request()->getSchemeAndHttpHost();
+            // $host = request()->getSchemeAndHttpHost();
+
+            return request()->getHttpHost();
         }
 
         $hostParts = explode('.', $host);

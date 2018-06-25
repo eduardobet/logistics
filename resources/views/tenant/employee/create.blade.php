@@ -18,7 +18,7 @@
          </div><!-- slim-pageheader -->
 
          <div class="section-wrapper">
-            {!! Form::open(['route' => 'tenant.admin.employee.store']) !!}
+            {!! Form::open(['route' => ['tenant.admin.employee.store', $tenant->domain]]) !!}
             
             {!! Form::hidden('branches[]', $branch->id) !!}
             

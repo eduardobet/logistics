@@ -94,7 +94,7 @@ class Tenant extends Model
     public function touchEnvFile()
     {
         $hostParts = explode('//', $this->domain);
-        $domainName = $hostParts[1];
+        $domainName = $this->domain; //$hostParts[1];
         $envFile = base_path('envs/' . $domainName);
 
         \Illuminate\Support\Facades\File::put($envFile, $this->getContent($domainName));
@@ -109,6 +109,7 @@ class Tenant extends Model
         config([
             'app.name' => $this->name,
             'app.url' => $this->domain,
+            'app.locale' => $this->lang,
         ]);
     }
 }

@@ -130,11 +130,13 @@ class TenantTest extends TestCase
     {
         $tenant = factory(TenantModel::class)->create();
 
-        $domain = explode('//', $tenant->domain);
+        // $domain = explode('//', $tenant->domain);
+        $domain = $tenant->domain;
 
         $tenant->touchEnvFile();
 
-        $envFile = base_path("envs/{$domain[1]}");
+        //$envFile = base_path("envs/{$domain[1]}");
+        $envFile = base_path("envs/{$domain}");
 
         $this->assertFileExists($envFile);
 
@@ -145,7 +147,8 @@ class TenantTest extends TestCase
     public function it_touches_the_env_file_with_the_right_content()
     {
         $tenant = factory(TenantModel::class)->create();
-        $domain = explode('//', $tenant->domain)[1];
+        //$domain = explode('//', $tenant->domain)[1];
+        $domain = $tenant->domain;
         $envFile = $tenant->touchEnvFile();
         $contentArray = file($envFile);
 

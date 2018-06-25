@@ -67,7 +67,7 @@ class CompanyRequest extends FormRequest
     protected function getRedirectUrl()
     {
         $url = $this->redirector->getUrlGenerator();
-        $params = [];
+        $params = ['domain' => $this->current_domain ? $this->current_domain : $this->domain];
 
         return $url->route(
             'tenant.admin.company.edit',

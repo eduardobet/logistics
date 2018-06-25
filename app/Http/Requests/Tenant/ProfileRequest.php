@@ -68,7 +68,7 @@ class ProfileRequest extends AppFormRequest
     protected function getRedirectUrl()
     {
         $url = $this->redirector->getUrlGenerator();
-        $params = [];
+        $params = ['domain' => $this->domain];
 
         return $url->route(
             'tenant.employee.profile.edit',

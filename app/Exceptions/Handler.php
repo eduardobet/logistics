@@ -100,9 +100,9 @@ class Handler extends ExceptionHandler
         }
 
         if (starts_with($request->route()->getName(), 'tenant.')) {
-            $loginRoute = route('tenant.auth.get.login');
+            $loginRoute = route('tenant.auth.get.login', $request->domain);
         } else {
-            $loginRoute = route('app.auth.get.login');
+            $loginRoute = route('app.auth.get.login', $request->domain);
         }
 
         return redirect()->guest($loginRoute);

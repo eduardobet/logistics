@@ -30,7 +30,7 @@
                 </li>
             </ul>
 
-            {!! Form::model($company, ['route' => ['tenant.admin.company.update'], 'method' => 'PATCH', 'files' => true, ]) !!}
+            {!! Form::model($company, ['route' => ['tenant.admin.company.update', $tenant->domain], 'method' => 'PATCH', 'files' => true, ]) !!}
             <div class="tab-content">
 
                 
@@ -133,7 +133,7 @@
                 <div class="tab-pane" id="remote-addresses">
                     <div class="mg-t-25">
                         <button class="btn btn-sm btn-outline-success btn-add-more" type="button"
-                        data-url="{{ route('tenant.compnay.remote-addr-tmpl') }}"
+                        data-url="{{ route('tenant.compnay.remote-addr-tmpl', $tenant->domain) }}"
                         data-loading-text="<i class='fa fa-spinner fa-spin '></i> {{ __('Loading') }}..."
                         >
                             <i class="fa fa-plus"></i> {{ __('Add') }}

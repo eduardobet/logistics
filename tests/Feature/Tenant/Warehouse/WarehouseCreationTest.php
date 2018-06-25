@@ -22,8 +22,8 @@ class WarehouseCreationTest extends TestCase
         // $this->withoutExceptionHandling();
         $tenant = factory(TenantModel::class)->create();
 
-        $response = $this->get(route('tenant.warehouse.create'), []);
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response = $this->get(route('tenant.warehouse.create', $tenant->domain), []);
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
     }
 
     /** @test */
@@ -34,11 +34,11 @@ class WarehouseCreationTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.warehouse.store'), [
+        $response = $this->actingAs($admin)->post(route('tenant.warehouse.store', $tenant->domain), [
             'reception_branch' => 'XXX'
         ]);
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.warehouse.create'));
+        $response->assertRedirect(route('tenant.warehouse.create', $tenant->domain));
 
         $response->assertSessionHasErrors([
             'branch_to_issue', 'reception_branch', 'mailer_id', 'client_id', 'trackings',
@@ -68,12 +68,12 @@ class WarehouseCreationTest extends TestCase
             'branch_code' => $branch->code,
         ]);
 
-        $response = $this->actingAs($admin)->get(route('tenant.warehouse.create'));
+        $response = $this->actingAs($admin)->get(route('tenant.warehouse.create', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.warehouse.create');
         $response->assertViewHas(['userBranches', 'branches', 'mailers',]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.warehouse.store'), [
+        $response = $this->actingAs($admin)->post(route('tenant.warehouse.store', $tenant->domain), [
             'branch_to_issue' => $branch->id,
             'mailer_id' => $mailer->id,
             'client_id' => $client->id,
@@ -82,7 +82,7 @@ class WarehouseCreationTest extends TestCase
             'qty' => 3,
         ]);
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.warehouse.edit', 1));
+        $response->assertRedirect(route('tenant.warehouse.edit', [$tenant->domain, 1]));
 
         $this->assertDatabaseHas('warehouses', [
             "tenant_id" => $tenant->id,

@@ -18,7 +18,7 @@
          </div><!-- slim-pageheader -->
 
         <div class="section-wrapper">
-            {!! Form::open(['route' => 'tenant.client.store']) !!}
+            {!! Form::open(['route' => ['tenant.client.store', $tenant->domain]]) !!}
                 <input type="hidden" name="branch_id" value="{{ $branch->id }}">
                 <input type="hidden" name="branch_code" value="{{ $branch->code }}">
                 {!! Form::hidden('branches[]', $branch->id) !!}

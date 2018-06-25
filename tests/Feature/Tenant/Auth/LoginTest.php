@@ -20,7 +20,7 @@ class LoginTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, 'status' => 'L']);
 
-        $response = $this->post(route('tenant.auth.post.login'), ['email' => $admin->email, 'password' => 'secret123']);
+        $response = $this->post(route('tenant.auth.post.login', $tenant->domain), ['email' => $admin->email, 'password' => 'secret123']);
 
         $this->assertTrue($response->isRedirect());
         $response->assertRedirect('auth/login');
@@ -36,7 +36,7 @@ class LoginTest extends TestCase
         $tenant = factory(TenantModel::class)->create(['status' => 'I', ]);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->post(route('tenant.auth.post.login'), ['email' => $admin->email, 'password' => 'secret123']);
+        $response = $this->post(route('tenant.auth.post.login', $tenant->domain), ['email' => $admin->email, 'password' => 'secret123']);
         $response->assertStatus(302);
         $response->assertRedirect(route('app.home'));
         $response->assertSessionHas('flash_inactive_tenant');
@@ -52,11 +52,11 @@ class LoginTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->get(route('tenant.auth.get.login'));
+        $response = $this->get(route('tenant.auth.get.login', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.auth.login');
 
-        $response = $this->post(route('tenant.auth.post.login'), ['email' => $admin->email, 'password' => 'secret123']);
+        $response = $this->post(route('tenant.auth.post.login', $tenant->domain), ['email' => $admin->email, 'password' => 'secret123']);
         $response->assertRedirect('en/admin/dashboard');
 
         $this->assertTrue(auth()->check());
@@ -70,7 +70,7 @@ class LoginTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $employee = factory(User::class)->states('employee')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->post(route('tenant.auth.post.login'), ['email' => $employee->email, 'password' => 'secret123']);
+        $response = $this->post(route('tenant.auth.post.login', $tenant->domain), ['email' => $employee->email, 'password' => 'secret123']);
         $response->assertRedirect('en/employee/dashboard');
 
         $this->assertTrue(auth()->check());
@@ -84,10 +84,10 @@ class LoginTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.auth.post.logout'));
+        $response = $this->actingAs($admin)->post(route('tenant.auth.post.logout', $tenant->domain));
 
         $this->assertTrue($response->isRedirect());
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
         $this->assertFalse(auth()->check());
     }
 
@@ -98,13 +98,13 @@ class LoginTest extends TestCase
 
         $tenantA = factory(TenantModel::class)->create();
 
-        $tenantB = factory(TenantModel::class)->create(['domain' => 'https://tenant-b.test', 'name' => 'Tenant B']);
+        $tenantB = factory(TenantModel::class)->create(['domain' => 'tenant-b.test', 'name' => 'Tenant B']);
         $adminA = factory(User::class)->states('admin')->create();
         $adminB = factory(User::class)->states('admin')->create();
 
-        $response = $this->post(route('tenant.auth.post.login'), ['email' => $adminA->email, 'password' => 'secret123']);
+        $response = $this->post(route('tenant.auth.post.login', $tenantB->domain), ['email' => $adminA->email, 'password' => 'secret123']);
         $this->assertFalse(auth()->check());
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenantB->domain));
     }
 
     /** @test */
@@ -118,7 +118,7 @@ class LoginTest extends TestCase
         $response = null;
 
         for ($i=0; $i < 6; $i++) {
-            $response = $this->post(route('tenant.auth.post.login'), ['email' => 'false-email@example.com', 'password' => 'fakepwd123']);
+            $response = $this->post(route('tenant.auth.post.login', $tenant->domain), ['email' => 'false-email@example.com', 'password' => 'fakepwd123']);
         }
 
         $response->assertSessionHas([

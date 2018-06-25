@@ -23,8 +23,8 @@ class ProfileTest extends TestCase
 
         $tenant = factory(TenantModel::class)->create();
 
-        $response = $this->get(route('tenant.employee.profile.edit'));
-        $response->assertRedirect(route('tenant.auth.get.login'));
+        $response = $this->get(route('tenant.employee.profile.edit', $tenant->domain));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
     }
 
     /** @test */
@@ -38,7 +38,7 @@ class ProfileTest extends TestCase
         $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, 'status' => 'L', ]);
         $employee->branches()->sync([$branchA->id]);
 
-        $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update'), [
+        $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update', $tenant->domain), [
             'first_name' => 'Employee f name update',
             'last_name' => 'Employee l name update',
             'email' => $employee->email,
@@ -49,7 +49,7 @@ class ProfileTest extends TestCase
             '_method' => 'PATCH',
         ]);
 
-        $response->assertRedirect(route('tenant.employee.profile.edit'));
+        $response->assertRedirect(route('tenant.employee.profile.edit', $tenant->domain));
         $response->assertSessionHasErrors(['status', 'is_main_admin', 'branches', 'type']);
         $this->assertDatabaseMissing('users', [
             'type' => 'A',
@@ -67,12 +67,12 @@ class ProfileTest extends TestCase
         $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id,]);
         $employee->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($employee)->get(route('tenant.employee.profile.edit'));
+        $response = $this->actingAs($employee)->get(route('tenant.employee.profile.edit', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.employee.profile');
         $response->assertViewHas(['employee']);
 
-        $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update'), [
+        $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update', $tenant->domain), [
             'first_name' => 'Employee f name update',
             'last_name' => 'Employee l name update',
             'pid' => 'PID',
@@ -96,7 +96,7 @@ class ProfileTest extends TestCase
             'notes' => 'Some notes about the employee',
         ]);
         
-        $response->assertRedirect(route('tenant.employee.profile.edit'));
+        $response->assertRedirect(route('tenant.employee.profile.edit', $tenant->domain));
     }
 
     /** @test */
@@ -111,7 +111,7 @@ class ProfileTest extends TestCase
         $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id,]);
         $file = UploadedFile::fake()->image('avatar.jpg');
 
-        $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update'), [
+        $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update', $tenant->domain), [
             'first_name' => 'Employee f name update',
             'last_name' => 'Employee l name update',
             'avatar' => $file,
@@ -144,7 +144,7 @@ class ProfileTest extends TestCase
         $employee = factory(User::class)->states('employee')
             ->create(['tenant_id' => $tenant->id, 'avatar' => "tenant/{$tenant->id}/images/avatars/avatar.png" ]);
 
-        $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update'), [
+        $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update', $tenant->domain), [
             'first_name' => 'Employee f name update',
             'last_name' => 'Employee l name update',
             'avatar' => $file,
@@ -168,12 +168,12 @@ class ProfileTest extends TestCase
         $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, ]);
         $employee->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($employee)->get(route('tenant.employee.profile.edit'));
+        $response = $this->actingAs($employee)->get(route('tenant.employee.profile.edit', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.employee.profile');
         $response->assertViewHas(['employee']);
 
-        $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update'), [
+        $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update', $tenant->domain), [
             'first_name' => 'Employee f name update',
             'last_name' => 'Employee l name update',
             'pid' => 'PID',
@@ -187,7 +187,7 @@ class ProfileTest extends TestCase
             'new_password_confirmation' => 'pwd1234',
         ]);
 
-        $response->assertRedirect(route('tenant.employee.profile.edit'));
+        $response->assertRedirect(route('tenant.employee.profile.edit', $tenant->domain));
 
         $employee = $employee->fresh();
 
@@ -204,12 +204,12 @@ class ProfileTest extends TestCase
         $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, ]);
         $employee->branches()->sync([$branch->id]);
 
-        $response = $this->actingAs($employee)->get(route('tenant.employee.profile.edit'));
+        $response = $this->actingAs($employee)->get(route('tenant.employee.profile.edit', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.employee.profile');
         $response->assertViewHas(['employee']);
 
-        $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update'), [
+        $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update', $tenant->domain), [
             'first_name' => 'Employee f name update',
             'last_name' => 'Employee l name update',
             'pid' => 'PID',
@@ -223,7 +223,7 @@ class ProfileTest extends TestCase
             'new_password_confirmation' => '',
         ]);
 
-        $response->assertRedirect(route('tenant.employee.profile.edit'));
+        $response->assertRedirect(route('tenant.employee.profile.edit', $tenant->domain));
         $response->assertSessionHasErrors(['current_password', 'new_password', 'new_password_confirmation', ]);
     }
 }

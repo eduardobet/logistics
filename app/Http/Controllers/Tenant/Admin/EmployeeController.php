@@ -68,11 +68,11 @@ class EmployeeController extends Controller
 
             $employee->branchesForInvoice()->sync($request->branches_for_invoices);
 
-            return redirect()->route('tenant.admin.employee.list')
+            return redirect()->route('tenant.admin.employee.list', $request->domain)
                 ->with('flash_success', __('The :what has been created.', ['what' => __('Employee') ]));
         }
 
-        return redirect()->route('tenant.admin.employee.create')
+        return redirect()->route('tenant.admin.employee.create', $request->domain)
             ->withInput()
             ->with('flash_error', __('Error while trying to :action :what', [
                 'action' => __('Save'),
@@ -80,7 +80,7 @@ class EmployeeController extends Controller
             ]));
     }
 
-    public function edit($id)
+    public function edit($domain, $id)
     {
         $tenant = $this->getTenant();
         $employee = $tenant->employees()->where('id', $id)->firstOrFail();
@@ -120,11 +120,11 @@ class EmployeeController extends Controller
         $employee->branchesForInvoice()->sync($request->branches_for_invoices);
 
         if ($updated) {
-            return redirect()->route('tenant.admin.employee.list')
+            return redirect()->route('tenant.admin.employee.list', $request->domain)
                 ->with('flash_success', __('The :what has been updated.', ['what' => __('Employee')]));
         }
 
-        return redirect()->route('tenant.admin.employee.edit', $request->id)
+        return redirect()->route('tenant.admin.employee.edit', [$request->domain, $request->id])
             ->withInput()
             ->with('flash_error', __('Error while trying to :action :what', [
                 'action' => __('Update'),

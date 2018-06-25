@@ -1,7 +1,7 @@
 @extends('layouts.tenant')
 
 @section('content')
-  <form method="post" action="{{ route('tenant.user.password.post.reset')  }}">
+  <form method="post" action="{{ route('tenant.user.password.post.reset', $tenant->domain)  }}">
       {{ csrf_field() }}
       <div class="signin-wrapper">
 
@@ -30,7 +30,7 @@
                   {{ __('Send') }}
               </button>
 
-              <a href="{{ route('tenant.auth.get.login') }}" class="button is-tomato">{{__('Login')}}</a>
+              <a href="{{ route('tenant.auth.get.login', $tenant->domain) }}" class="button is-tomato">{{__('Login')}}</a>
 
           </div>
 

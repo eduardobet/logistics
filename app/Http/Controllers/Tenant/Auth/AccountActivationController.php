@@ -13,7 +13,7 @@ class AccountActivationController extends Controller
 {
     use Tenant;
 
-    public function showUnlockForm($email, $token)
+    public function showUnlockForm($domain, $email, $token)
     {
         $tenant = $this->getTenant();
 
@@ -24,7 +24,7 @@ class AccountActivationController extends Controller
             ->first();
 
         if (!$employee) {
-            return redirect()->route('tenant.home')->with('flash_error', __('We could not find a user associated with this email!'));
+            return redirect()->route('tenant.home', $tenant->domain)->with('flash_error', __('We could not find a user associated with this email!'));
         }
 
         return view('tenant.auth.unlock', compact('user'));
@@ -39,7 +39,7 @@ class AccountActivationController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('tenant.home')
+            return redirect()->route('tenant.home', $request->domain)
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -53,7 +53,7 @@ class AccountActivationController extends Controller
             ->first();
 
         if (!$employee) {
-            return redirect()->route('tenant.home')->with('flash_error', __('We could not find a user associated with this email!'));
+            return redirect()->route('tenant.home', $request->domain)->with('flash_error', __('We could not find a user associated with this email!'));
         }
 
         $employee->password = bcrypt($request->password);
@@ -70,7 +70,7 @@ class AccountActivationController extends Controller
         if ($updated) {
             auth()->login($employee);
 
-            return redirect()->route($route);
+            return redirect()->route($route, $request->domain);
         }
 
         return redirect()->back()->withErrors(__('Sorry! we could not unlock your account. Please contact the administrator.'));

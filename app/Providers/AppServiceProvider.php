@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Route::pattern('tenant-domain', '[a-z0-9.\-]+');
+        Route::pattern('domain', '[a-z0-9.\-]+');
     }
 
     /**

@@ -21,7 +21,7 @@ class PasswordResetTest extends TestCase
 
         $tenant = factory(TenantModel::class)->create();
 
-        $response = $this->get(route('tenant.user.password.request'));
+        $response = $this->get(route('tenant.user.password.request', $tenant->domain));
 
         $response->assertStatus(200);
         $response->assertViewIs('tenant.auth.email');
@@ -34,11 +34,11 @@ class PasswordResetTest extends TestCase
 
         $tenant = factory(TenantModel::class)->create();
 
-        $response = $this->from(route('tenant.user.password.request'))
-            ->post(route('tenant.user.password.email'), ['email' => 'invalid.tenant-user@gmail.com']);
+        $response = $this->from(route('tenant.user.password.request', $tenant->domain))
+            ->post(route('tenant.user.password.email', $tenant->domain), ['email' => 'invalid.tenant-user@gmail.com']);
 
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.user.password.request'));
+        $response->assertRedirect(route('tenant.user.password.request', $tenant->domain));
     }
 
     /** @test */
@@ -47,7 +47,7 @@ class PasswordResetTest extends TestCase
         $this->withoutExceptionHandling();
 
         $tenant = factory(TenantModel::class)->create();
-        $response = $this->get(URL::signedRoute('tenant.user.password.reset', ['token' => 'tenant-user-password-reset-token']));
+        $response = $this->get(URL::signedRoute('tenant.user.password.reset', [$tenant->domain, 'token' => 'tenant-user-password-reset-token']));
 
         $response->assertStatus(200);
         $response->assertViewIs('tenant.auth.reset');
@@ -64,7 +64,7 @@ class PasswordResetTest extends TestCase
         $user = factory(User::class)->states('employee')->create(['status' => 'A', 'tenant_id' => $tenant->id, ]);
         $token = '';
 
-        $response = $this->post(route('tenant.user.password.email'), ['email' => $user->email]);
+        $response = $this->post(route('tenant.user.password.email', $tenant->domain), ['email' => $user->email]);
 
         Notification::assertSentTo(
             $user,
@@ -77,7 +77,7 @@ class PasswordResetTest extends TestCase
         );
 
         $response = $this->post(
-            route('tenant.user.password.post.reset'),
+            route('tenant.user.password.post.reset', $tenant->domain),
             [
                 'email' => $user->email,
                 'token' => $token,
@@ -88,7 +88,8 @@ class PasswordResetTest extends TestCase
 
         $this->assertTrue(auth()->check());
         $response->assertStatus(302);
-        $response->assertRedirect('/en/employee/dashboard');
+        $this->assertContains('/en/employee/dashboard', $response->headers->get('Location'));
+        //$response->assertRedirect('/en/employee/dashboard');
     }
 
     /** @test */
@@ -99,7 +100,7 @@ class PasswordResetTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
 
         $response = $this->post(
-            route('tenant.user.password.post.reset'),
+            route('tenant.user.password.post.reset', $tenant->domain),
             []
         );
 

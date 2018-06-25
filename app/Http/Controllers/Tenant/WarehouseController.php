@@ -55,11 +55,11 @@ class WarehouseController extends Controller
         ]);
 
         if ($warehouse) {
-            return redirect()->route('tenant.warehouse.edit', $warehouse->id)
+            return redirect()->route('tenant.warehouse.edit', [$tenant->domain, $warehouse->id])
                 ->with('flash_success', __('The :what has been created.', ['what' => __('Warehouse') ]));
         }
 
-        return redirect()->route('tenant.client.create')
+        return redirect()->route('tenant.client.create', $tenant->domain)
             ->withInput()
             ->with('flash_error', __('Error while trying to :action :what', [
                 'action' => __('Save'),

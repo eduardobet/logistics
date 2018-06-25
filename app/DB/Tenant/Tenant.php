@@ -103,4 +103,12 @@ class Tenant extends Model
 
         return $envFile;
     }
+
+    public function touchEnvFileForConsole()
+    {
+        config([
+            'app.name' => $this->name,
+            'app.url' => $this->domain,
+        ]);
+    }
 }

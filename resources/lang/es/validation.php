@@ -141,6 +141,12 @@ return [
         'urls' => [
             'mass_url' => 'El campo :attribute es inv&aacute;lido.',
         ],
+        'new_password' => [
+            'alpha_num_pwd' => 'El campo :attribute debe tener al menos 6 caracteres y debe contener al menos un d&iacute;gito.',
+        ],
+        'current_password' => [
+            'pass_check' => 'Lo sentimos! esa no es tu contraseña actual',
+        ]
     ],
     /*
     |--------------------------------------------------------------------------
@@ -161,6 +167,9 @@ return [
         'last_name' => __('Surnames'),
         'password' => __('Password'),
         'password_confirmation' => __('Password confirmation'),
+        'new_password_confirmation' => __('Password confirmation'),
+        'current_password' => __('Current password'),
+        'new_password' => __('New password'),
         'city_id' => __('City'),
         'country_id' => __('Country'),
         'Department_id' => __('Department'),

@@ -128,6 +128,9 @@ return [
         'emails' => [
             'mass_email' => 'The field :attribute is invalid.',
         ],
+        'email' => [
+            'unique' => 'The :attribute has already been taken.',
+        ],
         'telephones' => [
             'mass_phone' => 'The field :attribute is invalid.',
         ],
@@ -139,7 +142,14 @@ return [
         ],
         'password' => [
             'alpha_num_pwd' => 'The :attribute field must be at least 6 characters long and contain at least one letter and one digit.',
+            'min' => 'The :attribute must be at least :min characters',
         ],
+        'new_password' => [
+            'alpha_num_pwd' => 'The :attribute field must be at least 6 characters long and contain at least one letter and one digit.',
+        ],
+        'current_password' => [
+            'pass_check' => 'Sorry! this is not your current password.',
+        ]
     ],
 
     /*
@@ -162,6 +172,9 @@ return [
         'last_name' => __('Surnames'),
         'password' => __('Password'),
         'password_confirmation' => __('Password confirmation'),
+        'new_password_confirmation' => __('Password confirmation'),
+        'current_password' => __('Current password'),
+        'new_password' => __('New password'),
         'city_id' => __('City'),
         'country_id' => __('Country'),
         'Department_id' => __('Department'),

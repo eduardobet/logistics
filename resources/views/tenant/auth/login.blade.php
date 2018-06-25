@@ -25,6 +25,10 @@
             </div><!-- form-group -->
 
             <button class="btn btn-primary btn-block btn-signin">{{ __('Login') }}</button>
+
+
+            <a href="{{ route('tenant.user.password.request') }}" class="button is-tomato">{{__('Forgot password')}}</a>
+
           </div><!-- signin-box -->
 
           {{ csrf_field() }}

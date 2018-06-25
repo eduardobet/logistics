@@ -34,6 +34,12 @@ class ProfileRequest extends AppFormRequest
             'is_main_admin' => 'not_present',
         ];
 
+        if ($this->has('current_password') && $this->current_password) {
+            $rules['current_password'] = 'required|pass_check';
+            $rules['new_password'] = 'required|alpha_num_pwd|confirmed';
+            $rules['new_password_confirmation'] = 'required';
+        }
+
         return $rules;
     }
 

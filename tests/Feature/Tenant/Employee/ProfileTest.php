@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Logistics\DB\User;
 use Logistics\DB\Tenant\Branch;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
@@ -155,5 +156,74 @@ class ProfileTest extends TestCase
         Storage::disk('public')->assertMissing("tenant/{$tenant->id}/images/avatars/avatar.png");
         $this->assertEquals("tenant/{$tenant->id}/images/avatars/{$file->hashName()}", $employee->avatar);
         Storage::disk('public')->assertExists("tenant/{$tenant->id}/images/avatars/{$file->hashName()}");
+    }
+
+    /** @test */
+    public function employee_can_change_his_password()
+    {
+        $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, ]);
+        $employee->branches()->sync([$branch->id]);
+
+        $response = $this->actingAs($employee)->get(route('tenant.employee.profile.edit'));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.employee.profile');
+        $response->assertViewHas(['employee']);
+
+        $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update'), [
+            'first_name' => 'Employee f name update',
+            'last_name' => 'Employee l name update',
+            'pid' => 'PID',
+            'telephones' => '555-5555',
+            'address' => 'In the middle of nowhere',
+            'notes' => 'Some notes about the employee',
+            '_method' => 'PATCH',
+            //
+            'current_password' => 'secret123',
+            'new_password' => 'pwd1234',
+            'new_password_confirmation' => 'pwd1234',
+        ]);
+
+        $response->assertRedirect(route('tenant.employee.profile.edit'));
+
+        $employee = $employee->fresh();
+
+        $this->assertTrue(Hash::check('pwd1234', $employee->password));
+    }
+
+    /** @test */
+    public function employee_cannot_change_his_password_with_invalid_input()
+    {
+        // $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, ]);
+        $employee->branches()->sync([$branch->id]);
+
+        $response = $this->actingAs($employee)->get(route('tenant.employee.profile.edit'));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.employee.profile');
+        $response->assertViewHas(['employee']);
+
+        $response = $this->actingAs($employee)->post(route('tenant.employee.profile.update'), [
+            'first_name' => 'Employee f name update',
+            'last_name' => 'Employee l name update',
+            'pid' => 'PID',
+            'telephones' => '555-5555',
+            'address' => 'In the middle of nowhere',
+            'notes' => 'Some notes about the employee',
+            '_method' => 'PATCH',
+            //
+            'current_password' => 'secret',
+            'new_password' => 'pwd',
+            'new_password_confirmation' => '',
+        ]);
+
+        $response->assertRedirect(route('tenant.employee.profile.edit'));
+        $response->assertSessionHasErrors(['current_password', 'new_password', 'new_password_confirmation', ]);
     }
 }

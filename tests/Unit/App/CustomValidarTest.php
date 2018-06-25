@@ -153,4 +153,26 @@ class CustomValidarTest extends TestCase
         $v = $this->app['validator']->make($data, $rules);
         $this->assertTrue($v->fails());
     }
+
+    /** @test */
+    public function validates_current_password()
+    {
+        $this->withoutExceptionHandling();
+
+        $tenant = factory(Tenant::class)->create();
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, 'status' => 'L', ]);
+
+        $this->actingAs($admin);
+
+        $rules = [
+            'current_password' => 'pass_check'
+        ];
+
+        $data = [
+            'current_password' => '1234',
+        ];
+
+        $v = $this->app['validator']->make($data, $rules);
+        $this->assertTrue($v->fails());
+    }
 }

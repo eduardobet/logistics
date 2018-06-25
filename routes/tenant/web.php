@@ -13,10 +13,10 @@ Route::group(['tenant-domain' => '{tenant-domain}', 'middleware' => 'tenant'], f
         Route::post('logout', 'Tenant\Auth\LoginController@logout')->name('tenant.auth.post.logout');
 
         // TODO: password reset
-        /*Route::get('password/reset', 'Auth\Tenant\ForgotPasswordController@showLinkRequestForm')->name('Tenant.user.password.request');
-        Route::post('password/email', 'Auth\Tenant\ForgotPasswordController@sendResetLinkEmail')->name('Tenant.user.password.email');
-        Route::get('password/reset/{token}', 'Auth\Tenant\ResetPasswordController@showResetForm')->name('Tenant.user.password.reset');
-        Route::post('password/reset', 'Auth\Tenant\ResetPasswordController@reset')->name('client.user.password.post.reset');*/
+        Route::get('password/reset', 'Tenant\Auth\ForgotPasswordController@showLinkRequestForm')->name('tenant.user.password.request');
+        Route::post('password/email', 'Tenant\Auth\ForgotPasswordController@sendResetLinkEmail')->name('tenant.user.password.email');
+        Route::get('password/reset/{token}', 'Tenant\Auth\ResetPasswordController@showResetForm')->name('tenant.user.password.reset')->middleware('signed');
+        Route::post('password/reset', 'Tenant\Auth\ResetPasswordController@reset')->name('tenant.user.password.post.reset');
 
         Route::get('unlock/{email}/{token}', 'Tenant\Auth\AccountActivationController@showUnlockForm')
             ->name('tenant.employee.get.unlock')

@@ -19,7 +19,7 @@ class ProfileController extends Controller
 
     public function update(ProfileRequest $request)
     {
-        $updated = auth()->user()->update([
+        $data = [
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'telephones' => $request->telephones,
@@ -27,7 +27,13 @@ class ProfileController extends Controller
             'full_name' => $request->first_name . ' ' . $request->last_name,
             'address' => $request->address,
             'notes' => $request->notes,
-        ]);
+        ];
+
+        if ($request->new_password) {
+            $data['password'] = bcrypt($request->new_password);
+        }
+        
+        $updated = auth()->user()->update($data);
 
 
         if ($updated) {

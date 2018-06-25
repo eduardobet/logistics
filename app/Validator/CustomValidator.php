@@ -113,4 +113,15 @@ class CustomValidator extends \Illuminate\Validation\Validator
     {
         return !array_key_exists($attribute, $this->data);
     }
+
+    public function validatePassCheck($attribute, $value, $parameters)
+    {
+        $dbPass = User::whereId(auth()->id())->firstOrFail(['password']);
+
+        if (\Hash::check($value, $dbPass->password)) {
+            return true;
+        }
+        
+        return false;
+    }
 }

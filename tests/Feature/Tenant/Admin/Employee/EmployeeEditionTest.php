@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Logistics\DB\User;
 use Logistics\DB\Tenant\Branch;
 use Logistics\DB\Tenant\Permission;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -158,6 +159,56 @@ class EmployeeEditionTest extends TestCase
 
         $this->assertTrue($employee->branches->contains($branchB));
         $this->assertFalse($employee->branches->contains($branchA));
+    }
+
+    /** @test */
+    public function event_is_fired_is_the_email_has_changed()
+    {
+        $this->withoutExceptionHandling();
+
+        Event::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $permissionA = factory(Permission::class)->create(['tenant_id' => $tenant->id, ]);
+        $permissionB = factory(Permission::class)->create(['tenant_id' => $tenant->id, 'name' => 'Perm Name B', 'slug' => 'p-b' ]);
+
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $branchA = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch Name B',]);
+        $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, ]);
+        $employee->branches()->sync([$branchA->id]);
+        $admin->branches()->sync([$branchA->id]);
+
+        $response = $this->actingAs($admin)->get(route('tenant.admin.employee.edit', [ $tenant->domain, 'id' => $employee->id]));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.employee.edit');
+        $response->assertViewHas('positions');
+        $response->assertViewHas('permissions');
+
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.update', $tenant->domain), [
+            'id' => $employee->id,
+            'first_name' => 'Employee f name update',
+            'last_name' => 'Employee l name update',
+            'email' => 'employee.update@test.com',
+            'type' => 'A',
+            'status' => 'A',
+            'branches' => [$branchB->id],
+            'pid' => 'PID',
+            'telephones' => '555-5555',
+            'position' => 1,
+            'address' => 'In the middle of nowhere',
+            'notes' => 'Some notes about the employee',
+            'permissions' => [$permissionA->slug, $permissionB->slug],
+            '_method' => 'PATCH',
+        ]);
+
+        $response->assertSessionHas(['flash_success']);
+        $response->assertRedirect(route('tenant.admin.employee.list', $tenant->domain));
+
+        Event::assertDispatched(\Logistics\Events\Tenant\EmployeeWasCreatedEvent::class, function ($event) use ($tenant, $employee) {
+            return $event->tenant->id === $tenant->id
+                && $event->employee->id === $employee->id;
+        });
     }
 
     /** @test */

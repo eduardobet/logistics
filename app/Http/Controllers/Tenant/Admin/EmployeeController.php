@@ -98,6 +98,7 @@ class EmployeeController extends Controller
         $tenant = $this->getTenant();
 
         $employee = $tenant->employees()->where('id', $request->id)->first();
+        $oldEmail = $employee->email;
 
         $employee->first_name = $request->first_name;
         $employee->last_name  = $request->last_name;
@@ -120,6 +121,10 @@ class EmployeeController extends Controller
         $employee->branchesForInvoice()->sync($request->branches_for_invoices);
 
         if ($updated) {
+            if ($oldEmail !== $request->email) {
+                event(new EmployeeWasCreatedEvent($tenant, $employee));
+            }
+
             return redirect()->route('tenant.admin.employee.list', $request->domain)
                 ->with('flash_success', __('The :what has been updated.', ['what' => __('Employee')]));
         }

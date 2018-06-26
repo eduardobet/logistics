@@ -41,7 +41,7 @@ class WarehouseCreationTest extends TestCase
         $response->assertRedirect(route('tenant.warehouse.create', $tenant->domain));
 
         $response->assertSessionHasErrors([
-            'branch_to_issue', 'reception_branch', 'mailer_id', 'client_id', 'trackings',
+            'branch_from', 'branch_to', 'reception_branch', 'mailer_id', 'client_id', 'trackings',
             'reference', 'qty',
         ]);
     }

@@ -95,7 +95,7 @@
     <div class="col-lg-6">
         <div class="form-group">
             <label class="ckbox">
-                {!! Form::checkbox('should_invoice') !!} <span>{{ __('Activate warehouse invoice') }}</span>
+                {!! Form::checkbox('direct_comission') !!} <span>{{ __('Direct comission') }}</span>
             </label>
         </div>
     </div>
@@ -103,7 +103,7 @@
     <div class="col-lg-6">
         <div class="form-group">
             <label class="ckbox">
-                {!! Form::checkbox('reception_branch') !!} <span>{{ __('Activate reception branch') }}</span>
+                {!! Form::checkbox('should_invoice') !!} <span>{{ __('Activate warehouse invoice') }}</span>
             </label>
         </div>
     </div>

@@ -123,7 +123,7 @@ class BranchCreationTest extends TestCase
             "ruc" => 'RUC',
             "dv" => 'DV',
             'status' => 'A',
-            'reception_branch' => '1',
+            'direct_comission' => '1',
             'should_invoice' => '1',
         ]);
 
@@ -141,7 +141,7 @@ class BranchCreationTest extends TestCase
             "ruc" => 'RUC',
             "dv" => 'DV',
             "status" => "A",
-            'reception_branch' => 1,
+            'direct_comission' => 1,
             'should_invoice' => 1,
         ]);
 

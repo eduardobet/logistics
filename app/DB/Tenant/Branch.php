@@ -12,8 +12,7 @@ class Branch extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'status', 'ruc', 'dv', 'telephones', 'emails', 'address', 'logo',
-        'code', 'created_by_code', 'faxes', 'lat', 'lng', 'tenant_id', 'updated_by_code', 'reception_branch', 'should_invoice',
+        'name', 'status', 'ruc', 'dv', 'telephones', 'emails', 'address', 'logo', 'code', 'created_by_code', 'faxes', 'lat', 'lng', 'tenant_id', 'updated_by_code', 'direct_comission', 'should_invoice',
     ];
 
     /**
@@ -22,7 +21,7 @@ class Branch extends Model
      * @var array
      */
     protected $casts = [
-        'reception_branch' => 'boolean',
+        'direct_comission' => 'boolean',
         'should_invoice' => 'boolean',
     ];
 

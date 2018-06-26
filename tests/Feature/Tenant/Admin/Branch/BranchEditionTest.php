@@ -128,7 +128,7 @@ class BranchEditionTest extends TestCase
             "ruc" => '123-23-33',
             "dv" => '04',
             'status' => 'A',
-            'reception_branch' => '1',
+            'direct_comission' => '1',
             'should_invoice' => '1',
             'id' => $branch->id,
         ]);
@@ -148,7 +148,7 @@ class BranchEditionTest extends TestCase
             "ruc" => '123-23-33',
             "dv" => '04',
             'status' => 'A',
-            'reception_branch' => 1,
+            'direct_comission' => 1,
             'should_invoice' => 1,
         ]);
 

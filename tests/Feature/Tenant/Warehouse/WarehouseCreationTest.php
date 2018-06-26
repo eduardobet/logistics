@@ -110,6 +110,7 @@ class WarehouseCreationTest extends TestCase
 
         $this->assertDatabaseHas('invoices', [
             "tenant_id" => $tenant->id,
+            "warehouse_id" => $tenant->id,
             "created_by_code" => $admin->id,
             'branch_id' => $branchB->id,
             'client_name' => 'The client of the direct comission',

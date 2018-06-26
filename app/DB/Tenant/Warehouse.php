@@ -38,6 +38,7 @@ class Warehouse extends Model
     {
         $invoice = Invoice::create([
             'tenant_id' => $this->tenant_id,
+            'warehouse_id' => $this->id,
             'branch_id' => $request->branch_to,
             'client_name' => $request->client_name,
             'client_email' => $request->client_email,

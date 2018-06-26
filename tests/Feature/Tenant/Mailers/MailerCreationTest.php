@@ -42,6 +42,8 @@ class MailerCreationTest extends TestCase
             'mailers.*.name',
             'mailers.*.status',
             'mailers.*.description',
+            'mailers.*.vol_price',
+            'mailers.*.real_price',
         ]);
     }
 
@@ -62,7 +64,7 @@ class MailerCreationTest extends TestCase
         $response = $this->actingAs($admin)->post(route('tenant.mailer.store', $tenant->domain), [
             'tenant_id' => $tenant->id,
             'mailers' => [
-                ['name' => 'The Mailer', 'status' => 'A', 'description' => 'The description of the mailer', ],
+                ['name' => 'The Mailer', 'status' => 'A', 'description' => 'The description of the mailer', 'vol_price' => 1.75, 'real_price' => 2.50, ],
             ]
         ]);
 
@@ -71,6 +73,8 @@ class MailerCreationTest extends TestCase
             "created_by_code" => $admin->id,
             "updated_by_code" => null,
             'name' => 'The Mailer',
+            'vol_price' => 1.75,
+            'real_price' => 2.50,
             'status' => 'A',
         ]);
 

@@ -46,15 +46,19 @@ class WarehouseController extends Controller
         $tenant = $this->getTenant();
 
         $warehouse = $tenant->warehouses()->create([
-            'branch_to_issue' => $request->branch_to_issue,
+            'branch_to' => $request->branch_to,
+            'branch_from' => $request->branch_from,
             'mailer_id' => $request->mailer_id,
-            'client_id' => $request->client_id,
             'trackings' => $request->trackings,
             'reference' => $request->reference,
             'qty' => $request->qty,
         ]);
 
         if ($warehouse) {
+            if ($request->client_name) {
+                $warehouse->genInvoice($request);
+            }
+            
             return redirect()->route('tenant.warehouse.edit', [$tenant->domain, $warehouse->id])
                 ->with('flash_success', __('The :what has been created.', ['what' => __('Warehouse') ]));
         }

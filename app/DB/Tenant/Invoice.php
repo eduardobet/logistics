@@ -4,7 +4,7 @@ namespace Logistics\DB\Tenant;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Mailer extends Model
+class Invoice extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -12,7 +12,8 @@ class Mailer extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'status', 'created_by_code', 'tenant_id', 'updated_by_code', 'description', 'vol_price', 'real_price',
+        'created_by_code', 'tenant_id', 'updated_by_code', 'branch_id', 'client_name', 'client_email', 'status', 'volumetric_weight', 'real_weight', 'total',
+        'notes',
     ];
 
     /**
@@ -31,11 +32,10 @@ class Mailer extends Model
         static::updating(function ($query) {
             $query->updated_by_code = auth()->id();
         });
+    }
 
-        static::saved(function ($model) {
-            $key = "mailers.tenant.{$model->tenant_id}";
-            
-            do_forget_cache(__class__, ["{$key}"]);
-        });
+    public function details()
+    {
+        return $this->hasMany(InvoiceDetail::class);
     }
 }

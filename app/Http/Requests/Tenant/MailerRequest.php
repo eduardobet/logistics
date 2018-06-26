@@ -30,6 +30,8 @@ class MailerRequest extends AppFormRequest
             'tenant_id' => 'required',
             'mailers' => 'required|array',
             'mailers.*.status' => 'required|in:A,I',
+            'mailers.*.vol_price' => 'required|numeric',
+            'mailers.*.real_price' => 'required|numeric',
             'mailers.*.description' => 'sometimes|between:3,500',
         ];
 

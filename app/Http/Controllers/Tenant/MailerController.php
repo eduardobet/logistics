@@ -63,6 +63,8 @@ class MailerController extends Controller
                     'name' => $mailer->name,
                     'status' => $mailer->status,
                     'description' => $mailer->description,
+                    'vol_price' => $mailer->vol_price,
+                    'real_price' => $mailer->real_price,
                 ]
             );
         }

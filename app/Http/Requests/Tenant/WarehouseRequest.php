@@ -26,10 +26,9 @@ class WarehouseRequest extends AppFormRequest
     public function rules()
     {
         $rules = [
-            'branch_to_issue' => 'required|integer',
-            'reception_branch' => 'sometimes|integer',
+            'branch_from' => 'required|integer',
+            'branch_to' => 'required|integer',
             'mailer_id' => 'required|integer',
-            'client_id' => 'required|integer',
             'trackings' => 'required|string',
             'reference' => 'required|string',
             'qty' => 'required|integer',

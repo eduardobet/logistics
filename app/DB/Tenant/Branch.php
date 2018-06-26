@@ -40,4 +40,9 @@ class Branch extends Model
             do_forget_cache(__class__, ["{$key}"]);
         });
     }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
 }

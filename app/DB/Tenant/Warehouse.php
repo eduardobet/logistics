@@ -42,8 +42,8 @@ class Warehouse extends Model
             'branch_id' => $request->branch_to,
             'client_name' => $request->client_name,
             'client_email' => $request->client_email,
-            'volumetric_weight' => $request->volumetric_weight,
-            'real_weight' => $request->real_weight,
+            'volumetric_weight' => $request->total_volumetric_weight,
+            'real_weight' => $request->total_real_weight,
             'total' => $request->total,
             'notes' => $request->notes,
         ]);

@@ -84,8 +84,8 @@ class WarehouseCreationTest extends TestCase
             //
             'client_name' => 'The client of the direct comission',
             'client_email' => 'direct.comission@client.test',
-            'volumetric_weight' => 21,
-            'real_weight' => 23,
+            'total_volumetric_weight' => 21,
+            'total_real_weight' => 23,
             'total' => $mailer->vol_price * 21,
             'notes' => 'The notes of the invoice',
             'invoice_detail' => [

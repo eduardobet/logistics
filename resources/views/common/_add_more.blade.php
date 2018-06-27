@@ -5,7 +5,8 @@
         var index = $container.find(".det-row").length + 1;
         var doAjax = true;
 
-        $(".btn-add-more").click(function() {
+        $(document).on("click", ".btn-add-more", function() {
+            if (!$container.length) $container  = $("#details-container", document);
             var $self = $(this);
             var url = $self.data('url');
             var loadingText = $self.data('loading-text');
@@ -32,7 +33,7 @@
         });
 
         // removing
-        $container.on("click", ".rem-row", function() {
+        $(document).on("click", ".rem-row", function() {
             var $self = $(this);
             var id = $self.data('id');
             var delUrl = $self.data('del-url');

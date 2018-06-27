@@ -23,7 +23,7 @@
             </a>
             <div class="sub-item">
               <ul>
-                <li><a href="#">{{ __('New warehouse') }}</a></li>
+                <li><a href="{{ route('tenant.warehouse.create', $tenant->domain) }}">{{ __('New warehouse') }}</a></li>
                 <li><a href="#">{{ __('Search warehouse') }}</a></li>
                 <li><a href="#">{{ __('Bill package') }}</a></li>
                 <li><a href="#">{{ __('Order package') }}</a></li>

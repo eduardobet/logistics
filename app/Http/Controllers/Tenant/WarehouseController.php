@@ -4,6 +4,7 @@ namespace Logistics\Http\Controllers\Tenant;
 
 use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
+use Logistics\DB\Tenant\Invoice;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Http\Requests\Tenant\WarehouseRequest;
 
@@ -114,5 +115,21 @@ class WarehouseController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function invoiceTpl($tenant)
+    {
+        return response()->json([
+            'view' => view('tenant.warehouse.invoice', [
+                'invoice' => new Invoice(),
+            ])->render(),
+        ]);
+    }
+
+    public function invoiceDetTpl($tenant)
+    {
+        return response()->json([
+            'view' => view('tenant.warehouse.invoice-detail')->render(),
+        ]);
     }
 }

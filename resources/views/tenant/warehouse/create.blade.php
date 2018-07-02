@@ -24,7 +24,9 @@
          </div>
     
     </div> <!-- container -->     
-</div> <!-- slim-mainpanel -->   
+</div> <!-- slim-mainpanel -->
+
+<input type="hidden" id="tmp-row" value="">
 
 @include('tenant.common._footer')
 
@@ -83,7 +85,57 @@
                     });
                 }
             });
+
+            // client side calculation
+            $(document).on("blur", ".inline-calc", function() {
+                doCal()
+            });
+
+            $(document).on("click", ".rem-row", function() {
+                doCal(true);
+            });
+        
+
+            //
+
         });
+
+        function doCal(del) {
+            var $totVolWeight = $("#total_volumetric_weight");
+            var $totRealWeight = $("#total_real_weight");
+            var totVolWeight = 0;
+            var totRealWeight = 0;
+
+            $(".inline-calc:not('.qty')", document).each(function(i, el) {
+                var $el = $(el);
+                var index = $el.data('i');
+                var qty = $("#qty-"+i).val();
+                var length = $("#length-"+i).val();
+                var width = $("#width-"+i).val();
+                var height = $("#height-"+i).val();
+                var $volWeight = $("#volumetric_weight-"+i);
+                var $realWeight = $("#real_weight-"+i);
+                totRealWeight += parseFloat($realWeight.val() || '0');
+
+                if (del) console.log($realWeight)
+
+                if (length && width && height) {
+                    var volWeight = (length * width * height) / 139;
+                    var whole = parseInt(volWeight);
+                    var dec = volWeight - whole;
+                
+                    if (dec > 0) {
+                        volWeight = whole + 1;
+                    }
+
+                    $volWeight.val(volWeight);
+                    totVolWeight += volWeight;
+                }
+            });
+
+            $totVolWeight.val(totVolWeight)
+            $totRealWeight.val(totRealWeight)
+        }
 
     </script>
     @include('common._add_more')

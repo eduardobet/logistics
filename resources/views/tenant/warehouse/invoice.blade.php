@@ -40,7 +40,7 @@
 
 <div class="row mg-b-20 mg-t-25">
 
-    <div class="col-lg-4">
+    <div class="col-4">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">Total P/Vol:</label>
             <div class="input-group">
@@ -56,7 +56,7 @@
         </div>
     </div>
 
-    <div class="col-lg-4">
+    <div class="col-4">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">Total P/Real:</label>
             <div class="input-group">
@@ -72,7 +72,7 @@
         </div>
     </div>
 
-    <div class="col-lg-4">
+    <div class="col-4">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">{{ __('Total to invoice') }}: <span class="tx-danger">*</span></label>
             {!! Form::email('total', null, ['class' => 'form-control', 'id' => 'total', 'placeholder' => '000,00$', 'readonly' => '', ]) !!}

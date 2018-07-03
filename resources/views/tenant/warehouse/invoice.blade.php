@@ -38,11 +38,11 @@
     @endforeach
 </div>
 
-<div class="row mg-b-20 mg-t-25">
+<div class="row mg-t-25">
 
     <div class="col-4">
         <div class="form-group mg-b-10-force">
-            <label class="form-control-label">Total P/Vol:</label>
+            <label class="form-control-label">Total P/Vol:&nbsp;</label>
             <div class="input-group">
                 <div class="input-group-prepend">
                     <div class="input-group-text">
@@ -51,14 +51,14 @@
                         </label>
                     </div>
                 </div>
-                {!! Form::email('total_volumetric_weight', null, ['class' => 'form-control', 'id' => 'total_volumetric_weight', ]) !!}
+                {!! Form::email('total_volumetric_weight', null, ['class' => 'form-control', 'id' => 'total_volumetric_weight', 'readonly' => '', ]) !!}
             </div>
         </div>
     </div>
 
     <div class="col-4">
         <div class="form-group mg-b-10-force">
-            <label class="form-control-label">Total P/Real:</label>
+            <label class="form-control-label">Total P/Real:&nbsp;</label>
             <div class="input-group">
                 <div class="input-group-prepend">
                 <div class="input-group-text">
@@ -67,7 +67,7 @@
                     </label>
                 </div>
                 </div>
-                {!! Form::email('total_real_weight', null, ['class' => 'form-control', 'id' => 'total_real_weight', ]) !!}
+                {!! Form::email('total_real_weight', null, ['class' => 'form-control', 'id' => 'total_real_weight', 'readonly' => '', ]) !!}
             </div>
         </div>
     </div>
@@ -78,9 +78,18 @@
             {!! Form::email('total', null, ['class' => 'form-control', 'id' => 'total', 'placeholder' => '000,00$', 'readonly' => '', ]) !!}
         </div>
     </div>
+</div>
 
-    
-
+<div class="row mg-b-20">
+    <div class="col-4">
+        <strong id="dsp-t-vol"></strong>
+    </div>
+    <div class="col-4">
+        <strong id="dsp-t-real"></strong>
+    </div>
+    <div class="col-4">
+        <strong id="dsp-t-final"></strong>
+    </div>
 </div>
 
 <div class="row">

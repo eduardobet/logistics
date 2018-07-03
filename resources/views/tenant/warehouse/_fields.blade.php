@@ -10,7 +10,7 @@
             <select name="branch_from" id="branch_from" class="form-control" required>
             <option value="">---</option>
             @foreach ($userBranches as $uBranch)
-                <option value="{{ $uBranch->id }}" data-code="{{ $uBranch->code }}" data-dcomission="{{ $uBranch->direct_comission }}" data-should-invoice="{{ $uBranch->should_invoice }}" {{ isset($warehouse) && $warehouse->branch_from == $uBranch->id ? " selected": null }}>
+                <option value="{{ $uBranch->id }}" data-code="{{ $uBranch->code }}" data-dcomission="{{ $uBranch->direct_comission }}" data-should-invoice="{{ $uBranch->should_invoice }}" {{ (isset($warehouse) && $warehouse->branch_from == $uBranch->id) || (old('branch_from') == $uBranch->id ) ? " selected": null }}>
                     {{ $uBranch->name }}
                 </option>
             @endforeach
@@ -35,7 +35,7 @@
             <select name="mailer_id" id="mailer_id" class="form-control" required>
             <option value="">---</option>
             @foreach ($mailers as $mailer)
-                <option value="{{ $mailer->id }}" data-vol_price="{{ $mailer->vol_price }}" data-real_price="{{ $mailer->real_price }}" {{ isset($warehouse) && $warehouse->mailer_id == $mailer->id ? " selected": null }}>
+                <option value="{{ $mailer->id }}" data-vol_price="{{ $mailer->vol_price }}" data-real_price="{{ $mailer->real_price }}" {{ (isset($warehouse) && $warehouse->mailer_id == $mailer->id) || old('mailer_id') == $mailer->id ? " selected": null }}>
                     {{ $mailer->name }}
                 </option>
             @endforeach
@@ -48,10 +48,10 @@
 
             <label class="form-control-label">{{ __('Destination branch') }}: <span class="tx-danger"></span></label>
 
-            <select name="branch_to" id="branch_to2" class="form-control" disabled>
+            <select name="branch_to" id="branch_to" class="form-control">
             <option value="">---</option>
             @foreach ($branches as $aBranch)
-                <option value="{{ $aBranch->id }}" {{ isset($warehouse) && $warehouse->branch_to == $aBranch->id ? " selected": null }}>
+                <option value="{{ $aBranch->id }}" {{ (isset($warehouse) && $warehouse->branch_to == $aBranch->id) || old('branch_to') == $aBranch->id ? " selected": null }}>
                     {{ $aBranch->name }}
                 </option>
             @endforeach
@@ -74,8 +74,8 @@
 <div class="row">
     <div class="col-lg-6">
         <div class="form-group mg-b-10-force">
-            <label class="form-control-label">{{ __('Tracking numbers') }} <span id="qty-dsp">(0)</span>: <span class="tx-danger">*</span></label>
-            {!! Form::textarea('trackings', null, ['class' => 'form-control', 'required' => 'required', 'rows' => 4, ]) !!}
+            <label class="form-control-label">{{ __('Tracking numbers') }} (<strong id="qty-dsp">0</strong>): <span class="tx-danger">*</span></label>
+            {!! Form::textarea('trackings', null, ['class' => 'form-control', 'required' => 'required', 'rows' => 4, 'id' => 'trackings', ]) !!}
         </div>
     </div>
     <div class="col-lg-6">
@@ -102,6 +102,6 @@
 
 <div class="row mg-t-25 justify-content-between">
     <div class="col-lg-12">
-        <button type="submit" class="btn btn-primary bg-royal bd-1 bd-gray-400">{{ __('Save') }}</button>
+        <button id="btn-wh-save" type="submit" class="btn btn-primary bg-royal bd-1 bd-gray-400">{{ __('Save') }}</button>
     </div>
 </div>

@@ -76,6 +76,7 @@
                 });
 
             } else {
+                //$self.closest('.det-row').find('*').addClass('removed')
                 $self.closest('.det-row').remove();
             }
         });

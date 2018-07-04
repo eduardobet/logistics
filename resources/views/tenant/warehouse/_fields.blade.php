@@ -3,7 +3,7 @@
 
 <div class="row">
 
-    <div class="col-lg-12">
+    <div class="col-{{$mode=='create' ? 12 : 10}}">
         <div class="form-group">
             <label class="form-control-label">{{ __('Issuer branch') }}: <span class="tx-danger">*</span></label>
 
@@ -17,6 +17,14 @@
             </select>
         </div>
     </div>
+
+    @if ($mode=='edit')
+    <div class="col-2">
+        <div class="form-group mg-t-30-force">
+            <button type="button" class="btn btn-lg"><i class="fa fa-ticket"></i></button>
+        </div>
+    </div>
+    @endif
 
 </div><!-- row -->
 

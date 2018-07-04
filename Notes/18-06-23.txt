@@ -1,2 +1,3 @@
-1) Test and implemented employee can active their account
-2) Test and implemented employee can change their password
+1) Testing and implementing the warehouse sticker can be generated and downloaded
+2) Test and implementing employee can active their account
+3) Test and implementing employee can change their password

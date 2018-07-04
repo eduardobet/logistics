@@ -169,4 +169,19 @@ class WarehouseController extends Controller
             'view' => view('tenant.warehouse.invoice-detail')->render(),
         ]);
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function sticker($tenant, $id)
+    {
+        // return view('tenant.warehouse.sticker', []);
+        
+        $pdf = \PDF::loadView('tenant.warehouse.sticker', []);
+
+        return $pdf->download('sticker.pdf');
+    }
 }

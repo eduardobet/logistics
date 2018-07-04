@@ -11,7 +11,7 @@ trait UserBranch
 
     public function currentBranches()
     {
-        return cache()->rememberForever("employee.branches", function () {
+        return cache()->rememberForever("employee.branches.{$this->tenant_id}", function () {
             return $this->branches->where('status', 'A');
         });
     }

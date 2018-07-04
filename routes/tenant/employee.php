@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth'], function () {
     //warehouse
     Route::get('warehouse/list', 'Tenant\WarehouseController@index')->name('tenant.warehouse.list');
     Route::get('warehouse/invoice-tpl', 'Tenant\WarehouseController@invoiceTpl')->name('tenant.warehouse.invoice-tpl');
+    Route::get('warehouse/{id}/print-sticker', 'Tenant\WarehouseController@sticker')->name('tenant.warehouse.print-sticker');
     Route::get('warehouse/invoice-detail-tmpl', 'Tenant\WarehouseController@invoiceDetTpl')->name('tenant.warehouse.invoice-detail-tmpl');
     Route::get('warehouse/create', 'Tenant\WarehouseController@create')->name('tenant.warehouse.create');
     Route::post('warehouse/store', 'Tenant\WarehouseController@store')->name('tenant.warehouse.store');

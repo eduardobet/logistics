@@ -21,7 +21,9 @@
     @if ($mode=='edit')
     <div class="col-2">
         <div class="form-group mg-t-30-force">
-            <button type="button" class="btn btn-lg"><i class="fa fa-ticket"></i></button>
+            <a href="{{ route('tenant.warehouse.print-sticker', [$tenant->domain, $warehouse->id ]) }}" class="btn btn-outline-dark" role="button">
+                <i class="fa fa-ticket"></i>
+            </a>
         </div>
     </div>
     @endif

@@ -20,6 +20,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     //mailers
     Route::get('mailer/list', 'Tenant\MailerController@index')->name('tenant.mailer.list');
+    Route::get('mailer/mailer-tpl', 'Tenant\MailerController@getTmpl')->name('tenant.mailer.mailer-tpl');
     Route::get('mailer/create', 'Tenant\MailerController@create')->name('tenant.mailer.create');
     Route::post('mailer/store', 'Tenant\MailerController@store')->name('tenant.mailer.store');
     Route::get('mailer/{id}/edit', 'Tenant\MailerController@edit')->name('tenant.mailer.edit');

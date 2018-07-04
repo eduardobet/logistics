@@ -18,12 +18,13 @@
          </div><!-- slim-pageheader -->
 
          <div class="section-wrapper">
-            {!! Form::open(['route' => ['tenant.warehouse.store', $tenant->domain]]) !!}
+            {!! Form::model($warehouse, ['route' => ['tenant.warehouse.update', $tenant->domain, $warehouse->id], 'method' => 'PATCH']) !!}
                 @include('tenant.warehouse._fields', [
-                    'warehouse' => new \Logistics\DB\Tenant\Warehouse,
-                    'mode' => 'create',
+                    'mode' => 'edit',
+                    'invoice' => $invoice,
                 ])
-                <input type="hidden" id="qty" name="qty" value="">
+                
+                {!! Form::hidden('qty', null, ['id' => 'qty',]) !!}
             </form>
          </div>
     
@@ -41,6 +42,7 @@
     <script>
         var cache = {};
         $(function() {
+
             var loadTpl = true;
             $("#branch_from").change(function() {
                 var $self = $(this);
@@ -70,7 +72,6 @@
                 var url = $self.data('url');
                 var loadingText = $self.data('loading-text');
                 var $invoiceContainer = $("#invoice-container");
-                var $notes = $("#invoice-notes");
 
                 if (loadTpl) {
 
@@ -84,8 +85,6 @@
                         cache['data'] = data.view;
                         loadTpl = false;
                         $invoiceContainer.show(0).append(data.view);
-
-                        $notes.removeClass('d-none')
                     })
                     .fail(function(xhr) {
                         
@@ -147,6 +146,7 @@
             var $totVolWeight = $("#total_volumetric_weight");
             var $totRealWeight = $("#total_real_weight");
             var $trackings = $("#trackings");
+            var $notes = $("#invoice-notes");
             
             var totVolWeight = 0;
             var totRealWeight = 0;
@@ -169,8 +169,6 @@
                 totRealWeight += parseFloat($realWeight.val() || '0');
 
                 if (length && width && height) {
-                    $trackings.prop('readonly', false)
-
                     var volWeight = (length * width * height) / 139;
                     var whole = parseInt(volWeight);
                     var dec = volWeight - whole;

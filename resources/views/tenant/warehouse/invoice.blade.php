@@ -1,16 +1,18 @@
+<input type="hidden" name="invoice_id" value="{{ $invoice->id }}">
+
 <div class="row mg-t-10">
 
     <div class="col-lg-6">
         <div class="form-group">
             <label class="form-control-label">{{ __('Names') }}:</label>
-            {!! Form::text('client_name', null, ['class' => 'form-control', 'required' => '', ]) !!}
+            {!! Form::text('client_name', $invoice->client_name, ['class' => 'form-control', 'required' => '', ]) !!}
         </div>
     </div>
 
     <div class="col-lg-6">
         <div class="form-group">
-            <label class="form-control-label">{{ __('Names') }}:</label>
-            {!! Form::email('client_email', null, ['class' => 'form-control', 'required' => '', ]) !!}
+            <label class="form-control-label">{{ __('Email') }}:</label>
+            {!! Form::email('client_email', $invoice->client_email, ['class' => 'form-control', 'required' => '', ]) !!}
         </div>
     </div>
 
@@ -31,8 +33,8 @@
     </button>
 </div>
 
+<div class="mg-t-25"></div>
 <div id="details-container">
-    <div class="mg-t-25"></div>
     @foreach ($invoice->details as $key => $idetail)
         @include('tenant.warehouse.invoice-detail', ['idetail' => $idetail])
     @endforeach
@@ -51,7 +53,7 @@
                         </label>
                     </div>
                 </div>
-                {!! Form::email('total_volumetric_weight', null, ['class' => 'form-control', 'id' => 'total_volumetric_weight', 'readonly' => '', ]) !!}
+                {!! Form::email('total_volumetric_weight', $invoice->volumetric_weight, ['class' => 'form-control', 'id' => 'total_volumetric_weight', 'readonly' => '', ]) !!}
             </div>
         </div>
     </div>
@@ -67,7 +69,7 @@
                     </label>
                 </div>
                 </div>
-                {!! Form::email('total_real_weight', null, ['class' => 'form-control', 'id' => 'total_real_weight', 'readonly' => '', ]) !!}
+                {!! Form::email('total_real_weight', $invoice->real_weight, ['class' => 'form-control', 'id' => 'total_real_weight', 'readonly' => '', ]) !!}
             </div>
         </div>
     </div>
@@ -75,7 +77,7 @@
     <div class="col-4">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">{{ __('Total to invoice') }}: <span class="tx-danger">*</span></label>
-            {!! Form::email('total', null, ['class' => 'form-control', 'id' => 'total', 'placeholder' => '000,00$', 'readonly' => '', ]) !!}
+            {!! Form::email('total', $invoice->total, ['class' => 'form-control', 'id' => 'total', 'placeholder' => '000,00$', 'readonly' => '', ]) !!}
         </div>
     </div>
 </div>
@@ -89,14 +91,5 @@
     </div>
     <div class="col-4">
         <strong id="dsp-t-final"></strong>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-lg-12">
-        <div class="form-group mg-b-10-force">
-            <label class="form-control-label">{{ __('Notes') }}</label>
-            {!! Form::textarea('notes', null, ['class' => 'form-control', 'rows' => 4, ]) !!}
-        </div>
     </div>
 </div>

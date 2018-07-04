@@ -33,6 +33,7 @@ class WarehouseController extends Controller
             'branches' => $this->branches(),
             'userBranches' => $this->branches()->whereIn('id', auth()->user()->branchesForInvoice->pluck('id')->toArray()),
             'mailers' => $this->mailers(),
+            'invoice' => new Invoice,
         ]);
     }
 
@@ -89,21 +90,57 @@ class WarehouseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($tenant, $id)
     {
-        //
+        $tenant = $this->getTenant();
+
+        $warehouse = $tenant->warehouses()->where('id', $id)->firstOrFail();
+
+        return view('tenant.warehouse.edit', [
+            'warehouse' => $warehouse,
+            'branches' => $this->branches(),
+            'userBranches' => $this->branches()->whereIn('id', auth()->user()->branchesForInvoice->pluck('id')->toArray()),
+            'mailers' => $this->mailers(),
+            'invoice' => $warehouse->invoice,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Logistics\Http\Requests\Tenant\WarehouseRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(WarehouseRequest $request, $tenant, $id)
     {
-        //
+        $tenant = $this->getTenant();
+        $warehouse = $tenant->warehouses()->where('id', $id)->firstOrFail();
+
+        $warehouse->branch_to = $request->branch_to;
+        $warehouse->branch_from = $request->branch_from;
+        $warehouse->mailer_id = $request->mailer_id;
+        $warehouse->trackings = $request->trackings;
+        $warehouse->reference = $request->reference;
+        $warehouse->qty = $request->qty;
+            
+        $updated = $warehouse->save();
+        
+        if ($updated) {
+            if ($request->client_name) {
+                $warehouse->genInvoice($request);
+            }
+
+            return redirect()->route('tenant.warehouse.edit', [$tenant->domain, $warehouse->id])
+                ->with('flash_success', __('The :what has been updated.', ['what' => __('Warehouse')]));
+        }
+
+        return redirect()->route('tenant.client.create', $tenant->domain)
+            ->withInput()
+            ->with('flash_error', __('Error while trying to :action :what', [
+                'action' => __('Update'),
+                'what' => __('The warehouse'),
+            ]));
     }
 
     /**

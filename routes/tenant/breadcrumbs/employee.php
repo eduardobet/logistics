@@ -30,3 +30,15 @@ Breadcrumbs::for('tenant.warehouse.create', function ($trail) use ($type) {
     $trail->add(__('Warehouses'), route('tenant.warehouse.list', request()->domain));
     $trail->add(__('Creating :what', ['what' => __('Warehouse')]), route('tenant.warehouse.create', request()->domain));
 });
+
+// Mailers
+Breadcrumbs::for('tenant.mailer.list', function ($trail) use ($type) {
+    $trail->parent("tenant.{$type}.dashboard");
+    $trail->add(__('Mailers'), '');
+});
+
+Breadcrumbs::for('tenant.mailer.create', function ($trail) use ($type) {
+    $trail->parent("tenant.{$type}.dashboard");
+    $trail->add(__('Mailers'), route('tenant.mailer.list', request()->domain));
+    $trail->add(__('Creating :what', ['what' => __('Mailer')]), route('tenant.mailer.create', request()->domain));
+});

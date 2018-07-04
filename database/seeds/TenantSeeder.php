@@ -24,7 +24,7 @@ class TenantSeeder extends Seeder
             [
                 'name' => 'Los Andes 2',
                 'address' => 'Centro Comercial Los Andes, Local G9-4, Arriba de las oficinas de Claro Pasillo de Cable Onda',
-                'telephones' => '399-5706 / 394-2899  Whatsapp: 6519-4037',
+                'telephones' => '399-5706, 394-2899, 6519-4037',
                 'emails' => "prla@tenant.com",
                 'code' => 'PRLA',
             ]

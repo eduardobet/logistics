@@ -71,22 +71,7 @@
 
 </div><!-- row -->
 
-<div class="row">
-    <div class="col-lg-6">
-        <div class="form-group mg-b-10-force">
-            <label class="form-control-label">{{ __('Tracking numbers') }} (<strong id="qty-dsp">0</strong>): <span class="tx-danger">*</span></label>
-            {!! Form::textarea('trackings', null, ['class' => 'form-control', 'required' => 'required', 'rows' => 4, 'id' => 'trackings', ]) !!}
-        </div>
-    </div>
-    <div class="col-lg-6">
-        <div class="form-group mg-b-10-force">
-            <label class="form-control-label">{{ __('Referencias / Detalles Extras') }}: <span class="tx-danger">*</span> </label>
-            {!! Form::textarea('reference', null, ['class' => 'form-control', 'required' => 'required', 'rows' => 4, ]) !!}
-        </div>
-    </div>
-</div><!-- row -->
-
-<div class="row mg-t-10 hidden" id="btn-invoice-container" style="display:none">
+<div class="row hidden" id="btn-invoice-container" style="display:none">
     <div class="col-lg-12">
         <button class="btn btn-info btn-sm" type="button" id="btn-invoice" 
         data-url="{{ route('tenant.warehouse.invoice-tpl', $tenant->domain) }}"
@@ -97,8 +82,35 @@
     </div>
 </div><!-- row -->
 
-<div id="invoice-container" style="display:none">
+<div id="invoice-container" {{$mode == 'create' ? ' style=display:none': null }}>
+    @includeWhen($mode == 'edit', 'tenant.warehouse.invoice', [
+        'invoice' => $invoice,
+    ])
 </div><!-- row -->
+
+<div class="row mg-t-10">
+    <div class="col-lg-6">
+        <div class="form-group mg-b-10-force">
+            <label class="form-control-label">{{ __('Tracking numbers') }} (<strong id="qty-dsp">{{$warehouse->qty?$warehouse->qty:0}}</strong>): <span class="tx-danger">*</span></label>
+            {!! Form::textarea('trackings', null, ['class' => 'form-control', 'required' => 'required', 'rows' => 4, 'id' => 'trackings', ($mode=='create'?'readonly':"") => ($mode=='create'?'readonly':"") , ]) !!}
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="form-group mg-b-10-force">
+            <label class="form-control-label">{{ __('Referencias / Detalles Extras') }}: <span class="tx-danger">*</span> </label>
+            {!! Form::textarea('reference', null, ['class' => 'form-control', 'required' => 'required', 'rows' => 4, 'id' => 'reference', ]) !!}
+        </div>
+    </div>
+</div><!-- row -->
+
+<div class="row {{ $mode=='edit' ? null : ' d-none' }}" id="invoice-notes">
+    <div class="col-lg-12">
+        <div class="form-group mg-b-10-force">
+            <label class="form-control-label">{{ __('Notes') }}</label>
+            {!! Form::textarea('notes', $invoice->notes, ['class' => 'form-control', 'rows' => 4, ]) !!}
+        </div>
+    </div>
+</div>
 
 <div class="row mg-t-25 justify-content-between">
     <div class="col-lg-12">

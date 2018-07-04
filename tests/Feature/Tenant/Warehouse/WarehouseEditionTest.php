@@ -8,11 +8,12 @@ use Logistics\DB\Tenant\Box;
 use Logistics\DB\Tenant\Branch;
 use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Mailer;
+use Logistics\DB\Tenant\Invoice;
 use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class WarehouseCreationTest extends TestCase
+class WarehouseEditionTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -22,23 +23,23 @@ class WarehouseCreationTest extends TestCase
         // $this->withoutExceptionHandling();
         $tenant = factory(TenantModel::class)->create();
 
-        $response = $this->get(route('tenant.warehouse.create', $tenant->domain), []);
+        $response = $this->get(route('tenant.warehouse.edit', [$tenant->domain, 1]), []);
         $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
     }
 
     /** @test */
-    public function warehouse_cannot_be_created_with_invalid_inputs()
+    public function warehouse_cannot_be_updated_with_invalid_inputs()
     {
         // $this->withoutExceptionHandling();
 
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.warehouse.store', $tenant->domain), [
+        $response = $this->actingAs($admin)->patch(route('tenant.warehouse.update', [$tenant->domain, 1]), [
             'reception_branch' => 'XXX'
         ]);
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.warehouse.create', $tenant->domain));
+        $response->assertRedirect(route('tenant.warehouse.edit', [$tenant->domain, 1]));
 
         $response->assertSessionHasErrors([
             'branch_from', 'branch_to', 'mailer_id', 'trackings', 'reference', 'qty',
@@ -46,7 +47,7 @@ class WarehouseCreationTest extends TestCase
     }
 
     /** @test */
-    public function it_creates_the_warehouse_for_direct_comission()
+    public function it_updates_the_warehouse_for_direct_comission()
     {
         $this->withoutExceptionHandling();
 
@@ -68,17 +69,47 @@ class WarehouseCreationTest extends TestCase
             'branch_code' => $branch->code,
         ]);
 
-        $response = $this->actingAs($admin)->get(route('tenant.warehouse.create', $tenant->domain));
-        $response->assertStatus(200);
-        $response->assertViewIs('tenant.warehouse.create');
-        $response->assertViewHas(['userBranches', 'branches', 'mailers',]);
+        $warehouse = $tenant->warehouses()->create([
+            'branch_to' => $branchB->id,
+            'branch_from' => $branch->id,
+            'mailer_id' => $mailer->id,
+            'trackings' => '1234',
+            'reference' => 'The reference',
+            'qty' => 1,
+        ]);
 
-        $response = $this->actingAs($admin)->post(route('tenant.warehouse.store', $tenant->domain), [
+        $invoice = Invoice::create([
+            'tenant_id' => $tenant->id,
+            'warehouse_id' => $warehouse->id,
+            'branch_id' => $warehouse->branch_to,
+            'client_name' => 'The Name of the client',
+            'client_email' => 'email@client.com',
+            'volumetric_weight' => 8,
+            'real_weight' => 9,
+            'total' => $mailer->vol_price * 8,
+        ]);
+
+        $detail = $invoice->details()->create([
+            'qty' => 1,
+            'type' => 1,
+            'length' => 10,
+            'width' => 10,
+            'height' => 10,
+            'vol_weight' => 8,
+            'real_weight' => 9,
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('tenant.warehouse.edit', [$tenant->domain, $warehouse->id]));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.warehouse.edit');
+        $response->assertViewHas(['userBranches', 'branches', 'mailers', 'warehouse', ]);
+
+        $response = $this->actingAs($admin)->patch(route('tenant.warehouse.update', [$tenant->domain, $warehouse->id]), [
             'branch_from' => $branch->id,
             'branch_to' => $branchB->id,
             'mailer_id' => $mailer->id,
-            'trackings' => '12345,234434,55645',
-            'reference' => 'The reference',
+            'trackings' => '1234\n3654',
+            'reference' => 'The reference update',
             'qty' => 2,
 
             //
@@ -86,24 +117,24 @@ class WarehouseCreationTest extends TestCase
             'client_email' => 'direct.comission@client.test',
             'total_volumetric_weight' => 21,
             'total_real_weight' => 23,
-            'total' => $mailer->vol_price * 21,
-            'notes' => 'The notes of the invoice',
+            'total' => $mailer->real_price * 23,
+            'notes' => 'The notes of the invoice updated',
+            'invoice_id' => $invoice->id,
             'invoice_detail' => [
-                ['qty' => 1, 'type' => 1, 'length' => 12, 'width' => 12, 'height' => 12, 'real_weight' => 14,  ],
-                ['qty' => 1, 'type' => 2, 'length' => 10, 'width' => 10, 'height' => 10, 'real_weight' => 9 , ],
+                ['qty' => 1, 'type' => 1, 'length' => 10, 'width' => 10, 'height' => 10, 'real_weight' => 9 , 'wdid' => $detail->id, ],
+                ['qty' => 1, 'type' => 2, 'length' => 12, 'width' => 12, 'height' => 12, 'real_weight' => 14, ],
             ]
         ]);
-        $response->assertStatus(302);
         $response->assertRedirect(route('tenant.warehouse.edit', [$tenant->domain, 1]));
 
         $this->assertDatabaseHas('warehouses', [
             "tenant_id" => $tenant->id,
-            "created_by_code" => $admin->id,
+            "updated_by_code" => $admin->id,
             'branch_from' => $branch->id,
             'branch_to' => $branchB->id,
             'mailer_id' => $mailer->id,
-            'trackings' => '12345,234434,55645',
-            'reference' => 'The reference',
+            'trackings' => '1234\n3654',
+            'reference' => 'The reference update',
             'qty' => 2,
             'status' => 'A',
         ]);
@@ -111,37 +142,37 @@ class WarehouseCreationTest extends TestCase
         $this->assertDatabaseHas('invoices', [
             "tenant_id" => $tenant->id,
             "warehouse_id" => $tenant->id,
-            "created_by_code" => $admin->id,
+            "updated_by_code" => $admin->id,
             'branch_id' => $branchB->id,
             'client_name' => 'The client of the direct comission',
             'client_email' => 'direct.comission@client.test',
             'status' => 'A',
             'volumetric_weight' => 21,
             'real_weight' => 23,
-            'total' => $mailer->vol_price * 21,
-            'notes' => 'The notes of the invoice',
+            'total' => $mailer->real_price * 23,
+            'notes' => 'The notes of the invoice updated',
         ]);
 
         tap($branchB->invoices->first()->details->first(), function ($detail) {
             $this->assertEquals($detail->invoice_id, 1);
             $this->assertEquals($detail->qty, 1);
             $this->assertEquals($detail->type, 1);
-            $this->assertEquals($detail->length, 12);
-            $this->assertEquals($detail->width, 12);
-            $this->assertEquals($detail->height, 12);
-            $this->assertEquals($detail->vol_weight, 13);
-            $this->assertEquals($detail->real_weight, 14);
-        });
-
-        tap($branchB->invoices->first()->details->last(), function ($detail) {
-            $this->assertEquals($detail->invoice_id, 1);
-            $this->assertEquals($detail->qty, 1);
-            $this->assertEquals($detail->type, 2);
             $this->assertEquals($detail->length, 10);
             $this->assertEquals($detail->width, 10);
             $this->assertEquals($detail->height, 10);
             $this->assertEquals($detail->vol_weight, 8);
             $this->assertEquals($detail->real_weight, 9);
+        });
+
+        tap($branchB->invoices->first()->details->last(), function ($detail) {
+            $this->assertEquals($detail->invoice_id, 1);
+            $this->assertEquals($detail->qty, 1);
+            $this->assertEquals($detail->length, 12);
+            $this->assertEquals($detail->width, 12);
+            $this->assertEquals($detail->height, 12);
+            $this->assertEquals($detail->vol_weight, 13);
+            $this->assertEquals($detail->real_weight, 14);
+            $this->assertEquals($detail->type, 2);
         });
     }
 }

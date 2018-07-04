@@ -10,14 +10,14 @@ $key = isset($key) ? $key : ':index:';
             <div class="col-2">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Qty') }}:</label>
-                    {!! Form::text("invoice_detail[{$key}][qty]", $idetail->qty, ['class' => 'form-control form-control-sm qty inline-calc', 'data-i' => "{$key}", 'id' => "qty-{$key}", ]) !!}
+                    {!! Form::text("invoice_detail[{$key}][qty]", $idetail->qty ? $idetail->qty : 1, ['class' => 'form-control form-control-sm qty inline-calc', 'data-i' => "{$key}", 'id' => "qty-{$key}", ]) !!}
                 </div>
             </div>
     
             <div class="col-10">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Type') }}:</label>
-                    {!! Form::select("invoice_detail[{$key}][epid]",[1=>'Sobre',2=>'Bulto', 3=>'Paquete',4=>'Caja/Peq.', 5=>'Caja/Med.', 6=>'Caja/Grande', ], $idetail->type, ['class' => 'form-control form-control-sm type', ]) !!}
+                    {!! Form::select("invoice_detail[{$key}][type]",[1=>'Sobre',2=>'Bulto', 3=>'Paquete',4=>'Caja/Peq.', 5=>'Caja/Med.', 6=>'Caja/Grande', ], $idetail->type, ['class' => 'form-control form-control-sm type', ]) !!}
                 </div>
             </div>
         </div>
@@ -54,7 +54,7 @@ $key = isset($key) ? $key : ':index:';
             <div class="col-5">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('P/Vol') }}:</label>
-                    {!! Form::text("invoice_detail[{$key}][volumetric_weight]", $idetail->volumetric_weight, ['class' => 'form-control form-control-sm inline-calc volumetric_weight', 'readonly' => '', 'data-i' => "{$key}", 'id' => "volumetric_weight-{$key}", ]) !!}
+                    {!! Form::text("invoice_detail[{$key}][vol_weight]", $idetail->vol_weight, ['class' => 'form-control form-control-sm inline-calc volumetric_weight', 'readonly' => '', 'data-i' => "{$key}", 'id' => "volumetric_weight-{$key}", ]) !!}
                 </div>
             </div>
 
@@ -71,6 +71,7 @@ $key = isset($key) ? $key : ':index:';
                         <i class="fa fa-times"></i>
                     </button>
                 </div>
+                <input type="hidden" name="invoice_detail[{{ $key }}][wdid]" value="{{ $idetail->id }}">
             </div>
 
         </div>

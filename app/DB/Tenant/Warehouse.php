@@ -34,19 +34,27 @@ class Warehouse extends Model
         });
     }
 
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
+    }
+
     public function genInvoice($request)
     {
-        $invoice = Invoice::create([
-            'tenant_id' => $this->tenant_id,
-            'warehouse_id' => $this->id,
-            'branch_id' => $request->branch_to,
-            'client_name' => $request->client_name,
-            'client_email' => $request->client_email,
-            'volumetric_weight' => $request->total_volumetric_weight,
-            'real_weight' => $request->total_real_weight,
-            'total' => $request->total,
-            'notes' => $request->notes,
-        ]);
+        $invoice = $this->invoice()->updateOrCreate(
+            ['id' => $request->invoice_id, 'tenant_id' => $this->tenant_id, 'warehouse_id' => $this->id, ],
+            [
+                'tenant_id' => $this->tenant_id,
+                'warehouse_id' => $this->id,
+                'branch_id' => $request->branch_to,
+                'client_name' => $request->client_name,
+                'client_email' => $request->client_email,
+                'volumetric_weight' => $request->total_volumetric_weight,
+                'real_weight' => $request->total_real_weight,
+                'total' => $request->total,
+                'notes' => $request->notes,
+            ]
+        );
 
         foreach ($request->invoice_detail as $data) {
             $input = new Fluent($data);
@@ -59,7 +67,7 @@ class Warehouse extends Model
                 $volWeight = $whole + 1;
             }
 
-            $invoice->details()->create([
+            $invoice->details()->updateOrCreate(['id' => $input->wdid, ], [
                 'qty' => $input->qty,
                 'type' => $input->type,
                 'length' => $input->length,

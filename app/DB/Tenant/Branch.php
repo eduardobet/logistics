@@ -35,9 +35,9 @@ class Branch extends Model
         parent::boot();
 
         static::saved(function ($model) {
-            $key = "branches.tenant.{$model->tenant_id}";
+            $keys = ["branches.tenant.{$model->tenant_id}", 'employee.branches'];
             
-            do_forget_cache(__class__, ["{$key}"]);
+            do_forget_cache(__class__, $keys);
         });
     }
 

@@ -66,17 +66,17 @@
               <i class="icon ion-ios-gear-outline"></i>
               <span>{{ __('System') }}</span>
             </a>
-            @if ($user->isAdmin())
             <div class="sub-item">
               <ul>
+                @if ($user->isAdmin())
                 <li><a href="{{ route('tenant.admin.company.edit', $tenant->domain) }}">{{ __('Configuration') }}</a></li>
                 <li><a href="{{ route('tenant.admin.branch.list', $tenant->domain) }}">{{ __('Branches') }}</a></li>
                 <li><a href="{{ route('tenant.admin.position.list', $tenant->domain) }}">{{ __('Positions') }}</a></li>
                 <li><a href="{{ route('tenant.admin.employee.list', $tenant->domain) }}">{{ __('Users') }}</a></li>
-                <li><a href="#">{{ __('Activity') }}</a></li>
+                @endif
+                <li><a href="{{ route('tenant.mailer.list', $tenant->domain) }}">{{ __('Mailers') }}</a></li>
               </ul>
             </div><!-- dropdown-menu -->
-            @endif
           </li>
 
         </ul>

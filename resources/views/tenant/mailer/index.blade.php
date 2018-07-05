@@ -44,7 +44,7 @@
                       <td>{{ $mailer->vol_price }}</td>
                       <td>{{ $mailer->real_price }}</td>
                       <td>{{ $mailer->status }}</td>
-                      <td>
+                      <td class="text-center">
                         <a href="{{ route('tenant.mailer.edit', [$tenant->domain, $mailer->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                       </td>
                     </tr>

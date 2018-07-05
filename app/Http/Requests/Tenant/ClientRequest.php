@@ -42,6 +42,8 @@ class ClientRequest extends AppFormRequest
             'city_id' => 'sometimes|integer',
             'address' => 'sometimes|between:5,255',
             'notes' => 'sometimes|between:5,1000',
+            'vol_price' => 'sometimes|numeric',
+            'real_price' => 'sometimes|numeric',
         ];
 
         if ($this->isEdit()) {

@@ -47,32 +47,32 @@
                     confirmButtonClass: "btn-danger",
                     confirmButtonText: "{{ __('Yes, delete it') }}!",
                     cancelButtonText: "{{ __('Cancel') }}!",
-                    closeOnConfirm: false
-                },
-                function(){
-                    
-                    var request = $.ajax({
-                        method: 'post',
-                        url: delUrl,
-                        data: $.extend({
-                            _token	: $("input[name='_token']").val(),
-                            '_method': 'DELETE',
+                }). then(function(result) {
 
-                        }, JSON.parse(JSON.stringify(params)) )
-                    });
+                    if (result.value) {
 
-                    request.done(function(data){
-                        if (data.error == false) {
-                            $self.closest('.det-row').remove();
-                            swal(data.msg, "", "success");
-                        } else {
-                            swal(data.msg, "", "error");
-                        }
-                    })
-                    .fail(function( jqXHR, textStatus ) {
-                        swal(textStatus, "", "error");
-                    });
-                    
+                        var request = $.ajax({
+                            method: 'post',
+                            url: delUrl,
+                            data: $.extend({
+                                _token	: $("input[name='_token']").val(),
+                                '_method': 'DELETE',
+
+                            }, JSON.parse(JSON.stringify(params)) )
+                        });
+
+                        request.done(function(data){
+                            if (data.error == false) {
+                                $self.closest('.det-row').remove();
+                                swal(data.msg, "", "success");
+                            } else {
+                                swal(data.msg, "", "error");
+                            }
+                        })
+                        .fail(function( jqXHR, textStatus ) {
+                            swal(textStatus, "", "error");
+                        });
+                    }
                 });
 
             } else {

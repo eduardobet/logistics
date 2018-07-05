@@ -27,6 +27,10 @@ class TenantSeeder extends Seeder
                 'telephones' => '399-5706, 394-2899, 6519-4037',
                 'emails' => "prla@tenant.com",
                 'code' => 'PRLA',
+                'real_price' => 2.50,
+                'vol_price' => 1.75,
+                'dhl_price' => 2.25,
+                'maritime_price' => 250,
             ]
         ]);
     }

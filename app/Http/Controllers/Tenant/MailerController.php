@@ -47,36 +47,94 @@ class MailerController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Logistics\Http\Requests\Tenant\MailerRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(MailerRequest $request)
+    public function store(MailerRequest $request, $tenant)
+    {
+        $this->__updateOrCreate($request);
+
+        return redirect()->route('tenant.mailer.list', $tenant)
+                ->with('flash_success', __('The :what has been created.', ['what' => __('Mailers') ]));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($tenant, $id)
+    {
+        $tenant = $this->getTenant();
+
+        return view('tenant.mailer.edit', [
+            'mailers' => $tenant->mailers,
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Logistics\Http\Requests\Tenant\MailerRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(MailerRequest $request, $tenant)
+    {
+        $this->__updateOrCreate($request);
+        $this->__updateOrCreate($request);
+
+        return redirect()->route('tenant.mailer.list', $tenant)
+            ->with('flash_success', __('The :what has been updated.', ['what' => __('Mailers')]));
+    }
+
+    private function __updateOrCreate($request)
     {
         $tenant = $this->getTenant();
 
         foreach ($request->mailers as $inputs) {
             $mailer = new Fluent($inputs);
-            
+
             $tenant->mailers()->updateOrCreate(
-                ['id' => $mailer->mid ],
+                ['id' => $mailer->mid],
                 [
                     'name' => $mailer->name,
                     'status' => $mailer->status,
                     'description' => $mailer->description,
-                    'vol_price' => $mailer->vol_price,
-                    'real_price' => $mailer->real_price,
+                    'vol_price' => $mailer->vol_price ? : 0.0,
+                    'real_price' => $mailer->real_price ? : 0.0,
                 ]
             );
         }
-
-        return redirect()->route('tenant.mailer.list', $tenant->domain)
-                ->with('flash_success', __('The :what has been created.', ['what' => __('Mailers') ]));
     }
 
     public function getTmpl($tenant)
     {
         return response()->json([
             'view' => view('tenant.mailer.mailer-tmpl')->render(),
+        ]);
+    }
+
+    public function destroy($tenant)
+    {
+        $tenant = $this->getTenant();
+        $mailer = $tenant->mailers()->find(request('id'));
+
+        if (!$mailer) {
+            return response()->json(['error' => true, 'msg' => __('Not Found.'), ], 404);
+        }
+
+        $deleted = $mailer->delete();
+
+        if ($deleted) {
+            return response()->json(['error' => false, 'msg' => __('Deleted successfully'), ]);
+        }
+
+        return response()->json([
+            'error' => false, 'msg' =>
+                __('Error while trying to :action :what', [
+                'action' => __('Delete'),
+                'what' => __('The mailer'),
+            ]),
         ]);
     }
 }

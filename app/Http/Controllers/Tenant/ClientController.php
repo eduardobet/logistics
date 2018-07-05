@@ -73,6 +73,8 @@ class ClientController extends Controller
             'pay_volume' => $request->has('pay_volume'),
             'special_rate' => $request->has('special_rate'),
             'special_maritime' => $request->has('special_maritime'),
+            'vol_price' => $request->vol_price,
+            'real_price' => $request->real_price,
         ]);
 
         if ($client) {
@@ -155,6 +157,8 @@ class ClientController extends Controller
         $client->pay_volume  = $request->has('pay_volume');
         $client->special_rate  = $request->has('special_rate');
         $client->special_maritime  = $request->has('special_maritime');
+        $client->vol_price  = $request->vol_price;
+        $client->real_price  = $request->real_price;
 
         if ($oldEmail !== $request->email) {
             $client->email = $request->email;

@@ -35,6 +35,8 @@ class CreateClientsTable extends Migration
             $table->boolean('pay_volume')->nullable()->default(false);
             $table->boolean('special_rate')->nullable()->default(false);
             $table->boolean('special_maritime')->nullable()->default(false);
+            $table->float('vol_price')->nullable()->default(0);
+            $table->float('real_price')->nullable()->default(0);
 
             $table->timestamps();
         });

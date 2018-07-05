@@ -21,8 +21,8 @@ class CreateMailersTable extends Migration
             $table->string('name');
             $table->string('status', 1)->default('A'); //I[nactive], A[ctive]
             $table->text('description')->nullable();
-            $table->float('vol_price')->default(0);
-            $table->float('real_price')->default(0);
+            $table->float('vol_price')->nullable()->default(0);
+            $table->float('real_price')->nullable()->default(0);
             $table->timestamps();
         });
     }

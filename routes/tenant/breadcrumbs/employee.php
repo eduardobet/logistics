@@ -36,6 +36,11 @@ Breadcrumbs::for('tenant.mailer.list', function ($trail) use ($type) {
     $trail->parent("tenant.{$type}.dashboard");
     $trail->add(__('Mailers'), '');
 });
+Breadcrumbs::for('tenant.mailer.edit', function ($trail) use ($type) {
+    $trail->parent("tenant.{$type}.dashboard");
+    $trail->add(__('Mailers'), route('tenant.mailer.list', request()->domain));
+    $trail->add(__('Editing :what', ['what' => __('Mailer')]), route('tenant.mailer.edit', [request()->domain, request('id')]));
+});
 
 Breadcrumbs::for('tenant.mailer.create', function ($trail) use ($type) {
     $trail->parent("tenant.{$type}.dashboard");

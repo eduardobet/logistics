@@ -32,7 +32,7 @@ class MailerCreationTest extends TestCase
 
         $response = $this->actingAs($admin)->post(route('tenant.mailer.store', $tenant->domain), [
             'mailers' => [
-                ['description' => '1']
+                ['description' => '1', 'vol_price' => 'XX', 'real_price' => 'XX', ]
             ],
         ]);
         $response->assertStatus(302);
@@ -80,5 +80,34 @@ class MailerCreationTest extends TestCase
 
         $response->assertRedirect(route('tenant.mailer.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
+    }
+
+    /** @test */
+    public function it_successfully_deletes_the_mailer()
+    {
+        $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+
+        $this->actingAs($admin);
+
+        $mailer = $tenant->mailers()->create([
+            'name' => 'The mailer',
+            'status' => 'A',
+        ]);
+
+        $response = $this->delete(route('tenant.mailer.destroy', $tenant->domain), [
+            'id' => $mailer->id,
+        ], $this->headers());
+
+        $response->assertStatus(200);
+        $this->assertCount(0, $tenant->fresh()->mailers);
+        $response->assertJson([
+            'error' => false,
+            'msg' => __("Deleted successfully"),
+        ]);
     }
 }

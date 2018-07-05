@@ -30,17 +30,29 @@ class MailerRequest extends AppFormRequest
             'tenant_id' => 'required',
             'mailers' => 'required|array',
             'mailers.*.status' => 'required|in:A,I',
-            'mailers.*.vol_price' => 'required|numeric',
-            'mailers.*.real_price' => 'required|numeric',
+            'mailers.*.vol_price' => 'sometimes|numeric',
+            'mailers.*.real_price' => 'sometimes|numeric',
             'mailers.*.description' => 'sometimes|between:3,500',
         ];
 
         if ($this->isEdit()) {
-            $rules['mailers.*.name'] = ['required', 'string', 'between:3,255', Rule::unique('mailers')->where('tenant_id', $this->tenant_id)->ignore($this->id)];
+            $rules = array_merge($rules, $this->getNameRules());
             
             $this->redirectRoute = 'tenant.mailer.edit';
         } else {
             $rules['mailers.*.name'] = ['required', 'string', 'between:3,255', Rule::unique('mailers')->where('tenant_id', $this->tenant_id)];
+        }
+
+        return $rules;
+    }
+
+    private function getNameRules()
+    {
+        $rules = [];
+
+        foreach ($this->mailers as $key => $input) {
+            $rules["mailers.{$key}.name"] = ['required', 'string', 'between:3,255',Rule::unique('mailers', 'name')
+                    ->where('tenant_id', $this->tenant_id)->ignore($input['mid'])];
         }
 
         return $rules;

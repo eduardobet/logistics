@@ -32,6 +32,10 @@ class CreateBranchesTable extends Migration
             $table->string('status', 1)->default('A');
             $table->boolean('direct_comission')->nullable()->default(false); // allow inline invoice without client (direct comission)
             $table->boolean('should_invoice')->nullable()->default(false); // allow inlice invoice
+            $table->float('vol_price')->nullable()->default(0);
+            $table->float('real_price')->nullable()->default(0);
+            $table->float('dhl_price')->nullable()->default(0);
+            $table->float('maritime_price')->nullable()->default(0);
             $table->timestamps();
         });
     }

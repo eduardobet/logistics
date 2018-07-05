@@ -61,7 +61,11 @@ class BranchEditionTest extends TestCase
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
         $response = $this->actingAs($admin)->patch(route('tenant.admin.branch.update', $tenant->domain), [
-            'id' => 1
+            'id' => 1,
+            'real_price' => 'XX',
+            'vol_price' => 'XX',
+            'dhl_price' => 'XX',
+            'maritime_price' => 'XX',
         ]);
         $response->assertStatus(302);
         $response->assertRedirect(route('tenant.admin.branch.edit', [$tenant->domain, 1]));
@@ -73,6 +77,10 @@ class BranchEditionTest extends TestCase
             'emails',
             'telephones',
             'status',
+            'real_price',
+            'vol_price',
+            'dhl_price',
+            'maritime_price',
         ]);
     }
 
@@ -131,6 +139,11 @@ class BranchEditionTest extends TestCase
             'direct_comission' => '1',
             'should_invoice' => '1',
             'id' => $branch->id,
+
+            'real_price' => 2.50,
+            'vol_price' => 1.75,
+            'dhl_price' => 2.25,
+            'maritime_price' => 250,
         ]);
 
         $this->assertDatabaseHas('branches', [
@@ -150,6 +163,11 @@ class BranchEditionTest extends TestCase
             'status' => 'A',
             'direct_comission' => 1,
             'should_invoice' => 1,
+
+            'real_price' => 2.50,
+            'vol_price' => 1.75,
+            'dhl_price' => 2.25,
+            'maritime_price' => 250,
         ]);
 
         $response->assertRedirect(route('tenant.admin.branch.list', $tenant->domain));

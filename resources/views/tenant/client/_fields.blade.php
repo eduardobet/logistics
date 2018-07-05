@@ -82,7 +82,7 @@
             <div class="col-lg-3">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Country') }}:</label>
-                    {!! Form::select('country_id', ['0' => '----'] + $countries->toArray(), null, ['class' => 'form-control select2ize', 'data-apiurl' => route('tenant.api.department', [$tenant->domain, ':parentId:']), 'data-child' => '#department_id', 'id' => 'country_id', ]) !!}
+                    {!! Form::select('country_id', ['0' => '----'] + $countries->toArray(), null, ['class' => 'form-control select2ize', 'data-apiurl' => route('tenant.api.department', ['parentId' => ':parentId:']), 'data-child' => '#department_id', 'id' => 'country_id', ]) !!}
                 </div>
             </div>
 
@@ -91,7 +91,7 @@
                     <label class="form-control-label">{{ __('Department') }}: 
                         <strong id="loader-department_id"></strong>    
                     </label>
-                    {!! Form::select('department_id', ['0' => '----'] + $departments, null, ['class' => 'form-control select2 select2ize', 'data-apiurl' => route('tenant.api.zone', [$tenant->domain, ':parentId:']), 'data-child' => '#city_id', 'id' => 'department_id' ]) !!}
+                    {!! Form::select('department_id', ['0' => '----'] + $departments, null, ['class' => 'form-control select2 select2ize', 'data-apiurl' => route('tenant.api.zone', [':parentId:']), 'data-child' => '#city_id', 'id' => 'department_id', 'width' => '100% !important', ]) !!}
                 </div>
             </div>
 
@@ -100,7 +100,7 @@
                     <label class="form-control-label">{{ __('City') }}:
                         <strong id="loader-city_id"></strong> 
                     </label>
-                    {!! Form::select('city_id', ['0' => '----'] + $zones, null, ['class' => 'form-control select2', 'id' => 'city_id' ]) !!}
+                    {!! Form::select('city_id', ['0' => '----'] + $zones, null, ['class' => 'form-control select2', 'id' => 'city_id', 'width' => '100% !important', ]) !!}
                 </div>
             </div>
 
@@ -123,31 +123,45 @@
         </div> <!-- row -->
 
         <div class="row">
-            <div class="col-lg-2">
-                <label class="ckbox">
-                    {!! Form::checkbox('pay_volume') !!} <span>{{ __('Pay by volume') }}</span>
-                </label>
+            <div class="col-lg-3">
+                <div class="input-group">
+                    <label class="ckbox">
+                        {!! Form::checkbox('pay_volume', null, null, ['id' => 'pay_volume', ]) !!} <span>{{ __('Pay by volume') }}</span>
+                    </label>
+                    
+                    @if ($user->isAdmin())
+                    &nbsp;
+                    {!! Form::text('vol_price', null, ['class' => 'form-control form-control-sm', 'placeholder' => __('Vol Price'), ]) !!}
+                    @endif
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="input-group">
+                    <label class="ckbox">
+                        {!! Form::checkbox('special_rate', null, null, ['id' => 'special_rate', ]) !!} <span>{{ __('Special rate') }}</span>
+                    </label>
+                    @if ($user->isAdmin())
+                    &nbsp;
+                    {!! Form::text('real_price', null, ['class' => 'form-control form-control-sm', 'placeholder' => __('Real Price'), ]) !!}
+                    @endif
+                </div>
             </div>
 
             <div class="col-lg-2">
                 <label class="ckbox">
-                     {!! Form::checkbox('special_rate') !!} <span>{{ __('Special rate') }}</span>
+                    {!! Form::checkbox('special_maritime', null, null, ['id' => 'special_maritime',]) !!} <span>{{ __('Special maritime') }}</span>
                 </label>
             </div>
 
-            <div class="col-lg-2">
-                <label class="ckbox">
-                    {!! Form::checkbox('special_maritime') !!} <span>{{ __('Special maritime') }}</span>
-                </label>
-            </div>
-
-            <div class="col-lg-6">
-                <div class="form-group mg-b-10-force">
+            <div class="col-lg-4">
+                <div class="form-group">
                     <label class="form-control-label">{{__('Status')}}: <span class="tx-danger">*</span></label>
-                    {!! Form::select('status', ['A' => __('Active') , 'I' => __('Inactive')  ], null, ['class' => 'form-control', 'required' => '', ]) !!}
+                    {!! Form::select('status', ['A' => __('Active') , 'I' => __('Inactive')  ], null, ['class' => 'form-control form-control-sm', 'required' => '', ]) !!}
                 </div>
             </div>
         </div> <!-- row -->
+
 
     </div><!-- tab informations -->
 

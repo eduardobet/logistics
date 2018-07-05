@@ -50,6 +50,10 @@ class BranchController extends Controller
             'dv' => $request->dv,
             'direct_comission' => $request->has('direct_comission'),
             'should_invoice' => $request->has('should_invoice'),
+            'vol_price' => $request->vol_price,
+            'real_price' => $request->real_price,
+            'dhl_price' => $request->dhl_price,
+            'maritime_price' => $request->maritime_price,
         ]);
 
         if ($branch) {
@@ -90,6 +94,11 @@ class BranchController extends Controller
         $branch->dv = $request->dv;
         $branch->direct_comission = $request->has('direct_comission');
         $branch->should_invoice = $request->has('should_invoice');
+
+        $branch->real_price = $request->real_price;
+        $branch->vol_price = $request->vol_price;
+        $branch->dhl_price = $request->dhl_price;
+        $branch->maritime_price = $request->maritime_price;
 
         $updated = $branch->save();
 

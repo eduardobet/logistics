@@ -25,6 +25,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('mailer/store', 'Tenant\MailerController@store')->name('tenant.mailer.store');
     Route::get('mailer/{id}/edit', 'Tenant\MailerController@edit')->name('tenant.mailer.edit');
     Route::patch('mailer/{id}/update', 'Tenant\MailerController@update')->name('tenant.mailer.update');
+    Route::delete('mailer/mailer-destroy', 'Tenant\MailerController@destroy')->name('tenant.mailer.destroy');
 
     //warehouse
     Route::get('warehouse/list', 'Tenant\WarehouseController@index')->name('tenant.warehouse.list');

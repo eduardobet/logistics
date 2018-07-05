@@ -34,6 +34,10 @@ class BranchRequest extends AppFormRequest
             'faxes' => 'nullable|string|mass_phone',
             'code' => 'required|string',
             'status' => 'required|string|in:A,I',
+            'real_price' => 'sometimes|numeric',
+            'vol_price' => 'sometimes|numeric',
+            'dhl_price' => 'sometimes|numeric',
+            'maritime_price' => 'sometimes|numeric',
         ];
 
         if ($this->isEdit()) {

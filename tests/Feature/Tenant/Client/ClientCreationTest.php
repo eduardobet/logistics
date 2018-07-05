@@ -39,6 +39,8 @@ class ClientCreationTest extends TestCase
             'department_id' => 'xxx',
             'city_id' => 'xxx',
             'address' => 'AA',
+            'vol_price' => 'XX',
+            'real_price' => 'XX',
         ]);
         $response->assertStatus(302);
         $response->assertRedirect(route('tenant.client.create', $tenant->domain));
@@ -57,6 +59,8 @@ class ClientCreationTest extends TestCase
             'department_id',
             'city_id',
             'address',
+            'vol_price',
+            'real_price',
         ]);
     }
 
@@ -94,9 +98,11 @@ class ClientCreationTest extends TestCase
             'city_id' => 1,
             'address' => 'In the middle of nowhere',
             'notes' => 'Aditional notes',
-            'pay_volume' => 'N',
-            'special_rate' => 'N',
-            'special_maritime' => 'N',
+            'pay_volume' => 'Y',
+            'special_rate' => 'Y',
+            'special_maritime' => 'Y',
+            'vol_price' => 2.5,
+            'real_price' => 2,
         ]);
 
         $this->assertDatabaseHas('clients', [
@@ -120,6 +126,8 @@ class ClientCreationTest extends TestCase
             'pay_volume' => '1',
             'special_rate' => '1',
             'special_maritime' => '1',
+            'vol_price' => 2.5,
+            'real_price' => 2,
         ]);
 
         $response->assertRedirect(route('tenant.client.list', $tenant->domain));

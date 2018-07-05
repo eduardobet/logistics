@@ -1,3 +1,32 @@
 1) Testing and implementing the warehouse sticker can be generated and downloaded
 2) Test and implementing employee can active their account
 3) Test and implementing employee can change their password
+
+check paga volumen
+EL CLIENTE PAGA TARIFA VOLUMETRICA.
+
+UNCHEACK PAGA VOLUMEN
+EL CLIENTE ES EXONERADO DE TARIFA VOLUMETRICA
+
+
+
+check Tarifa especial
+(Campo a colocar tarifa)
+
+Uncheck tarifa especial
+(PAGA TARIFA GLOBAL DE TIENDAS)
+
+Especial Maritimo (CHECK) 
+ESTE ES UN AVISO NO SE MANEJA EN SISTEMA
+
+ESPECIAL MARITIMO UNCHECK
+OTRO AVISO, ESTO SE MANEJA FUERA DE SISTEMA
+
+SUCURSAL RIGE 4 TARIFAS STD
+REAL = 2.50
+DHL = 2.25
+VOL = 1.75
+MARITIMO = 250 MINIMO
+
+CLIENTE ESPECIAL
+TARIFA REAL = 2$ AL SELECCIONAR SOBREESCRIBE TARIFA DE SUCURSAL (SOLO ESTE CLIENTE)

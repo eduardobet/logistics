@@ -40,9 +40,9 @@
 
     <div class="col-lg-4">
         <div class="form-group">
-            <label class="form-control-label">{{ __('Mailer') }}: <span class="tx-danger">*</span></label>
+            <label class="form-control-label">{{ __('Mailer') }}: <span class="tx-danger"></span></label>
 
-            <select name="mailer_id" id="mailer_id" class="form-control" required>
+            <select name="mailer_id" id="mailer_id" class="form-control">
             <option value="">---</option>
             @foreach ($mailers as $mailer)
                 <option value="{{ $mailer->id }}" data-vol_price="{{ $mailer->vol_price }}" data-real_price="{{ $mailer->real_price }}" {{ (isset($warehouse) && $warehouse->mailer_id == $mailer->id) || old('mailer_id') == $mailer->id ? " selected": null }}>
@@ -56,9 +56,9 @@
     <div class="col-lg-4">
         <div class="form-group">
 
-            <label class="form-control-label">{{ __('Destination branch') }}: <span class="tx-danger"></span></label>
+            <label class="form-control-label">{{ __('Destination branch') }}: <span class="tx-danger">*</span></label>
 
-            <select name="branch_to" id="branch_to" class="form-control">
+            <select name="branch_to" id="branch_to" class="form-control select2ize" required data-apiurl="{{ route('tenant.api.clients', [':parentId:']) }}" data-child="#client_id">
             <option value="">---</option>
             @foreach ($branches as $aBranch)
                 <option value="{{ $aBranch->id }}" {{ (isset($warehouse) && $warehouse->branch_to == $aBranch->id) || old('branch_to') == $aBranch->id ? " selected": null }}>
@@ -72,10 +72,13 @@
 
     <div class="col-lg-4">
         <div class="form-group">
-             <label class="form-control-label">{{ __('Client') }}:</label>
-             <select name="client_id" id="client_id" class="form-control" disabled>
-                <option value="">---</option>
-             </select>
+        
+             <label class="form-control-label">{{ __('Client') }}: 
+                <span class="tx-danger">*</span>
+                <strong id="loader-client_id"></strong>    
+             </label>
+             {!! Form::select('client_id', ['0' => '----'], null, ['class' => 'form-control select2 select2ize', 'id' => 'client_id', 'width' => '100% !important', ]) !!}
+
         </div>
     </div>
 

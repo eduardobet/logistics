@@ -14,6 +14,12 @@
             var $child = $($self.data('child'));
             var childId = $child.attr('id');
             var $loader = $("#loader-"+childId);
+
+            if (!apiurl) {
+                console.error("Api url is not defined");
+                return;
+            }
+
             if (value && value != "0") {
                 
                 if ( items = cache[childId + '.' + value ] ) {

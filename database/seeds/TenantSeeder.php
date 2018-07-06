@@ -16,11 +16,22 @@ class TenantSeeder extends Seeder
         $tenant = factory(Tenant::class)->create();
 
         $tenant->remoteAddresses()->createMany([
-            ['type' => 'A', 'address' => 'In the middle of remote air', 'telephones' => '555-5555', 'status' => 'A', ],
-            ['type' => 'M', 'address' => 'In the middle of remote maritimes', 'telephones' => '555-5555', 'status' => 'A', ],
+            ['type' => 'A', 'address' => '8450 NW 70 TH ST MIAMI, FLORIDA 33166-2687', 'telephones' => '+1(786)3252841', 'status' => 'A', ],
+            ['type' => 'M', 'address' => '8454 NW 70 TH ST MIAMI, FLORIDA 33166', 'telephones' => '+1(786)3252841', 'status' => 'A', ],
         ]);
 
         $tenant->branches()->createMany([
+            [
+                'name' => 'Miami',
+                'address' => '123 street ave',
+                'telephones' => '56166758524',
+                'emails' => "mia@tenant.com",
+                'code' => 'MIA',
+                'real_price' => 2.50,
+                'vol_price' => 1.75,
+                'dhl_price' => 2.25,
+                'maritime_price' => 250,
+            ],
             [
                 'name' => 'Los Andes 2',
                 'address' => 'Centro Comercial Los Andes, Local G9-4, Arriba de las oficinas de Claro Pasillo de Cable Onda',

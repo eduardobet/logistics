@@ -42,6 +42,9 @@ class CustomValidator extends \Illuminate\Validation\Validator
             return false;
         }
 
+        // I don't want to validate a bunch of countries
+        return true;
+
         foreach ($value as $val) {
             if (!is_valid_phone($val)) {
                 return false;

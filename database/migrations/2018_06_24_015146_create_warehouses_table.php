@@ -20,7 +20,9 @@ class CreateWarehousesTable extends Migration
             $table->unsignedInteger('updated_by_code')->nullable();
             $table->unsignedInteger('branch_from');
             $table->unsignedInteger('branch_to');
-            $table->unsignedInteger('mailer_id');
+            $table->unsignedInteger('client_id');
+            $table->string('type', 1);
+            $table->unsignedInteger('mailer_id')->nullable();
             $table->unsignedInteger('qty');
             $table->text('trackings');
             $table->text('reference');

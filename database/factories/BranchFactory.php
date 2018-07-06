@@ -17,5 +17,9 @@ $factory->define(\Logistics\DB\Tenant\Branch::class, function (Faker $faker) {
         'ruc' => null,
         'dv' => null,
         'logo' => null,
+        'real_price' => 2.50,
+        'vol_price' => 1.75,
+        'dhl_price' => 2.25,
+        'maritime_price' => 250,
     ];
 });

@@ -30,6 +30,7 @@ class WarehouseRequest extends AppFormRequest
             'branch_to' => 'required|integer',
             'client_id' => 'required|integer',
             'reference' => 'required|string',
+            'type' => 'required|in:A,M',
         ];
 
         if ($this->isEdit()) {

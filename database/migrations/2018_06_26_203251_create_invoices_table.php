@@ -19,6 +19,7 @@ class CreateInvoicesTable extends Migration
             $table->unsignedInteger('created_by_code')->nullable();
             $table->unsignedInteger('updated_by_code')->nullable();
             $table->integer('branch_id')->unsigned();
+            $table->integer('client_id')->unsigned();
             $table->integer('warehouse_id')->unsigned()->nullable();
             $table->string('client_name')->nullable();
             $table->string('client_email')->nullable();

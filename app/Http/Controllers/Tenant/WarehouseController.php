@@ -50,9 +50,11 @@ class WarehouseController extends Controller
         $warehouse = $tenant->warehouses()->create([
             'branch_to' => $request->branch_to,
             'branch_from' => $request->branch_from,
+            'client_id' => $request->client_id,
             'mailer_id' => $request->mailer_id,
             'trackings' => $request->trackings,
             'reference' => $request->reference,
+            'type' => $request->type,
             'qty' => $request->qty,
         ]);
 
@@ -120,9 +122,11 @@ class WarehouseController extends Controller
         $warehouse->branch_to = $request->branch_to;
         $warehouse->branch_from = $request->branch_from;
         $warehouse->mailer_id = $request->mailer_id;
+        $warehouse->client_id = $request->client_id;
         $warehouse->trackings = $request->trackings;
         $warehouse->reference = $request->reference;
         $warehouse->qty = $request->qty;
+        $warehouse->type = $request->type;
             
         $updated = $warehouse->save();
         

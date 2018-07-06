@@ -38,6 +38,7 @@
 
 @section('xtra_scripts')
     @include('common._add_more')
+    @include('common._select2ize')
     <script>
         var cache = {};
         $(function() {

@@ -24,6 +24,9 @@ $factory->define(Logistics\DB\User::class, function (Faker $faker) {
         'status' => 'A',
         'avatar' => null,
         'permissions' => [],
+        'pid' => 'PID',
+        'position' => 1,
+        'telephones' => '6986-9854',
     ];
 });
 

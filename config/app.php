@@ -53,7 +53,7 @@ return [
     */
 
     'url' => env('APP_URL', ''),
-
+    
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
@@ -118,6 +118,8 @@ return [
     | this array to grant expanded functionality to your applications.
     |
     */
+
+    'country' => env('TENANT_COUNTRY', 0),
 
     'providers' => [
 

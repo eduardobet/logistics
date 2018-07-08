@@ -64,7 +64,7 @@ class MailerCreationTest extends TestCase
         $response = $this->actingAs($admin)->post(route('tenant.mailer.store', $tenant->domain), [
             'tenant_id' => $tenant->id,
             'mailers' => [
-                ['name' => 'The Mailer', 'status' => 'A', 'description' => 'The description of the mailer', 'vol_price' => 1.75, 'real_price' => 2.50, ],
+                ['name' => 'The Mailer', 'status' => 'A', 'description' => 'The description of the mailer', 'vol_price' => 1.75, 'real_price' => 2.50, 'is_dhl' => 'Y' ],
             ]
         ]);
 
@@ -76,6 +76,7 @@ class MailerCreationTest extends TestCase
             'vol_price' => 1.75,
             'real_price' => 2.50,
             'status' => 'A',
+            'is_dhl' => true,
         ]);
 
         $response->assertRedirect(route('tenant.mailer.list', $tenant->domain));

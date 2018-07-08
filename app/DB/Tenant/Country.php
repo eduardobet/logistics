@@ -16,15 +16,14 @@ class Country extends Model
     /**
      * Gets country for input dropdown list.
      *
-     * @param mixed $tenantId
      * @return \Illuminate\Support\Collection
      */
-    public function getCountryAsList($tenantId)
+    public function getCountryAsList()
     {
-        $key = "country.list.{$tenantId}";
+        $key = "country.list";
 
-        $c = cache()->get($key, function () use ($key, $tenantId) {
-            $c = $this->where('tenant_id', $tenantId)
+        $c = cache()->get($key, function () use ($key) {
+            $c = $this->where('status', 'A')
                 ->orderBy('name')->pluck('name', 'id');
 
             cache()->forever($key, $c);

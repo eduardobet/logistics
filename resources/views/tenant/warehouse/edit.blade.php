@@ -107,14 +107,6 @@
                 doCal();
             });
 
-            $("#mailer_id").change(function() {
-                if (!this.value) $("#btn-wh-save").prop('disabled', true)
-                else {
-                    doCal();
-                    $("#btn-wh-save").prop('disabled', false)
-                }
-            });
-
             // counter
             $("#trackings").keyup(function(e) {
                 if (e.keyCode == 13){

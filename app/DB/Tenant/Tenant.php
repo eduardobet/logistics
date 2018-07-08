@@ -12,7 +12,7 @@ class Tenant extends Model
      * @var array
      */
     protected $fillable = [
-        'domain', 'name', 'status', 'ruc', 'dv', 'telephones', 'emails', 'address', 'lang', 'logo',
+        'domain', 'name', 'status', 'ruc', 'dv', 'telephones', 'emails', 'address', 'lang', 'logo', 'country_id',
     ];
 
     /**
@@ -27,6 +27,11 @@ class Tenant extends Model
         $host = get_host();
 
         do_forget_cache(__class__, ["{$host}"]);
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
     }
 
     public function employees()
@@ -83,7 +88,7 @@ class Tenant extends Model
      */
     private function getContent(string $domainName)
     {
-        return $content = "APP_URL={$this->domain}\nAPP_DOMAIN={$this->domain}\nAPP_NAME=\"{$this->name}\"\nSESSION_DOMAIN={$domainName}";
+        return $content = "APP_URL={$this->domain}\nAPP_DOMAIN={$this->domain}\nAPP_NAME=\"{$this->name}\"\nSESSION_DOMAIN={$domainName}\nTENANT_COUNTRY={$this->country_id}";
     }
 
     /**
@@ -110,6 +115,7 @@ class Tenant extends Model
             'app.name' => $this->name,
             'app.url' => $this->domain,
             'app.locale' => $this->lang,
+            'app.country' => $this->country_id,
         ]);
     }
 }

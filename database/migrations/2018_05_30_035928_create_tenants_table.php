@@ -15,6 +15,7 @@ class CreateTenantsTable extends Migration
     {
         Schema::create('tenants', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('country_id');
             $table->string('domain')->unique();
             $table->string('name')->unique()->nullable();
             $table->string('status', 1);
@@ -25,6 +26,7 @@ class CreateTenantsTable extends Migration
             $table->string('dv')->nullable();
             $table->string('address')->nullable();
             $table->string('logo')->nullable();
+            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
             $table->timestamps();
         });
     }

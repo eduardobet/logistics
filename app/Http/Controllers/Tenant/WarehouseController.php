@@ -4,6 +4,7 @@ namespace Logistics\Http\Controllers\Tenant;
 
 use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
+use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Invoice;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Http\Requests\Tenant\WarehouseRequest;
@@ -51,15 +52,15 @@ class WarehouseController extends Controller
             'branch_to' => $request->branch_to,
             'branch_from' => $request->branch_from,
             'client_id' => $request->client_id,
-            'mailer_id' => $request->mailer_id,
+            'mailer_id' => $request->mailer_id ?: 0,
             'trackings' => $request->trackings,
             'reference' => $request->reference,
             'type' => $request->type,
-            'qty' => $request->qty,
+            'qty' => $request->qty ?: 0,
         ]);
 
         if ($warehouse) {
-            if ($request->client_name) {
+            if ($request->client_id) {
                 $warehouse->genInvoice($request);
             }
             
@@ -104,6 +105,7 @@ class WarehouseController extends Controller
             'userBranches' => $this->branches()->whereIn('id', auth()->user()->branchesForInvoice->pluck('id')->toArray()),
             'mailers' => $this->mailers(),
             'invoice' => $warehouse->invoice,
+            'clients' => (new Client)->getClientsByBranch($warehouse->branch_to),
         ]);
     }
 
@@ -182,10 +184,31 @@ class WarehouseController extends Controller
      */
     public function sticker($tenant, $id)
     {
-        // return view('tenant.warehouse.sticker', []);
-        
-        $pdf = \PDF::loadView('tenant.warehouse.sticker', []);
+        $tenant = $this->getTenant();
+        $warehouse = $tenant->warehouses()->where('id', $id)->firstOrFail();
 
-        return $pdf->download('sticker.pdf');
+        $data = [
+            'iata' => $tenant->country->iata,
+            'warehouse' => $warehouse,
+            'mailer' => $tenant->mailers()->select(['tenant_id', 'id', 'name'])->find($warehouse->mailer_id),
+            'branchTo' => $tenant->branches()->select(['tenant_id', 'id', 'name', 'address'])->find($warehouse->branch_to),
+            'client' => $tenant->clients()->select(['tenant_id', 'id', 'first_name', 'last_name', 'address'])
+                ->with(['boxes' => function ($query) use ($warehouse) {
+                    $query->select(['id', 'client_id', 'branch_code', 'branch_id'])
+                        ->where('status', 'A')->where('branch_id', $warehouse->branch_to);
+                }])
+                ->find($warehouse->client_id),
+            'invoice' => $warehouse->invoice()->select(['id', 'warehouse_id', 'total'])
+                ->with(['details' => function ($query) {
+                }])->first(),
+        ];
+
+        if (app()->environment('testing')) {
+            return view('tenant.warehouse.sticker', $data);
+        } else {
+            $pdf = \PDF::loadView('tenant.warehouse.sticker', $data);
+                
+            return $pdf->download('sticker.pdf');
+        }
     }
 }

@@ -15,6 +15,6 @@ class ClientController extends Controller
      */
     public function index($branchId)
     {
-        return (new Client())->getClientAsList($branchId);
+        return (new Client())->getClientsByBranch($branchId);
     }
 }

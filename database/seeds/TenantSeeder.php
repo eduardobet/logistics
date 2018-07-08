@@ -31,6 +31,7 @@ class TenantSeeder extends Seeder
                 'vol_price' => 1.75,
                 'dhl_price' => 2.25,
                 'maritime_price' => 250,
+                'should_invoice' => true,
             ],
             [
                 'name' => 'Los Andes 2',
@@ -42,6 +43,7 @@ class TenantSeeder extends Seeder
                 'vol_price' => 1.75,
                 'dhl_price' => 2.25,
                 'maritime_price' => 250,
+                'should_invoice' => true,
             ]
         ]);
     }

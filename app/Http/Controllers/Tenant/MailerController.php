@@ -81,7 +81,6 @@ class MailerController extends Controller
     public function update(MailerRequest $request, $tenant)
     {
         $this->__updateOrCreate($request);
-        $this->__updateOrCreate($request);
 
         return redirect()->route('tenant.mailer.list', $tenant)
             ->with('flash_success', __('The :what has been updated.', ['what' => __('Mailers')]));
@@ -102,6 +101,7 @@ class MailerController extends Controller
                     'description' => $mailer->description,
                     'vol_price' => $mailer->vol_price ? : 0.0,
                     'real_price' => $mailer->real_price ? : 0.0,
+                    'is_dhl' => $mailer->is_dhl != null,
                 ]
             );
         }

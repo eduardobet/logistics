@@ -12,7 +12,7 @@ class Mailer extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'status', 'created_by_code', 'tenant_id', 'updated_by_code', 'description', 'vol_price', 'real_price',
+        'name', 'status', 'created_by_code', 'tenant_id', 'updated_by_code', 'description', 'vol_price', 'real_price', 'is_dhl',
     ];
 
     /**
@@ -35,7 +35,7 @@ class Mailer extends Model
         static::saved(function ($model) {
             $key = "mailers.tenant.{$model->tenant_id}";
             
-            do_forget_cache(__class__, ["{$key}"]);
+            __do_forget_cache(__class__, ["{$key}"], []);
         });
     }
 }

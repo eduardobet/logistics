@@ -16,14 +16,23 @@ $key = isset($key) ? $key : ':index:';
 
     <div class="col-lg-7">
         <div class="row">
-            <div class="col-4">
+
+            <div class="col-2">
+                <div class="form-group mg-b-10-force">
+                    <label class="form-control-label">{{ __('DHL?') }}: <br><br>
+                        {!! Form::checkbox("mailers[{$key}][is_dhl]", null, $mailer->is_dhl == true, []) !!}
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-3">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Vol Price') }}: <span class="tx-danger"></span></label>
                     {!! Form::text("mailers[{$key}][vol_price]", $mailer->vol_price, ['class' => 'form-control form-control-sm', ]) !!}
                 </div>
             </div>
 
-            <div class="col-4">
+            <div class="col-3">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Real Price') }}: <span class="tx-danger"></span></label>
                     {!! Form::text("mailers[{$key}][real_price]", $mailer->real_price, ['class' => 'form-control form-control-sm',  ]) !!}

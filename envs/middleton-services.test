@@ -2,3 +2,4 @@ APP_URL=middleton-services.test
 APP_DOMAIN=middleton-services.test
 APP_NAME="Middleton Services S.A."
 SESSION_DOMAIN=middleton-services.test
+TENANT_COUNTRY=1

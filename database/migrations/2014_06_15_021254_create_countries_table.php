@@ -15,10 +15,10 @@ class CreateCountriesTable extends Migration
     {
         Schema::create('countries', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('tenant_id');
             $table->string('name');
+            $table->string('code');
+            $table->string('iata');
             $table->string('status', 1)->default('A')->index();
-            $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('cascade');
             $table->timestamps();
         });
     }

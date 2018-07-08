@@ -14,5 +14,6 @@ $factory->define(Tenant::class, function (Faker $faker) {
         'emails' => "prla@tenant.com",
         'ruc' => "RUC",
         'dv' => "DV",
+        'country_id' => 1,
     ];
 });

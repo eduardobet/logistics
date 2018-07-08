@@ -23,6 +23,7 @@ class CreateMailersTable extends Migration
             $table->text('description')->nullable();
             $table->float('vol_price')->nullable()->default(0);
             $table->float('real_price')->nullable()->default(0);
+            $table->boolean('is_dhl')->nullable()->default(false);
             $table->timestamps();
         });
     }

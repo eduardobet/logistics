@@ -14,35 +14,38 @@
       <tr>
         <td style="border-top: 1px solid #000;margin-left: 10px" colspan="2">
             &nbsp;&nbsp;&nbsp;{{  __('Shiper') }} <br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MAILER NAME
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $mailer ? $mailer->name : null }}
         </td>
       </tr>
 
       <tr>
         <td style="border-top: 1px solid #000;margin-left: 10px" colspan="2">
             &nbsp;&nbsp;&nbsp;{{  __('Consignee') }} <br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BRANCH NAME <br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BRANCH ADDRESS
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $branchTo->name }} <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $branchTo->address }}
         </td>
       </tr>
 
       <tr>
         <td style="text-align:center;border-top: 1px solid #000;" colspan="2">
-            21LBS &nbsp;&nbsp;&nbsp;&nbsp; 12x12x12 &nbsp;&nbsp;&nbsp;&nbsp; (2) <br>
+            @foreach ($invoice->details as $detail)
+                {{ number_format($detail->vol_weight, 2) }}LBS &nbsp;&nbsp;&nbsp;&nbsp; {{ $detail->length }}x{{ $detail->width }}x{{ $detail->height }} &nbsp;&nbsp;&nbsp;&nbsp; ({{ $detail->qty }}) <br>
+            @endforeach
             PRLAXXX / The Hollow Man &nbsp;&nbsp;&nbsp;&nbsp; $0.00
+            {{ $client->boxes->first()->branch_code }}{{ $client->id }} / {{ $client->full_name }}      ${{ number_format($invoice->total, 2) }}
         </td>
       </tr>
 
       <tr>
         <td style="text-align:center;border-top: 1px solid #000; font-size: 3em; font-weight: bold; " colspan="2">
-            00000000000
+            {{ $warehouse->id }}
         </td>
       </tr>
 
       <tr>
         <td style="border-top: 1px solid #000; border-right: 1px solid #000;" width="20%">
             &nbsp;&nbsp;&nbsp;{{  __('Destination') }} <br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="font-size: 2em; font-weight: bold;">PTY</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="font-size: 2em; font-weight: bold;">{{ $iata }}</span>
         </td>
         <td style="border-top: 1px solid #000;" width="80%">
             &nbsp;{{  __('Route') }} <br>
@@ -58,7 +61,9 @@
 
         <td style="border-top: 1px solid #000">
             &nbsp;&nbsp;&nbsp;00/00/0000 <br>
-            &nbsp;&nbsp;&nbsp;<span style="font-size: 2em; font-weight: bold;">AIR</span>
+            &nbsp;&nbsp;&nbsp;<span style="font-size: 2em; font-weight: bold;">
+                {{ strtoupper( ['A' => __('Air'), 'M' => __('Maritime'), ][$warehouse->type] ) }}
+            </span>
         </td>
       </tr>
 
@@ -67,7 +72,7 @@
             <br>
         
             <?php
-                echo '<img src="data:image/png;base64,' . DNS1D::getBarcodePNG("00000000000", "C39", 2, 90, [0,0,0], true) . '" alt="barcode"   />';
+                echo '<img src="data:image/png;base64,' . DNS1D::getBarcodePNG("{$warehouse->id}", "C39", 2, 90, [0,0,0], true) . '" alt="barcode"   />';
             ?>
         </td>
       </tr>
@@ -75,7 +80,7 @@
       <tr>
         <td style="" colspan="2">
             <br>
-            &nbsp;&nbsp;&nbsp;User Name
+            &nbsp;&nbsp;&nbsp;{{ $user->full_name }}
         </td>
       </tr>
 

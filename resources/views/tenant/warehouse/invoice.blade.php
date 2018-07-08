@@ -1,21 +1,6 @@
 <input type="hidden" name="invoice_id" value="{{ $invoice->id }}">
 
 <div class="row mg-t-10">
-
-    <div class="col-lg-6">
-        <div class="form-group">
-            <label class="form-control-label">{{ __('Names') }}:</label>
-            {!! Form::text('client_name', $invoice->client_name, ['class' => 'form-control', 'required' => '', ]) !!}
-        </div>
-    </div>
-
-    <div class="col-lg-6">
-        <div class="form-group">
-            <label class="form-control-label">{{ __('Email') }}:</label>
-            {!! Form::email('client_email', $invoice->client_email, ['class' => 'form-control', 'required' => '', ]) !!}
-        </div>
-    </div>
-
 </div>
 
 <div class="row">
@@ -28,6 +13,7 @@
     <button class="btn btn-sm btn-outline-success btn-add-more" type="button"
     data-url="{{ route('tenant.warehouse.invoice-detail-tmpl', $tenant->domain) }}"
     data-loading-text="<i class='fa fa-spinner fa-spin '></i> {{ __('Loading') }}..."
+    {{ isset($mode) && $mode == 'edit' ? ' disabled' : null }}
     >
         <i class="fa fa-plus"></i> {{ __('Add') }}
     </button>
@@ -36,7 +22,7 @@
 <div class="mg-t-25"></div>
 <div id="details-container">
     @foreach ($invoice->details as $key => $idetail)
-        @include('tenant.warehouse.invoice-detail', ['idetail' => $idetail])
+        @include('tenant.warehouse.invoice-detail', ['idetail' => $idetail, 'mode' => 'edit'])
     @endforeach
 </div>
 

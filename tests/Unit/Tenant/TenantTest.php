@@ -158,7 +158,8 @@ class TenantTest extends TestCase
             "APP_URL={$tenant->domain}\n",
             "APP_DOMAIN={$tenant->domain}\n",
             "APP_NAME=\"{$tenant->name}\"\n",
-            "SESSION_DOMAIN={$domain}",
+            "SESSION_DOMAIN={$domain}\n",
+            "TENANT_COUNTRY={$tenant->country_id}",
         ], $contentArray);
 
         // File::delete($envFile);

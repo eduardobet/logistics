@@ -33,6 +33,13 @@ class Client extends Model
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['full_name'];
+
+    /**
      * Boot the model
      *
      * @return void
@@ -42,9 +49,10 @@ class Client extends Model
         parent::boot();
 
         static::saved(function ($model) {
-            $keys = ["clients.tenant.{$model->tenant_id}", ];
+            $branch = request('branch_id');
+            $keys = ["clients.tenant.{$model->tenant_id}.branch.{$branch}", ];
 
-            do_forget_cache(__class__, $keys);
+            __do_forget_cache(__class__, $keys, []);
         });
     }
 
@@ -106,16 +114,24 @@ class Client extends Model
         ]);
     }
 
-    public function getClients()
+    public function scopeWithAndWhereHas($query, $relation, $constraint)
+    {
+        return $query->whereHas($relation, $constraint)
+            ->with([$relation => $constraint]);
+    }
+
+    public function getClientsByBranch($branchId)
     {
         $tenant = $this->getTenant();
-        $key = "clients.tenant.{$tenant->id}";
+        $key = "clients.tenant.{$tenant->id}.branch.{$branchId}";
 
-        $clients = cache()->get($key, function () use ($tenant, $key) {
+        $clients = cache()->get($key, function () use ($tenant, $key, $branchId) {
             $clients = $tenant->clients()
                 ->whereStatus('A')
                 ->orderBy('first_name')
-                ->get();
+                ->withAndWhereHas('boxes', function ($query) use ($branchId) {
+                    $query->where('branch_id', '=', $branchId)->where('status', '=', 'A');
+                })->get();
 
             cache()->forever($key, $clients);
 
@@ -133,16 +149,6 @@ class Client extends Model
      */
     public function getClientAsList($branchId)
     {
-        dd($this->getClients()->toArray());
-        $clients = cache()->get($key, function () use ($key, $branchId) {
-            $clients = $this->where('country_id', $branchId)
-                ->orderBy('name')->pluck('name', 'id');
-
-            cache()->forever($key, $depts);
-
-            return $depts;
-        });
-
-        return $depts;
+        return $this->getClients($branchId)->pluck('name', 'id');
     }
 }

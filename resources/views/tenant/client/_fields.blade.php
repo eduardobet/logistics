@@ -18,7 +18,7 @@
             <div class="col-lg-2">
                 <div class="form-group">
                     <label class="form-control-label">#{{ __('Box') }}: </label>
-                    {!! Form::text("box", null, ['placeholder' => 'PRXX0000', 'class' => 'form-control', 'disabled' => '' ]) !!}
+                    {!! Form::text("box", $client->boxes && $client->boxes->first() ? $client->boxes->first()->branch_code . '' . $client->id : null , ['placeholder' => 'PRXX0000', 'class' => 'form-control', 'disabled' => '' ]) !!}
                 </div>
             </div>
 

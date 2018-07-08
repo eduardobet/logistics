@@ -132,7 +132,7 @@ class TenantEditionTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors([
-            'name', 'telephones', 'emails', 'address', 'lang', 'ruc', 'dv',
+            'name', 'emails', 'address', 'lang', 'ruc', 'dv',
             'remote_addresses.*.type',
             'remote_addresses.*.address',
             'remote_addresses.*.telephones',

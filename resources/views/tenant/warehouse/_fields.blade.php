@@ -1,9 +1,23 @@
 
 @include('tenant.common._notifications')
 
+<input type="hidden" name="branch_id" id="branch_id" value="{{ $branch->id }}">
+
 <div class="row">
 
-    <div class="col-{{$mode=='create' ? 12 : 10}}">
+    <div class="col-lg-2">
+        <div class="form-group">
+        
+             <label class="form-control-label">{{ __('Type') }}: 
+                <span class="tx-danger">*</span>
+                <strong id="loader-client_id"></strong>    
+             </label>
+             {!! Form::select('type', ['' => '----']+['A' => __('Air'), 'M' => __('Maritime'), ], null, ['class' => 'form-control', 'id' => 'type', 'required' => 'required', ]) !!}
+
+        </div>
+    </div>
+
+    <div class="col-lg-{{$mode=='create' ? 10 : 8}}">
         <div class="form-group">
             <label class="form-control-label">{{ __('Issuer branch') }}: <span class="tx-danger">*</span></label>
 
@@ -61,7 +75,10 @@
             <select name="branch_to" id="branch_to" class="form-control select2ize" required data-apiurl="{{ route('tenant.api.clients', [':parentId:']) }}" data-child="#client_id">
             <option value="">---</option>
             @foreach ($branches as $aBranch)
-                <option value="{{ $aBranch->id }}" {{ (isset($warehouse) && $warehouse->branch_to == $aBranch->id) || old('branch_to') == $aBranch->id ? " selected": null }}>
+                <option value="{{ $aBranch->id }}" {{ (isset($warehouse) && $warehouse->branch_to == $aBranch->id) || old('branch_to') == $aBranch->id ? " selected": null }}
+                    data-vol_price={{ $aBranch->vol_price }} data-real_price={{ $aBranch->real_price }} data-dhl_price={{ $aBranch->dhl_price }}
+                    data-maritime_price={{ $aBranch->maritime_price }}
+                    >
                     {{ $aBranch->name }}
                 </option>
             @endforeach
@@ -77,7 +94,22 @@
                 <span class="tx-danger">*</span>
                 <strong id="loader-client_id"></strong>    
              </label>
-             {!! Form::select('client_id', ['0' => '----'], null, ['class' => 'form-control select2 select2ize', 'id' => 'client_id', 'width' => '100% !important', ]) !!}
+             @if (isset($clients))
+                <select name="client_id" id="client_id" class="form-control select2" style="width: 100%">
+                    <option value="">----</option>
+                    @foreach ($clients as $client)
+                        <option value='{{ $client->id }}'
+                            data-pay_volume='{{ $client->pay_volume }}' data-special_rate='{{ $client->special_rate }}' data-special_maritime='{{ $client->special_maritime }}'
+                            data-vol_price='{{ $client->vol_price }}'  data-real_price='{{ $client->real_price }}'
+                            {{ (isset($warehouse) && $warehouse->client_id == $client->id) || old('client_id') == $client->id ? " selected": null }}
+                        >
+                        [{{ $client->boxes->first()->branch_code }}{{ $client->id }}] {{ $client->full_name }}
+                        </option>
+                    @endforeach
+                </select>    
+             @else    
+                {!! Form::select('client_id', ['' => '----'], null, ['class' => 'form-control select2', 'id' => 'client_id', 'width' => '100% !important', ]) !!}
+             @endif
 
         </div>
     </div>
@@ -98,14 +130,15 @@
 <div id="invoice-container" {{$mode == 'create' ? ' style=display:none': null }}>
     @includeWhen($mode == 'edit', 'tenant.warehouse.invoice', [
         'invoice' => $invoice,
+        'mode' => $mode,
     ])
 </div><!-- row -->
 
 <div class="row mg-t-10">
     <div class="col-lg-6">
         <div class="form-group mg-b-10-force">
-            <label class="form-control-label">{{ __('Tracking numbers') }} (<strong id="qty-dsp">{{$warehouse->qty?$warehouse->qty:0}}</strong>): <span class="tx-danger">*</span></label>
-            {!! Form::textarea('trackings', null, ['class' => 'form-control', 'required' => 'required', 'rows' => 4, 'id' => 'trackings', ($mode=='create'?'readonly':"") => ($mode=='create'?'readonly':"") , ]) !!}
+            <label class="form-control-label">{{ __('Tracking numbers') }} (<strong id="qty-dsp">{{$warehouse->qty?$warehouse->qty:0}}</strong>): <span class="tx-danger"></span></label>
+            {!! Form::textarea('trackings', null, ['class' => 'form-control', 'rows' => 4, 'id' => 'trackings' , ]) !!}
         </div>
     </div>
     <div class="col-lg-6">
@@ -125,8 +158,10 @@
     </div>
 </div>
 
+@if ($mode == 'add')
 <div class="row mg-t-25 justify-content-between">
     <div class="col-lg-12">
         <button id="btn-wh-save" type="submit" class="btn btn-primary bg-royal bd-1 bd-gray-400">{{ __('Save') }}</button>
     </div>
 </div>
+@endif

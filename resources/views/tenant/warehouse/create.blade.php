@@ -38,7 +38,7 @@
 
 @section('xtra_scripts')
     @include('common._add_more')
-    @include('common._select2ize')
+    
     <script>
         var cache = {};
         $(function() {
@@ -62,8 +62,8 @@
             
             $("#btn-invoice").click(function() {
                 
-                if (!$("#mailer_id").val()) {
-                    swal('', '{{ __("Please select the mailer") }}', 'error');
+                if (!$("#branch_to").val() || !$("#client_id").val()) {
+                    swal('', '{{ __("Please select the branch and the client") }}', 'error');
                     return;
                 }
 
@@ -109,14 +109,6 @@
                 doCal();
             });
 
-            $("#mailer_id").change(function() {
-                if (!this.value) $("#btn-wh-save").prop('disabled', true)
-                else {
-                    doCal();
-                    $("#btn-wh-save").prop('disabled', false)
-                }
-            });
-
             // counter
             $("#trackings").keyup(function(e) {
                 if (e.keyCode == 13){
@@ -154,9 +146,36 @@
             var totalVol = 0;
             var totalReal = 0;
             var $els = $(".inline-calc:not('.qty, .removed')", document);
+            var $branchTo = $('#branch_to');
+            var $client = $('#client_id');
             var $mailer = $('#mailer_id');
-            var volPrice = $mailer.find(':selected').attr('data-vol_price') || 0;
-            var realPrice = $mailer.find(':selected').attr('data-real_price') || 0;
+            var specialRate = $client.find(':selected').attr('data-special_rate') || 'false';
+            var payVol = $client.find(':selected').attr('data-pay_volume') || 'false';
+            var isDHL = $mailer.find(':selected').attr('data-is_dhl') || 'false';
+
+            var volPrice = 0;
+            var realPrice = 0;
+
+            var using = "";
+
+            if (specialRate == 'true') {
+                realPrice = $client.find(':selected').attr('data-real_price') || 0;
+                using = "Special Rate";
+            } else if (payVol == 'true') {
+                volPrice = $client.find(':selected').attr('data-vol_price') || 0;
+                using = "Pay volume";
+            } else {
+
+                if (isDHL) {
+                    realPrice = $branchTo.find(':selected').attr('data-dhl_price') || 0;
+                } else {
+                    realPrice = $branchTo.find(':selected').attr('data-real_price') || 0;
+                }
+
+                using = "Global branch";
+            }
+
+            console.log(volPrice, realPrice, using)
 
             $els.each(function(i, el) {
                 var $el = $(el);
@@ -209,4 +228,67 @@
             }
         });
     </script>
+
+    <script>
+    var cache = {};
+    $(function() {
+        $(".select2ize").each(function() {
+            var $self = $(this);
+            var $child = $($self.data('child'));
+            $child.select2({width: 'resolve'});
+        });
+
+        $(".select2ize").change(function() {
+            var $self = $(this);
+            var value = $self.val();
+            var apiurl = $self.data('apiurl');
+            var $child = $($self.data('child'));
+            var childId = $child.attr('id');
+            var $loader = $("#loader-"+childId);
+
+            if (!apiurl) {
+                console.error("Api url is not defined");
+                return;
+            }
+
+            if (value && value != "0") {
+                
+                if ( items = cache[childId + '.' + value ] ) {
+                    select2ize($child, items);
+                    return;
+                }
+
+                $loader.html('<i class="fa fa-spinner fa-spin"></i>');
+                $child.prop("disabled", true).select2();
+                apiurl = apiurl.replace(":parentId:", value)
+
+                $.getJSON(apiurl, function(items) {
+                    $loader.empty();
+                    select2ize($child, items);
+                    cache[childId + '.' + value] = items;
+                });
+            } else {
+                select2ize($child, []);
+            }
+        });
+    });
+
+    function select2ize($child, items) {
+        var newOptions = '<option value="">---</option>';
+        for(var key in items) {
+            var obj = items[key];
+            var box = obj.boxes[0];
+            newOptions += `
+                <option value='${obj.id}'
+                    data-pay_volume='${obj.pay_volume}' data-special_rate='${obj.special_rate}' data-special_maritime='${obj.special_maritime}'
+                     data-vol_price='${obj.vol_price}'  data-real_price='${obj.real_price}'
+                >
+                   [${box.branch_code}${obj.id}] ${obj.full_name}
+                </option>`;
+        }
+        
+        $child.select2('destroy').html(newOptions).prop("disabled", false)
+        .select2({width: 'resolve'});
+    }
+</script>
 @stop

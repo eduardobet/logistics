@@ -42,14 +42,14 @@ class WarehouseEditionTest extends TestCase
         $response->assertRedirect(route('tenant.warehouse.edit', [$tenant->domain, 1]));
 
         $response->assertSessionHasErrors([
-            'branch_from', 'branch_to', 'mailer_id', 'trackings', 'reference', 'qty',
+            'branch_from', 'branch_to', 'client_id', 'reference', 'type',
         ]);
     }
 
     /** @test */
     public function it_updates_the_warehouse_for_direct_comission()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
@@ -72,15 +72,18 @@ class WarehouseEditionTest extends TestCase
         $warehouse = $tenant->warehouses()->create([
             'branch_to' => $branchB->id,
             'branch_from' => $branch->id,
+            'client_id' => $client->id,
             'mailer_id' => $mailer->id,
             'trackings' => '1234',
             'reference' => 'The reference',
             'qty' => 1,
+            'type' => 'A',
         ]);
 
         $invoice = Invoice::create([
             'tenant_id' => $tenant->id,
             'warehouse_id' => $warehouse->id,
+            'client_id' => $client->id,
             'branch_id' => $warehouse->branch_to,
             'client_name' => 'The Name of the client',
             'client_email' => 'email@client.com',
@@ -107,10 +110,12 @@ class WarehouseEditionTest extends TestCase
         $response = $this->actingAs($admin)->patch(route('tenant.warehouse.update', [$tenant->domain, $warehouse->id]), [
             'branch_from' => $branch->id,
             'branch_to' => $branchB->id,
+            'client_id' => $client->id,
             'mailer_id' => $mailer->id,
             'trackings' => '1234\n3654',
             'reference' => 'The reference update',
             'qty' => 2,
+            'type' => 'A',
 
             //
             'client_name' => 'The client of the direct comission',

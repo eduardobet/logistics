@@ -50,7 +50,7 @@ class CustomValidarTest extends TestCase
         ];
 
         $data = [
-            'phones' => '123',
+            'phones' => '123,123',
         ];
 
         $v = $this->app['validator']->make($data, $rules);

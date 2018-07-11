@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\Carbon;
+
 if (!function_exists('get_exe_queries')) {
     function get_exe_queries()
     {
@@ -132,5 +134,50 @@ function __do_forget_cache($mod, $cacheNames, $xtras)
         $key = $cacheName . $extra_name;
 
         Cache::forget($key);
+    }
+}
+
+if (!function_exists('do_diff_for_humans')) {
+    /**
+     * Shows date for humans
+     * @param  Carbon $date
+     * @param  bool $is_short
+     * @return string
+     */
+    function do_diff_for_humans($date, $is_short = false)
+    {
+        $txt = (!$is_short) ? 'app.timediff.' : 'app.timediff_s.';
+
+        $other = Carbon::now();
+
+        $delta = abs($other->diffInSeconds($date));
+
+        $divs = [
+            'second' => Carbon::SECONDS_PER_MINUTE,
+            'minute' => Carbon::MINUTES_PER_HOUR,
+            'hour' => Carbon::HOURS_PER_DAY,
+            'day' => 30,
+            'month' => Carbon::MONTHS_PER_YEAR,
+        ];
+
+        $unit = 'year';
+
+        foreach ($divs as $divUnit => $divValue) {
+            if ($delta < $divValue) {
+                $unit = $divUnit;
+                break;
+            }
+            $delta = floor($delta / $divValue);
+        }
+
+        if ($delta == 0) {
+            $delta = 1;
+        }
+
+        $txt .= $unit;
+
+        $since = trans('app.since_text');
+
+        return \Lang::choice($txt, $delta, compact('delta', 'since'));
     }
 }

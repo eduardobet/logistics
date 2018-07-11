@@ -158,7 +158,7 @@
     </div>
 </div>
 
-@if ($mode == 'add')
+@if ($mode != 'edit')
 <div class="row mg-t-25 justify-content-between">
     <div class="col-lg-12">
         <button id="btn-wh-save" type="submit" class="btn btn-primary bg-royal bd-1 bd-gray-400">{{ __('Save') }}</button>

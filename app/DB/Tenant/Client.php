@@ -50,7 +50,7 @@ class Client extends Model
 
         static::saved(function ($model) {
             $branch = request('branch_id');
-            $keys = ["clients.tenant.{$model->tenant_id}.branch.{$branch}", ];
+            $keys = ["clients.tenant.{$model->tenant_id}", "clients.tenant.{$model->tenant_id}.branch.{$branch}", ];
 
             __do_forget_cache(__class__, $keys, []);
         });

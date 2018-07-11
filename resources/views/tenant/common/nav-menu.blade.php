@@ -2,7 +2,7 @@
       <div class="container">
         <ul class="nav">
 
-          <li class="nav-item with-sub {{ active(['tenant.admin.dashboard', 'tenant.client.create', 'tenant.client.list','tenant.client.edit']) }}">
+          <li class="nav-item with-sub {{ active(['tenant.client.create', 'tenant.client.list','tenant.client.edit']) }}">
             <a class="nav-link" href="#">
               <i class="icon ion-ios-person-outline"></i>
               <span>{{ __('Clients') }}</span>

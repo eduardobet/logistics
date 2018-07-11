@@ -133,7 +133,7 @@ class WarehouseController extends Controller
         $updated = $warehouse->save();
         
         if ($updated) {
-            if ($request->client_name) {
+            if ($request->client_id) {
                 $warehouse->genInvoice($request);
             }
 

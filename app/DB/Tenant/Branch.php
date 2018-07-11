@@ -3,9 +3,12 @@
 namespace Logistics\DB\Tenant;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Branch extends Model
 {
+    use Notifiable;
+
     /**
      * The attributes that are mass assignable.
      *

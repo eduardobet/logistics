@@ -1,7 +1,7 @@
 <?php
 
 Route::group(['middleware' => ['auth', 'admin'], 'prefix' => 'admin'], function () {
-    Route::get('dashboard', 'Tenant\Admin\DashboardController@index')->name('tenant.admin.dashboard');
+    Route::get('dashboard', 'Tenant\Employee\DashboardController@index')->name('tenant.admin.dashboard');
 
     // company
     Route::get('dashboard/company/edit', 'Tenant\Admin\CompanyController@edit')->name('tenant.admin.company.edit');

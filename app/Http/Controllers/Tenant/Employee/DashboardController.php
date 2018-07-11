@@ -3,10 +3,13 @@
 namespace Logistics\Http\Controllers\Tenant\Employee;
 
 use Illuminate\Http\Request;
+use Logistics\Traits\Tenant;
 use Logistics\Http\Controllers\Controller;
 
 class DashboardController extends Controller
 {
+    use Tenant;
+
     /**
      * Display a listing of the resource.
      *
@@ -14,9 +17,29 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $tenant = $this->getTenant();
 
+        $type = auth()->user()->type;
+        $prefix = 'employee';
+
+        if ($type == 'A') {
+            $prefix = 'admin';
+        }
+
+        $branch = auth()->user()->currentBranch();
+
+        return view("tenant.employee.dashboard", [
+            'tot_warehouses' => $this->warehouses()->where('branch_to', $branch->id)->count(),
+            'tot_clients' => $this->clients()->filter(function ($client, $key) use ($branch) {
+                return $client->boxes->where('branch_id', $branch->id);
+            })->count(),
+            'tot_invoices' => $this->invoices()->where('branch_id', $branch->id)->count(),
+            'last_5_clients' => $this->clients()->filter(function ($client, $key) use ($branch) {
+                return $client->boxes->where('branch_id', $branch->id);
+            })->sortByDesc('created_at')->take(5),
+        ]);
+    }
+    
     /**
      * Show the form for creating a new resource.
      *

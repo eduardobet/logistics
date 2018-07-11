@@ -9,8 +9,10 @@ use Logistics\DB\Tenant\Branch;
 use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Mailer;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Notification;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Logistics\Notifications\Tenant\WarehouseActivity;
 
 class WarehouseCreationTest extends TestCase
 {
@@ -49,6 +51,8 @@ class WarehouseCreationTest extends TestCase
     public function it_successfuly_creates_the_warehouse_when_client_pays_volume()
     {
         $this->withoutExceptionHandling();
+
+        // Notification::fake();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
@@ -148,6 +152,8 @@ class WarehouseCreationTest extends TestCase
             $this->assertEquals($detail->vol_weight, 8);
             $this->assertEquals($detail->real_weight, 9);
         });
+
+        $this->assertCount(1, $branchB->notifications);
     }
 
     /** @test */

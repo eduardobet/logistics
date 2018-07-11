@@ -4,6 +4,7 @@ namespace Logistics\DB\Tenant;
 
 use Illuminate\Support\Fluent;
 use Illuminate\Database\Eloquent\Model;
+use Logistics\Notifications\Tenant\WarehouseActivity;
 
 class Warehouse extends Model
 {
@@ -33,6 +34,16 @@ class Warehouse extends Model
         static::updating(function ($query) {
             $query->updated_by_code = auth()->id();
         });
+    }
+
+    /**
+     * Get the created at date for human.
+     *
+     * @return string
+     */
+    public function getCreatedAtAgoAttribute()
+    {
+        return do_diff_for_humans($this->created_at);
     }
 
     public function invoice()
@@ -107,5 +118,8 @@ class Warehouse extends Model
                 'real_weight' => $input->real_weight,
             ]);
         }
+        
+        $box = $client->boxes()->active()->first();
+        $this->toBranch->notify(new WarehouseActivity($this->created_at_ago, $this->id, "{$box->branch_code}{$client->id}", $invoice->id));
     }
 }

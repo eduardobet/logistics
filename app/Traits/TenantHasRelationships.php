@@ -6,7 +6,7 @@ trait TenantHasRelationships
 {
     public function country()
     {
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(\Logistics\DB\Tenant\Country::class);
     }
 
     public function employees()

@@ -36,4 +36,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('warehouse/store', 'Tenant\WarehouseController@store')->name('tenant.warehouse.store');
     Route::get('warehouse/{id}/edit', 'Tenant\WarehouseController@edit')->name('tenant.warehouse.edit');
     Route::patch('warehouse/{id}/update', 'Tenant\WarehouseController@update')->name('tenant.warehouse.update');
+
+    // invoice
+    Route::get('invoice/list', 'Tenant\InvoiceController@index')->name('tenant.invoice.list');
+    Route::get('invoice/create', 'Tenant\InvoiceController@create')->name('tenant.invoice.create');
+    Route::get('invoice/{id}/edit', 'Tenant\InvoiceController@edit')->name('tenant.invoice.edit');
 });

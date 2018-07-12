@@ -12,41 +12,20 @@
                   <div class="media-list">
                     
                     
-                    @foreach ($branch->notifications as $notif)
+                    @foreach ($branch->notifications->take(5) as $notif)
                       <div class="media">
-                        <div class="activity-icon bg-primary">
+                        <div class="activity-icon {{ array_random(['bg-primary', 'bg-success', 'bg-purple', 'bg-warning', 'bg-info']) }}">
                           <i class="icon ion-ios-information-outline"></i>
                         </div><!-- activity-icon -->
                         <div class="media-body">
                           <h6>{{ $notif['data']['title'] }}</h6>
                           <p>{{ $notif['data']['content'] }}</p>
-                          <span>{{ $notif['data']['created_at'] }}</span>
+                          
+                          <span>{{ do_diff_for_humans($notif['data']['created_at']['date']) }}</span>
                         </div><!-- media-body -->
                       </div><!-- media -->
 
                     @endforeach
-
-                    <div class="media">
-                      <div class="activity-icon bg-success">
-                        <i class="icon ion-ios-information-outline"></i>
-                      </div><!-- activity-icon -->
-                      <div class="media-body">
-                        <h6>Franklin Entrego Paquete</h6>
-                        <p>Entrego Paquete de PR578, Almacén 26541.</p>
-                        <span>2 hours ago</span>
-                      </div><!-- media-body -->
-                    </div><!-- media -->
-
-                    <div class="media">
-                      <div class="activity-icon bg-purple">
-                        <i class="icon ion-ios-information-outline"></i>
-                      </div><!-- activity-icon -->
-                      <div class="media-body">
-                        <h6>Franklin a Realizado un Cobro</h6>
-                        <p>Realizo un Cobro a PR578, Factura M8-95325.</p>
-                        <span>2 hours ago</span>
-                      </div><!-- media-body -->
-                    </div><!-- media -->
 
                   </div><!-- media-list -->
 
@@ -75,12 +54,12 @@
                   
                     @foreach ($last_5_clients as $lclient)
                       <div class="media">
-                          <img src="https://via.placeholder.com/500x500" alt="">
+                          <img src="{{ asset('images/200x200.png') }}" alt="">
                           <div class="media-body">
-                          <a href="">{{ $lclient->full_name }}</a>
+                          <a href="{{ route('tenant.client.edit', [$tenant->domain, $lclient->id]) }}">{{ $lclient->full_name }}</a>
                           <p class="tx-12">{{ $lclient->boxes->first()->branch_code }}{{ $lclient->id }}</p>
                           </div><!-- media-body -->
-                          <a href=""><i class="icon ion-ios-arrow-forward tx-20"></i></a>
+                          <a href="{{ route('tenant.client.edit', [$tenant->domain, $lclient->id]) }}"><i class="icon ion-ios-arrow-forward tx-20"></i></a>
                       </div><!-- media -->
                     @endforeach
             

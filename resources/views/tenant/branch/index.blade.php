@@ -25,7 +25,7 @@
           
         </div><!-- slim-pageheader -->
 
-        <div class="table table-responsive">
+        <div class="table table-responsive-sm">
             <table class="table table-hover mg-b-0">
               <thead>
                 <tr>

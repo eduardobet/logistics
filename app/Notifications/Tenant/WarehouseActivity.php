@@ -2,6 +2,7 @@
 
 namespace Logistics\Notifications\Tenant;
 
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -21,7 +22,7 @@ class WarehouseActivity extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(String $createdAtAgo, int $warehouseId, String $box, int $invoiceId)
+    public function __construct(Carbon $createdAtAgo, int $warehouseId, String $box, int $invoiceId)
     {
         $this->createdAtAgo = $createdAtAgo;
         $this->warehouseId = $warehouseId;

@@ -73,8 +73,8 @@ class ClientController extends Controller
             'pay_volume' => $request->has('pay_volume'),
             'special_rate' => $request->has('special_rate'),
             'special_maritime' => $request->has('special_maritime'),
-            'vol_price' => $request->vol_price,
-            'real_price' => $request->real_price,
+            'vol_price' => $request->vol_price ?: 0,
+            'real_price' => $request->real_price ?: 0,
         ]);
 
         if ($client) {

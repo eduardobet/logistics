@@ -31,7 +31,7 @@
             </div><!-- dropdown-menu -->
           </li>
 
-          <li class="nav-item with-sub">
+          <li class="nav-item with-sub {{ active(['tenant.invoice.list','tenant.invoice.create', 'tenant.invoice.edit']) }}">
             <a class="nav-link" href="#">
               <i class="icon ion-ios-calculator-outline"></i>
               <span>{{ __('Invoices') }}</span>
@@ -41,7 +41,7 @@
                 <li><a href="#">{{ __('New invoice') }}</a></li>
                 <li><a href="#">{{ __('Search invoice') }}</a></li>
                 <li><a href="#">{{ __('New payment') }}</a></li>
-                <li><a href="#">{{ __('Pending invoices') }}</a></li>
+                <li><a href="{{ route('tenant.invoice.list', $tenant->domain) }}">{{ __('Invoices list') }}</a></li>
               </ul>
             </div><!-- dropdown-menu -->
           </li>

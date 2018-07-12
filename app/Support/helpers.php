@@ -148,9 +148,9 @@ if (!function_exists('do_diff_for_humans')) {
     {
         $txt = (!$is_short) ? 'app.timediff.' : 'app.timediff_s.';
 
-        $other = Carbon::now();
+        $now = Carbon::now();
 
-        $delta = abs($other->diffInSeconds($date));
+        $delta = abs($now->diffInSeconds($date));
 
         $divs = [
             'second' => Carbon::SECONDS_PER_MINUTE,

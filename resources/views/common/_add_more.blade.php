@@ -1,36 +1,43 @@
  <script>
     var ecCache = {};
     $(function() {
-        var $container = $("#details-container");
-        var index = $container.find(".det-row").length + 1;
-        var doAjax = true;
+        var $container;
 
-        $(document).on("click", ".btn-add-more", function() {
-            if (!$container.length) $container  = $("#details-container", document);
-            var $self = $(this);
-            var url = $self.data('url');
-            var loadingText = $self.data('loading-text');
-
-            if (view = ecCache.data) {
-                index++;
-                add(view, index)
-                doAjax = false;
-            }
-
-            if (doAjax) {
-
-                if ($(this).html() !== loadingText) {
-                    $self.data('original-text', $(this).html());
-                    $self.prop('disabled', true).html(loadingText);
-                }
-                
-                $.getJSON(url, function(data) {
-                    $self.prop('disabled', false).html($self.data('original-text'));
-                    ecCache['data'] = data.view;
-                    add(data.view, index)
-                });
-            }
+        $(".tab-toggle").click(function() {
+            var cprefix = $(this).data('container');
+            $container = $("#details-container-"+cprefix);
         });
+
+            var doAjax = true;
+
+            $(document).on("click", ".btn-add-more", function() {
+                var index = $container.find(".det-row").length + 1;
+                if (!$container) console.log('Error _add_more: no container');
+                var $self = $(this);
+                var url = $self.data('url');
+                var loadingText = $self.data('loading-text');
+
+                if (view = ecCache.data) {
+                    index++;
+                    add(view, index)
+                    doAjax = false;
+                }
+
+                if (doAjax) {
+
+                    if ($(this).html() !== loadingText) {
+                        $self.data('original-text', $(this).html());
+                        $self.prop('disabled', true).html(loadingText);
+                    }
+                    
+                    $.getJSON(url, function(data) {
+                        $self.prop('disabled', false).html($self.data('original-text'));
+                        ecCache['data'] = data.view;
+                        add(data.view, index)
+                    });
+                }
+            });
+        
 
         // removing
         $(document).on("click", ".rem-row", function() {

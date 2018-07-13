@@ -23,10 +23,14 @@
             
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#informations" data-toggle="tab">{{ __('Informations') }}</a>
+                    <a class="nav-link active tab-toggle" href="#informations" data-container="informations" data-toggle="tab">{{ __('Informations') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#remote-addresses" data-toggle="tab">{{ __('Remote addresses') }}</a>
+                    <a class="nav-link tab-toggle" href="#remote-addresses" data-container="remote-addresses" data-toggle="tab">{{ __('Remote addresses') }}</a>
+                </li>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link tab-toggle" href="#conditions" data-container="conditions" data-toggle="tab">{{ __('Conditions') }}</a>
                 </li>
             </ul>
 
@@ -140,14 +144,33 @@
                         </button>
                     </div>
 
-                    <div id="details-container">
+                    <div id="details-container-remote-addresses">
                         <div class="mg-t-25"></div>
                         @foreach ($tenant->remoteAddresses as $key => $raddress)
                             @include('tenant.company.remote-addresses', ['raddress' => $raddress])
                         @endforeach
                     </div>
                 
-                </div> <!-- tab remote addresses --> 
+                </div> <!-- tab remote addresses -->
+
+                <div class="tab-pane" id="conditions">
+                    <div class="mg-t-25">
+                        <button class="btn btn-sm btn-outline-success btn-add-more" type="button"
+                        data-url="{{ route('tenant.compnay.condition-tmpl', $tenant->domain) }}"
+                        data-loading-text="<i class='fa fa-spinner fa-spin '></i> {{ __('Loading') }}..."
+                        >
+                            <i class="fa fa-plus"></i> {{ __('Add') }}
+                        </button>
+                    </div>
+
+                    <div id="details-container-conditions">
+                        <div class="mg-t-25"></div>
+                        @foreach ($tenant->conditions as $key => $condition)
+                            @include('tenant.company.conditions', ['condition' => $condition])
+                        @endforeach
+                    </div>
+                
+                </div> <!-- tab conditions -->
 
             </div> <!-- tab-content --> 
 

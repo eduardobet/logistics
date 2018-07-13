@@ -37,6 +37,7 @@ class CompanyController extends Controller
 
             $this->uploadLogo($request, $company);
             $this->saveRemoteAddr($request, $company);
+            $this->saveConditions($request, $company);
 
             $company->touchEnvFile();
 
@@ -80,10 +81,36 @@ class CompanyController extends Controller
         }
     }
 
+    protected function saveConditions($request, $tenant)
+    {
+        if ($conditions = $request->conditions) {
+            if (!is_array($conditions)) {
+                $conditions = [];
+            }
+
+            foreach ($conditions as $conditions) {
+                $inputs = new Fluent($conditions);
+
+                $tenant->conditions()->updateOrCreate(['id' => $inputs->cid], [
+                    'type' => $inputs->ctype,
+                    'content' => $inputs->ccontent,
+                    'status' => $inputs->cstatus,
+                ]);
+            }
+        }
+    }
+
     public function getRemoteTpl()
     {
         return response()->json([
             'view' => view('tenant.company.remote-addresses')->render(),
+        ]);
+    }
+
+    public function getConditionTpl()
+    {
+        return response()->json([
+            'view' => view('tenant.company.conditions')->render(),
         ]);
     }
 }

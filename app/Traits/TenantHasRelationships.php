@@ -53,4 +53,9 @@ trait TenantHasRelationships
     {
         return $this->hasMany(\Logistics\DB\Tenant\Invoice::class);
     }
+
+    public function conditions()
+    {
+        return $this->hasMany(\Logistics\DB\Tenant\Condition::class);
+    }
 }

@@ -7,6 +7,7 @@ Route::group(['middleware' => ['auth', 'admin'], 'prefix' => 'admin'], function 
     Route::get('dashboard/company/edit', 'Tenant\Admin\CompanyController@edit')->name('tenant.admin.company.edit');
     Route::patch('dashboard/company/update', 'Tenant\Admin\CompanyController@update')->name('tenant.admin.company.update');
     Route::get('dashboard/company/remote-template', 'Tenant\Admin\CompanyController@getRemoteTpl')->name('tenant.compnay.remote-addr-tmpl');
+    Route::get('dashboard/company/condition-template', 'Tenant\Admin\CompanyController@getConditionTpl')->name('tenant.compnay.condition-tmpl');
 
     // Positions
     Route::get('dashboard/positions/list', 'Tenant\Admin\PositionController@index')->name('tenant.admin.position.list');

@@ -54,6 +54,10 @@ class TenantEditionTest extends TestCase
                 ['type' => 'A', 'address' => 'In the middle of remote air', 'telephones' => '555-5555',  'status' => 'A', ],
                 ['type' => 'M', 'address' => 'In the middle of remote maritimes', 'telephones' => '555-5555','status' => 'A',  ],
             ],
+            'conditions' => [
+                ['ctype' => 'W', 'ccontent' => 'The conditions for warehouse receipt', 'cstatus' => 'A', ],
+                ['ctype' => 'I', 'ccontent' => 'The conditions for invoices', 'cstatus' => 'A', ],
+            ],
         ]);
 
         $this->assertDatabaseHas('tenants', [
@@ -72,6 +76,11 @@ class TenantEditionTest extends TestCase
         $this->assertDatabaseHas('remote_addresses', [
             'type' => 'M', 'address' => 'In the middle of remote maritimes', 'telephones' => '555-5556', 'created_by_code' => $admin->id,
             'type' => 'A', 'address' => 'In the middle of remote air', 'telephones' => '555-5555', 'created_by_code' => $admin->id,
+        ]);
+
+        $this->assertDatabaseHas('conditions', [
+            'type' => 'W', 'content' => 'The conditions for warehouse receipt', 'status' => 'A', 'created_by_code' => $admin->id,
+            'type' => 'I', 'content' => 'The conditions for invoices', 'status' => 'A', 'created_by_code' => $admin->id,
         ]);
 
         $this->assertNotNull(view()->shared('tenant'));
@@ -105,6 +114,10 @@ class TenantEditionTest extends TestCase
                 ['type' => 'A', 'address' => 'In the middle of remote air', 'telephones' => '555-5555', 'status' => 'A', ],
                 ['type' => 'M', 'address' => 'In the middle of remote maritimes', 'telephones' => '555-5555', 'status' => 'A', ],
             ],
+            'conditions' => [
+                ['ctype' => 'W', 'ccontent' => 'The conditions for warehouse receipt', 'cstatus' => 'A', ],
+                ['ctype' => 'I', 'ccontent' => 'The conditions for invoices', 'cstatus' => 'A', ],
+            ],
         ]);
 
         $response->assertSessionHasErrors(['domain', 'status']);
@@ -129,14 +142,20 @@ class TenantEditionTest extends TestCase
             'address' => '123',
             'lang' => 'xx',
             'remote_addresses' => [[]],
+            'conditions' => [[]],
         ]);
 
         $response->assertSessionHasErrors([
             'name', 'emails', 'address', 'lang', 'ruc', 'dv',
+
             'remote_addresses.*.type',
             'remote_addresses.*.address',
             'remote_addresses.*.telephones',
             'remote_addresses.*.status',
+
+            'conditions.*.ctype',
+            'conditions.*.ccontent',
+            'conditions.*.cstatus',
         ]);
         $response->assertRedirect(route('tenant.admin.company.edit', $tenant->domain));
         $this->assertEquals('middleton-services.test', ($tenant = $tenant->fresh()->first())->domain);
@@ -166,6 +185,10 @@ class TenantEditionTest extends TestCase
             'remote_addresses' => [
                 ['type' => 'A', 'address' => 'In the middle of remote air', 'telephones' => '555-5555', 'status' => 'A', ],
                 ['type' => 'M', 'address' => 'In the middle of remote maritimes', 'telephones' => '555-5555', 'status' => 'A', ],
+            ],
+            'conditions' => [
+                ['ctype' => 'W', 'ccontent' => 'The conditions for warehouse receipt', 'cstatus' => 'A', ],
+                ['ctype' => 'I', 'ccontent' => 'The conditions for invoices', 'cstatus' => 'A', ],
             ],
             '_method' => 'PATCH',
         ]);
@@ -208,6 +231,10 @@ class TenantEditionTest extends TestCase
             'remote_addresses' => [
                 ['type' => 'A', 'address' => 'In the middle of remote air', 'telephones' => '555-5555', 'status' => 'A', ],
                 ['type' => 'M', 'address' => 'In the middle of remote maritimes', 'telephones' => '555-5555', 'status' => 'A', ],
+            ],
+            'conditions' => [
+                ['ctype' => 'W', 'ccontent' => 'The conditions for warehouse receipt', 'cstatus' => 'A', ],
+                ['ctype' => 'I', 'ccontent' => 'The conditions for invoices', 'cstatus' => 'A', ],
             ],
             '_method' => 'PATCH',
         ]);

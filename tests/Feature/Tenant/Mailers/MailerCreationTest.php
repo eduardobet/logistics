@@ -57,6 +57,10 @@ class MailerCreationTest extends TestCase
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $admin->branches()->sync([$branch->id]);
 
+        \Gate::define('create-mailer', function ($admin) {
+            return true;
+        });
+
         $response = $this->actingAs($admin)->get(route('tenant.mailer.create', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.mailer.create');

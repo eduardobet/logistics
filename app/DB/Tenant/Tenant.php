@@ -62,7 +62,7 @@ class Tenant extends Model
 
         \Illuminate\Support\Facades\File::put($envFile, $this->getContent($domainName));
 
-        \Illuminate\Support\Facades\Artisan::call('config:clear');
+        //\Illuminate\Support\Facades\Artisan::call('config:clear');
 
         return $envFile;
     }

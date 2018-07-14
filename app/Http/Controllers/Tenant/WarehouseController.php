@@ -20,7 +20,20 @@ class WarehouseController extends Controller
      */
     public function index()
     {
-        //
+        $warehouses = $this->getTenant()->warehouses()
+            ->with(['fromBranch', 'toBranch']);
+
+        if ($filter = request('filter')) {
+            if (is_numeric($filter)) {
+                $warehouses = $warehouses->where('id', $filter);
+            } else {
+                $warehouses = $warehouses->where('name', 'like', "%{$filter}%");
+            }
+        }
+        
+        $warehouses = $warehouses->paginate(15);
+
+        return view('tenant.warehouse.index', compact('warehouses'));
     }
 
     /**
@@ -60,7 +73,7 @@ class WarehouseController extends Controller
         ]);
 
         if ($warehouse) {
-            if ($request->client_id) {
+            if ($request->gen_invoice) {
                 $warehouse->genInvoice($request);
             }
             
@@ -104,7 +117,7 @@ class WarehouseController extends Controller
             'branches' => $this->branches(),
             'userBranches' => $this->branches()->whereIn('id', auth()->user()->branchesForInvoice->pluck('id')->toArray()),
             'mailers' => $this->mailers(),
-            'invoice' => $warehouse->invoice,
+            'invoice' => $warehouse->invoice ?: new Invoice,
             'clients' => (new Client)->getClientsByBranch($warehouse->branch_to),
         ]);
     }

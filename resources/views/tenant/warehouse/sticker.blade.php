@@ -28,11 +28,10 @@
 
       <tr>
         <td style="text-align:center;border-top: 1px solid #000;" colspan="2">
-            @foreach ($invoice->details as $detail)
+            @foreach ($invoice ? $invoice->details : [] as $detail)
                 {{ number_format($detail->vol_weight, 2) }}LBS &nbsp;&nbsp;&nbsp;&nbsp; {{ $detail->length }}x{{ $detail->width }}x{{ $detail->height }} &nbsp;&nbsp;&nbsp;&nbsp; ({{ $detail->qty }}) <br>
             @endforeach
-            PRLAXXX / The Hollow Man &nbsp;&nbsp;&nbsp;&nbsp; $0.00
-            {{ $client->boxes->first()->branch_code }}{{ $client->id }} / {{ $client->full_name }}      ${{ number_format($invoice->total, 2) }}
+            {{ $client->boxes->first()->branch_code }}{{ $client->id }} / {{ $client->full_name }}      ${{ number_format($invoice ? $invoice->total : 0, 2) }}
         </td>
       </tr>
 
@@ -60,7 +59,7 @@
         </td>
 
         <td style="border-top: 1px solid #000">
-            &nbsp;&nbsp;&nbsp;00/00/0000 <br>
+            &nbsp;&nbsp;&nbsp;{{ $warehouse->created_at->format('d/m/Y') }} <br>
             &nbsp;&nbsp;&nbsp;<span style="font-size: 2em; font-weight: bold;">
                 {{ strtoupper( ['A' => __('Air'), 'M' => __('Maritime'), ][$warehouse->type] ) }}
             </span>

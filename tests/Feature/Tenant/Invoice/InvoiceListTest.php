@@ -34,6 +34,10 @@ class InvoiceListTest extends TestCase
         $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, 'status' => 'A', ]);
         $employee->branches()->sync([$branch->id, ]);
 
+        \Gate::define('show-invoice', function ($employee) {
+            return true;
+        });
+
         $response = $this->actingAs($employee)->get(route('tenant.invoice.list', $tenant->domain));
 
         $response->assertStatus(200);

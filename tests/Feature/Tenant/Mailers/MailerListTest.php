@@ -38,6 +38,10 @@ class MailerListTest extends TestCase
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
         $admin->branches()->sync([$branch->id]);
 
+        \Gate::define('show-mailer', function ($admin) {
+            return true;
+        });
+
         $response = $this->actingAs($admin)->get(route('tenant.mailer.list', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.mailer.index');
@@ -58,6 +62,10 @@ class MailerListTest extends TestCase
 
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
         $admin->branches()->sync([$branch->id]);
+
+        \Gate::define('show-mailer', function ($admin) {
+            return true;
+        });
 
         $response = $this->actingAs($admin)->get(route('tenant.mailer.list', [
             $tenant->domain,

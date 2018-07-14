@@ -1,7 +1,8 @@
 <div class="slim-navbar">
       <div class="container">
         <ul class="nav">
-
+          
+          
           <li class="nav-item with-sub {{ active(['tenant.client.create', 'tenant.client.list','tenant.client.edit']) }}">
             <a class="nav-link" href="#">
               <i class="icon ion-ios-person-outline"></i>
@@ -9,22 +10,34 @@
             </a>
             <div class="sub-item">
               <ul>
-                <li><a href="{{ route('tenant.client.create', $tenant->domain) }}">{{ __('New client') }}</a></li>
-                <li><a href="#!">{{ __('Search client') }}</a></li>
-                <li><a href="{{ route('tenant.client.list', $tenant->domain) }}">{{ __('Client list') }}</a></li>
+                @can('create-client')
+                  <li><a href="{{ route('tenant.client.create', $tenant->domain) }}">{{ __('New client') }}</a></li>
+                @endcan
+
+                @can('show-client')
+                  <li><a href="#!">{{ __('Search client') }}</a></li>
+                  <li><a href="{{ route('tenant.client.list', $tenant->domain) }}">{{ __('Client list') }}</a></li>
+                @endcan
               </ul>
             </div><!-- dropdown-menu -->
           </li>
 
-          <li class="nav-item with-sub">
+          <li class="nav-item with-sub {{ active(['tenant.warehosue.create', 'tenant.warehosue.list','tenant.warehosue.edit']) }}">
             <a class="nav-link" href="#">
               <i class="icon ion-ios-box-outline"></i>
               <span>{{ __('Warehouse' )}}</span>
             </a>
             <div class="sub-item">
               <ul>
-                <li><a href="{{ route('tenant.warehouse.create', $tenant->domain) }}">{{ __('New warehouse') }}</a></li>
-                <li><a href="#">{{ __('Search warehouse') }}</a></li>
+                @can('create-warehouse')
+                  <li><a href="{{ route('tenant.warehouse.create', $tenant->domain) }}">{{ __('New warehouse') }}</a></li>
+                @endcan
+
+                @can('show-warehouse')  
+                  <li><a href="#">{{ __('Search warehouse') }}</a></li>
+                  <li><a href="{{ route('tenant.warehouse.list', $tenant->domain) }}">{{ __('Warehouse list') }}</a></li>
+                @endcan
+
                 <li><a href="#">{{ __('Bill package') }}</a></li>
                 <li><a href="#">{{ __('Order package') }}</a></li>
               </ul>
@@ -74,7 +87,10 @@
                 <li><a href="{{ route('tenant.admin.position.list', $tenant->domain) }}">{{ __('Positions') }}</a></li>
                 <li><a href="{{ route('tenant.admin.employee.list', $tenant->domain) }}">{{ __('Users') }}</a></li>
                 @endif
-                <li><a href="{{ route('tenant.mailer.list', $tenant->domain) }}">{{ __('Mailers') }}</a></li>
+
+                @can('show-mailer')
+                  <li><a href="{{ route('tenant.mailer.list', $tenant->domain) }}">{{ __('Mailers') }}</a></li>
+                @endcan
               </ul>
             </div><!-- dropdown-menu -->
           </li>

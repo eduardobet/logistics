@@ -60,6 +60,10 @@ class WarehouseEditionTest extends TestCase
         $admin->branches()->sync([$branch->id]);
         $admin->branchesForInvoice()->sync([$branch->id,]);
 
+        \Gate::define('edit-warehouse', function ($admin) {
+            return true;
+        });
+
         $client = factory(Client::class)->create(['tenant_id' => $tenant->id, ]);
 
         $box = factory(Box::class)->create([

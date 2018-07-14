@@ -23,7 +23,6 @@ $factory->define(Logistics\DB\User::class, function (Faker $faker) {
         'tenant_id' => null,
         'status' => 'A',
         'avatar' => null,
-        'permissions' => [],
         'pid' => 'PID',
         'position' => 1,
         'telephones' => '6986-9854',
@@ -34,11 +33,13 @@ $factory->state(Logistics\DB\User::class, 'admin', function (Faker $faker) {
     return [
         'type' => 'A',
         'is_main_admin' => true,
+        'permissions' => [],
     ];
 });
 
 $factory->state(Logistics\DB\User::class, 'employee', function (Faker $faker) {
     return [
         'type' => 'E',
+        'permissions' => [],
     ];
 });

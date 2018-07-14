@@ -20,6 +20,11 @@ class TenantSeeder extends Seeder
             ['type' => 'M', 'address' => '8454 NW 70 TH ST MIAMI, FLORIDA 33166', 'telephones' => '+1(786)3252841', 'status' => 'A', ],
         ]);
 
+        $tenant->conditions()->createMany([
+            ['type' => 'W', 'content' => 'The conditions for warehouse receipt', 'status' => 'A', ],
+            ['type' => 'I', 'content' => 'The conditions for invoices', 'status' => 'A', ],
+        ]);
+
         $tenant->branches()->createMany([
             [
                 'name' => 'Miami',

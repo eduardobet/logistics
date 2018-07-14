@@ -63,6 +63,10 @@ class WarehouseCreationTest extends TestCase
         $admin->branches()->sync([$branch->id]);
         $admin->branchesForInvoice()->sync([$branch->id,]);
 
+        \Gate::define('create-warehouse', function ($admin) {
+            return true;
+        });
+
         $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'pay_volume' => true, 'vol_price' => 2.00 ]);
 
         $box = factory(Box::class)->create([
@@ -86,6 +90,7 @@ class WarehouseCreationTest extends TestCase
             'trackings' => '12345,234434,55645',
             'mailer_id' => $mailer->id,
             'qty' => 2,
+            'gen_invoice' => 1,
 
             //
             'client_name' => $client->full_name,
@@ -170,6 +175,10 @@ class WarehouseCreationTest extends TestCase
         $admin->branches()->sync([$branch->id]);
         $admin->branchesForInvoice()->sync([$branch->id, ]);
 
+        \Gate::define('create-warehouse', function ($admin) {
+            return true;
+        });
+
         $client = factory(Client::class)
             ->create(['tenant_id' => $tenant->id, 'pay_volume' => true, 'special_rate' => true, 'vol_price' => 2.00, 'real_price' => 1.50, ]);
         $box = factory(Box::class)->create([
@@ -193,6 +202,7 @@ class WarehouseCreationTest extends TestCase
             'trackings' => '12345,234434,55645',
             'mailer_id' => $mailer->id,
             'qty' => 2,
+            'gen_invoice' => 1,
 
             //
             'client_name' => $client->full_name,
@@ -253,6 +263,10 @@ class WarehouseCreationTest extends TestCase
         $admin->branches()->sync([$branch->id]);
         $admin->branchesForInvoice()->sync([$branch->id, ]);
 
+        \Gate::define('create-warehouse', function ($admin) {
+            return true;
+        });
+
         $client = factory(Client::class)
             ->create(['tenant_id' => $tenant->id, 'pay_volume' => false, 'special_rate' => false, 'vol_price' => 2.00, 'real_price' => 1.50, ]);
         $box = factory(Box::class)->create([
@@ -276,6 +290,7 @@ class WarehouseCreationTest extends TestCase
             'trackings' => '12345,234434,55645',
             'mailer_id' => $mailer->id,
             'qty' => 2,
+            'gen_invoice' => 1,
 
             //
             'client_name' => $client->full_name,
@@ -336,6 +351,10 @@ class WarehouseCreationTest extends TestCase
         $admin->branches()->sync([$branch->id]);
         $admin->branchesForInvoice()->sync([$branch->id, ]);
 
+        \Gate::define('create-warehouse', function ($admin) {
+            return true;
+        });
+
         $client = factory(Client::class)
             ->create(['tenant_id' => $tenant->id, 'pay_volume' => false, 'special_rate' => false, 'vol_price' => 2.00, 'real_price' => 1.50, ]);
         $box = factory(Box::class)->create([
@@ -360,6 +379,7 @@ class WarehouseCreationTest extends TestCase
             'mailer_id' => $mailer->id,
             'qty' => 2,
             'is_dhl' => true,
+            'gen_invoice' => 1,
 
             //
             'client_name' => $client->full_name,

@@ -76,6 +76,10 @@ class ClientCreationTest extends TestCase
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $admin->branches()->sync([$branch->id]);
 
+        \Gate::define('create-client', function ($admin) {
+            return true;
+        });
+
         $response = $this->actingAs($admin)->get(route('tenant.client.create', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.client.create');
@@ -208,6 +212,11 @@ class ClientCreationTest extends TestCase
             'branch_code' => $branch->code,
         ]);
         $admin->branches()->sync([$branch->id]);
+
+        \Gate::define('create-client', function ($admin) {
+            return true;
+        });
+
 
         $response = $this->actingAs($admin)->get(route('tenant.client.create', $tenant->domain));
         $response->assertStatus(200);

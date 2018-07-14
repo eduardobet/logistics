@@ -77,6 +77,11 @@ class ClientEditionTest extends TestCase
 
         $admin->branches()->sync([$branch->id]);
 
+        \Gate::define('edit-client', function ($admin) {
+            return true;
+        });
+
+
         $response = $this->actingAs($admin)->get(route('tenant.client.edit', [ $tenant->domain, $client->id]));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.client.edit');
@@ -148,6 +153,11 @@ class ClientEditionTest extends TestCase
 
         $this->actingAs($admin);
 
+        \Gate::define('edit-client', function ($admin) {
+            return true;
+        });
+
+
         $extraContact = $client->extraContacts()->create([
             'full_name' => 'Extra Contact',
             'pid' => '1253-587',
@@ -211,6 +221,11 @@ class ClientEditionTest extends TestCase
 
         $this->actingAs($admin);
 
+        \Gate::define('edit-client', function ($admin) {
+            return true;
+        });
+
+
         $extraContact = $client->extraContacts()->create([
             'full_name' => 'Extra Contact',
             'pid' => '1253-587',
@@ -248,6 +263,10 @@ class ClientEditionTest extends TestCase
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $client = factory(Client::class)->create(['tenant_id' => $tenant->id, ]);
+
+        \Gate::define('edit-client', function ($admin) {
+            return true;
+        });
 
         $admin->branches()->sync([$branch->id]);
 
@@ -299,6 +318,10 @@ class ClientEditionTest extends TestCase
         $client = factory(Client::class)->create(['tenant_id' => $tenant->id, ]);
 
         $admin->branches()->sync([$branch->id]);
+
+        \Gate::define('edit-client', function ($admin) {
+            return true;
+        });
 
         $response = $this->actingAs($admin)->get(route('tenant.client.edit', [ $tenant->domain, $client->id]));
         $response->assertStatus(200);

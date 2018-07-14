@@ -12,9 +12,10 @@ trait Permissions
     public function permissions()
     {
         $tenant = $this->getTenant();
+        $id = $tenant ? $tenant->id : 0;
 
-        return cache()->rememberForever("permissions.tenant.{$tenant->id}", function () use ($tenant) {
-            return $tenant->permissions->where('status', 'A');
+        return cache()->rememberForever("permissions.tenant.{$id}", function () use ($tenant) {
+            return !$tenant ? collect([]) : $tenant->permissions->where('status', 'A');
         });
     }
 }

@@ -35,6 +35,11 @@ class PermissionTableSeeder extends Seeder
             ["name" => "Editar Facturas", "slug" => "edit-invoice", "header" => "Facturas",],
             ["name" => "Ver Facturas", "slug" => "show-invoice", "header" => "Facturas",],
 
+            // payment
+            ["name" => "Registrar Pagos", "slug" => "create-payment", "header" => "Pagos",],
+            ["name" => "Editar Pagos", "slug" => "edit-payment", "header" => "Pagos",],
+            ["name" => "Ver Pagos", "slug" => "show-payment", "header" => "Pagos",],
+
             // Petty cach
             ["name" => "Registrar Caja chica", "slug" => "create-petty-cash", "header" => "Caja chica",],
             ["name" => "Editar Caja chica", "slug" => "edit-petty-cash", "header" => "Caja chica",],

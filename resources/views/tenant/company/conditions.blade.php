@@ -8,34 +8,31 @@ $key = isset($key) ? $key : ':index:';
 
 
 <div class="row mg-t-10 det-row">
-    <div class="col-lg-2">
+    <div class="col-lg-6">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">{{ __('Type') }}: <span class="tx-danger">*</span></label>
-            {!! Form::select("conditions[{$key}][ctype]", ['' => '----']+['A' => __('Air'), 'M' => __('Maritime')], $condition->type, ['class' => 'form-control form-control-sm', 'required' => true]) !!}
+            {!! Form::select("conditions[{$key}][ctype]", ['' => '----']+['I' => __('Invoice'), 'W' => __('Warehouse receipt')], $condition->type, ['class' => 'form-control form-control-sm', 'required' => true]) !!}
         </div>
     </div>
     
-    <div class="col-lg-4">
-        <div class="form-group mg-b-10-force">
-            <label class="form-control-label">{{ __('Address') }}</label>
-            {!! Form::text("conditions[{$key}][address]", $condition->address, ['class' => 'form-control form-control-sm', 'required' => true]) !!}
-        </div>
-    </div>  
-    
-    <div class="col-lg-4">
-        <div class="form-group mg-b-10-force">
-            <label class="form-control-label">{{ __('Telephones') }}</label>
-            {!! Form::text("conditions[{$key}][telephones]", $condition->telephones, ['class' => 'form-control form-control-sm', 'required' => true]) !!}
-        </div>
-    </div> 
-
-    <div class="col-lg-2">
+    <div class="col-lg-6">
         <div class="form-group">
             <label class="form-control-label">{{ __('Status') }}: <span class="tx-danger">*</span></label>
-            {!! Form::select("conditions[{$key}][status]", ['A' => __('Active') , 'I' => __('Inactive') ], $condition->status, ['class' => 'form-control form-control-sm', 'required' => true]) !!}
+            {!! Form::select("conditions[{$key}][cstatus]", ['A' => __('Active') , 'I' => __('Inactive') ], $condition->status, ['class' => 'form-control form-control-sm', 'required' => true]) !!}
         </div>
     </div>
 
+</div>
+<!-- row -->
 
+<div class="row mg-t-10 det-row">
+    <div class="col-lg-12">
+        <div class="form-group mg-b-10-force">
+            <label class="form-control-label">{{ __('Content') }}: <span class="tx-danger">*</span></label>
+            
+            {!! Form::textarea("conditions[{$key}][ccontent]", $condition->content, ['class' => 'form-control form-control-sm', 'required' => '', 'rows' => '4', ]) !!}
+            
+        </div>
+    </div>
 </div>
 <!-- row -->

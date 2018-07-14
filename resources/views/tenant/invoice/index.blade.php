@@ -16,9 +16,11 @@
           
             {{ Breadcrumbs::render() }}
 
-           <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.invoice.create', $tenant->domain) }}">
+           @can('create-invoice')
+            <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.invoice.create', $tenant->domain) }}">
                <i class="fa fa-plus mg-r-5"></i> {{ __('Create') }}
             </a>
+            @endcan
 
           
         </div><!-- slim-pageheader -->
@@ -51,7 +53,10 @@
                         @endif
                       </td>
                       <td class="text-center" style="font-size: 15px">
+
+                        @can('edit-invoice')
                         <a title="{{ __('Edit') }}" href="{{ route('tenant.invoice.edit', [$tenant->domain, $invoice->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                        @endcan
                        
                         &nbsp;&nbsp;&nbsp;
 

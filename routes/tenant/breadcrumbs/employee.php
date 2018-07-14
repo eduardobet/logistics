@@ -25,6 +25,10 @@ Breadcrumbs::for('tenant.employee.profile.edit', function ($trail) use ($type) {
 });
 
 // warehouses
+Breadcrumbs::for('tenant.warehouse.list', function ($trail) use ($type) {
+    $trail->parent("tenant.{$type}.dashboard");
+    $trail->add(__('Warehouses'), '');
+});
 Breadcrumbs::for('tenant.warehouse.create', function ($trail) use ($type) {
     $trail->parent("tenant.{$type}.dashboard");
     $trail->add(__('Warehouses'), route('tenant.warehouse.list', request()->domain));

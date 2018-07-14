@@ -3,6 +3,7 @@
 use Logistics\DB\User;
 use Illuminate\Database\Seeder;
 use Logistics\DB\Tenant\Tenant;
+use Logistics\DB\Tenant\Permission;
 
 class UserSeeder extends Seeder
 {
@@ -20,6 +21,7 @@ class UserSeeder extends Seeder
         $admin1 = factory(User::class)->states('admin')->create([
             'tenant_id' => $tenant->id,
             'email' => 'main-admin@middleton-services.test',
+            'permissions' => Permission::all()->pluck('slug')->toArray(),
         ]);
         $admin1->branches()->sync([$prla->id]);
         $admin1->branchesForInvoice()->sync([$miami->id]);

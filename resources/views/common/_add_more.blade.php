@@ -12,6 +12,7 @@
         var doAjax = true;
 
         $(document).on("click", ".btn-add-more", function() {
+            if (!$container) $container = $("#details-container");
             index = $container.find(".det-row").length + 1;
             if (!$container) console.log('Error _add_more: no container');
             var $self = $(this);

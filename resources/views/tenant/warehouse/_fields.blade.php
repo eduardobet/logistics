@@ -3,6 +3,8 @@
 
 <input type="hidden" name="branch_id" id="branch_id" value="{{ $branch->id }}">
 
+<input type="hidden" name="gen_invoice" id="gen_invoice" value="1">
+
 <div class="row">
 
     <div class="col-lg-2">

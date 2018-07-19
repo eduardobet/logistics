@@ -51,7 +51,10 @@
             </a>
             <div class="sub-item">
               <ul>
-                <li><a href="#">{{ __('New invoice') }}</a></li>
+                @can('create-invoice')
+                  <li><a href="{{ route('tenant.invoice.create', [$tenant->domain, 'branch_id' => $branch->id, ]) }}">{{ __('New invoice') }}</a></li>
+                @endcan
+
                 <li><a href="#">{{ __('Search invoice') }}</a></li>
                 <li><a href="#">{{ __('New payment') }}</a></li>
                 <li><a href="{{ route('tenant.invoice.list', $tenant->domain) }}">{{ __('Invoices list') }}</a></li>

@@ -45,6 +45,16 @@ Breadcrumbs::for('tenant.invoice.list', function ($trail) use ($type) {
     $trail->parent("tenant.{$type}.dashboard");
     $trail->add(__('Invoices'), '');
 });
+Breadcrumbs::for('tenant.invoice.create', function ($trail) use ($type) {
+    $trail->parent("tenant.{$type}.dashboard");
+    $trail->add(__('Invoices'), route('tenant.invoice.list', request()->domain));
+    $trail->add(__('Creating :what', ['what' => __('Invoice')]), route('tenant.invoice.create', request()->domain));
+});
+Breadcrumbs::for('tenant.invoice.edit', function ($trail) use ($type) {
+    $trail->parent("tenant.{$type}.dashboard");
+    $trail->add(__('Invoices'), route('tenant.invoice.list', request()->domain));
+    $trail->add(__('Editing :what', ['what' => __('Invoice')]), route('tenant.invoice.edit', [request()->domain, request('id'), ]));
+});
 
 
 

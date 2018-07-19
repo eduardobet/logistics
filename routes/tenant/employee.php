@@ -40,5 +40,7 @@ Route::group(['middleware' => 'auth'], function () {
     // invoice
     Route::get('invoice/list', 'Tenant\InvoiceController@index')->name('tenant.invoice.list')->middleware(['can:show-invoice']);
     Route::get('invoice/create', 'Tenant\InvoiceController@create')->name('tenant.invoice.create')->middleware(['can:create-invoice']);
+    Route::post('invoice/store', 'Tenant\InvoiceController@store')->name('tenant.invoice.store');
     Route::get('invoice/{id}/edit', 'Tenant\InvoiceController@edit')->name('tenant.invoice.edit')->middleware(['can:edit-invoice']);
+    Route::get('invoice/invoice-detail-tmpl', 'Tenant\InvoiceController@invoiceDetTpl')->name('tenant.invoice.invoice-detail-tmpl');
 });

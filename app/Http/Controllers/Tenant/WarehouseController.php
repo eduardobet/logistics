@@ -154,7 +154,7 @@ class WarehouseController extends Controller
                 ->with('flash_success', __('The :what has been updated.', ['what' => __('Warehouse')]));
         }
 
-        return redirect()->route('tenant.client.create', $tenant->domain)
+        return redirect()->route('tenant.warehouse.create', $tenant->domain)
             ->withInput()
             ->with('flash_error', __('Error while trying to :action :what', [
                 'action' => __('Update'),

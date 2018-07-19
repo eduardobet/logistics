@@ -24,8 +24,8 @@ class CreateInvoicesTable extends Migration
             $table->string('client_name')->nullable();
             $table->string('client_email')->nullable();
             $table->string('status', 1)->default('A'); //I[nactive], A[ctive]
-            $table->float('volumetric_weight');
-            $table->float('real_weight');
+            $table->float('volumetric_weight')->nullable();
+            $table->float('real_weight')->nullable();
             $table->float('total');
             $table->text("notes")->nullable();
 

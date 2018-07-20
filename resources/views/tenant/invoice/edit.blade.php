@@ -22,6 +22,7 @@
                 @include('tenant.invoice._fields', [
                     'mode' => 'edit',
                     'invoice' => $invoice,
+                    'payment' => $invoice->payments->where('is_first', true)->first(),
                 ])
                 
                 {!! Form::hidden('qty', null, ['id' => 'qty',]) !!}

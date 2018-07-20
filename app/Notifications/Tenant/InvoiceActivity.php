@@ -18,17 +18,17 @@ class InvoiceActivity extends Notification implements ShouldQueue
     use Queueable;
 
     public $invoice;
-    public $payment;
+    public $paymentId;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Invoice $invoice, Payment $payment)
+    public function __construct(Invoice $invoice, $paymentId)
     {
         $this->invoice = $invoice;
-        $this->payment = $payment;
+        $this->paymentId = $paymentId;
     }
 
     /**
@@ -54,11 +54,11 @@ class InvoiceActivity extends Notification implements ShouldQueue
         $box = $client->boxes()->active()->first();
         $box = $box->branch_code .''.$client->id;
 
-        Mail::to($client)->send(new InvoiceCreated($this->invoice, $this->payment));
+        Mail::to($client)->send(new InvoiceCreated($this->invoice, $this->paymentId));
 
         return [
             'title' => auth()->user()->full_name . ' ' . __('created an invoice'),
-            'content' => __('The invoice #:id has been created for: :box with payment id #:pid', ['id' => $this->invoice->id, 'box' => $box, 'pid' => $this->payment->id, ]),
+            'content' => __('The invoice #:id has been created for: :box with payment id #:pid', ['id' => $this->invoice->id, 'box' => $box, 'pid' => $this->paymentId, ]),
             'created_at' => $this->invoice->created_at,
         ];
     }

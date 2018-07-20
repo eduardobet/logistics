@@ -44,4 +44,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('invoice/{id}/edit', 'Tenant\InvoiceController@edit')->name('tenant.invoice.edit')->middleware(['can:edit-invoice']);
     Route::patch('invoice/{id}/update', 'Tenant\InvoiceController@update')->name('tenant.invoice.update');
     Route::get('invoice/invoice-detail-tmpl', 'Tenant\InvoiceController@invoiceDetTpl')->name('tenant.invoice.invoice-detail-tmpl');
+    Route::get('invoice/{id}/print-invoice', 'Tenant\InvoiceController@print')->name('tenant.invoice.print-invoice');
+
+    // payment
+    Route::get('payment/{invoice_id}/create', function () {
+        return "New payment";
+    })->name('tenant.payment.create');
 });

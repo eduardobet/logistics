@@ -1,3 +1,26 @@
+@if (isset($mode) && $mode == 'edit')
+    <div class="row mg-b-20">
+        <div class="col">
+            <a href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $invoice->id ]) }}" class="btn btn-sm btn-outline-dark" role="button" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
+                <i class="fa fa-print"></i>
+            </a>
+
+            &nbsp;&nbsp;
+
+            <a href="#!" class="btn btn-sm btn-outline-dark" data-url=""
+                data-toggle="tooltip" data-placement="left" title="{{ __('New payment') }}" data-invoice-id="{{ $invoice->id }}"
+            ><i class="fa fa-money"></i></a>
+
+            &nbsp;&nbsp;
+
+            <a href="#!" class="btn btn-sm btn-outline-dark" data-url=""
+                data-toggle="tooltip" data-placement="left" title="{{ __('Resend invoice email') }}" data-invoice-id="{{ $invoice->id }}"
+            ><i class="fa fa-envelope"></i></a>
+
+        </div>
+    </div>
+@endif
+
 <input type="hidden" name="branch_id" id="branch_id" value="{{ $branch->id }}">
 
 <div class="row">
@@ -15,7 +38,7 @@
                         <option value='{{ $client->id }}'
                             data-pay_volume='{{ $client->pay_volume }}' data-special_rate='{{ $client->special_rate }}' data-special_maritime='{{ $client->special_maritime }}'
                             data-vol_price='{{ $client->vol_price }}'  data-real_price='{{ $client->real_price }}'
-                            {{ (isset($warehouse) && $warehouse->client_id == $client->id) || old('client_id') == $client->id ? " selected": null }}
+                            {{ (isset($invoice) && $invoice->client_id == $client->id) || old('client_id') == $client->id ? " selected": null }}
                         >
                         [{{ $client->boxes->first()->branch_code }}{{ $client->id }}] {{ $client->full_name }}
                         </option>
@@ -48,6 +71,11 @@
 <div class="mg-t-25"></div>
 <div id="details-container">
     @foreach ($invoice->details as $key => $idetail)
+        
+        @include('tenant.invoice.detail', [
+            'detail' => $idetail
+        ])
+        
     @endforeach
 </div>
 <div class="mg-t-25"></div>
@@ -64,28 +92,28 @@
     <div class="col-lg-2">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">{{ __('Amount paid') }}:</label>
-            {!! Form::text("amount_paid", null, ['class' => 'form-control ', 'id' => 'amount_paid',  ]) !!}
+            {!! Form::text("amount_paid", $payment->amount_paid, ['class' => 'form-control ', 'id' => 'amount_paid',  ]) !!}
         </div>
     </div>
 
     <div class="col-lg-2">
         <div class="form-group mg-b-10-force">
-            <label class="form-control-label">{{ __('Payment Method') }}:</label>
-            {!! Form::select('payment_method', ['' => '----', 1 => __('Cash'), 2 => __('Wire transfer'), 3 => __('Check'), ], null, ['class' => 'form-control', 'id' => 'payment_method' ]) !!}
+            <label class="form-control-label">{{ __('Payment method') }}:</label>
+            {!! Form::select('payment_method', ['' => '----', 1 => __('Cash'), 2 => __('Wire transfer'), 3 => __('Check'), ], $payment->payment_method, ['class' => 'form-control', 'id' => 'payment_method' ]) !!}
         </div>
     </div>
 
     <div class="col-lg-4">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">{{ __('Reference') }}:</label>
-            {!! Form::text("payment_ref", null, ['class' => 'form-control ', 'id' => 'payment_ref', 'maxlength' => 255,  ]) !!}
+            {!! Form::text("payment_ref", $payment->payment_ref, ['class' => 'form-control ', 'id' => 'payment_ref', 'maxlength' => 255,  ]) !!}
         </div>
     </div>
 
     <div class="col-lg-2">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">{{ __('Pending') }}:</label>
-            {!! Form::text("pending", null, ['class' => 'form-control ', 'id' => 'pending', 'readonly' => '1', ]) !!}
+            {!! Form::text("pending", $invoice->total - $payment->amount_paid, ['class' => 'form-control ', 'id' => 'pending', 'readonly' => '1', ]) !!}
         </div>
     </div>
 

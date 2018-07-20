@@ -22,6 +22,7 @@
                 @include('tenant.invoice._fields', [
                     'invoice' => new \Logistics\DB\Tenant\Invoice,
                     'mode' => 'create',
+                    'payment' => new \Logistics\DB\Tenant\Payment,
                 ])
                 <input type="hidden" id="qty" name="qty" value="">
             </form>

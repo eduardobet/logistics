@@ -70,7 +70,6 @@ class InvoiceCreationTest extends TestCase
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
-        $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
 
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $admin->branches()->sync([$branch->id]);
@@ -85,8 +84,8 @@ class InvoiceCreationTest extends TestCase
         $box = factory(Box::class)->create([
             'tenant_id' => $tenant->id,
             'client_id' => $client->id,
-            'branch_id' => $branchB->id,
-            'branch_code' => $branchB->code,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
         ]);
 
         $response = $this->actingAs($admin)->get(route('tenant.invoice.create', $tenant->domain));
@@ -95,7 +94,7 @@ class InvoiceCreationTest extends TestCase
         $response->assertViewHas(['clients',]);
 
         $response = $this->actingAs($admin)->post(route('tenant.invoice.store', $tenant->domain), [
-            'branch_id' => $branchB->id,
+            'branch_id' => $branch->id,
             'client_id' => $client->id,
             'total' => 160,
             'invoice_detail' => [
@@ -109,7 +108,7 @@ class InvoiceCreationTest extends TestCase
             'payment_ref' => 'The client paid $80.00',
         ]);
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.invoice.edit', [$tenant->domain, 1]));
+        $response->assertRedirect(route('tenant.invoice.edit', [$tenant->domain, 1, 'branch_id' => $branch->id, ]));
 
         $invoice = $client->clientInvoices->first();
 
@@ -146,7 +145,7 @@ class InvoiceCreationTest extends TestCase
             $this->assertEquals('60.0', $detail->total);
         });
 
-        $this->assertCount(1, $branchB->notifications);
+        $this->assertCount(1, $branch->notifications);
     }
 
     /** @test */
@@ -156,7 +155,6 @@ class InvoiceCreationTest extends TestCase
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
-        $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
 
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $admin->branches()->sync([$branch->id]);
@@ -171,8 +169,8 @@ class InvoiceCreationTest extends TestCase
         $box = factory(Box::class)->create([
             'tenant_id' => $tenant->id,
             'client_id' => $client->id,
-            'branch_id' => $branchB->id,
-            'branch_code' => $branchB->code,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
         ]);
 
         $response = $this->actingAs($admin)->get(route('tenant.invoice.create', $tenant->domain));
@@ -181,7 +179,7 @@ class InvoiceCreationTest extends TestCase
         $response->assertViewHas(['clients',]);
 
         $response = $this->actingAs($admin)->post(route('tenant.invoice.store', $tenant->domain), [
-            'branch_id' => $branchB->id,
+            'branch_id' => $branch->id,
             'client_id' => $client->id,
             'total' => 160,
             'invoice_detail' => [
@@ -193,7 +191,7 @@ class InvoiceCreationTest extends TestCase
             'amount_paid' => 0,
         ]);
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.invoice.edit', [$tenant->domain, 1]));
+        $response->assertRedirect(route('tenant.invoice.edit', [$tenant->domain, 1, 'branch_id' => $branch->id, ]));
 
         tap($client->clientInvoices->first(), function ($invoice) use ($tenant, $admin, $client) {
             $this->assertEquals($tenant->id, $invoice->tenant_id);
@@ -205,7 +203,7 @@ class InvoiceCreationTest extends TestCase
             $this->assertCount(0, $invoice->payments);
         });
 
-        $this->assertCount(1, $branchB->notifications);
+        $this->assertCount(1, $branch->notifications);
     }
 
     /** @test */
@@ -217,7 +215,6 @@ class InvoiceCreationTest extends TestCase
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
-        $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
 
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $admin->branches()->sync([$branch->id]);
@@ -232,8 +229,8 @@ class InvoiceCreationTest extends TestCase
         $box = factory(Box::class)->create([
             'tenant_id' => $tenant->id,
             'client_id' => $client->id,
-            'branch_id' => $branchB->id,
-            'branch_code' => $branchB->code,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
         ]);
 
         $response = $this->actingAs($admin)->get(route('tenant.invoice.create', $tenant->domain));
@@ -242,7 +239,7 @@ class InvoiceCreationTest extends TestCase
         $response->assertViewHas(['clients',]);
 
         $response = $this->actingAs($admin)->post(route('tenant.invoice.store', $tenant->domain), [
-            'branch_id' => $branchB->id,
+            'branch_id' => $branch->id,
             'client_id' => $client->id,
             'total' => 160,
             'invoice_detail' => [

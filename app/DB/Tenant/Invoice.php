@@ -2,6 +2,7 @@
 
 namespace Logistics\DB\Tenant;
 
+use Logistics\DB\User;
 use Logistics\DB\Tenant\Payment;
 use Illuminate\Database\Eloquent\Model;
 
@@ -48,5 +49,20 @@ class Invoice extends Model
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by_code');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
     }
 }

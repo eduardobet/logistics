@@ -1,8 +1,10 @@
-1) Testing and implementing the warehouse sticker can be generated and downloaded
+1) (OK) Testing and implementing the warehouse sticker can be generated and downloaded
 2) Test and implementing employee can active their account
 3) Test and implementing employee can change their password
-4) Check cache cleaning (ref: DB/Client)
-5) Test and implementing mailer can be dhl
+4) (OK) Check cache cleaning (ref: DB/Client)
+5) (OK) Test and implementing mailer can be dhl
+6) Test and implementing resend email invoice
+6) Test and implementing payment crud
 
 check paga volumen
 EL CLIENTE PAGA TARIFA VOLUMETRICA.

@@ -58,4 +58,14 @@ trait TenantHasRelationships
     {
         return $this->hasMany(\Logistics\DB\Tenant\Condition::class);
     }
+
+    public function conditionsInvoice()
+    {
+        return $this->hasMany(\Logistics\DB\Tenant\Condition::class)->where('type', 'I')->where('status', 'A');
+    }
+
+    public function conditionsWarehouse()
+    {
+        return $this->hasMany(\Logistics\DB\Tenant\Condition::class)->where('type', 'W')->where('status', 'A');
+    }
 }

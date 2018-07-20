@@ -84,13 +84,13 @@ class InvoiceController extends Controller
             }
 
             $tenant->branches->where('id', $request->branch_id)->first()
-                   ->notify(new InvoiceActivity($invoice, $payment));
+                   ->notify(new InvoiceActivity($invoice, $payment->id));
 
-            return redirect()->route('tenant.invoice.edit', [$tenant->domain, $invoice->id])
+            return redirect()->route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $request->branch_id, ])
                 ->with('flash_success', __('The :what has been created.', ['what' => __('Invoice') ]));
         }
 
-        return redirect()->route('tenant.warehouse.create', $tenant->domain)
+        return redirect()->route('tenant.warehouse.create', [$tenant->domain, 'branch_id' => $request->branch_id, ])
             ->withInput()
             ->with('flash_error', __('Error while trying to :action :what', [
                 'action' => __('Save'),
@@ -161,13 +161,13 @@ class InvoiceController extends Controller
             $payment->payment_ref = $request->payment_ref;
             $payment->save();
 
-            Mail::to($invoice->client)->send(new InvoiceCreated($invoice, $payment));
+            Mail::to($invoice->client)->send(new InvoiceCreated($invoice, $payment->id));
 
-            return redirect()->route('tenant.invoice.edit', [$tenant->domain, $invoice->id])
+            return redirect()->route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $request->branch_id,])
                 ->with('flash_success', __('The :what has been updated.', ['what' => __('Invoice') ]));
         }
 
-        return redirect()->route('tenant.warehouse.edit', [$tenant->domain, $invoice->id])
+        return redirect()->route('tenant.warehouse.edit', [$tenant->domain, $invoice->id, 'branch_id' => $request->branch_id, ])
             ->withInput()
             ->with('flash_error', __('Error while trying to :action :what', [
                 'action' => __('Update'),
@@ -191,5 +191,41 @@ class InvoiceController extends Controller
         return response()->json([
             'view' => view('tenant.invoice.detail')->render(),
         ]);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function print($domain, $id)
+    {
+        $tenant = $this->getTenant();
+        
+        $invoice = $tenant->invoices()->with('details')->findOrFail($id);
+        $payments = $invoice->payments;
+
+        $client = $invoice->client;
+        $box = $client->boxes()->active()->get()->first();
+        $box = "{$box->branch_code}{$client->id}";
+
+        $data = [
+            'creatorName' => $invoice->creator->full_name,
+            'client' => $client,
+            'box' => $box,
+            'invoice' => $invoice,
+            'tenant' => $tenant,
+            'ibranch' => $invoice->branch,
+            'amountPaid' => $payments->sum('amount_paid')
+        ];
+
+        if (app()->environment('testing')) {
+            return view('tenant.invoice.printing', $data);
+        } else {
+            $pdf = \PDF::loadView('tenant.invoice.printing', $data);
+
+            return $pdf->download('invoice.pdf');
+        }
     }
 }

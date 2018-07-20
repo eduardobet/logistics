@@ -55,27 +55,17 @@
                       <td class="text-center" style="font-size: 15px">
 
                         @can('edit-invoice')
-                        <a title="{{ __('Edit') }}" href="{{ route('tenant.invoice.edit', [$tenant->domain, $invoice->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                        <a title="{{ __('Edit') }}" href="{{ route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch_id,]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                         @endcan
                        
                         &nbsp;&nbsp;&nbsp;
 
-                        <a title="{{ __('Payment') }}" href="{{ route('tenant.invoice.edit', [$tenant->domain, $invoice->id]) }}"><i class="fa fa-money" aria-hidden="true"></i></a>
+                        <a title="{{ __('Payment') }}" href="{{ route('tenant.payment.create', [$tenant->domain, $invoice->id]) }}"><i class="fa fa-money" aria-hidden="true"></i></a>
 
                         &nbsp;&nbsp;&nbsp;
                         <a title="{{ __('Email') }}" href="#!" class="email-invoice" data-url="{{ route('tenant.invoice.edit', [$tenant->domain, $invoice->id]) }}"
-                            data-toggle="tooltip" data-placement="left" title="{{ __('Resend welcome email') }}" data-client-id="{{ $client->id }}"
+                            data-toggle="tooltip" data-placement="left" title="{{ __('Resend invoice email') }}" data-invoice-id="{{ $invoice->id }}"
                         ><i class="fa fa-envelope"></i></a>
-
-                        <a href="#!" class="resend-email-box" data-url="{{ route('tenant.client.welcome.email.resend', $tenant->domain) }}"
-                          data-toggle="tooltip" data-placement="left" title="{{ __('Resend welcome email') }}" data-client-id="{{ $client->id }}"
-                          >
-                          <i class="fa fa-envelope"></i>
-                        </a>
-
-
-
-
 
                       </td>
                     </tr>

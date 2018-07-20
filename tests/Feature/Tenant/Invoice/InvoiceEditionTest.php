@@ -70,7 +70,6 @@ class InvoiceEditionTest extends TestCase
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
-        $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
 
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $admin->branches()->sync([$branch->id]);
@@ -85,8 +84,8 @@ class InvoiceEditionTest extends TestCase
         $box = factory(Box::class)->create([
             'tenant_id' => $tenant->id,
             'client_id' => $client->id,
-            'branch_id' => $branchB->id,
-            'branch_code' => $branchB->code,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
         ]);
 
         $invoice = $tenant->invoices()->create([
@@ -125,7 +124,7 @@ class InvoiceEditionTest extends TestCase
         $response->assertViewHas(['clients', 'invoice',]);
 
         $response = $this->actingAs($admin)->patch(route('tenant.invoice.update', [$tenant->domain, $invoice->id]), [
-            'branch_id' => $branchB->id,
+            'branch_id' => $branch->id,
             'client_id' => $client->id,
             'total' => 180,
             'invoice_detail' => [
@@ -139,7 +138,7 @@ class InvoiceEditionTest extends TestCase
             'payment_ref' => 'The client paid $90.00',
         ]);
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.invoice.edit', [$tenant->domain, 1]));
+        $response->assertRedirect(route('tenant.invoice.edit', [$tenant->domain, 1, 'branch_id' => $branch->id, ]));
 
         $invoice = $invoice->fresh()->first();
 
@@ -186,7 +185,7 @@ class InvoiceEditionTest extends TestCase
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
-        $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
 
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $admin->branches()->sync([$branch->id]);
@@ -201,8 +200,8 @@ class InvoiceEditionTest extends TestCase
         $box = factory(Box::class)->create([
             'tenant_id' => $tenant->id,
             'client_id' => $client->id,
-            'branch_id' => $branchB->id,
-            'branch_code' => $branchB->code,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
         ]);
 
         $invoice = $tenant->invoices()->create([
@@ -236,7 +235,7 @@ class InvoiceEditionTest extends TestCase
         ]);
 
         $response = $this->actingAs($admin)->patch(route('tenant.invoice.update', [$tenant->domain, $invoice->id]), [
-            'branch_id' => $branchB->id,
+            'branch_id' => $branch->id,
             'client_id' => $client->id,
             'total' => 180,
             'invoice_detail' => [

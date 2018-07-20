@@ -34,6 +34,9 @@ class InvoiceCreated extends Mailable implements ShouldQueue
      */
     public function build()
     {
-        return $this->view('view.name');
+        return $this->subject(__('Invoice') .' # 1')
+            ->markdown('tenant.mails.invoice')
+            ->with([
+            ]);
     }
 }

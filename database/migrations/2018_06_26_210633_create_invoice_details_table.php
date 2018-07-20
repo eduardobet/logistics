@@ -23,6 +23,9 @@ class CreateInvoiceDetailsTable extends Migration
             $table->float('height')->nullable();
             $table->float('vol_weight')->nullable();
             $table->float('real_weight')->nullable();
+            $table->float('total')->nullable();
+            $table->string('description')->nullable();
+            $table->string('id_remote_store')->nullable();
 
             $table->timestamps();
         });

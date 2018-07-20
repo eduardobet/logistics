@@ -22,6 +22,7 @@ class CreatePaymentsTable extends Migration
             $table->float('amount_paid')->default(0);
             $table->integer('payment_method');
             $table->text('payment_ref');
+            $table->boolean('is_first')->default(true);
 
             $table->timestamps();
         });

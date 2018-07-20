@@ -20,5 +20,8 @@ class InvoiceDetail extends Model
         'height',
         'vol_weight',
         'real_weight',
+        'description',
+        'id_remote_store',
+        'total',
     ];
 }

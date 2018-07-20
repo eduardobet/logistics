@@ -12,7 +12,7 @@ class Payment extends Model
      * @var array
      */
     protected $fillable = [
-        'created_by_code', 'tenant_id', 'updated_by_code', 'invoice_id', 'amount_paid', 'payment_method', 'payment_ref',
+        'created_by_code', 'tenant_id', 'updated_by_code', 'invoice_id', 'amount_paid', 'payment_method', 'payment_ref', 'is_first',
     ];
 
     /**

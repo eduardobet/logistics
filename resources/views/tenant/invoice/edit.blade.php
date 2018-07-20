@@ -18,12 +18,13 @@
          </div><!-- slim-pageheader -->
 
          <div class="section-wrapper">
-            {!! Form::open(['route' => ['tenant.invoice.store', $tenant->domain]]) !!}
+            {!! Form::model($invoice, ['route' => ['tenant.invoice.update', $tenant->domain, $invoice->id], 'method' => 'PATCH']) !!}
                 @include('tenant.invoice._fields', [
-                    'invoice' => new \Logistics\DB\Tenant\Invoice,
-                    'mode' => 'create',
+                    'mode' => 'edit',
+                    'invoice' => $invoice,
                 ])
-                <input type="hidden" id="qty" name="qty" value="">
+                
+                {!! Form::hidden('qty', null, ['id' => 'qty',]) !!}
             </form>
          </div>
     

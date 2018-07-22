@@ -91,7 +91,6 @@ class InvoicePrintingTest extends TestCase
 
         $content = $response->getContent();
 
-        $this->assertContains("tenant/1/images/logos/logo.png", $content);
         $this->assertContains("{$branch->name}", $content);
         $this->assertContains("{$branch->ruc} DV {$branch->dv}", $content);
         $this->assertContains("{$branch->address}", $content);

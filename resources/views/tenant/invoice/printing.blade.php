@@ -11,8 +11,12 @@
     <table style="width: 100%" cellspacing="0">
 
         <tr>
-            <td style="width:100%; padding-left:10px;" colspan="2">
-                <img src="{{ asset($tenant->logo) }}" alt="Company logo">
+            <td style="width:100%;" colspan="2">
+                <?php $logo = storage_path('app/public/'.$tenant->logo); $mime = @mime_content_type($logo);  ?>
+
+                @if ($mime)
+                <img src="data:{{ $mime }};base64,{{ base64_encode(file_get_contents( $logo )) }}" alt="Company logo" width="200px"   />
+                @endif
             </td>
         </tr>
 

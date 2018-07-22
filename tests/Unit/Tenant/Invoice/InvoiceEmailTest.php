@@ -11,7 +11,7 @@ use Logistics\Mail\Tenant\InvoiceCreated;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class WelcomeEmployeeEmailTest extends TestCase
+class InvoiceEmailTest extends TestCase
 {
     use RefreshDatabase;
 

@@ -211,7 +211,7 @@ class InvoiceController extends Controller
         $box = "{$box->branch_code}{$client->id}";
 
         $data = [
-            'creatorName' => $invoice->creator->full_name,
+            'creatorName' => $invoice->creator ? $invoice->creator->full_name : null,
             'client' => $client,
             'box' => $box,
             'invoice' => $invoice,

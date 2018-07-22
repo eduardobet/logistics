@@ -63,8 +63,11 @@
                         <a title="{{ __('Payment') }}" href="{{ route('tenant.payment.create', [$tenant->domain, $invoice->id]) }}"><i class="fa fa-money" aria-hidden="true"></i></a>
 
                         &nbsp;&nbsp;&nbsp;
-                        <a title="{{ __('Email') }}" href="#!" class="email-invoice" data-url="{{ route('tenant.invoice.edit', [$tenant->domain, $invoice->id]) }}"
+                        <a title="{{ __('Email') }}" href="#!" class="email-invoice"
                             data-toggle="tooltip" data-placement="left" title="{{ __('Resend invoice email') }}" data-invoice-id="{{ $invoice->id }}"
+                            data-url="{{ route('tenant.invoice.invoice.resend', [$tenant->domain, $invoice->id, ]) }}"
+                            data-toggle="tooltip" data-placement="left" title="{{ __('Resend invoice email') }}" data-invoice-id="{{ $invoice->id }}"
+                            data-loading-text="<i class='fa fa-spinner fa-spin '></i>"
                         ><i class="fa fa-envelope"></i></a>
 
                       </td>
@@ -88,3 +91,55 @@
  @include('tenant.common._footer')
 
 @endsection
+
+@section('xtra_scripts')
+    <script>
+    $(function() {
+  
+        // resend invoice
+        $(".email-invoice").click(function(e) {
+            var $self = $(this);
+
+            if ($self.hasClass('sending')) return false;
+
+            var url = $self.data('url');
+            var loadingText = $self.data('loading-text');
+            $self.addClass('sending');
+
+            if ($(this).html() !== loadingText) {
+                $self.data('original-text', $(this).html());
+                $self.html(loadingText);
+            }
+
+            var request = $.ajax({
+                method: 'post',
+                url: url,
+                data: $.extend({
+                    _token	: $("input[name='_token']").val(),
+                    '_method': 'POST',
+
+                }, {})
+            });
+
+            request.done(function(data){
+                if (data.error == false) {
+                    swal(data.msg, "", "success");
+                } else {
+                    swal(data.msg, "", "error");
+                }
+
+                $self.removeClass('sending').html($self.data('original-text'));
+            })
+            .fail(function( jqXHR, textStatus ) {
+                swal(textStatus, "", "error");
+                $self.removeClass('sending').html($self.data('original-text'));
+            });
+
+            e.preventDefault();
+
+        });
+
+
+    });
+</script>
+@stop

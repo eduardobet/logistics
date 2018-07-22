@@ -18,6 +18,8 @@ class InvoiceEmailTest extends TestCase
     /** @test */
     public function email_has_the_correct_data()
     {
+        $this->withoutExceptionHandling();
+
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
         $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
@@ -67,7 +69,7 @@ class InvoiceEmailTest extends TestCase
             'is_first' => true,
         ]);
 
-        $email = new InvoiceCreated($invoice, $payment->id);
+        $email = new InvoiceCreated($invoice, $tenant->lang);
 
         $data = $email->buildViewData();
         $content = $this->render($email);
@@ -75,7 +77,6 @@ class InvoiceEmailTest extends TestCase
         $this->assertTrue($data['invoice']->is($invoice));
 
         $this->assertEquals("Invoice #{$invoice->id}", $email->build()->subject);
-        $this->assertEquals($payment->id, $data['paymentId']);
 
         $this->assertContains("#{$invoice->id}", $content);
         $this->assertContains("{$branch->name}", $content);

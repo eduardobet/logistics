@@ -58,6 +58,46 @@
         $("#amount_paid").blur(function() {
             doCalc();
         });
+
+
+        // resend invoice
+        $("#resend-invoice").click(function() {
+            var $self = $(this);
+            var url = $self.data('url');
+            var loadingText = $self.data('loading-text');
+
+            if ($(this).html() !== loadingText) {
+                $self.data('original-text', $(this).html());
+                $self.prop('disabled', true).html(loadingText);
+            }
+
+            var request = $.ajax({
+                method: 'post',
+                url: url,
+                data: $.extend({
+                    _token	: $("input[name='_token']").val(),
+                    '_method': 'POST',
+
+                }, {})
+            });
+
+            request.done(function(data){
+                if (data.error == false) {
+                    swal(data.msg, "", "success");
+                } else {
+                    swal(data.msg, "", "error");
+                }
+
+                $self.prop('disabled', false).html($self.data('original-text'));
+            })
+            .fail(function( jqXHR, textStatus ) {
+                swal(textStatus, "", "error");
+                $self.prop('disabled', false).html($self.data('original-text'));
+            });
+
+        });
+
+
     });
 
     function doCalc() {

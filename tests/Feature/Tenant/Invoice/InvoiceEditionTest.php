@@ -69,7 +69,7 @@ class InvoiceEditionTest extends TestCase
         Mail::fake();
 
         $tenant = factory(TenantModel::class)->create();
-        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
 
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $admin->branches()->sync([$branch->id]);
@@ -184,7 +184,6 @@ class InvoiceEditionTest extends TestCase
         Mail::fake();
 
         $tenant = factory(TenantModel::class)->create();
-        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
 
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
@@ -247,6 +246,65 @@ class InvoiceEditionTest extends TestCase
             'amount_paid' => 90,
             'payment_method' => 1,
             'payment_ref' => 'The client paid $90.00',
+        ]);
+
+        Mail::assertQueued(\Logistics\Mail\Tenant\InvoiceCreated::class, function ($mail) use ($client) {
+            return $mail->hasTo($client->email) && $mail->invoice->id = 1;
+        });
+    }
+
+    /** @test */
+    public function the_client_invoice_email_can_be_resent_to_him()
+    {
+        $this->withoutExceptionHandling();
+
+        Mail::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+        $admin->branchesForInvoice()->sync([$branch->id, ]);
+
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'pay_volume' => true, 'vol_price' => 2.00]);
+
+        $box = factory(Box::class)->create([
+            'tenant_id' => $tenant->id,
+            'client_id' => $client->id,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
+        ]);
+
+        $invoice = $tenant->invoices()->create([
+            'branch_id' => $branch->id,
+            'client_id' => $client->id,
+            'total' => 100,
+        ]);
+
+        $detailA = $invoice->details()->create([
+            'qty' => 1,
+            'type' => 1,
+            'description' => 'Buying from amazon',
+            'id_remote_store' => '122452222',
+            'total' => 100,
+        ]);
+
+        $payment = $invoice->payments()->create([
+            'tenant_id' => $invoice->tenant_id,
+            'amount_paid' => 50,
+            'payment_method' => 1,
+            'payment_ref' => 'The client paid $80.00',
+            'is_first' => true,
+        ]);
+
+        $response = $this->actingAs($admin)->post(route('tenant.invoice.invoice.resend', [$tenant->domain, $invoice->id]), [
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'error' => false,
+            'msg' => __("Success"),
         ]);
 
         Mail::assertQueued(\Logistics\Mail\Tenant\InvoiceCreated::class, function ($mail) use ($client) {

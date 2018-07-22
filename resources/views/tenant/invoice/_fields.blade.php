@@ -7,15 +7,20 @@
 
             &nbsp;&nbsp;
 
-            <a href="#!" class="btn btn-sm btn-outline-dark" data-url=""
+            <a id="create-payment" href="#!" class="btn btn-sm btn-outline-dark" data-url=""
                 data-toggle="tooltip" data-placement="left" title="{{ __('New payment') }}" data-invoice-id="{{ $invoice->id }}"
+                data-loading-text="<i class='fa fa-spinner fa-spin '></i>"
             ><i class="fa fa-money"></i></a>
 
             &nbsp;&nbsp;
 
-            <a href="#!" class="btn btn-sm btn-outline-dark" data-url=""
+            <button id="resend-invoice" type="button" class="btn btn-sm btn-outline-dark"
+                data-url="{{ route('tenant.invoice.invoice.resend', [$tenant->domain, $invoice->id, ]) }}"
                 data-toggle="tooltip" data-placement="left" title="{{ __('Resend invoice email') }}" data-invoice-id="{{ $invoice->id }}"
-            ><i class="fa fa-envelope"></i></a>
+                data-loading-text="<i class='fa fa-spinner fa-spin '></i>"
+            >
+                <i class="fa fa-envelope"></i></a>
+            </button>
 
         </div>
     </div>

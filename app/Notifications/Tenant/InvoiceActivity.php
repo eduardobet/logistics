@@ -5,7 +5,6 @@ namespace Logistics\Notifications\Tenant;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Logistics\DB\Tenant\Invoice;
-use Logistics\DB\Tenant\Payment;
 use Illuminate\Support\Facades\Mail;
 use Logistics\Mail\Tenant\InvoiceCreated;
 use Illuminate\Notifications\Notification;
@@ -18,17 +17,17 @@ class InvoiceActivity extends Notification implements ShouldQueue
     use Queueable;
 
     public $invoice;
-    public $paymentId;
+    public $tenantLang;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Invoice $invoice, $paymentId)
+    public function __construct(Invoice $invoice, $tenantLang)
     {
         $this->invoice = $invoice;
-        $this->paymentId = $paymentId;
+        $this->tenantLang = $tenantLang;
     }
 
     /**
@@ -54,11 +53,11 @@ class InvoiceActivity extends Notification implements ShouldQueue
         $box = $client->boxes()->active()->first();
         $box = $box->branch_code .''.$client->id;
 
-        Mail::to($client)->send(new InvoiceCreated($this->invoice, $this->paymentId));
+        Mail::to($client)->send(new InvoiceCreated($this->invoice, $this->tenantLang));
 
         return [
             'title' => auth()->user()->full_name . ' ' . __('created an invoice'),
-            'content' => __('The invoice #:id has been created for: :box with payment id #:pid', ['id' => $this->invoice->id, 'box' => $box, 'pid' => $this->paymentId, ]),
+            'content' => __('The invoice #:id has been created for: :box', ['id' => $this->invoice->id, 'box' => $box, ]),
             'created_at' => $this->invoice->created_at,
         ];
     }

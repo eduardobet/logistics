@@ -14,17 +14,17 @@ class InvoiceCreated extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     public $invoice;
-    public $paymentId;
+    public $tenantLang;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Invoice $invoice, $paymentId)
+    public function __construct(Invoice $invoice, $tenantLang)
     {
         $this->invoice = $invoice;
-        $this->paymentId = $paymentId;
+        $this->tenantLang = $tenantLang;
     }
 
     /**
@@ -37,8 +37,9 @@ class InvoiceCreated extends Mailable implements ShouldQueue
         $client = $this->invoice->client;
         $box = $client->boxes()->active()->get()->first();
         $box = "{$box->branch_code}{$client->id}";
+        $lang = $this->tenantLang ? : localization()->getCurrentLocale();
         
-        return $this->subject(__('Invoice') . ' #' . $this->invoice->id)
+        return $this->subject(__('Invoice', [], $lang) . ' #' . $this->invoice->id)
             ->markdown('tenant.mails.invoice')
             ->with([
                 'tenant' => $this->invoice->tenant,
@@ -46,7 +47,8 @@ class InvoiceCreated extends Mailable implements ShouldQueue
                 'client' => $client,
                 'box' => $box,
                 'payments' => $this->invoice->payments,
-                'creatorName' => $this->invoice->creator->full_name
+                'creatorName' => $this->invoice->creator ? $this->invoice->creator->full_name : null,
+                'lang' => $lang,
             ]);
     }
 }

@@ -3,7 +3,7 @@
 3) Test and implementing employee can change their password
 4) (OK) Check cache cleaning (ref: DB/Client)
 5) (OK) Test and implementing mailer can be dhl
-6) Test and implementing resend email invoice
+6) (OK) Test and implementing resend email invoice
 6) Test and implementing payment crud
 
 check paga volumen

@@ -161,7 +161,7 @@ class InvoiceController extends Controller
             $payment->payment_ref = $request->payment_ref;
             $payment->save();
 
-            Mail::to($invoice->client)->send(new InvoiceCreated($invoice, $payment->id));
+            Mail::to($invoice->client)->send(new InvoiceCreated($invoice, $tenant->lang));
 
             return redirect()->route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $request->branch_id,])
                 ->with('flash_success', __('The :what has been updated.', ['what' => __('Invoice') ]));
@@ -227,5 +227,20 @@ class InvoiceController extends Controller
 
             return $pdf->download('invoice.pdf');
         }
+    }
+
+    public function resendInvoice($domain, $invoiceId)
+    {
+        $tenant = $this->getTenant();
+        $invoice = $tenant->invoices()->with('details')->findOrFail($invoiceId);
+
+
+        if (!$invoice) {
+            return response()->json(['error' => true, 'msg' => __('Not Found.'), ], 404);
+        }
+
+        Mail::to($invoice->client)->send(new InvoiceCreated($invoice, $tenant->lang));
+
+        return response()->json(['error' => false, 'msg' => __('Success'), ]);
     }
 }

@@ -28,6 +28,7 @@ class CreateInvoicesTable extends Migration
             $table->float('real_weight')->nullable();
             $table->float('total');
             $table->text("notes")->nullable();
+            $table->boolean("is_paid")->nullable()->default(false);
 
             $table->timestamps();
         });

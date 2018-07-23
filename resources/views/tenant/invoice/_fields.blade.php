@@ -7,10 +7,15 @@
 
             &nbsp;&nbsp;
 
-            <a id="create-payment" href="#!" class="btn btn-sm btn-outline-dark" data-url=""
-                data-toggle="tooltip" data-placement="left" title="{{ __('New payment') }}" data-invoice-id="{{ $invoice->id }}"
-                data-loading-text="<i class='fa fa-spinner fa-spin '></i>"
-            ><i class="fa fa-money"></i></a>
+            <button id="create-payment" type="button" class="btn btn-sm btn-outline-dark"
+                data-url="{{ route('tenant.payment.create', [$tenant->domain, $invoice->id, ]) }}"
+                title="{{ __('New payment') }}" data-invoice-id="{{ $invoice->id }}"
+                data-toggle="modal"
+                data-target="#modal-payment"
+                {{ $invoice->total == $payments->sum('amount_paid') ? ' disabled' : null }}
+            >
+                <i class="fa fa-money"></i></a>
+            </button>
 
             &nbsp;&nbsp;
 
@@ -126,6 +131,8 @@
 
 <div class="row mg-t-25 justify-content-between">
     <div class="col-lg-12">
-        <button id="btn-wh-save" type="submit" class="btn btn-primary bg-royal bd-1 bd-gray-400">{{ __('Save') }}</button>
+        <button id="btn-wh-save" type="submit" class="btn btn-primary bg-royal bd-1 bd-gray-400"
+        {{ isset($payments) && $invoice->total == $payments->sum('amount_paid') ? ' disabled' : null }}
+        >{{ __('Save') }}</button>
     </div>
 </div>

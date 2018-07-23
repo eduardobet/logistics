@@ -22,7 +22,7 @@
                 @include('tenant.invoice._fields', [
                     'mode' => 'edit',
                     'invoice' => $invoice,
-                    'payment' => $invoice->payments->where('is_first', true)->first(),
+                    'payment' => ($payments = $invoice->payments)->where('is_first', true)->first(),
                 ])
                 
                 {!! Form::hidden('qty', null, ['id' => 'qty',]) !!}
@@ -31,6 +31,9 @@
     
     </div> <!-- container -->     
 </div> <!-- slim-mainpanel -->
+
+
+@include('tenant.payment.create', ['payments' => $payments])
 
 
 @include('tenant.common._footer')
@@ -97,6 +100,68 @@
 
         });
 
+        // payment
+        $('#modal-payment').on('shown.bs.modal', function () {});
+
+        $('#btn-cancel-payment').click(function() {
+            $("#p_amount_paid, #p_payment_method, #p_payment_ref").val("");
+        });
+
+        $("#form-payment").submit(function(e) {
+            
+            var $btnSubmit = $('#btn-submit-payment');
+            var url = "{{ route('tenant.payment.store', $tenant->domain) }}";
+            var loadingText = $btnSubmit.data('loading-text');
+
+            if ($btnSubmit.html() !== loadingText) {
+                $btnSubmit.data('original-text', $btnSubmit.html());
+                $btnSubmit.prop('disabled', true).html(loadingText);
+            }
+
+            var request = $.ajax({
+                method: 'post',
+                url: url,
+                data: $.extend({
+                    _token	: $("input[name='_token']").val(),
+                    '_method': 'POST',
+                    'invoice_id': "{{ $invoice->id }}",
+                    'amount_paid': $("#p_amount_paid").val(),
+                    'payment_method': $("#p_payment_method").val(),
+                    'payment_ref': $("#p_payment_ref").val(),
+                }, {})
+            });
+
+            request.done(function(data){
+                if (data.error == false) {
+                    swal("", data.msg, "success");
+                    $("#p_amount_paid, #p_payment_method, #p_payment_ref").val("");
+
+                    $("#pending").val(data.pending);
+                    $("#p_amount_paid").attr('max', data.pending);
+                    $('#modal-payment').modal('hide');
+
+                    if (!data.pending) $("#create-payment").prop('disabled', true)
+
+                } else {
+                    swal("", data.msg, "error");
+                }
+
+                $btnSubmit.prop('disabled', false).html($btnSubmit.data('original-text'));
+            })
+            .fail(function( jqXHR, textStatus ) {
+                
+                var error = "{{ __('Error') }}";
+
+                if (jqXHR.responseJSON.msg) {
+                    error = jqXHR.responseJSON.msg;
+                }
+                
+                swal("", error, "error");
+                $btnSubmit.prop('disabled', false).html($btnSubmit.data('original-text'));
+            });
+
+            e.preventDefault();
+        });
 
     });
 

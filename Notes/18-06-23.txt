@@ -4,7 +4,7 @@
 4) (OK) Check cache cleaning (ref: DB/Client)
 5) (OK) Test and implementing mailer can be dhl
 6) (OK) Test and implementing resend email invoice
-6) Test and implementing payment crud
+6) (OK) Test and implementing payment crud
 
 check paga volumen
 EL CLIENTE PAGA TARIFA VOLUMETRICA.

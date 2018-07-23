@@ -27,7 +27,7 @@ class InvoiceController extends Controller
         $tenant = $this->getTenant();
 
         return view('tenant.invoice.index', [
-            'invoices' => $tenant->invoices()->with('client')->paginate(20),
+            'invoices' => $tenant->invoices()->with(['client', 'payments'])->paginate(20),
         ]);
     }
 
@@ -118,11 +118,12 @@ class InvoiceController extends Controller
     public function edit($domain, $id)
     {
         $tenant = $this->getTenant();
-        $invoice = $tenant->invoices()->with('details')->findOrFail($id);
+        $invoice = $tenant->invoices()->with(['details', 'payments'])->findOrFail($id);
 
         return view('tenant.invoice.edit', [
             'clients' => (new Client())->getClientsByBranch(request('branch_id')),
             'invoice' => $invoice,
+            'payments' => $invoice->payments,
         ]);
     }
 

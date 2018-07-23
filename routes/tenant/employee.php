@@ -48,7 +48,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('invoice/{id}/resend-invoice-email', 'Tenant\InvoiceController@resendInvoice')->name('tenant.invoice.invoice.resend');
 
     // payment
-    Route::get('payment/{invoice_id}/create', function () {
-        return "New payment";
-    })->name('tenant.payment.create');
+    Route::get('payment/{invoice_id}/create', 'Tenant\PaymentController@create')->name('tenant.payment.create')->middleware(['can:create-payment']);
+    Route::post('payment/store', 'Tenant\PaymentController@store')->name('tenant.payment.store')->middleware(['can:create-payment']);
 });

@@ -45,8 +45,8 @@
                       <td>{{ $invoice->created_at->format('d-m-Y') }}</td>
                       <td>{{ $invoice->client->full_name }}</td>
                       <td>$ {{ number_format($invoice->total, 2) }}</td>
-                      <td class="text-center">
-                        @if ($invoice->status == 'P')
+                      <td class="text-center" id="status-text-{{ $invoice->id }}">
+                        @if ($invoice->is_paid)
                             <span class="badge badge-success">{{ __('Paid') }}</span>
                         @else
                             <span class="badge badge-danger">{{ __('Pending') }}</span>
@@ -60,7 +60,18 @@
                        
                         &nbsp;&nbsp;&nbsp;
 
-                        <a title="{{ __('Payment') }}" href="{{ route('tenant.payment.create', [$tenant->domain, $invoice->id]) }}"><i class="fa fa-money" aria-hidden="true"></i></a>
+                        <?php $pending = $invoice->total - $invoice->payments->sum('amount_paid'); ?>
+
+                        <a href="#!" class="{{ $pending ? 'create-payment' : 'already-paid' }}"
+                            data-url="{{ route('tenant.payment.create', [$tenant->domain, $invoice->id, ]) }}"
+                            title="{{ __('New payment') }}" data-invoice-id="{{ $invoice->id }}"
+                            data-toggle="modal"
+                            data-target="#modal-payment-{{ $invoice->id }}"
+                            data-index="{{ $invoice->id }}"
+                            data-pending="{{ $pending }}"
+                        >
+                            <i class="fa fa-money"></i></a>
+                        </button>
 
                         &nbsp;&nbsp;&nbsp;
                         <a title="{{ __('Email') }}" href="#!" class="email-invoice"
@@ -86,6 +97,13 @@
 
       </div><!-- container -->
 </div><!-- slim-mainpanel -->
+
+@if (isset($payments))
+@include('tenant.payment.create', ['payments' => $payments, ])
+@else  
+@include('tenant.payment.create', [])
+@endif
+
 
 
  @include('tenant.common._footer')
@@ -137,6 +155,85 @@
 
             e.preventDefault();
 
+        });
+
+        // payment
+        var $baseModal = $("#modal-payment");
+        var $launcher = null
+        $(".create-payment").click(function(e) {
+            var $self = $(this);
+            var index = $self.data('index');
+            var pending = $self.data('pending') || 0;
+            $launcher = $self;
+            $("#p_invoice_id").val(index);
+            $("#p_amount_paid").attr("max", pending);
+
+            $baseModal.attr('id', 'modal-payment-'+index);
+            $baseModal.on('shown.bs.modal', function () {});
+        });
+
+        $('#btn-cancel-payment').click(function() {
+            $("#p_amount_paid, #p_payment_method, #p_payment_ref").val("");
+        });
+
+        $("#form-payment").submit(function(e) {
+            
+            var $btnSubmit = $('#btn-submit-payment');
+            var url = "{{ route('tenant.payment.store', $tenant->domain) }}";
+            var loadingText = $btnSubmit.data('loading-text');
+
+            if ($btnSubmit.html() !== loadingText) {
+                $btnSubmit.data('original-text', $btnSubmit.html());
+                $btnSubmit.prop('disabled', true).html(loadingText);
+            }
+
+            var request = $.ajax({
+                method: 'post',
+                url: url,
+                data: $.extend({
+                    _token	: $("input[name='_token']").val(),
+                    '_method': 'POST',
+                    'invoice_id': $("#p_invoice_id").val(),
+                    'amount_paid': $("#p_amount_paid").val(),
+                    'payment_method': $("#p_payment_method").val(),
+                    'payment_ref': $("#p_payment_ref").val(),
+                }, {})
+            });
+
+            request.done(function(data){
+                if (data.error == false) {
+                    swal("", data.msg, "success");
+                    
+                    $launcher.attr('data-pending', data.pending);
+                    $("#p_amount_paid").attr('max', data.pending);
+                    $baseModal.modal('hide');
+                    
+                    if (!data.pending) {
+                        $launcher.removeClass('create-payment').addClass('already-paid');
+                        $("#status-text-"+$("#p_invoice_id").val()).html('<span class="badge badge-success">{{ __("Paid") }}</span>');
+                        $launcher = null
+                    }
+                    $("#p_amount_paid, #p_payment_method, #p_payment_ref, #p_invoice_id").val("");
+
+                } else {
+                    swal("", data.msg, "error");
+                }
+
+                $btnSubmit.prop('disabled', false).html($btnSubmit.data('original-text'));
+            })
+            .fail(function( jqXHR, textStatus ) {
+                
+                var error = "{{ __('Error') }}";
+
+                if (jqXHR.responseJSON.msg) {
+                    error = jqXHR.responseJSON.msg;
+                }
+                
+                swal("", error, "error");
+                $btnSubmit.prop('disabled', false).html($btnSubmit.data('original-text'));
+            });
+
+            e.preventDefault();
         });
 
 

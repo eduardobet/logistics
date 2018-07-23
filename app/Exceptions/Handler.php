@@ -4,6 +4,7 @@ namespace Logistics\Exceptions;
 
 use Exception;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -54,6 +55,12 @@ class Handler extends ExceptionHandler
     {
         if ($exception instanceof AuthenticationException) {
             return $this->unauthenticated($request, $exception);
+        }
+
+        if ($exception instanceof AuthorizationException) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => __('This action is unauthorized.')], 403);
+            }
         }
 
         if ($request->expectsJson()) {

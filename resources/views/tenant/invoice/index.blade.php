@@ -17,7 +17,7 @@
             {{ Breadcrumbs::render() }}
 
            @can('create-invoice')
-            <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.invoice.create', $tenant->domain) }}">
+            <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.invoice.create', [$tenant->domain, 'branch_id' => $branch->id,]) }}">
                <i class="fa fa-plus mg-r-5"></i> {{ __('Create') }}
             </a>
             @endcan

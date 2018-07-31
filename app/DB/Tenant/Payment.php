@@ -32,4 +32,9 @@ class Payment extends Model
             $query->updated_by_code = auth()->id();
         });
     }
+
+    public function invoice()
+    {
+        return $this->belongsTo(\Logistics\DB\Tenant\Invoice::class);
+    }
 }

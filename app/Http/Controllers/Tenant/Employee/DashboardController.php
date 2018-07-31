@@ -37,6 +37,7 @@ class DashboardController extends Controller
             'last_5_clients' => $this->clients()->filter(function ($client, $key) use ($branch) {
                 return $client->boxes->where('branch_id', $branch->id);
             })->sortByDesc('created_at')->take(5),
+            'today_earnings' => $tenant->payments()->whereDate('created_at', '=', date('Y-m-d'))->get()->sum('amount_paid')
         ]);
     }
     

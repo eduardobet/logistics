@@ -36,5 +36,11 @@ class Warehouse extends Model
         static::updating(function ($query) {
             $query->updated_by_code = auth()->id();
         });
+
+        static::saved(function ($model) {
+            $keys = ["warehouses.tenant.{$model->tenant_id}"];
+
+            do_forget_cache(__class__, $keys);
+        });
     }
 }

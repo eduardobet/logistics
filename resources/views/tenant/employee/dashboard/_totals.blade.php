@@ -34,7 +34,7 @@
                 <i class="icon ion-ios-calculator-outline tx-primary"></i>
                 <div class="media-body">
                   <h1>{{ $tot_invoices }}</h1>
-                  <p>Facturas</p>
+                  <p>{{ __('Invoices') }}</p>
                 </div><!-- media-body -->
               </div><!-- media -->
             </div><!-- card -->

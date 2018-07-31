@@ -36,7 +36,7 @@
                 <div class="dash-headline-item-one">
                   <div id="chartMultiBar1" class="chart-rickshaw"></div>
                   <div class="dash-item-overlay">
-                    <h1>$3,350</h1>
+                    <h1>$ {{ number_format($today_earnings, 2) }}</h1>
                     <p class="earning-label">{{ __('Today profits') }}</p>
                     <a href="#" class="statement-link"> {{ __('Show movements') }} <i class="fa fa-angle-right mg-l-5"></i></a>
                   </div>

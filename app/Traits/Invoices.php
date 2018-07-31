@@ -14,7 +14,7 @@ trait Invoices
         $tenant = $this->getTenant();
 
         return cache()->rememberForever("invoices.tenant.{$tenant->id}", function () use ($tenant) {
-            return $tenant->invoices()->with('details')->get();
+            return $tenant->invoices()->with(['details', 'payments'])->get();
         });
     }
 }

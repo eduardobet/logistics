@@ -4,6 +4,7 @@ namespace Logistics\Http\Controllers\Tenant;
 
 use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Notifications\Tenant\PaymentActivity;
@@ -19,7 +20,56 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        //
+        $tenant = $this->getTenant();
+        $branch = auth()->user()->currentBranch();
+
+        $payments = DB::table('payments')
+            ->where('tenant_id', $tenant->id)
+            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            ->join('clients', function ($join) {
+                if ($clientId = request('client_id')) {
+                    $join->on('invoices.client_id', '=', 'clients.id')
+                         ->where('clients.id', '=', $clientId);
+                } else {
+                }
+            })
+            ->join('boxes', function ($join) use ($branch) {
+                $join->on('clients.id', '=', 'boxes.client_id')
+                    ->where('boxes.branch_id', '=', $branch->id)
+                    ->where('boxes.status', '=', 'A');
+            })
+            ;
+
+        $sql = "select p.*, i.total, i.is_paid,nconcat(c.first_name, ' ', c.last_name) as full_name, c.org_name, b.branch_code";
+        $sql .= " from payments p";
+        $sql .= " inner join invoices as i on p.invoice_id = i.id inner join clients as c on i.client_id = c.id";
+        $sql .= " inner join boxes as b on b.client_id = b.id and b.status = 'A' and b.branch_id = {$branch->id} where 1 = 1";
+
+        if ($from = request('from') && $to = request('to')) {
+            $sql .= " and date(p.created_at) between ? and ?";
+        }
+
+        if ($clientId = request('client_id')) {
+            $sql .= " and c.id = ? ";
+        }
+
+
+        dd($sql);
+
+        $payments = $tenant->payments()->with(['invoice' => function ($invoice) {
+            $invoice->select(['client_id', 'id', 'total', 'is_paid'])
+                ->with(['client' => function ($client) {
+                    $client->select(['id', 'first_name', 'last_name', 'org_name'])
+                        ->with(['boxes' => function ($box) {
+                            $box->select(['id', 'branch_id', 'branch_code', 'client_id'])
+                                ->where('status', 'A');
+                        }]);
+                }]);
+        }]);
+
+        return view('tenant.payment.index', [
+            'payments' => $payments->paginate(20),
+        ]);
     }
 
     /**

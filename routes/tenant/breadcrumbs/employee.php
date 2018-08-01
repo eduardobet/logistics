@@ -56,7 +56,11 @@ Breadcrumbs::for('tenant.invoice.edit', function ($trail) use ($type) {
     $trail->add(__('Editing :what', ['what' => __('Invoice')]), route('tenant.invoice.edit', [request()->domain, request('id'), ]));
 });
 
-
+// payments
+Breadcrumbs::for('tenant.payment.list', function ($trail) use ($type) {
+    $trail->parent("tenant.{$type}.dashboard");
+    $trail->add(__('Payments'), '');
+});
 
 // Mailers
 Breadcrumbs::for('tenant.mailer.list', function ($trail) use ($type) {

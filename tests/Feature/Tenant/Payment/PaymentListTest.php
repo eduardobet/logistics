@@ -26,7 +26,9 @@ class InvoiceListTest extends TestCase
         $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
     }
 
-    /** @test */
+    /**
+     * @group specification
+     */
     public function employee_can_see_invoice_list()
     {
         $this->withoutExceptionHandling();

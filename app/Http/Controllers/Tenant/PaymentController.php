@@ -22,53 +22,57 @@ class PaymentController extends Controller
     {
         $tenant = $this->getTenant();
         $branch = auth()->user()->currentBranch();
+        $searching = 'N';
 
         $payments = DB::table('payments')
-            ->where('tenant_id', $tenant->id)
+            ->where('payments.tenant_id', '=', $tenant->id)
             ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
             ->join('clients', function ($join) {
                 if ($clientId = request('client_id')) {
                     $join->on('invoices.client_id', '=', 'clients.id')
                          ->where('clients.id', '=', $clientId);
                 } else {
+                    $join->on('invoices.client_id', '=', 'clients.id');
                 }
             })
             ->join('boxes', function ($join) use ($branch) {
                 $join->on('clients.id', '=', 'boxes.client_id')
                     ->where('boxes.branch_id', '=', $branch->id)
                     ->where('boxes.status', '=', 'A');
-            })
-            ;
+            });
 
-        $sql = "select p.*, i.total, i.is_paid,nconcat(c.first_name, ' ', c.last_name) as full_name, c.org_name, b.branch_code";
-        $sql .= " from payments p";
-        $sql .= " inner join invoices as i on p.invoice_id = i.id inner join clients as c on i.client_id = c.id";
-        $sql .= " inner join boxes as b on b.client_id = b.id and b.status = 'A' and b.branch_id = {$branch->id} where 1 = 1";
-
-        if ($from = request('from') && $to = request('to')) {
-            $sql .= " and date(p.created_at) between ? and ?";
+        if (($from = request('from')) && ($to = request('to'))) {
+            $payments = $payments->whereRaw(' date(payments.created_at) between ? and ? ', [$from, $to]);
+            $searching = 'Y';
         }
 
-        if ($clientId = request('client_id')) {
-            $sql .= " and c.id = ? ";
+        if ($type = request('type')) {
+            $payments = $payments->whereRaw(' payments.type = ? ', [$type]);
+            $searching = 'Y';
         }
 
+        if (request('client_id')) {
+            $searching = 'Y';
+        }
 
-        dd($sql);
+        $payments = $payments->select(
+            'payments.*',
+            DB::raw("date_format(payments.created_at, '%d/%m/%Y') as created_at_dsp"),
+            DB::raw("concat(clients.first_name, ' ', clients.last_name) as client_full_name"),
+            'clients.id as client_id',
+            'boxes.branch_code as client_box',
+            'invoices.branch_id as invoice_branch_id'
+        );
 
-        $payments = $tenant->payments()->with(['invoice' => function ($invoice) {
-            $invoice->select(['client_id', 'id', 'total', 'is_paid'])
-                ->with(['client' => function ($client) {
-                    $client->select(['id', 'first_name', 'last_name', 'org_name'])
-                        ->with(['boxes' => function ($box) {
-                            $box->select(['id', 'branch_id', 'branch_code', 'client_id'])
-                                ->where('status', 'A');
-                        }]);
-                }]);
-        }]);
+        if ($searching == 'Y') {
+            $payments = $payments->orderBy('payments.id')->get();
+        } else {
+            $payments = $payments->orderBy('payments.id')->paginate(20);
+        }
 
         return view('tenant.payment.index', [
-            'payments' => $payments->paginate(20),
+            'payments' => $payments ,
+            'searching' => $searching,
         ]);
     }
 

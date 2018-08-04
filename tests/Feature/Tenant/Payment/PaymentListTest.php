@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class InvoiceListTest extends TestCase
+class PaymentListTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -27,7 +27,7 @@ class InvoiceListTest extends TestCase
     }
 
     /**
-     * @group specification
+     * @group mysql
      */
     public function employee_can_see_invoice_list()
     {

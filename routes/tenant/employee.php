@@ -49,6 +49,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     // payment
     Route::get('payment/list', 'Tenant\PaymentController@index')->name('tenant.payment.list')->middleware(['can:show-invoice']);
+    Route::get('payments/export', 'Tenant\PaymentController@export')->name('tenant.payment.export')->middleware(['can:show-invoice']);
     Route::get('payment/{invoice_id}/create', 'Tenant\PaymentController@create')->name('tenant.payment.create')->middleware(['can:create-payment']);
     Route::post('payment/store', 'Tenant\PaymentController@store')->name('tenant.payment.store')->middleware(['can:create-payment']);
 });

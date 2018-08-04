@@ -4,14 +4,16 @@ namespace Logistics\Http\Controllers\Tenant;
 
 use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
+use Logistics\Traits\PaymentList;
 use Illuminate\Support\Facades\DB;
+use Logistics\Exports\PaymentsExport;
 use Illuminate\Support\Facades\Validator;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Notifications\Tenant\PaymentActivity;
 
 class PaymentController extends Controller
 {
-    use Tenant;
+    use Tenant, PaymentList;
 
     /**
      * Display a listing of the resource.
@@ -20,60 +22,34 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $tenant = $this->getTenant();
-        $branch = auth()->user()->currentBranch();
-        $searching = 'N';
-
-        $payments = DB::table('payments')
-            ->where('payments.tenant_id', '=', $tenant->id)
-            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
-            ->join('clients', function ($join) {
-                if ($clientId = request('client_id')) {
-                    $join->on('invoices.client_id', '=', 'clients.id')
-                         ->where('clients.id', '=', $clientId);
-                } else {
-                    $join->on('invoices.client_id', '=', 'clients.id');
-                }
-            })
-            ->join('boxes', function ($join) use ($branch) {
-                $join->on('clients.id', '=', 'boxes.client_id')
-                    ->where('boxes.branch_id', '=', $branch->id)
-                    ->where('boxes.status', '=', 'A');
-            });
-
-        if (($from = request('from')) && ($to = request('to'))) {
-            $payments = $payments->whereRaw(' date(payments.created_at) between ? and ? ', [$from, $to]);
-            $searching = 'Y';
-        }
-
-        if ($type = request('type')) {
-            $payments = $payments->whereRaw(' payments.type = ? ', [$type]);
-            $searching = 'Y';
-        }
-
-        if (request('client_id')) {
-            $searching = 'Y';
-        }
-
-        $payments = $payments->select(
-            'payments.*',
-            DB::raw("date_format(payments.created_at, '%d/%m/%Y') as created_at_dsp"),
-            DB::raw("concat(clients.first_name, ' ', clients.last_name) as client_full_name"),
-            'clients.id as client_id',
-            'boxes.branch_code as client_box',
-            'invoices.branch_id as invoice_branch_id'
-        );
-
-        if ($searching == 'Y') {
-            $payments = $payments->orderBy('payments.id')->get();
-        } else {
-            $payments = $payments->orderBy('payments.id')->paginate(20);
-        }
+        [$payments, $searching] = $this->getPayments($this->getTenant());
 
         return view('tenant.payment.index', [
             'payments' => $payments ,
             'searching' => $searching,
+            'sign' => '$',
         ]);
+    }
+
+    public function export()
+    {
+        [$payments, $searching] = $this->getPayments($this->getTenant());
+
+        $data = [
+            'payments' => $payments,
+            'exporting' => true,
+            'sign' => '',
+        ];
+
+        if (request('pdf')) {
+            return view('tenant.export.payments-pdf', $data);
+
+            $pdf = \PDF::loadView('tenant.export.payments-pdf', $data);
+
+            return $pdf->download(uniqid('payments_', true) . '.pdf');
+        }
+        
+        return (new PaymentsExport)->download(uniqid('payments_', true) . '.xlsx');
     }
 
     /**

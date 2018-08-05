@@ -15,7 +15,7 @@ class Tenant extends Model
      * @var array
      */
     protected $fillable = [
-        'domain', 'name', 'status', 'ruc', 'dv', 'telephones', 'emails', 'address', 'lang', 'logo', 'country_id',
+        'domain', 'name', 'status', 'ruc', 'dv', 'telephones', 'emails', 'address', 'lang', 'logo', 'country_id', 'timezone',
     ];
 
     /**
@@ -46,7 +46,7 @@ class Tenant extends Model
      */
     private function getContent(string $domainName)
     {
-        return $content = "APP_URL={$this->domain}\nAPP_DOMAIN={$this->domain}\nAPP_NAME=\"{$this->name}\"\nSESSION_DOMAIN={$domainName}\nTENANT_COUNTRY={$this->country_id}";
+        return $content = "APP_URL={$this->domain}\nAPP_DOMAIN={$this->domain}\nAPP_NAME=\"{$this->name}\"\nSESSION_DOMAIN={$domainName}\nTENANT_COUNTRY={$this->country_id}\nTENANT_TIMEZONE={$this->timezone}";
     }
 
     /**
@@ -74,6 +74,7 @@ class Tenant extends Model
             'app.url' => $this->domain,
             'app.locale' => $this->lang,
             'app.country' => $this->country_id,
+            'app.timezone' => $this->timezone,
         ]);
     }
 }

@@ -25,6 +25,7 @@ class CreateTenantsTable extends Migration
             $table->string('ruc')->nullable();
             $table->string('dv')->nullable();
             $table->string('address')->nullable();
+            $table->string('timezone')->nullable()->default('America/Panama');
             $table->string('logo')->nullable();
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
             $table->timestamps();

@@ -15,17 +15,19 @@ class PaymentActivity extends Notification implements ShouldQueue
     public $payment;
     public $clientId;
     public $tenantLang;
+    public $userFullname;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Payment $payment, $clientId, $tenantLang)
+    public function __construct(Payment $payment, $clientId, $tenantLang, $userFullname)
     {
         $this->payment = $payment;
         $this->clientId = $clientId;
         $this->tenantLang = $tenantLang;
+        $this->userFullname = $userFullname;
     }
 
     /**
@@ -52,7 +54,7 @@ class PaymentActivity extends Notification implements ShouldQueue
         $lang = $this->tenantLang ? : localization()->getCurrentLocale();
 
         return [
-            'title' => auth()->user()->full_name . ' ' . __('created a payment', [], $lang),
+            'title' => $this->userFullname . ' ' . __('created a payment', [], $lang),
             'content' => __('The payment #:pid has been created to the invoice #iid: (:box)', [
                 'pid' => $this->payment->id, 'iid' => $this->payment->invoice_id, 'box' => $box,
             ], $lang),

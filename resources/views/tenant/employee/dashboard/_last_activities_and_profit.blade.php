@@ -38,7 +38,7 @@
                   <div class="dash-item-overlay">
                     <h1>$ {{ number_format($today_earnings, 2) }}</h1>
                     <p class="earning-label">{{ __('Today profits') }}</p>
-                    <a href="#" class="statement-link"> {{ __('Show movements') }} <i class="fa fa-angle-right mg-l-5"></i></a>
+                    <a href="{{ route('tenant.payment.list', [$tenant->domain, 'branch_id' => $branch->id]) }}" class="statement-link"> {{ __('Show movements') }} <i class="fa fa-angle-right mg-l-5"></i></a>
                   </div>
                 </div><!-- dash-headline-item-one -->
               </div><!-- col-7 -->

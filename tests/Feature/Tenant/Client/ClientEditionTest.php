@@ -73,7 +73,7 @@ class ClientEditionTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
-        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, ]);
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'email' => 'client@company.com', ]);
 
         $admin->branches()->sync([$branch->id]);
 
@@ -147,7 +147,7 @@ class ClientEditionTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
-        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, ]);
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'email' => 'client@company.com', ]);
 
         $admin->branches()->sync([$branch->id]);
 

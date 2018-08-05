@@ -159,6 +159,7 @@
 
         // payment
         var $baseModal = $("#modal-payment");
+        var $pAmount = $("#p_amount_paid");
         var $launcher = null
         $(".create-payment").click(function(e) {
             var $self = $(this);
@@ -166,7 +167,7 @@
             var pending = $self.data('pending') || 0;
             $launcher = $self;
             $("#p_invoice_id").val(index);
-            $("#p_amount_paid").attr("max", pending);
+            $pAmount.val(pending).attr("max", pending);
 
             $baseModal.attr('id', 'modal-payment-'+index);
             $baseModal.on('shown.bs.modal', function () {});
@@ -205,7 +206,7 @@
                     swal("", data.msg, "success");
                     
                     $launcher.attr('data-pending', data.pending);
-                    $("#p_amount_paid").attr('max', data.pending);
+                    $pAmount.val(data.pending).attr('max', data.pending);
                     $baseModal.modal('hide');
                     
                     if (!data.pending) {

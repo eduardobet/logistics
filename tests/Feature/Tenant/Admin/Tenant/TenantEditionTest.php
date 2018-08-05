@@ -50,6 +50,7 @@ class TenantEditionTest extends TestCase
             'emails' => ' contact@tenant.com, sales@tenant.com ',
             'address' => 'In the middle of nowhere',
             'lang' => 'es',
+            'timezone' => 'America/Port-au-Prince',
             'remote_addresses' => [
                 ['type' => 'A', 'address' => 'In the middle of remote air', 'telephones' => '555-5555',  'status' => 'A', ],
                 ['type' => 'M', 'address' => 'In the middle of remote maritimes', 'telephones' => '555-5555','status' => 'A',  ],
@@ -70,6 +71,7 @@ class TenantEditionTest extends TestCase
             'emails' => 'contact@tenant.com, sales@tenant.com',
             'address' => 'In the middle of nowhere',
             'lang' => 'es',
+            'timezone' => 'America/Port-au-Prince',
         ]);
 
         

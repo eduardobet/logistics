@@ -4,6 +4,7 @@ namespace Logistics\Http\Controllers\Tenant\Admin;
 
 use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
+use Logistics\DB\Tenant\Branch;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Http\Requests\Tenant\BranchRequest;
 
@@ -24,8 +25,9 @@ class BranchController extends Controller
         }
         
         $branches = $branches->paginate(15);
+        $branch = new Branch();
 
-        return view('tenant.branch.index', compact('branches'));
+        return view('tenant.branch.index', compact('branches', 'branch'));
     }
 
     public function create()

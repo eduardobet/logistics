@@ -14,6 +14,11 @@ trait PaymentList
     public function getPayments($tenant)
     {
         $branch = auth()->user()->currentBranch();
+
+        if ($bId = request('branch_id')) {
+            $branch = $tenant->branches->find($bId);
+        }
+
         $searching = 'N';
 
         $payments = DB::table('payments')
@@ -40,7 +45,7 @@ trait PaymentList
         }
 
         if ($type = request('type')) {
-            $payments = $payments->whereRaw(' payments.type = ? ', [$type]);
+            $payments = $payments->whereRaw(' payments.payment_method = ? ', [$type]);
             $searching = 'Y';
         }
 
@@ -64,6 +69,6 @@ trait PaymentList
             $payments = $payments->orderBy('payments.id')->paginate(20);
         }
 
-        return [$payments, $searching];
+        return [$payments, $searching, $branch];
     }
 }

@@ -29,6 +29,7 @@ class CompanyController extends Controller
         $company->dv = $request->dv;
         $company->address = $request->address;
         $company->lang = $request->lang;
+        $company->timezone = $request->timezone;
 
         if ($company->save()) {
             view()->share([

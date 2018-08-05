@@ -6,25 +6,23 @@
         <th>{{ __('Date') }}</th>
         <th>{{ __('Client') }}</th>
         <th>{{ __('Box') }}</th>
-        <th>{{ __('Amount') }}</th>
+        <th class="pdf-a-right">{{ __('Amount') }}</th>
 
         
         @if (!isset($exporting))
             <th class="text-center">
-            @can('create-payment')
-                <a class="btn btn-sm btn-outline-dark" href="{{ route('tenant.invoice.create', [$tenant->domain, 'branch_id' => $branch->id,]) }}">
-                    <i class="fa fa-plus"></i>
-                </a>
 
-                <a class="btn btn-sm btn-outline-dark" href="{{ route('tenant.invoice.create', [$tenant->domain, 'branch_id' => $branch->id,]) }}">
-                    <i class="fa fa-file-excel-o"></i>
-                </a>
+                @can('show-payment')
+                    
+                    <a id="export-xls" class="btn btn-sm btn-outline-dark" href="#!" title="Excel">
+                        <i class="fa fa-file-excel-o"></i>
+                    </a>
+                    
+                    <a id="export-pdf" class="btn btn-sm btn-outline-dark" href="#!" title="PDF">
+                        <i class="fa fa-file-pdf-o"></i>
+                    </a>
+                @endcan
 
-                <a class="btn btn-sm btn-outline-dark" href="{{ route('tenant.invoice.create', [$tenant->domain, 'branch_id' => $branch->id,]) }}">
-                    <i class="fa fa-file-pdf-o"></i>
-                </a>
-
-            @endcan
             </th>
         @endif
     </tr>
@@ -35,10 +33,10 @@
         @foreach ($payments->groupBy('payment_method') as $key => $groups)
             
         <tr>
-            <td colspan="5">
+            <td colspan="5" class="pdf-mt-5">
                 <b>{{ [1 => __('Cash'), 2 => __('Wire transfer'), 3 => __('Check')][$key] }}</b>
             </td>
-            <td>
+            <td class="pdf-a-right">
                 <b>{{ $sign }} {{ number_format($groups->sum('amount_paid'), 2) }}</b>
             </td>
 
@@ -64,7 +62,7 @@
             <td>{{ $payment->created_at_dsp }}</td>
             <td>{{ $payment->client_full_name }}</td>
             <td>{{ $payment->client_box }}{{ $payment->client_id }}</td>
-            <td>{{ $sign }} {{ number_format($payment->amount_paid, 2) }}</td>
+            <td class="pdf-a-right">{{ $sign }} {{ number_format($payment->amount_paid, 2) }}</td>
             @if (!isset($exporting))
                 <td class="text-center" style="font-size: 15px"></td>
             @endif

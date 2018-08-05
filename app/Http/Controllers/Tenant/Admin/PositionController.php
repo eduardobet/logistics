@@ -4,6 +4,7 @@ namespace Logistics\Http\Controllers\Tenant\Admin;
 
 use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
+use Logistics\DB\Tenant\Branch;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Http\Requests\Tenant\PositionRequest;
 
@@ -30,7 +31,9 @@ class PositionController extends Controller
 
         $positions = $positions->paginate(15);
 
-        return view('tenant.position.index', compact('positions'));
+        $branch = new Branch();
+
+        return view('tenant.position.index', compact('positions', 'branch'));
     }
 
     /**

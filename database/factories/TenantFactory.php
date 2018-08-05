@@ -15,5 +15,6 @@ $factory->define(Tenant::class, function (Faker $faker) {
         'ruc' => "RUC",
         'dv' => "DV",
         'country_id' => 1,
+        'logo' => 'tenant/1/images/logos/logo.png',
     ];
 });

@@ -7,10 +7,10 @@ $factory->define(Client::class, function (Faker $faker) {
     return [
         "tenant_id" => 1,
         "created_by_code" => null,
-        'first_name' => 'The',
-        'last_name' => 'Client',
+        'first_name' => $faker->unique()->firstname,
+        'last_name' => $faker->unique()->lastname,
         'pid' => 'E-8-124926',
-        'email' => 'client@company.com',
+        'email' => $faker->unique()->safeEmail(),
         'telephones' => '555-5555, 565-5425',
         'type' => 'C',
         'status' => 'A',

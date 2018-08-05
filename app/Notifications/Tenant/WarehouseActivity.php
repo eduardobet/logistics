@@ -16,18 +16,20 @@ class WarehouseActivity extends Notification implements ShouldQueue
     public $warehouseId;
     public $box;
     public $invoiceId;
+    public $userFullname;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Carbon $createdAtAgo, int $warehouseId, String $box, int $invoiceId)
+    public function __construct(Carbon $createdAtAgo, int $warehouseId, String $box, int $invoiceId, $userFullname)
     {
         $this->createdAtAgo = $createdAtAgo;
         $this->warehouseId = $warehouseId;
         $this->box = $box;
         $this->invoiceId = $invoiceId;
+        $this->userFullname = $userFullname;
     }
 
     /**
@@ -50,7 +52,7 @@ class WarehouseActivity extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'title' => auth()->user()->full_name . ' ' . __('created a warehouse'),
+            'title' => $this->userFullname . ' ' . __('created a warehouse'),
             'content' => __('The warehouse #:id has been created for: :box with invoice id #:iid', ['id' => $this->warehouseId, 'box' => $this->box, 'iid' => $this->invoiceId, ]),
             'created_at' => $this->createdAtAgo,
         ];

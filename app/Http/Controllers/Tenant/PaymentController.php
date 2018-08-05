@@ -4,6 +4,7 @@ namespace Logistics\Http\Controllers\Tenant;
 
 use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
+use Logistics\DB\Tenant\Client;
 use Logistics\Traits\PaymentList;
 use Illuminate\Support\Facades\DB;
 use Logistics\Exports\PaymentsExport;
@@ -22,27 +23,30 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        [$payments, $searching] = $this->getPayments($this->getTenant());
+        [$payments, $searching, $branch] = $this->getPayments($this->getTenant());
 
         return view('tenant.payment.index', [
             'payments' => $payments ,
             'searching' => $searching,
+            'branch' => $branch,
             'sign' => '$',
+            'branches' => $this->branches(),
         ]);
     }
 
     public function export()
     {
-        [$payments, $searching] = $this->getPayments($this->getTenant());
+        [$payments, $searching, $branch] = $this->getPayments($this->getTenant());
 
         $data = [
             'payments' => $payments,
+            'branch' => $branch,
             'exporting' => true,
             'sign' => '',
         ];
 
         if (request('pdf')) {
-            return view('tenant.export.payments-pdf', $data);
+            // return view('tenant.export.payments-pdf', $data);
 
             $pdf = \PDF::loadView('tenant.export.payments-pdf', $data);
 
@@ -120,7 +124,7 @@ class PaymentController extends Controller
         ]);
 
         if ($payment) {
-            $invoice->branch->notify(new PaymentActivity($payment, $invoice->client_id, $tenant->lang));
+            $invoice->branch->notify(new PaymentActivity($payment, $invoice->client_id, $tenant->lang, auth()->user()->full_name));
 
             $pending = $invoice->total - $invoice->fresh()->payments->fresh()->sum('amount_paid');
 

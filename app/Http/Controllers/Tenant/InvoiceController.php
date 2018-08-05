@@ -84,7 +84,7 @@ class InvoiceController extends Controller
             }
 
             $tenant->branches->where('id', $request->branch_id)->first()
-                   ->notify(new InvoiceActivity($invoice, $payment->id));
+                   ->notify(new InvoiceActivity($invoice, $payment->id, auth()->user()->full_name));
 
             return redirect()->route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $request->branch_id, ])
                 ->with('flash_success', __('The :what has been created.', ['what' => __('Invoice') ]));

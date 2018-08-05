@@ -18,16 +18,18 @@ class InvoiceActivity extends Notification implements ShouldQueue
 
     public $invoice;
     public $tenantLang;
+    public $userFullname;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Invoice $invoice, $tenantLang)
+    public function __construct(Invoice $invoice, $tenantLang, $userFullname)
     {
         $this->invoice = $invoice;
         $this->tenantLang = $tenantLang;
+        $this->userFullname = $userFullname;
     }
 
     /**
@@ -56,7 +58,7 @@ class InvoiceActivity extends Notification implements ShouldQueue
         Mail::to($client)->send(new InvoiceCreated($this->invoice, $this->tenantLang));
 
         return [
-            'title' => auth()->user()->full_name . ' ' . __('created an invoice'),
+            'title' => $this->userFullname . ' ' . __('created an invoice'),
             'content' => __('The invoice #:id has been created for: :box', ['id' => $this->invoice->id, 'box' => $box, ]),
             'created_at' => $this->invoice->created_at,
         ];

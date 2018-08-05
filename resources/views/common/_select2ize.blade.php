@@ -43,7 +43,6 @@
     });
 
     function select2ize($child, items) {
-        console.log(items)
         var newOptions = '<option value="0">---</option>';
         for(var key in items) {
             newOptions += '<option value="'+ key +'">'+ items[key] +'</option>';

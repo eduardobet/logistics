@@ -26,6 +26,7 @@ $factory->define(Logistics\DB\User::class, function (Faker $faker) {
         'pid' => 'PID',
         'position' => 1,
         'telephones' => '6986-9854',
+        'avatar' => 'tenant/1/images/avatars/avatar.png',
     ];
 });
 

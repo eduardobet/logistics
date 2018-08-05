@@ -16,9 +16,15 @@ trait Tenant
     {
         $host = get_host();
 
-        return cache()->rememberForever("$host", function () use ($host) {
+        $tenant = cache()->rememberForever("$host", function () use ($host) {
             return Model::whereDomain($host)->first();
         });
+
+        if ($tenant) {
+            $tenant->touchEnvFile();
+        }
+
+        return $tenant;
     }
 
     /**

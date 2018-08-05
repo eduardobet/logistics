@@ -91,6 +91,6 @@ trait WarehouseHasRelationShips
         }
 
         $box = $client->boxes()->active()->first();
-        $this->toBranch->notify(new WarehouseActivity($this->created_at, $this->id, "{$box->branch_code}{$client->id}", $invoice->id));
+        $this->toBranch->notify(new WarehouseActivity($this->created_at, $this->id, "{$box->branch_code}{$client->id}", $invoice->id, auth()->user()->full_name));
     }
 }

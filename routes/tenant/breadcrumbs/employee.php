@@ -2,6 +2,10 @@
 
 $type = auth()->check() && auth()->user()->isAdmin() ? 'admin' : 'employee';
 
+Breadcrumbs::for('tenant.employee.dashboard', function ($trail) {
+    $trail->add(__('Dashboard'), route('tenant.employee.dashboard', request()->domain));
+});
+
 // clients
 Breadcrumbs::for('tenant.client.create', function ($trail) use ($type) {
     $trail->parent("tenant.{$type}.dashboard");

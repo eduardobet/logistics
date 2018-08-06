@@ -34,11 +34,14 @@
 
               <div class="col-md-7 col-lg-6 col-xl-7 mg-t-10 mg-md-t-0">
                 <div class="dash-headline-item-one">
-                  <div id="chartMultiBar1" class="chart-rickshaw"></div>
                   <div class="dash-item-overlay">
                     <h1>$ {{ number_format($today_earnings, 2) }}</h1>
                     <p class="earning-label">{{ __('Today profits') }}</p>
-                    <a href="{{ route('tenant.payment.list', [$tenant->domain, 'branch_id' => $branch->id]) }}" class="statement-link"> {{ __('Show movements') }} <i class="fa fa-angle-right mg-l-5"></i></a>
+                    
+                    @can('show-payment')
+                      <a href="{{ route('tenant.payment.list', [$tenant->domain, 'branch_id' => $branch->id]) }}" class="statement-link"> {{ __('Show movements') }} <i class="fa fa-angle-right mg-l-5"></i></a>
+                    @endcan
+
                   </div>
                 </div><!-- dash-headline-item-one -->
               </div><!-- col-7 -->

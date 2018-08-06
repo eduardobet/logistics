@@ -106,7 +106,7 @@ select2ize = function($child, items) {
             var obj = items[key];
             var box = obj.boxes[0];
             newOptions += `
-                <option value='${obj.id}' ${obj.id=={{request('client_id')}}?" selected":null}>
+                <option value='${obj.id}' ${obj.id=="{{request('client_id', 'NA')}}"?" selected":''}>
                    [${box.branch_code}${obj.id}] ${obj.full_name}
                 </option>`;
         }

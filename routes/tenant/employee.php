@@ -52,4 +52,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('payments/export', 'Tenant\PaymentController@export')->name('tenant.payment.export')->middleware(['can:show-payment']);
     Route::get('payment/{invoice_id}/create', 'Tenant\PaymentController@create')->name('tenant.payment.create')->middleware(['can:create-payment']);
     Route::post('payment/store', 'Tenant\PaymentController@store')->name('tenant.payment.store')->middleware(['can:create-payment']);
+
+    // searching
+    Route::get('search', 'Tenant\SearchController@search')->name('tenant.get.search');
 });

@@ -3,10 +3,13 @@
         <div class="slim-header-left">
           <h2 class="slim-logo"><a href="{{ route('tenant.home', $tenant->domain) }}">{{ config('app.name', '') }}</a></h2>
 
-          <div class="search-box">
-            <input type="text" class="form-control" placeholder="{{ __('Search') }}">
-            <button class="btn btn-primary bg-reef"><i class="fa fa-search"></i></button>
-          </div><!-- search-box -->
+            <form action="{{ route('tenant.get.search', $tenant->domain) }}">
+            <div class="search-box">
+                    <input type="text" class="form-control" name="q" id="q" placeholder="{{ __('Search') }}">
+                    <button class="btn btn-primary bg-reef"><i class="fa fa-search"></i></button>
+            </div><!-- search-box -->
+            </form>
+            
         </div><!-- slim-header-left -->
         <div class="slim-header-right">
 

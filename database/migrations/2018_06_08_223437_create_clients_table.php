@@ -18,6 +18,7 @@ class CreateClientsTable extends Migration
             $table->integer('tenant_id')->unsigned();
             $table->string('first_name');
             $table->string('last_name');
+            $table->string('full_name')->nullable();
             $table->string('type', 1); // C[ommon], E[nterprise], V[endor]
             $table->string('status', 1)->default('A'); //I[nactive], A[ctive]
             $table->string('email')->unique();

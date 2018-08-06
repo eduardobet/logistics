@@ -57,6 +57,7 @@ class ClientController extends Controller
             "created_by_code" => auth()->id(),
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
+            'full_name' => $request->first_name . ' ' . $request->last_name,
             'pid' => $request->pid,
             'email' => $request->email,
             'telephones' => $request->telephones,
@@ -141,6 +142,7 @@ class ClientController extends Controller
         $client->updated_by_code = auth()->id();
         $client->first_name  = $request->first_name;
         $client->last_name  = $request->last_name;
+        $client->full_name = $request->first_name . ' ' . $request->last_name;
         $client->pid  = $request->pid;
         $client->email  = $request->email;
         $client->telephones  = $request->telephones;

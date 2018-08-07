@@ -1,0 +1,1 @@
+@include('tenant.payment._index', ['payments' => $payments])

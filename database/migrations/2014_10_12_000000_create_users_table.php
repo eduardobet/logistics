@@ -15,9 +15,25 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->integer('tenant_id')->unsigned()->nullable();
+            $table->unsignedInteger('created_by_code')->nullable();
+            $table->unsignedInteger('updated_by_code')->nullable();
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('type', 1); // A[dmin], E[mployee], U[App user]
+            $table->string('status', 1)->default('L'); // L[ocked], I[nactive], A[ctive]
             $table->string('email')->unique();
-            $table->string('password');
+            $table->string('password')->nullable();
+            $table->string('token')->nullable();
+            $table->string('avatar')->nullable();
+            $table->string('full_name')->nullable();
+            $table->string('pid')->nullable();
+            $table->string('telephones')->nullable();
+            $table->integer('position')->unsigned()->nullable();
+            $table->boolean('is_main_admin')->default(false)->nullable();
+            $table->string('address')->nullable();
+            $table->text('notes')->nullable();
+            $table->text('permissions')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

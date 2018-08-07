@@ -1,0 +1,12 @@
+parameters:
+    git_dir: "."
+    bin_dir: "./vendor/bin"
+    stop_on_failure: true
+    process_timeout: null
+    tasks:
+      phplint: ~
+      #phpcsfixer2: ~
+      phpunit: ~
+    ascii:
+        failed: ~
+        succeeded: ~

@@ -1,0 +1,244 @@
+<?php
+
+namespace Tests\Feature\Tenant\Client;
+
+use Tests\TestCase;
+use Logistics\DB\User;
+use Logistics\DB\Tenant\Box;
+use Logistics\DB\Tenant\Branch;
+use Logistics\DB\Tenant\Client;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Foundation\Testing\WithFaker;
+use Logistics\DB\Tenant\Tenant as TenantModel;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+class ClientCreationTest extends TestCase
+{
+    use RefreshDatabase;
+
+    /** @test */
+    public function it_redirects_to_login_if_not_logged_in_like_this_tenant_user()
+    {
+        // $this->withoutExceptionHandling();
+        $tenant = factory(TenantModel::class)->create();
+
+        $response = $this->get(route('tenant.client.create', $tenant->domain), []);
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
+    }
+
+    /** @test */
+    public function client_cannot_be_created_with_invalid_inputs()
+    {
+        // $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create();
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+
+        $response = $this->actingAs($admin)->post(route('tenant.client.store', $tenant->domain), [
+            'country_id' => 'xxx',
+            'department_id' => 'xxx',
+            'city_id' => 'xxx',
+            'address' => 'AA',
+            'vol_price' => 'XX',
+            'real_price' => 'XX',
+        ]);
+        $response->assertStatus(302);
+        $response->assertRedirect(route('tenant.client.create', $tenant->domain));
+
+        $response->assertSessionHasErrors([
+            'first_name',
+            'last_name',
+            'pid',
+            'email',
+            'telephones',
+            'type',
+            'status',
+            'branch_id',
+            'branch_code',
+            'country_id',
+            'department_id',
+            'city_id',
+            'address',
+            'vol_price',
+            'real_price',
+        ]);
+    }
+
+    /** @test */
+    public function it_successfully_creates_the_client()
+    {
+        $this->withoutExceptionHandling();
+
+        Event::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+
+        \Gate::define('create-client', function ($admin) {
+            return true;
+        });
+
+        $response = $this->actingAs($admin)->get(route('tenant.client.create', $tenant->domain));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.client.create');
+
+        $response = $this->actingAs($admin)->post(route('tenant.client.store', $tenant->domain), [
+            'first_name' => 'The',
+            'last_name' => 'Client',
+            'pid' => 'E-8-124926',
+            'email' => 'client@company.com',
+            'telephones' => '555-5555, 565-5425',
+            'type' => 'E',
+            'org_name' => 'The Org Name',
+            'status' => 'A',
+            'branch_id' => 1,
+            'branch_code' => 'B-CODE',
+
+            // optional
+            'country_id' => 1,
+            'department_id' => 1,
+            'city_id' => 1,
+            'address' => 'In the middle of nowhere',
+            'notes' => 'Aditional notes',
+            'pay_volume' => 'Y',
+            'special_rate' => 'Y',
+            'special_maritime' => 'Y',
+            'vol_price' => 2.5,
+            'real_price' => 2,
+        ]);
+
+        $this->assertDatabaseHas('clients', [
+            "tenant_id" => $tenant->id,
+            "created_by_code" => $admin->id,
+            'first_name' => 'The',
+            'last_name' => 'Client',
+            'pid' => 'E-8-124926',
+            'email' => 'client@company.com',
+            'telephones' => '555-5555, 565-5425',
+            'type' => 'E',
+            'org_name' => 'The Org Name',
+            'status' => 'A',
+
+            // optional
+            'country_id' => 1,
+            'department_id' => 1,
+            'city_id' => 1,
+            'address' => 'In the middle of nowhere',
+            'notes' => 'Aditional notes',
+            'pay_volume' => '1',
+            'special_rate' => '1',
+            'special_maritime' => '1',
+            'vol_price' => 2.5,
+            'real_price' => 2,
+        ]);
+
+        $response->assertRedirect(route('tenant.client.list', $tenant->domain));
+        $response->assertSessionHas(['flash_success']);
+
+        $client = $tenant->clients->first();
+
+        $this->assertCount(1, $client->boxes);
+
+        Event::assertDispatched(\Logistics\Events\Tenant\ClientWasCreatedEvent::class, function ($event) use ($client) {
+            return $event->client->id === $client->id;
+        });
+    }
+
+    /** @test */
+    public function client_extra_contacts_can_be_created()
+    {
+        //$this->withoutExceptionHandling();
+        Event::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+
+        $this->actingAs($admin);
+
+        $response = $this->post(route('tenant.client.store', $tenant->domain), [
+            'first_name' => 'The',
+            'last_name' => 'Client',
+            'pid' => 'E-8-124925',
+            'telephones' => '555-5555',
+            'email' => 'client.xx@company.com',
+            'type' => 'C',
+            'status' => 'I',
+            'branch_id' => 1,
+            'branch_code' => 'B-CODE',
+
+            // xtra contacts
+            'econtacts' => [
+                ['efull_name' => 'Extra contact', 'epid' => '145', 'eemail' => 'extra-contact@email.test', 'etelephones' => '555-5557', 'eid' => null, ]
+            ],
+
+        ]);
+
+        $response->assertRedirect(route('tenant.client.list', $tenant->domain));
+        $response->assertSessionHas(['flash_success']);
+
+        $client = $tenant->clients->first();
+
+        $this->assertCount(1, $client->extraContacts);
+         
+        tap($client->extraContacts->first(), function ($econtact) use ($admin) {
+            $this->assertNull($econtact->updated_by_code);
+            $this->assertEquals('Extra contact', $econtact->full_name);
+            $this->assertEquals('145', $econtact->pid);
+            $this->assertEquals('555-5557', $econtact->telephones);
+        });
+    }
+
+    /** @test */
+    public function the_client_cannot_have_more_than_one_active_box_at_a_time()
+    {
+        $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create();
+        $tenant->remoteAddresses()->createMany([
+            ['type' => 'A', 'address' => 'In the middle of remote air', 'telephones' => '555-5555', 'status' => 'A', ],
+            ['type' => 'M', 'address' => 'In the middle of remote maritimes', 'telephones' => '555-5555', 'status' => 'A', ],
+        ]);
+
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $box = factory(Box::class)->create([
+            'tenant_id' => $tenant->id,
+            'client_id' => 1,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
+        ]);
+        $admin->branches()->sync([$branch->id]);
+
+        \Gate::define('create-client', function ($admin) {
+            return true;
+        });
+
+
+        $response = $this->actingAs($admin)->get(route('tenant.client.create', $tenant->domain));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.client.create');
+
+        $response = $this->actingAs($admin)->post(route('tenant.client.store', $tenant->domain), [
+            'first_name' => 'The',
+            'last_name' => 'Client',
+            'pid' => 'E-8-124926',
+            'email' => 'client@company.com',
+            'telephones' => '555-5555, 565-5425',
+            'type' => 'E',
+            'org_name' => 'The Org Name',
+            'status' => 'A',
+            'branch_id' => 1,
+            'branch_code' => 'B-CODE',
+        ]);
+
+        $client = $tenant->clients->fresh()->last();
+        $boxes = $client->boxes;
+
+        $this->assertCount(1, $boxes->where('status', 'A'));
+        $this->assertCount(1, $boxes->where('status', 'I'));
+    }
+}

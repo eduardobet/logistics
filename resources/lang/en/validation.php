@@ -125,9 +125,31 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'emails' => [
+            'mass_email' => 'The field :attribute is invalid.',
         ],
+        'email' => [
+            'unique' => 'The :attribute has already been taken.',
+        ],
+        'telephones' => [
+            'mass_phone' => 'The field :attribute is invalid.',
+        ],
+        'faxes' => [
+            'mass_phone' => 'The field :attribute is invalid.',
+        ],
+        'urls' => [
+            'mass_url' => 'The field :attribute is invalid.',
+        ],
+        'password' => [
+            'alpha_num_pwd' => 'The :attribute field must be at least 6 characters long and contain at least one letter and one digit.',
+            'min' => 'The :attribute must be at least :min characters',
+        ],
+        'new_password' => [
+            'alpha_num_pwd' => 'The :attribute field must be at least 6 characters long and contain at least one letter and one digit.',
+        ],
+        'current_password' => [
+            'pass_check' => 'Sorry! this is not your current password.',
+        ]
     ],
 
     /*
@@ -141,6 +163,54 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'name' => __('Name'),
+        'names' => __('Names'),
+        'username' => __('User'),
+        'email' => __('Email'),
+        'first_name' => __('Names'),
+        'last_name' => __('Surnames'),
+        'password' => __('Password'),
+        'password_confirmation' => __('Password confirmation'),
+        'new_password_confirmation' => __('Password confirmation'),
+        'current_password' => __('Current password'),
+        'new_password' => __('New password'),
+        'city_id' => __('City'),
+        'country_id' => __('Country'),
+        'Department_id' => __('Department'),
+        'address' => __('Address'),
+        'telephone' => __('Telephone'),
+        'telephones' => __('Telephones'),
+        'year' => __('Year'),
+        'month' => __('Month'),
+        'day' => __('Day'),
+        'hour' => __('Hour'),
+        'minute' => __('Minute'),
+        'second' => __('Second'),
+        'title' => __('Title'),
+        'content' => __('Content'),
+        'description' => __('Description'),
+        'excerpt' => __('Excerpt'),
+        'date' => __('Date'),
+        'time' => __('Hour'),
+        'subject' => __('Subject'),
+        'message' => __('Message'),
+
+        //
+        'org_name' => __('Enterprise name'),
+        'type' => __('Client type'),
+        'pid' => __('PID'),
+        'notes' => __('Notes'),
+        'position' => __('Gargo'),
+        'code' => __('Code'),
+        'emails' => __('Emails'),
+        'faxes' => __('Fax'),
+        'remote_addresses.*.type' => __('Type'),
+        'remote_addresses.*.address' => __('Address'),
+        'remote_addresses.*.telephones' => __('Telephones'),
+        'remote_addresses.*.status' => __('Status'),
+        'logo' => __('Logo'),
+        'avatar' => __('Avatar'),
+    ],
 
 ];

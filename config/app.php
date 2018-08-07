@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Logistics'),
 
     /*
     |--------------------------------------------------------------------------
@@ -52,8 +52,8 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
-
+    'url' => env('APP_URL', ''),
+    
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => env('TENANT_TIMEZONE', 'America/Panama'),
 
     /*
     |--------------------------------------------------------------------------
@@ -119,6 +119,8 @@ return [
     |
     */
 
+    'country' => env('TENANT_COUNTRY', 0),
+
     'providers' => [
 
         /*
@@ -150,15 +152,17 @@ return [
         /*
          * Package Service Providers...
          */
+        Milon\Barcode\BarcodeServiceProvider::class,
 
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        Logistics\Providers\AppServiceProvider::class,
+        Logistics\Providers\AuthServiceProvider::class,
+        // Logistics\Providers\BroadcastServiceProvider::class,
+        Logistics\Providers\CustomValidationServiceProvider::class,
+        Logistics\Providers\EventServiceProvider::class,
+        Logistics\Providers\RouteServiceProvider::class,
 
     ],
 
@@ -208,6 +212,17 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        /*
+         * Application Aliases...
+         */
+        'Breadcrumbs' => Watson\Breadcrumbs\Facade::class,
+        'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
+        'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
+        'Form' => Collective\Html\FormFacade::class,
+        'Html' => Collective\Html\HtmlFacade::class,
+        'Image' => Intervention\Image\Facades\Image::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
 
     ],
 

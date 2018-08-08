@@ -199,7 +199,7 @@
         $(function() {
             $(".btn-view-image").click(function() {
                 swal({
-                    imageUrl: '{{ asset($tenant->logo) }}',
+                    imageUrl: '{{ asset("storage/".$tenant->logo) }}',
                 })
             })
         })

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Providers;
+namespace Logistics\Providers;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Route::pattern('domain', '[a-z0-9.\-]+');
     }
 
     /**
@@ -23,6 +24,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        \Illuminate\Support\Facades\Schema::defaultStringLength(191);
     }
 }

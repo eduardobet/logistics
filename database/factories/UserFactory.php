@@ -13,11 +13,34 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(App\User::class, function (Faker $faker) {
+$factory->define(Logistics\DB\User::class, function (Faker $faker) {
     return [
-        'name' => $faker->name,
+        'first_name' => $faker->firstname,
+        'last_name' => $faker->lastname,
         'email' => $faker->unique()->safeEmail,
-        'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
+        'password' => '$2y$10$Ca6FGHO9VPFpCuOyKFEVnO8nwU4UJGdYDEbXE2resVxYZ25jcnrRO', //secret123
         'remember_token' => str_random(10),
+        'tenant_id' => null,
+        'status' => 'A',
+        'avatar' => null,
+        'pid' => 'PID',
+        'position' => 1,
+        'telephones' => '6986-9854',
+        'avatar' => 'tenant/1/images/avatars/avatar.png',
+    ];
+});
+
+$factory->state(Logistics\DB\User::class, 'admin', function (Faker $faker) {
+    return [
+        'type' => 'A',
+        'is_main_admin' => true,
+        'permissions' => [],
+    ];
+});
+
+$factory->state(Logistics\DB\User::class, 'employee', function (Faker $faker) {
+    return [
+        'type' => 'E',
+        'permissions' => [],
     ];
 });

@@ -31,6 +31,15 @@ class CompanyController extends Controller
         $company->lang = $request->lang;
         $company->timezone = $request->timezone;
 
+        $company->mail_driver = $request->mail_driver;
+        $company->mail_host = $request->mail_host;
+        $company->mail_port = $request->mail_port;
+        $company->mail_username = $request->mail_username;
+        $company->mail_password = $request->mail_password;
+        $company->mail_encryption = $request->mail_encryption;
+        $company->mail_from_address = $request->mail_from_address;
+        $company->mail_from_name = $request->mail_from_name;
+
         if ($company->save()) {
             view()->share([
                 'tenant' => $company,

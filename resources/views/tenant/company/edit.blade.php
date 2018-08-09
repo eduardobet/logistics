@@ -183,6 +183,7 @@
                 </div> <!-- tab conditions -->
 
                 <div class="tab-pane" id="email-config">
+                    <div class="mg-t-25"></div>
                     <div id="details-container-email-config">
                         @include('tenant.company.email-config')
                     </div>
@@ -218,7 +219,17 @@
                 swal({
                     imageUrl: '{{ asset("storage/".$tenant->logo) }}',
                 })
-            })
-        })
+            });
+
+            //
+            $("select[name='mail_driver']").change(function() {
+                if (this.value === 'mailgun') {
+                    $("#mailgun_domain, #mailgun_secret").prop({disabled: false, required: true});
+                } else {
+                    $("#mailgun_domain, #mailgun_secret").val('').prop({disabled: true, required: false});
+                }
+            });
+
+        });
     </script>
 @endsection

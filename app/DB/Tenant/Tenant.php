@@ -66,7 +66,11 @@ class Tenant extends Model
         $domainName = $this->domain; //$hostParts[1];
         $envFile = base_path('envs/' . $domainName);
 
-        \Illuminate\Support\Facades\File::put($envFile, $this->getContent($domainName));
+        try {
+            \Illuminate\Support\Facades\File::put($envFile, $this->getContent($domainName));
+        } catch (\Exception $e) {
+        }
+
 
         //\Illuminate\Support\Facades\Artisan::call('config:clear');
 

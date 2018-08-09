@@ -71,4 +71,10 @@ class Invoice extends Model
     {
         return $this->belongsTo(Branch::class);
     }
+
+    public function scopeWithAndWhereHas($query, $relation, $constraint)
+    {
+        return $query->whereHas($relation, $constraint)
+            ->with([$relation => $constraint]);
+    }
 }

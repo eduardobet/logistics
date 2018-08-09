@@ -39,6 +39,8 @@ class CompanyController extends Controller
         $company->mail_encryption = $request->mail_encryption;
         $company->mail_from_address = $request->mail_from_address;
         $company->mail_from_name = $request->mail_from_name;
+        $company->mailgun_domain = $request->mailgun_domain;
+        $company->mailgun_secret = $request->mailgun_secret;
 
         if ($company->save()) {
             view()->share([

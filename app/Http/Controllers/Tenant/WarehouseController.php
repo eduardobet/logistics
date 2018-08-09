@@ -6,12 +6,13 @@ use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
 use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Invoice;
+use Logistics\Traits\WarehouseList;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Http\Requests\Tenant\WarehouseRequest;
 
 class WarehouseController extends Controller
 {
-    use Tenant;
+    use Tenant, WarehouseList;
 
     /**
      * Display a listing of the resource.
@@ -33,7 +34,33 @@ class WarehouseController extends Controller
         
         $warehouses = $warehouses->paginate(15);
 
-        return view('tenant.warehouse.index', compact('warehouses'));
+        return view('tenant.warehouse.index', [
+            'branches' => $this->branches(),
+            'warehouses' => $warehouses,
+            'searching' => 'N',
+        ]);
+    }
+
+    public function export()
+    {
+        [$warehouses, $searching, $branch] = $this->getWarehouses($this->getTenant());
+
+        $data = [
+            'warehouses' => $warehouses,
+            'branch' => $branch,
+            'exporting' => true,
+            'sign' => '',
+        ];
+
+        if (request('pdf')) {
+            // return view('tenant.export.warehouses-pdf', $data);
+
+            $pdf = \PDF::loadView('tenant.export.warehouses-pdf', $data);
+
+            return $pdf->download(uniqid('warehouses_', true) . '.pdf');
+        }
+        
+        return (new WarehousesExport)->download(uniqid('warehouses_', true) . '.xlsx');
     }
 
     /**

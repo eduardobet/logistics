@@ -60,6 +60,8 @@ class TenantEditionTest extends TestCase
             'mail_encryption' => 'tls',
             'mail_from_address' => 'contact@company.com',
             'mail_from_name' => 'The company',
+            'mailgun_domain' => 'mail-gun-domain',
+            'mailgun_secret' => 'mail-gun-secret',
             
             'remote_addresses' => [
                 ['type' => 'A', 'address' => 'In the middle of remote air', 'telephones' => '555-5555',  'status' => 'A', ],
@@ -91,6 +93,8 @@ class TenantEditionTest extends TestCase
             'mail_encryption' => 'tls',
             'mail_from_address' => 'contact@company.com',
             'mail_from_name' => 'The company',
+            'mailgun_domain' => 'mail-gun-domain',
+            'mailgun_secret' => 'mail-gun-secret',
         ]);
 
         

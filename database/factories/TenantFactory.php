@@ -16,6 +16,7 @@ $factory->define(Tenant::class, function (Faker $faker) {
         'dv' => "DV",
         'country_id' => 1,
         'logo' => 'tenant/1/images/logos/logo.png',
+        'timezone' => 'Panama/America',
 
         'mail_driver' => 'smtp',
         'mail_host' => 'smtp.mailtrap.io',
@@ -25,5 +26,7 @@ $factory->define(Tenant::class, function (Faker $faker) {
         'mail_encryption' => 'null',
         'mail_from_address' => 'contact@tenant.com',
         'mail_from_name' => 'The tenant',
+        'mailgun_domain' => '',
+        'mailgun_secret' => '',
     ];
 });

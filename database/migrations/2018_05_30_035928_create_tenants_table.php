@@ -36,6 +36,8 @@ class CreateTenantsTable extends Migration
             $table->string('mail_encryption')->nullable();
             $table->string('mail_from_address')->nullable();
             $table->string('mail_from_name')->nullable();
+            $table->string('mailgun_domain')->nullable();
+            $table->string('mailgun_secret')->nullable();
 
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
             $table->timestamps();

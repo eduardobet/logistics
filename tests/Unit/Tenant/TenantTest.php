@@ -168,7 +168,9 @@ class TenantTest extends TestCase
             "MAIL_PASSWORD={$tenant->mail_password}\n",
             "MAIL_ENCRYPTION={$tenant->mail_encryption}\n",
             "MAIL_FROM_ADDRESS={$tenant->mail_from_address}\n",
-            "MAIL_FROM_NAME=\"{$tenant->mail_from_name}\"",
+            "MAIL_FROM_NAME=\"{$tenant->mail_from_name}\"\n",
+            "MAILGUN_DOMAIN={$tenant->mailgun_domain}\n",
+            "MAILGUN_SECRET={$tenant->mailgun_secret}",
         ], $contentArray);
 
         File::delete($envFile);

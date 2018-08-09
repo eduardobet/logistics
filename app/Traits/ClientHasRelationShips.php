@@ -83,6 +83,7 @@ trait ClientHasRelationShips
         $clients = cache()->get($key, function () use ($tenant, $key, $branchId) {
             $clients = $tenant->clients()
                 ->whereStatus('A')
+                ->whereNotNull('email')
                 ->orderBy('first_name')
                 ->withAndWhereHas('boxes', function ($query) use ($branchId) {
                     $query->where('branch_id', '=', $branchId)->where('status', '=', 'A');

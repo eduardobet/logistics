@@ -21,7 +21,7 @@ class CreateClientsTable extends Migration
             $table->string('full_name')->nullable();
             $table->string('type', 1); // C[ommon], E[nterprise], V[endor]
             $table->string('status', 1)->default('A'); //I[nactive], A[ctive]
-            $table->string('email')->unique();
+            $table->string('email')->nullable()->unique();
             $table->string('telephones');
             $table->string('org_name')->nullable();
             $table->string('pid');

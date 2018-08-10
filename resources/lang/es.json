@@ -188,5 +188,6 @@
     "Yes": "Sí",
     "Yes, delete it": "Si, elimínalo",
     "You are receiving this email because we received a password reset request for your account.": "Estás recibiendo ese correo porque solicitaste un reseteo de contraseña para tu cuenta.",
-    "Your profile has been edited.": "Tu perfil se ha modificado."
+    "Your profile has been edited.": "Tu perfil se ha modificado.",
+    "Your search - \":term\" - did not match any documents.": "Su búsqueda - \":term\" - no coincide con ningún documento."
 }

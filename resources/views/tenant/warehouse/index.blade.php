@@ -64,7 +64,7 @@
             <div class="col-lg-3">
                 
                 <div class="input-group">
-                    {!! Form::select('type', ['' => __('Type'), 'A' => __('Air'), 'M' => __('Maritime'), ], null, ['class' => 'form-control', 'id' => 'type', ]) !!}
+                    {!! Form::select('type', ['' => __('Type'), 'A' => __('Air'), 'M' => __('Maritime'), ], request('type'), ['class' => 'form-control', 'id' => 'type', ]) !!}
                     <div class="input-group-append">
                         <button class="btn" type="button" id="filter">
                             <i class="fa fa-search"></i>

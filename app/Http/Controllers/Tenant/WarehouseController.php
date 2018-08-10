@@ -7,6 +7,7 @@ use Logistics\Traits\Tenant;
 use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Invoice;
 use Logistics\Traits\WarehouseList;
+use Logistics\Exports\WarehousesExport;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Http\Requests\Tenant\WarehouseRequest;
 
@@ -21,23 +22,14 @@ class WarehouseController extends Controller
      */
     public function index()
     {
-        $warehouses = $this->getTenant()->warehouses()
-            ->with(['fromBranch', 'toBranch']);
-
-        if ($filter = request('filter')) {
-            if (is_numeric($filter)) {
-                $warehouses = $warehouses->where('id', $filter);
-            } else {
-                $warehouses = $warehouses->where('name', 'like', "%{$filter}%");
-            }
-        }
-        
-        $warehouses = $warehouses->paginate(15);
+        [$warehouses, $searching, $branch] = $this->getWarehouses($this->getTenant());
 
         return view('tenant.warehouse.index', [
-            'branches' => $this->branches(),
             'warehouses' => $warehouses,
-            'searching' => 'N',
+            'searching' => $searching,
+            'branch' => $branch,
+            'sign' => '$',
+            'branches' => $this->branches(),
         ]);
     }
 

@@ -3,6 +3,7 @@
     <tr>
         <th>{{ __('ID') }}</th>
         <th>{{ __('Type') }}</th>
+        <th>{{ __('Date') }}</th>
         <th>{{ __('Issuer branch') }}</th>
         <th>{{ __('Destination branch') }}</th>
 
@@ -26,22 +27,35 @@
     </thead>
     <tbody>
         
-        @foreach ($warehouses as $warehouse)
-        <tr>
-            <th scope="row">{{ $warehouse->id }}</th>
-            <td>{{ ['A' => __('Air'), 'M' => __('Maritime')][$warehouse->type] }}</td>
-            <td>{{ $warehouse->fromBranch->name }}</td>
-            <td>{{ $warehouse->toBranch->name }}</td>
-            @if (!isset($exporting))
-            <td class="text-center">
-                @can('edit-warehouse')
-                <a title="{{ __('Edit') }}" href="{{ route('tenant.warehouse.edit', [$tenant->domain, $warehouse->id]) }}"><i class="fa fa-pencil-square-o"></i></a>
-                @endcan
-            </td>
-            @endif
-        </tr>
+        @foreach ($warehouses->groupBy('type') as $key => $groups)
+            <tr>
+                <td colspan="5" class="pdf-mt-5">
+                    <b>{{ ['A' => __('Air'), 'M' => __('Maritime'), ][$key] }}: {{ $groups->count() }}</b>
+                </td>
 
-    @endforeach
+                @if (!isset($exporting))
+                    <td></td>
+                @endif
+            </tr>
+
+            @foreach ($groups as $warehouse)
+            <tr>
+                <th scope="row">{{ $warehouse->id }}</th>
+                <td>{{ ['A' => __('Air'), 'M' => __('Maritime')][$warehouse->type] }}</td>
+                <td>{{ $warehouse->created_at->format('d/m/Y') }}</td>
+                <td>{{ $warehouse->fromBranch->name }}</td>
+                <td>{{ $warehouse->toBranch->name }}</td>
+                @if (!isset($exporting))
+                <td class="text-center">
+                    @can('edit-warehouse')
+                    <a target="_blank" title="{{ __('Edit') }}" href="{{ route('tenant.warehouse.edit', [$tenant->domain, $warehouse->id]) }}"><i class="fa fa-pencil-square-o"></i></a>
+                    @endcan
+                </td>
+                @endif
+            </tr>
+
+            @endforeach
+        @endforeach
 
     </tbody>
 </table>

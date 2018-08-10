@@ -82,3 +82,9 @@ Breadcrumbs::for('tenant.mailer.create', function ($trail) use ($type) {
     $trail->add(__('Mailers'), route('tenant.mailer.list', request()->domain));
     $trail->add(__('Creating :what', ['what' => __('Mailer')]), route('tenant.mailer.create', request()->domain));
 });
+
+// payments
+Breadcrumbs::for('tenant.get.search', function ($trail) use ($type) {
+    $trail->parent("tenant.{$type}.dashboard");
+    $trail->add(__('Search'), '');
+});

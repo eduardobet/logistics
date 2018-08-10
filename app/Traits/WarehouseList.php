@@ -32,6 +32,11 @@ trait WarehouseList
             $searching = 'Y';
         }
 
+        if ($type = request('type')) {
+            $warehouses = $warehouses->whereRaw(' warehouses.type = ? ', [$type]);
+            $searching = 'Y';
+        }
+
         if ($searching == 'Y') {
             $warehouses = $warehouses->orderBy('warehouses.id')->get();
         } else {

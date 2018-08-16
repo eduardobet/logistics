@@ -21,7 +21,7 @@ $factory->define(Tenant::class, function (Faker $faker) {
         'timezone' => 'Panama/America',
       
 
-        'mail_driver' => env('MAIL_DRIVER', 'smtp')
+        'mail_driver' => env('MAIL_DRIVER', 'smtp'),
         'mail_host' => env('MAIL_HOST', 'smtp.mailtrap.io'),
         'mail_port' => env('MAIL_PORT', '2525'),
         'mail_username' => env('MAIL_USERNAME', '488480be968d7466e'),

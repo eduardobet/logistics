@@ -29,8 +29,16 @@ trait PaymentList
                 if ($clientId = request('client_id')) {
                     $join->on('invoices.client_id', '=', 'clients.id')
                         ->where('clients.id', '=', $clientId);
+
+                    if ($invoiceId = request('invoice_id')) {
+                        $join->where('invoices.id', '=', $invoiceId);
+                    }
                 } else {
                     $join->on('invoices.client_id', '=', 'clients.id');
+                    
+                    if ($invoiceId = request('invoice_id')) {
+                        $join->where('invoices.id', '=', $invoiceId);
+                    }
                 }
             })
             ->join('boxes', function ($join) use ($branch) {

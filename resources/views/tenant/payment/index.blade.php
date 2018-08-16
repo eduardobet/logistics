@@ -112,7 +112,7 @@ select2ize = function($child, items) {
         }
         
         $child.select2('destroy').html(newOptions).prop("disabled", false)
-        .select2({width: 'resolve', placeholder: '{{ __("Client") }}', language: "es"});
+        .select2({width: 'resolve', placeholder: '{{ __("Client") }}', language: "{{ config('locale.lang') }}"});
 }
 </script>
 

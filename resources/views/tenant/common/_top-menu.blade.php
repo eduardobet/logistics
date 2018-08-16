@@ -1,11 +1,12 @@
 <div class="slim-header">
       <div class="container">
         <div class="slim-header-left">
-          <h2 class="slim-logo"><a href="{{ route('tenant.home', $tenant->domain) }}">{{ config('app.name', '') }}</a></h2>
+            <?php $type = auth()->check() && auth()->user()->isAdmin() ? 'admin' : 'employee'; ?>
+          <h2 class="slim-logo"><a href="{{ route("tenant.{$type}.dashboard", $tenant->domain) }}">{{ config('app.name', '') }}</a></h2>
 
           <div class="search-box">
-            <input type="text" class="form-control" placeholder="{{ __('Search') }}">
-            <button class="btn btn-primary bg-reef"><i class="fa fa-search"></i></button>
+            <input type="text" id="q" class="form-control" placeholder="{{ __('Search') }}">
+            <button id="btn-search" class="btn btn-primary bg-reef"><i class="fa fa-search"></i></button>
           </div><!-- search-box -->
         </div><!-- slim-header-left -->
         <div class="slim-header-right">

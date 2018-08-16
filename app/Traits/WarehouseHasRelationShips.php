@@ -37,6 +37,12 @@ trait WarehouseHasRelationShips
         return $this->belongsTo(\Logistics\DB\Tenant\Branch::class, 'branch_to');
     }
 
+    public function scopeWithAndWhereHas($query, $relation, $constraint)
+    {
+        return $query->whereHas($relation, $constraint)
+            ->with([$relation => $constraint]);
+    }
+
     public function genInvoice($request)
     {
         $client = $this->client()->find($this->client_id);
@@ -68,7 +74,9 @@ trait WarehouseHasRelationShips
             ]
         );
 
-        foreach ($request->invoice_detail as $data) {
+        $datails = $request->invoice_detail ?: [];
+
+        foreach ($datails as $data) {
             $input = new Fluent($data);
 
             $volWeight = ($input->length && $input->width && $input->height) ? ($input->length * $input->width * $input->height) / 139 : 0;

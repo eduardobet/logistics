@@ -1,0 +1,1 @@
+@include('tenant.warehouse._index', ['warehouses' => $warehouses])

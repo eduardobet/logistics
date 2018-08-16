@@ -20,10 +20,6 @@ trait Tenant
             return Model::whereDomain($host)->first();
         });
 
-        if ($tenant) {
-            $tenant->touchEnvFile();
-        }
-
         return $tenant;
     }
 

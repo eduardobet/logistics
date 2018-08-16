@@ -20,17 +20,22 @@ class SearchController extends Controller
             preg_match("/($branchesPrefix)(\\d+)/i", $term, $matches);
             $qBranchCode = @$matches[1];
             $qClientId = @$matches[2];
+            $client = false;
             
             if ($qBranchCode && $qClientId) {
                 $results = $tenant->clients()->where('id', $qClientId);
+                $client = true;
             } else {
                 $results = $tenant->clients()->where('org_name', 'like', "%$term%")
                     ->orWhere('full_name', 'like', "%$term%");
+                $client = true;
 
                 if (!$results->count()) {
                     $termPrefix = 'c|i|w';
                     preg_match("/($termPrefix)(\\d+)/i", $term, $matches);
 
+                    $client = false;
+    
                     $qType = @$matches[1];
                     $qId = @$matches[2];
 
@@ -42,6 +47,9 @@ class SearchController extends Controller
                             case 'i':
                                 $results = $tenant->invoices()->with('client')->where('id', $qId);
                                 break;
+                            case 'w':
+                                $results = $tenant->warehouses()->where('id', $qId);
+                                break;
                             
                             default:
                                 # code...
@@ -51,17 +59,18 @@ class SearchController extends Controller
                 }
             }
 
-            dd($results->get()->toArray());
-        } else {
-            dd("WTF: i am not searching empty term");
-        }
-    }
+            $results = $results->paginate(20);
 
-    private function multineedle_stripos($haystack, $needles, $offset = 0)
-    {
-        foreach ($needles as $needle) {
-            $found[$needle] = stripos($haystack, $needle, $offset);
+            return view('tenant.search.results', [
+                'results' => $results,
+                'client' => $client,
+            ]);
         }
-        return $found;
+        
+        if (!$term || !$results->count()) {
+            return view('tenant.search.results', [
+                'noresults' => __('Your search - ":term" - did not match any documents.', ['term' => $term]),
+            ]);
+        }
     }
 }

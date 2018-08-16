@@ -7,7 +7,9 @@ use Logistics\Traits\Tenant;
 use Illuminate\Support\Fluent;
 use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Payment;
+use Logistics\Traits\InvoiceList;
 use Illuminate\Support\Facades\Mail;
+use Logistics\Exports\InvoicesExport;
 use Logistics\Mail\Tenant\InvoiceCreated;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Http\Requests\Tenant\InvoiceRequest;
@@ -15,7 +17,7 @@ use Logistics\Notifications\Tenant\InvoiceActivity;
 
 class InvoiceController extends Controller
 {
-    use Tenant;
+    use Tenant, InvoiceList;
 
     /**
      * Display a listing of the resource.
@@ -24,11 +26,38 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        $tenant = $this->getTenant();
+        [$invoices, $searching, $branch] = $this->getInvoices($this->getTenant());
 
         return view('tenant.invoice.index', [
-            'invoices' => $tenant->invoices()->with(['client', 'payments'])->paginate(20),
+            'invoices' => $invoices ,
+            'searching' => $searching,
+            'branch' => $branch,
+            'sign' => '$',
+            'branches' => $this->branches(),
         ]);
+    }
+
+    public function export()
+    {
+        [$invoices, $searching, $branch] = $this->getInvoices($this->getTenant());
+
+
+        $data = [
+            'invoices' => $invoices,
+            'branch' => $branch,
+            'exporting' => true,
+            'sign' => '',
+        ];
+
+        if (request('pdf')) {
+            // return view('tenant.export.invoices-pdf', $data);
+
+            $pdf = \PDF::loadView('tenant.export.invoices-pdf', $data);
+
+            return $pdf->download(uniqid('invoices_', true) . '.pdf');
+        }
+        
+        return (new InvoicesExport)->download(uniqid('invoices_', true) . '.xlsx');
     }
 
     /**

@@ -92,7 +92,8 @@ class WarehouseController extends Controller
         ]);
 
         if ($warehouse) {
-            if ($request->gen_invoice) {
+            $details = $request->invoice_detail ? : [];
+            if (count($details)) {
                 $warehouse->genInvoice($request);
             }
             

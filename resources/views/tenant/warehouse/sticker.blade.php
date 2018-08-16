@@ -79,7 +79,7 @@
       <tr>
         <td style="" colspan="2">
             <br>
-            &nbsp;&nbsp;&nbsp;{{ $user->full_name }}
+            &nbsp;&nbsp;&nbsp;{!! $user->full_name !!}
         </td>
       </tr>
 

@@ -22,7 +22,7 @@
             </div><!-- dropdown-menu -->
           </li>
 
-          <li class="nav-item with-sub {{ active(['tenant.warehosue.create', 'tenant.warehosue.list','tenant.warehosue.edit']) }}">
+          <li class="nav-item with-sub {{ active(['tenant.warehouse.create', 'tenant.warehouse.list','tenant.warehouse.edit']) }}">
             <a class="nav-link" href="#">
               <i class="icon ion-ios-box-outline"></i>
               <span>{{ __('Warehouse' )}}</span>

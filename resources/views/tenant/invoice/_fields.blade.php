@@ -102,28 +102,28 @@
     <div class="col-lg-2">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">{{ __('Amount paid') }}:</label>
-            {!! Form::text("amount_paid", $payment->amount_paid, ['class' => 'form-control ', 'id' => 'amount_paid',  ]) !!}
+            {!! Form::text("amount_paid", $payment ? $payment->amount_paid : 0, ['class' => 'form-control ', 'id' => 'amount_paid',  ]) !!}
         </div>
     </div>
 
     <div class="col-lg-2">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">{{ __('Payment method') }}:</label>
-            {!! Form::select('payment_method', ['' => '----', 1 => __('Cash'), 2 => __('Wire transfer'), 3 => __('Check'), ], $payment->payment_method, ['class' => 'form-control', 'id' => 'payment_method' ]) !!}
+            {!! Form::select('payment_method', ['' => '----', 1 => __('Cash'), 2 => __('Wire transfer'), 3 => __('Check'), ], $payment ? $payment->payment_method : null, ['class' => 'form-control', 'id' => 'payment_method' ]) !!}
         </div>
     </div>
 
     <div class="col-lg-4">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">{{ __('Reference') }}:</label>
-            {!! Form::text("payment_ref", $payment->payment_ref, ['class' => 'form-control ', 'id' => 'payment_ref', 'maxlength' => 255,  ]) !!}
+            {!! Form::text("payment_ref", $payment ? $payment->payment_ref : null, ['class' => 'form-control ', 'id' => 'payment_ref', 'maxlength' => 255,  ]) !!}
         </div>
     </div>
 
     <div class="col-lg-2">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">{{ __('Pending') }}:</label>
-            {!! Form::text("pending", $invoice->total - $payment->amount_paid, ['class' => 'form-control ', 'id' => 'pending', 'readonly' => '1', ]) !!}
+            {!! Form::text("pending", $invoice->total - ($payment ? $payment->amount_paid : 0), ['class' => 'form-control ', 'id' => 'pending', 'readonly' => '1', ]) !!}
         </div>
     </div>
 

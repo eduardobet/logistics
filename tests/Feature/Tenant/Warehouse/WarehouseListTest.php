@@ -44,8 +44,8 @@ class WarehouseListTest extends TestCase
         $client = factory(Client::class)->create(['tenant_id' => $tenant->id, ]);
 
         $warehouseA = $tenant->warehouses()->create([
-            'branch_to' => $branchB->id,
-            'branch_from' => $branch->id,
+            'branch_to' => $branch->id,
+            'branch_from' => $branchB->id,
             'client_id' => $client->id,
             'trackings' => '1234',
             'reference' => 'The reference A',
@@ -54,8 +54,8 @@ class WarehouseListTest extends TestCase
         ]);
 
         $warehouseB = $tenant->warehouses()->create([
-            'branch_to' => $branchB->id,
-            'branch_from' => $branch->id,
+            'branch_to' => $branch->id,
+            'branch_from' => $branchB->id,
             'client_id' => $client->id,
             'trackings' => '4563',
             'reference' => 'The reference B',

@@ -32,6 +32,9 @@
                 <li class="nav-item">
                     <a class="nav-link tab-toggle" href="#conditions" data-container="conditions" data-toggle="tab">{{ __('Conditions') }}</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link tab-toggle" href="#email-config" data-container="email-config" data-toggle="tab">{{ __('Email configurations') }}</a>
+                </li>
             </ul>
 
             {!! Form::model($company, ['route' => ['tenant.admin.company.update', $tenant->domain], 'method' => 'PATCH', 'files' => true, ]) !!}
@@ -85,17 +88,24 @@
 
                     <div class="row">
 
-                        <div class="col-6">
+                        <div class="col-4">
                             <div class="form-group">
                                 <label class="form-control-label">{{ __('RUC') }}: <span class="tx-danger">*</span></label>
                                 {{ Form::text('ruc', null, ['class' => 'form-control', 'required' => 'required', ]) }}
                             </div>
                         </div>
 
-                        <div class="col-6">
+                        <div class="col-4">
                             <div class="form-group">
                                 <label class="form-control-label">{{ __('DV') }}: <span class="tx-danger">*</span></label>
                                 {{ Form::text('dv', null, ['class' => 'form-control', 'required' => 'required', ]) }}
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-control-label">{{ __('Timezone') }}: <span class="tx-danger"></span></label>
+                                {{ Form::text('timezone', null, ['class' => 'form-control', ]) }}
                             </div>
                         </div>
 
@@ -172,6 +182,14 @@
                 
                 </div> <!-- tab conditions -->
 
+                <div class="tab-pane" id="email-config">
+                    <div class="mg-t-25"></div>
+                    <div id="details-container-email-config">
+                        @include('tenant.company.email-config')
+                    </div>
+                
+                </div> <!-- tab email configurations -->
+
             </div> <!-- tab-content --> 
 
 
@@ -199,9 +217,19 @@
         $(function() {
             $(".btn-view-image").click(function() {
                 swal({
-                    imageUrl: '{{ asset($tenant->logo) }}',
+                    imageUrl: '{{ asset("storage/".$tenant->logo) }}',
                 })
-            })
-        })
+            });
+
+            //
+            $("select[name='mail_driver']").change(function() {
+                if (this.value === 'mailgun') {
+                    $("#mailgun_domain, #mailgun_secret").prop({disabled: false, required: true});
+                } else {
+                    $("#mailgun_domain, #mailgun_secret").val('').prop({disabled: true, required: false});
+                }
+            });
+
+        });
     </script>
 @endsection

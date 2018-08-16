@@ -66,6 +66,23 @@
             timeout: 2000,
         }).show();
         @endif
+
+    </script>
+    <script>
+        $("#q").on('keyup', function (e) {
+            if ( e.keyCode == 13 ) {
+               doGlobalSearch()
+            }
+        });
+
+        $("#btn-search").click(function() {
+            doGlobalSearch()
+        });
+
+        function doGlobalSearch() {
+            var q = $.trim($("#q").val());
+            if (q) window.location = `{{ route('tenant.get.search', $tenant->domain) }}?q=${q}`;
+        }
     </script>
     @yield('xtra_scripts')
 </body>

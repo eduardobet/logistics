@@ -1,15 +1,13 @@
 <div class="slim-header">
       <div class="container">
         <div class="slim-header-left">
-          <h2 class="slim-logo"><a href="{{ route('tenant.home', $tenant->domain) }}">{{ config('app.name', '') }}</a></h2>
+            <?php $type = auth()->check() && auth()->user()->isAdmin() ? 'admin' : 'employee'; ?>
+          <h2 class="slim-logo"><a href="{{ route("tenant.{$type}.dashboard", $tenant->domain) }}">{{ config('app.name', '') }}</a></h2>
 
-            <form action="{{ route('tenant.get.search', $tenant->domain) }}">
-            <div class="search-box">
-                    <input type="text" class="form-control" name="q" id="q" placeholder="{{ __('Search') }}">
-                    <button class="btn btn-primary bg-reef"><i class="fa fa-search"></i></button>
-            </div><!-- search-box -->
-            </form>
-            
+          <div class="search-box">
+            <input type="text" id="q" class="form-control" placeholder="{{ __('Search') }}">
+            <button id="btn-search" class="btn btn-primary bg-reef"><i class="fa fa-search"></i></button>
+          </div><!-- search-box -->
         </div><!-- slim-header-left -->
         <div class="slim-header-right">
 
@@ -46,7 +44,7 @@
 
             <div class="dropdown dropdown-c">
                 <a href="#" class="logged-user" data-toggle="dropdown">
-                    <img src="{{ asset(auth()->user()->avatar) }}" alt="Avatar">
+                    <img src="{{ asset('storage/'.auth()->user()->avatar) }}" alt="Avatar">
                     <span>{{ auth()->user()->full_name }}</span>
                     <i class="icon fa fa-angle-down"></i>
                 </a>

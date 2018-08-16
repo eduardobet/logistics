@@ -28,14 +28,14 @@
     <div class="col-6">
         <div class="form-group">
             <label class="form-control-label">{{ __('Mailgun domain') }}:</label>
-            {{ Form::text('mailgun_domain', null, ['class' => 'form-control', 'disabled' => 1, 'id' => 'mailgun_domain', ]) }}
+            {{ Form::text('mailgun_domain', null, ['class' => 'form-control', 'id' => 'mailgun_domain', ] + ($company->mail_driver=='mailgun' ? [] : ['disabled' => 1] ) ) }}
         </div>
     </div>
 
     <div class="col-6">
         <div class="form-group">
             <label class="form-control-label">{{ __('Mailgun secret') }}:</label>
-            {{ Form::text('mailgun_secret', null, ['class' => 'form-control', 'disabled' => 1, 'id' => 'mailgun_secret', ]) }}
+            {{ Form::text('mailgun_secret', null, ['class' => 'form-control', 'id' => 'mailgun_secret', ] + ($company->mail_driver=='mailgun' ? [] : ['disabled' => 1] )  ) }}
         </div>
     </div>
 

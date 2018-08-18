@@ -241,7 +241,7 @@ class WarehouseController extends Controller
         } else {
             $pdf = \PDF::loadView('tenant.warehouse.sticker', $data);
                 
-            return $pdf->download('sticker.pdf');
+            return $pdf->download(uniqid('sticker_', true) . '.pdf');
         }
     }
 }

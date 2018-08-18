@@ -34,7 +34,15 @@
 <input type="hidden" name="branch_id" id="branch_id" value="{{ $branch->id }}">
 
 <div class="row">
-    <div class="col-lg-12">
+
+    <div class="col-lg-2">
+        <div class="form-group">
+            <label class="form-control-label">{{ __('ID') }}:</label>
+            {!! Form::text("id", null, ['class' => 'form-control ', 'readonly' => 1, ]) !!}
+        </div>
+    </div>
+
+    <div class="col-lg-10">
         <div class="form-group">
         
              <label class="form-control-label">{{ __('Client') }}: 

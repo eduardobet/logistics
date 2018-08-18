@@ -137,7 +137,7 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label class="form-control-label">{{ __('Domain') }}:</label>
-                                {{ Form::text('dv', $company->domain, ['class' => 'form-control', 'readonly' => '1', ]) }}
+                                {{ Form::text('domain-disp', $company->domain, ['class' => 'form-control', 'readonly' => '1', ]) }}
                             </div>
                         </div>
                     </div><!-- row -->

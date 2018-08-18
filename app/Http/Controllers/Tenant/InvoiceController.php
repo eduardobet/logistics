@@ -255,7 +255,7 @@ class InvoiceController extends Controller
         } else {
             $pdf = \PDF::loadView('tenant.invoice.printing', $data);
 
-            return $pdf->download('invoice.pdf');
+            return $pdf->download(uniqid('invoice_', true) . '.pdf');
         }
     }
 

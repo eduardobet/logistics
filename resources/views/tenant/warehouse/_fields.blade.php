@@ -50,7 +50,7 @@
                 </a>
 
                 @can('create-invoice')
-                    <a target="_blank" title="{{ __('Invoice') }}" href="{{ route('tenant.invoice.create', [$tenant->domain, 'wh' => $warehouse->id,  ]) }}" class="btn btn-outline-dark" role="button">
+                    <a target="_blank" title="{{ __('Invoice') }}" href="{{ route('tenant.invoice.create', [$tenant->domain, 'wh' => $warehouse->id, 'branch_id' => $branch->id, ]) }}" class="btn btn-outline-dark" role="button">
                         <i class="fa fa-file-text-o"></i>
                     </a>
                 @endcan

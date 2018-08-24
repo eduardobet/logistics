@@ -28,9 +28,12 @@ class WarehouseRequest extends AppFormRequest
         $rules = [
             'branch_from' => 'required|integer',
             'branch_to' => 'required|integer',
-            'client_id' => 'required|integer',
-            'reference' => 'required|string',
+            'client_id' => 'sometimes|integer',
+            'reference' => 'sometimes|string',
+            'trackings' => 'sometimes|string',
             'type' => 'required|in:A,M',
+            'tot_packages' => 'required|integer',
+            'tot_weight' => 'required|integer',
         ];
 
         if ($this->isEdit()) {

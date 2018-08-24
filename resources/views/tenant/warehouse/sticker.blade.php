@@ -31,7 +31,10 @@
             @foreach ($invoice ? $invoice->details : [] as $detail)
                 {{ number_format($detail->vol_weight, 2) }}LBS &nbsp;&nbsp;&nbsp;&nbsp; {{ $detail->length }}x{{ $detail->width }}x{{ $detail->height }} &nbsp;&nbsp;&nbsp;&nbsp; ({{ $detail->qty }}) <br>
             @endforeach
+            
+            @if ($client)
             {{ $client->boxes->first()->branch_code }}{{ $client->id }} / {{ $client->full_name }}      ${{ number_format($invoice ? $invoice->total : 0, 2) }}
+            @endif
         </td>
       </tr>
 

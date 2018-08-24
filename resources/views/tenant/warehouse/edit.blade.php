@@ -14,7 +14,7 @@
 
         <div class="slim-pageheader">
             {{ Breadcrumbs::render() }}
-            <h6 class="slim-pagetitle"> {{ $branch->name }} </h6>
+            <h6 class="slim-pagetitle"> {{ $branch->name }} / WH-{{ $warehouse->id  }} </h6>
          </div><!-- slim-pageheader -->
 
          <div class="section-wrapper">
@@ -44,7 +44,7 @@
         $(function() {
 
             var loadTpl = true;
-            $("#branch_from").change(function() {
+            /*$("#branch_from").change(function() {
                 var $self = $(this);
                 var code = $self.find(':selected').data('code');
                 var dComission = $self.find(':selected').data('dcomission');
@@ -59,12 +59,28 @@
                    $invoiceContainer.empty();
                    loadTpl = true;
                 }
+            });*/
+
+            doCal();
+
+            //
+            $("#client_id").change(function() {
+                var $btnAddDet = $("#btn-add-details");
+                var $invoiceDetContainer = $("#details-container");
+                if (this.value) {
+                    $btnAddDet.removeAttr('disabled')
+                }
+                else {
+                    $btnAddDet.attr('disabled', true)
+                    $invoiceDetContainer.empty();
+                    $invoiceDetContainer = null;
+                }
             });
             
             $("#btn-invoice").click(function() {
                 
-                if (!$("#mailer_id").val()) {
-                    swal('', '{{ __("Please select the mailer") }}', 'error');
+                if (!$("#client_id").val()) {
+                    swal('', '{{ __("Please select the client") }}', 'error');
                     return;
                 }
 
@@ -81,6 +97,7 @@
                     }
                     
                     $.getJSON(url, function(data) {
+                        $btnAddDet = $(data.view).find('#btn-add-details');
                         $self.prop('disabled', false).html($self.data('original-text'));
                         cache['data'] = data.view;
                         loadTpl = false;
@@ -100,6 +117,10 @@
 
             // client side calculation
             $(document).on("blur", ".inline-calc", function() {
+                doCal()
+            });
+
+            $(document).on("click", ".is_dhll", function() {
                 doCal()
             });
 
@@ -138,16 +159,34 @@
             var $totVolWeight = $("#total_volumetric_weight");
             var $totRealWeight = $("#total_real_weight");
             var $trackings = $("#trackings");
-            var $notes = $("#invoice-notes");
             
             var totVolWeight = 0;
             var totRealWeight = 0;
             var totalVol = 0;
             var totalReal = 0;
+            var totalVolPrice = 0;
+            var totalRealPrice = 0;
             var $els = $(".inline-calc:not('.qty, .removed')", document);
+            var $branchTo = $('#branch_to');
+            var $client = $('#client_id');
             var $mailer = $('#mailer_id');
-            var volPrice = $mailer.find(':selected').attr('data-vol_price') || 0;
-            var realPrice = $mailer.find(':selected').attr('data-real_price') || 0;
+            var specialRate = $client.find(':selected').attr('data-special_rate') || 'false';
+            var payVol = $client.find(':selected').attr('data-pay_volume') || 'false';
+
+            var volPrice = 0;
+            var realPrice = 0;
+
+            var using = "";
+
+            if (specialRate == 'true') {
+                realPrice = parseFloat($client.find(':selected').attr('data-real_price') || '0');
+                using = "Special Rate";
+            } else if (payVol == 'true') {
+                volPrice = parseFloat($client.find(':selected').attr('data-vol_price') || '0');
+                using = "Pay volume";
+            } else {
+                using = "Global branch";
+            }
 
             $els.each(function(i, el) {
                 var $el = $(el);
@@ -158,7 +197,85 @@
                 var height = $("#height-"+i).not('.removed').val();
                 var $volWeight = $("#volumetric_weight-"+i).not('.removed');
                 var $realWeight = $("#real_weight-"+i).not('.removed');
+                var $isDHL = $("#is_dhll-"+i).not('.removed');
                 totRealWeight += parseFloat($realWeight.val() || '0');
+
+                if (length && width && height) {
+
+                    if ($isDHL && $isDHL.is(':checked')) {
+                        realPrice =parseFloat($isDHL.val() || '0');
+                        using += ' via DHL';
+                    } else {
+                        realPrice = parseFloat($branchTo.find(':selected').attr('data-real_price') || '0');
+                    }
+
+                    $trackings.prop('readonly', false)
+
+                    var volWeight = (length * width * height) / 139;
+                    var whole = parseInt(volWeight);
+                    var dec = volWeight - whole;
+                
+                    if (dec > 0) {
+                        volWeight = whole + 1;
+                    }
+
+                    $volWeight.val(volWeight);
+                    totVolWeight += volWeight;
+                    totalVolPrice += volPrice;
+                    totalRealPrice += realPrice;
+
+                    totalReal += parseFloat($realWeight.val() || '0') * realPrice;
+                    totalVol += parseFloat($realWeight.val() || '0') * volPrice;
+
+                } // if
+            }); // each
+
+
+            //totalVol = parseFloat(totVolWeight) *  parseFloat(totalVolPrice);
+            //totalReal = parseFloat(totRealWeight) *  parseFloat(totalRealPrice);
+            $totVolWeight.val(totVolWeight)
+            $totRealWeight.val(totRealWeight)
+
+            $("#dsp-t-vol").text(totalVol);
+            $("#dsp-t-real").text(totalReal);
+
+            $els = null;
+            $volWeight = null;
+            $realWeight = null;
+        }
+
+        function doCalOld() {
+            var $totVolWeight = $("#total_volumetric_weight");
+            var $totRealWeight = $("#total_real_weight");
+            var $trackings = $("#trackings");
+            var $notes = $("#invoice-notes");
+            
+            var totVolWeight = 0;
+            var totRealWeight = 0;
+            var totalVol = 0;
+            var totalReal = 0;
+            var $els = $(".inline-calc:not('.qty, .removed')", document);
+            var $client = $('#client_id');
+            var volPrice = $client.find(':selected').attr('data-vol_price') || 0;
+            var realPrice = $client.find(':selected').attr('data-real_price') || 0;
+
+            $els.each(function(i, el) {
+                var $el = $(el);
+                var index = $el.data('i');
+                var qty = $("#qty-"+i).not('.removed').val();
+                var length = $("#length-"+i).not('.removed').val();
+                var width = $("#width-"+i).not('.removed').val();
+                var height = $("#height-"+i).not('.removed').val();
+                var $volWeight = $("#volumetric_weight-"+i).not('.removed');
+                var $realWeight = $("#real_weight-"+i).not('.removed');
+                var $isDHL = $("#is_dhll-"+i).not('.removed');
+                totRealWeight += parseFloat($realWeight.val() || '0');
+
+                if ($isDHL && $isDHL.is(':checked')) {
+                    realPrice = $isDHL.val() || 0;
+                }
+                
+                console.log('-----calculating......', $isDHL, volPrice, realPrice)
 
                 if (length && width && height) {
                     var volWeight = (length * width * height) / 139;

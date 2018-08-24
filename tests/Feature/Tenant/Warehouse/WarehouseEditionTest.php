@@ -42,7 +42,7 @@ class WarehouseEditionTest extends TestCase
         $response->assertRedirect(route('tenant.warehouse.edit', [$tenant->domain, 1]));
 
         $response->assertSessionHasErrors([
-            'branch_from', 'branch_to', 'client_id', 'reference', 'type',
+            'branch_from', 'branch_to', 'type', 'tot_packages', 'tot_weight',
         ]);
     }
 
@@ -120,6 +120,8 @@ class WarehouseEditionTest extends TestCase
             'reference' => 'The reference update',
             'qty' => 2,
             'type' => 'A',
+            'tot_packages' => 2,
+            'tot_weight' => 21,
 
             //
             'client_name' => 'The client of the direct comission',
@@ -146,6 +148,8 @@ class WarehouseEditionTest extends TestCase
             'reference' => 'The reference update',
             'qty' => 2,
             'status' => 'A',
+            'tot_packages' => 2,
+            'tot_weight' => 21,
         ]);
 
         $this->assertDatabaseHas('invoices', [

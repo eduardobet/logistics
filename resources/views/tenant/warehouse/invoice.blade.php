@@ -13,7 +13,8 @@
     <button class="btn btn-sm btn-outline-success btn-add-more" type="button"
     data-url="{{ route('tenant.warehouse.invoice-detail-tmpl', $tenant->domain) }}"
     data-loading-text="<i class='fa fa-spinner fa-spin '></i> {{ __('Loading') }}..."
-    {{ isset($mode) && $mode == 'edit' ? ' disabled' : null }}
+    {{ isset($warehouse) && $warehouse->client_id ? null : 'disabled' }}
+    id="btn-add-details"
     >
         <i class="fa fa-plus"></i> {{ __('Add') }}
     </button>

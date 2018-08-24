@@ -83,12 +83,14 @@ class WarehouseController extends Controller
         $warehouse = $tenant->warehouses()->create([
             'branch_to' => $request->branch_to,
             'branch_from' => $request->branch_from,
-            'client_id' => $request->client_id,
+            'client_id' => $request->client_id ?: 0,
             'mailer_id' => $request->mailer_id ?: 0,
             'trackings' => $request->trackings,
             'reference' => $request->reference,
             'type' => $request->type,
             'qty' => $request->qty ?: 0,
+            'tot_packages' => $request->tot_packages ?: 0,
+            'tot_weight' => $request->tot_weight ?: 0,
         ]);
 
         if ($warehouse) {
@@ -156,17 +158,21 @@ class WarehouseController extends Controller
 
         $warehouse->branch_to = $request->branch_to;
         $warehouse->branch_from = $request->branch_from;
-        $warehouse->mailer_id = $request->mailer_id;
-        $warehouse->client_id = $request->client_id;
+        $warehouse->mailer_id = $request->mailer_id ?: 0;
+        $warehouse->client_id = $request->client_id ?: 0;
         $warehouse->trackings = $request->trackings;
         $warehouse->reference = $request->reference;
-        $warehouse->qty = $request->qty;
+        $warehouse->qty = $request->qty ?: 0;
         $warehouse->type = $request->type;
+        $warehouse->tot_packages = $request->tot_packages ?: 0;
+        $warehouse->tot_weight = $request->tot_weight ?: 0;
             
         $updated = $warehouse->save();
         
         if ($updated) {
-            if ($request->client_id) {
+            $details = $request->invoice_detail ? : [];
+
+            if (count($details)) {
                 $warehouse->genInvoice($request);
             }
 

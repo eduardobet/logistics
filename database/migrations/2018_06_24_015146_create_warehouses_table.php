@@ -20,12 +20,14 @@ class CreateWarehousesTable extends Migration
             $table->unsignedInteger('updated_by_code')->nullable();
             $table->unsignedInteger('branch_from');
             $table->unsignedInteger('branch_to');
-            $table->unsignedInteger('client_id');
+            $table->unsignedInteger('client_id')->nullable();
             $table->string('type', 1);
             $table->unsignedInteger('mailer_id')->nullable();
             $table->unsignedInteger('qty');
-            $table->text('trackings');
-            $table->text('reference');
+            $table->text('trackings')->nullable();
+            $table->text('reference')->nullable();
+            $table->integer('tot_packages')->default(0);
+            $table->integer('tot_weight')->default(0);
             $table->string('status', 1)->default('A'); //I[nactive], A[ctive]
 
             $table->timestamps();

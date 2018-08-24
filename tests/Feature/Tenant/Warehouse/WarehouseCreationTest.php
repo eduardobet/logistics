@@ -43,7 +43,7 @@ class WarehouseCreationTest extends TestCase
         $response->assertRedirect(route('tenant.warehouse.create', $tenant->domain));
 
         $response->assertSessionHasErrors([
-            'branch_from', 'branch_to', 'client_id', 'reference', 'type',
+            'branch_from', 'branch_to', 'type', 'tot_weight', 'tot_packages',
         ]);
     }
 
@@ -91,6 +91,8 @@ class WarehouseCreationTest extends TestCase
             'mailer_id' => $mailer->id,
             'qty' => 2,
             'gen_invoice' => 1,
+            'tot_packages' => 2,
+            'tot_weight' => 21,
 
             //
             'client_name' => $client->full_name,
@@ -119,6 +121,8 @@ class WarehouseCreationTest extends TestCase
             'mailer_id' => $mailer->id,
             'qty' => 2,
             'status' => 'A',
+            'tot_packages' => 2,
+            'tot_weight' => 21,
         ]);
 
         $this->assertDatabaseHas('invoices', [
@@ -203,6 +207,8 @@ class WarehouseCreationTest extends TestCase
             'mailer_id' => $mailer->id,
             'qty' => 2,
             'gen_invoice' => 1,
+            'tot_packages' => 2,
+            'tot_weight' => 21,
 
             //
             'client_name' => $client->full_name,
@@ -291,6 +297,8 @@ class WarehouseCreationTest extends TestCase
             'mailer_id' => $mailer->id,
             'qty' => 2,
             'gen_invoice' => 1,
+            'tot_packages' => 2,
+            'tot_weight' => 21,
 
             //
             'client_name' => $client->full_name,
@@ -380,6 +388,8 @@ class WarehouseCreationTest extends TestCase
             'qty' => 2,
             'is_dhl' => true,
             'gen_invoice' => 1,
+            'tot_packages' => 2,
+            'tot_weight' => 21,
 
             //
             'client_name' => $client->full_name,

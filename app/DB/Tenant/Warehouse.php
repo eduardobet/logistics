@@ -18,6 +18,7 @@ class Warehouse extends Model
      */
     protected $fillable = [
         'branch_from', 'branch_to','mailer_id','trackings','reference','qty', 'created_by_code', 'tenant_id', 'updated_by_code', 'client_id', 'type',
+        'tot_weight', 'tot_packages',
     ];
 
     /**

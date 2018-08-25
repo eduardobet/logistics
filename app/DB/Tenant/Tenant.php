@@ -29,11 +29,9 @@ class Tenant extends Model
     {
         parent::boot();
 
-        $host = get_host();
-
-        do_forget_cache(__class__, ["{$host}"]);
-
         static::saved(function ($tenant) {
+            __do_forget_cache(__class__, ["{$tenant->domain}"], []);
+            
             $tenant->touchEnvFile();
         });
     }

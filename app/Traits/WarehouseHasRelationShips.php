@@ -3,6 +3,7 @@
 namespace Logistics\Traits;
 
 use Illuminate\Support\Fluent;
+use Logistics\Mail\Tenant\InvoiceCreated;
 use Logistics\Notifications\Tenant\WarehouseActivity;
 
 trait WarehouseHasRelationShips
@@ -43,9 +44,17 @@ trait WarehouseHasRelationShips
             ->with([$relation => $constraint]);
     }
 
-    public function genInvoice($request)
+    public function genInvoice($request, $lang)
     {
         $client = $this->client()->find($this->client_id);
+
+        $using = [];
+
+        if ($request->has('chk_t_real_weight')) {
+            $using = ['i_using' => 'R'];
+        } elseif ($request->has('chk_t_volumetric_weight')) {
+            $using = ['i_using' => 'V'];
+        }
 
         $invoice = $this->invoice()->updateOrCreate(
             ['id' => $request->invoice_id, 'tenant_id' => $this->tenant_id, 'warehouse_id' => $this->id, ],
@@ -60,12 +69,12 @@ trait WarehouseHasRelationShips
                 'real_weight' => $request->total_real_weight,
                 'total' => $request->total,
                 'notes' => $request->notes,
-            ]
+            ] + $using
         );
 
-        $datails = $request->invoice_detail ?: [];
+        $details = $request->invoice_detail ?: [];
 
-        foreach ($datails as $data) {
+        foreach ($details as $data) {
             $input = new Fluent($data);
 
             $invoice->details()->updateOrCreate(['id' => $input->wdid, ], [
@@ -82,5 +91,9 @@ trait WarehouseHasRelationShips
 
         $box = $client->boxes()->active()->first();
         $this->toBranch->notify(new WarehouseActivity($this->created_at, $this->id, "{$box->branch_code}{$client->id}", $invoice->id, auth()->user()->full_name));
+
+        if ($invoice) {
+            \Mail::to($invoice->client)->send(new InvoiceCreated($invoice, $lang));
+        }
     }
 }

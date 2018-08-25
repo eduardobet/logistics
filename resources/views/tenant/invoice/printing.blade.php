@@ -46,35 +46,61 @@
         <tr>
             <td colspan="2" style="vertical-align: top; border: solid 1px">
                 <table style="width: 100%;" cellspacing="0">
-                    <tr>
-                        <th style="border: solid 1px;">{{ __('Qty') }}</th>
-                        <th style="border: solid 1px;">{{ __('Type') }}</th>
-                        <th style="border: solid 1px;">{{ __('Description') }}</th>
-                        <th style="border: solid 1px;">{{ __('Purchase ID') }}</th>
-                        <th style="border: solid 1px;text-align:right;">{{ __('Sub Total') }}</th>
-                    </tr>
-
+                    
+                    @if (!$invoice->warehouse_id)
+                        <tr>
+                            <th style="border: solid 1px;">{{ __('Qty') }}</th>
+                            <th style="border: solid 1px;">{{ __('Type') }}</th>
+                            <th style="border: solid 1px;">{{ __('Description') }}</th>
+                            <th style="border: solid 1px;">{{ __('Purchase ID') }}</th>
+                            <th style="border: solid 1px;text-align:right;">{{ __('Sub Total') }}</th>
+                        </tr>
+                    @else
+                        <tr>
+                            <th style="border: solid 1px;">{{ __('Qty') }}</th>
+                            <th style="border: solid 1px;">{{ __('Type') }}</th>
+                            <th style="border: solid 1px;">{{ __('Length') }}</th>
+                            <th style="border: solid 1px;">{{ __('Width') }}</th>
+                            <th style="border: solid 1px;">{{ __('Height') }}</th>
+                            <th style="border: solid 1px;">{{ __('P/Vol') }}</th>
+                            <th style="border: solid 1px;">{{ __('P/Real') }}</th>
+                            <th style="border: solid 1px;">DHL?</th>
+                        </tr>
+                    @endif
                     
                     @foreach ($invoice->details as $detail)
-                        <tr>
-                            <td style="border: solid 1px;">{{ $detail->qty }}</td>
-                            <td style="border: solid 1px;">{{ [1 => __('Online shopping'), 2 => __('Card commission'), ][$detail->type] }}</td>
-                            <td style="border: solid 1px;">{{ $detail->description }}</td>
-                            <td style="border: solid 1px;">{{ $detail->id_remote_store }}</td>
-                            <td style="border: solid 1px; text-align:right;">${{ number_format($detail->total, 2) }}</td>
-                        </tr>
+                        @if (!$invoice->warehouse_id)    
+                            <tr>
+                                <td style="border: solid 1px;">{{ $detail->qty }}</td>
+                                <td style="border: solid 1px;">{{ [1 => __('Online shopping'), 2 => __('Card commission'), ][$detail->type] }}</td>
+                                <td style="border: solid 1px;">{{ $detail->description }}</td>
+                                <td style="border: solid 1px;">{{ $detail->id_remote_store }}</td>
+                                <td style="border: solid 1px; text-align:right;">${{ number_format($detail->total, 2) }}</td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td style="border: solid 1px;">{{ $detail->qty }}</td>
+                                <td style="border: solid 1px;">{{ [1=>'Sobre',2=>'Bulto', 3=>'Paquete',4=>'Caja/Peq.', 5=>'Caja/Med.', 6=>'Caja/Grande', ][$detail->type] }}</td>
+                                <td style="border: solid 1px;">{{ $detail->length }}</td>
+                                <td style="border: solid 1px;">{{ $detail->width }}</td>
+                                <td style="border: solid 1px;">{{ $detail->height }}</td>
+                                <td style="border: solid 1px;">{{ $detail->vol_weight }}</td>
+                                <td style="border: solid 1px;">{{ $detail->real_weight }}</td>
+                                <td style="border: solid 1px;">{{ $detail->is_dhll ? 'DHL' : null }}</td>
+                            </tr>
+                        @endif
                     @endforeach
 
                     <tr style="font-weight: bold">
-                        <td colspan="4" style="border: solid 1px;text-align:right;">{{ __('Total') }}:</td>
+                        <td colspan="{{ $invoice->warehouse_id ? 7 : 4 }}" style="border: solid 1px;text-align:right;">{{ __('Total') }}:</td>
                         <td style="border: solid 1px;text-align:right;">${{ number_format($invoice->total, 2)  }}</td>
                     </tr>
                     <tr style="font-weight: bold">
-                        <td colspan="4" style="border: solid 1px;text-align:right;">{{ __('Amount paid') }}:</td>
+                        <td colspan="{{ $invoice->warehouse_id ? 7 : 4 }}" style="border: solid 1px;text-align:right;">{{ __('Amount paid') }}:</td>
                         <td style="border: solid 1px;text-align:right;">${{ number_format($amountPaid, 2)  }}</td>
                     </tr>
                     <tr style="font-weight: bold">
-                        <td colspan="4" style="border: solid 1px;text-align:right;">{{ __('Pending') }}:</td>
+                        <td colspan="{{ $invoice->warehouse_id ? 7 : 4 }}" style="border: solid 1px;text-align:right;">{{ __('Pending') }}:</td>
                         <td style="border: solid 1px;text-align:right;">${{ number_format($invoice->total-$amountPaid, 2)  }}</td>
                     </tr>
                     
@@ -82,12 +108,22 @@
             </td>
         </tr>
 
+        @if ($invoice->warehouse_id)  
+        <tr>
+            <td style="" colspan="2">
+                <br>
+                {{ __('Tracking numbers') }}<br>
+                {!! $invoice->warehouse->trackings !!}
+            </td>
+        </tr>
+        @endif
+
         <tr>
             <td style="border-top: 1px solid #000; text-align:center" colspan="2">
                 <br>
             
                 <?php
-                    echo '<img src="data:image/png;base64,' . DNS1D::getBarcodePNG("{$invoice->id}", "C39", 2, 90, [0,0,0], true) . '" alt="barcode"   />';
+                    echo '<img src="data:image/png;base64,' . DNS1D::getBarcodePNG("{$invoice->id}", "C39", 2, 60, [0,0,0], true) . '" alt="barcode"   />';
                 ?>
             </td>
        </tr>

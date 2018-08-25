@@ -132,8 +132,8 @@ class WarehouseEditionTest extends TestCase
             'notes' => 'The notes of the invoice updated',
             'invoice_id' => $invoice->id,
             'invoice_detail' => [
-                ['qty' => 1, 'type' => 1, 'length' => 10, 'width' => 10, 'height' => 10, 'real_weight' => 9 , 'wdid' => $detail->id, ],
-                ['qty' => 1, 'type' => 2, 'length' => 12, 'width' => 12, 'height' => 12, 'real_weight' => 14, ],
+                ['qty' => 1, 'type' => 1, 'length' => 10, 'width' => 10, 'height' => 10, 'vol_weight' => 8, 'real_weight' => 9 , 'wdid' => $detail->id, ],
+                ['qty' => 1, 'type' => 2, 'length' => 12, 'width' => 12, 'height' => 12, 'vol_weight' => 13, 'real_weight' => 14, ],
             ]
         ]);
         $response->assertRedirect(route('tenant.warehouse.edit', [$tenant->domain, 1]));

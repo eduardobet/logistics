@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     //warehouse
     Route::get('warehouse/list', 'Tenant\WarehouseController@index')->name('tenant.warehouse.list')->middleware(['can:show-warehouse']);
+    Route::get('warehouses/export', 'Tenant\WarehouseController@export')->name('tenant.warehouse.export')->middleware(['can:show-warehouse']);
     Route::get('warehouse/invoice-tpl', 'Tenant\WarehouseController@invoiceTpl')->name('tenant.warehouse.invoice-tpl');
     Route::get('warehouse/{id}/print-sticker', 'Tenant\WarehouseController@sticker')->name('tenant.warehouse.print-sticker');
     Route::get('warehouse/invoice-detail-tmpl', 'Tenant\WarehouseController@invoiceDetTpl')->name('tenant.warehouse.invoice-detail-tmpl');
@@ -39,6 +40,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     // invoice
     Route::get('invoice/list', 'Tenant\InvoiceController@index')->name('tenant.invoice.list')->middleware(['can:show-invoice']);
+    Route::get('invoices/export', 'Tenant\InvoiceController@export')->name('tenant.invoice.export')->middleware(['can:show-invoice']);
     Route::get('invoice/create', 'Tenant\InvoiceController@create')->name('tenant.invoice.create')->middleware(['can:create-invoice']);
     Route::post('invoice/store', 'Tenant\InvoiceController@store')->name('tenant.invoice.store');
     Route::get('invoice/{id}/edit', 'Tenant\InvoiceController@edit')->name('tenant.invoice.edit')->middleware(['can:edit-invoice']);

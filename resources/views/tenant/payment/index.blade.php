@@ -112,7 +112,7 @@ select2ize = function($child, items) {
         }
         
         $child.select2('destroy').html(newOptions).prop("disabled", false)
-        .select2({width: 'resolve', placeholder: '{{ __("Client") }}', language: "es"});
+        .select2({width: 'resolve', placeholder: '{{ __("Client") }}', language: "{{ config('locale.lang') }}"});
 }
 </script>
 
@@ -137,7 +137,8 @@ select2ize = function($child, items) {
             var branch = $("#branch_id").val();
             var client = $("#client_id").val();
             var type = $("#type").val();
-            window.location = `{{ route('tenant.payment.list', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}`;
+            var invoice = $("#invoice_id").val() || "{{ request('invoice_id', '') }}";
+            window.location = `{{ route('tenant.payment.list', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}`;
         });
 
         $("#export-xls, #export-pdf").click(function() {
@@ -146,9 +147,10 @@ select2ize = function($child, items) {
             var branch = $("#branch_id").val();
             var client = $("#client_id").val();
             var type = $("#type").val();
+            var invoice = $("#invoice_id").val() || "{{ request('invoice_id', '') }}";
             var pdf = this.id === 'export-pdf' ? '&pdf=1' : '';
             
-            if(from && to) window.open(`{{ route('tenant.payment.export', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}${pdf}`, '_blank');
+            if(from && to) window.open(`{{ route('tenant.payment.export', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}${pdf}`, '_blank');
         });
     });
 </script>

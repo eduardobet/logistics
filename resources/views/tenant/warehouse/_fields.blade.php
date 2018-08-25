@@ -9,6 +9,13 @@
 
     <div class="col-lg-2">
         <div class="form-group">
+            <label class="form-control-label">{{ __('ID') }}:</label>
+            {!! Form::text('id', null, ['class' => 'form-control', 'disabled' => 1, ]) !!}
+        </div>
+    </div>
+
+    <div class="col-lg-2">
+        <div class="form-group">
         
              <label class="form-control-label">{{ __('Type') }}: 
                 <span class="tx-danger">*</span>
@@ -19,7 +26,7 @@
         </div>
     </div>
 
-    <div class="col-lg-{{$mode=='create' ? 10 : 8}}">
+    <div class="col-lg-{{ $mode=='create' ? 8 : 6 }}">
         <div class="form-group">
             <label class="form-control-label">{{ __('Issuer branch') }}: <span class="tx-danger">*</span></label>
 
@@ -37,9 +44,17 @@
     @if ($mode=='edit')
     <div class="col-2">
         <div class="form-group mg-t-30-force">
-            <a href="{{ route('tenant.warehouse.print-sticker', [$tenant->domain, $warehouse->id ]) }}" class="btn btn-outline-dark" role="button">
-                <i class="fa fa-ticket"></i>
-            </a>
+            <div class="btn-group btn-group-justified">
+                <a target="_blank" title="{{ __('Sticker') }}" href="{{ route('tenant.warehouse.print-sticker', [$tenant->domain, $warehouse->id ]) }}" class="btn btn-outline-dark" role="button">
+                    <i class="fa fa-ticket"></i>
+                </a>
+
+                @can('create-invoice')
+                    <a target="_blank" title="{{ __('Invoice') }}" href="{{ route('tenant.invoice.create', [$tenant->domain, 'wh' => $warehouse->id, 'branch_id' => $branch->id, ]) }}" class="btn btn-outline-dark" role="button">
+                        <i class="fa fa-file-text-o"></i>
+                    </a>
+                @endcan
+            </div>
         </div>
     </div>
     @endif

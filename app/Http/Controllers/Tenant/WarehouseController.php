@@ -6,12 +6,14 @@ use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
 use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Invoice;
+use Logistics\Traits\WarehouseList;
+use Logistics\Exports\WarehousesExport;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Http\Requests\Tenant\WarehouseRequest;
 
 class WarehouseController extends Controller
 {
-    use Tenant;
+    use Tenant, WarehouseList;
 
     /**
      * Display a listing of the resource.
@@ -20,20 +22,37 @@ class WarehouseController extends Controller
      */
     public function index()
     {
-        $warehouses = $this->getTenant()->warehouses()
-            ->with(['fromBranch', 'toBranch']);
+        [$warehouses, $searching, $branch] = $this->getWarehouses($this->getTenant());
 
-        if ($filter = request('filter')) {
-            if (is_numeric($filter)) {
-                $warehouses = $warehouses->where('id', $filter);
-            } else {
-                $warehouses = $warehouses->where('name', 'like', "%{$filter}%");
-            }
+        return view('tenant.warehouse.index', [
+            'warehouses' => $warehouses,
+            'searching' => $searching,
+            'branch' => $branch,
+            'sign' => '$',
+            'branches' => $this->branches(),
+        ]);
+    }
+
+    public function export()
+    {
+        [$warehouses, $searching, $branch] = $this->getWarehouses($this->getTenant());
+
+        $data = [
+            'warehouses' => $warehouses,
+            'branch' => $branch,
+            'exporting' => true,
+            'sign' => '',
+        ];
+
+        if (request('pdf')) {
+            // return view('tenant.export.warehouses-pdf', $data);
+
+            $pdf = \PDF::loadView('tenant.export.warehouses-pdf', $data);
+
+            return $pdf->download(uniqid('warehouses_', true) . '.pdf');
         }
         
-        $warehouses = $warehouses->paginate(15);
-
-        return view('tenant.warehouse.index', compact('warehouses'));
+        return (new WarehousesExport)->download(uniqid('warehouses_', true) . '.xlsx');
     }
 
     /**
@@ -73,7 +92,8 @@ class WarehouseController extends Controller
         ]);
 
         if ($warehouse) {
-            if ($request->gen_invoice) {
+            $details = $request->invoice_detail ? : [];
+            if (count($details)) {
                 $warehouse->genInvoice($request);
             }
             
@@ -221,7 +241,7 @@ class WarehouseController extends Controller
         } else {
             $pdf = \PDF::loadView('tenant.warehouse.sticker', $data);
                 
-            return $pdf->download('sticker.pdf');
+            return $pdf->download(uniqid('sticker_', true) . '.pdf');
         }
     }
 }

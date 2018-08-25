@@ -160,9 +160,19 @@ class TenantTest extends TestCase
             "APP_NAME=\"{$tenant->name}\"\n",
             "SESSION_DOMAIN={$domain}\n",
             "TENANT_COUNTRY={$tenant->country_id}\n",
-            "TENANT_TIMEZONE={$tenant->timezone}",
+            "TENANT_TIMEZONE={$tenant->timezone}\n",
+            "MAIL_DRIVER={$tenant->mail_driver}\n",
+            "MAIL_HOST={$tenant->mail_host}\n",
+            "MAIL_PORT={$tenant->mail_port}\n",
+            "MAIL_USERNAME={$tenant->mail_username}\n",
+            "MAIL_PASSWORD={$tenant->mail_password}\n",
+            "MAIL_ENCRYPTION={$tenant->mail_encryption}\n",
+            "MAIL_FROM_ADDRESS={$tenant->mail_from_address}\n",
+            "MAIL_FROM_NAME=\"{$tenant->mail_from_name}\"\n",
+            "MAILGUN_DOMAIN={$tenant->mailgun_domain}\n",
+            "MAILGUN_SECRET={$tenant->mailgun_secret}",
         ], $contentArray);
 
-        // File::delete($envFile);
+        File::delete($envFile);
     }
 }

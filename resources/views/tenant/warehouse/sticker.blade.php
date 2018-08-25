@@ -13,7 +13,7 @@
     <table style="width: 100%" cellspacing="0">
       <tr>
         <td style="border-top: 1px solid #000;margin-left: 10px" colspan="2">
-            &nbsp;&nbsp;&nbsp;{{  __('Shiper') }} <br>
+            &nbsp;&nbsp;&nbsp;{{  __('Shipper') }} <br>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $mailer ? $mailer->name : null }}
         </td>
       </tr>
@@ -79,7 +79,7 @@
       <tr>
         <td style="" colspan="2">
             <br>
-            &nbsp;&nbsp;&nbsp;{{ $user->full_name }}
+            &nbsp;&nbsp;&nbsp;{!! $user->full_name !!}
         </td>
       </tr>
 

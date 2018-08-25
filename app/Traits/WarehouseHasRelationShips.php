@@ -3,6 +3,7 @@
 namespace Logistics\Traits;
 
 use Illuminate\Support\Fluent;
+use Logistics\Mail\Tenant\InvoiceCreated;
 use Logistics\Notifications\Tenant\WarehouseActivity;
 
 trait WarehouseHasRelationShips
@@ -43,19 +44,16 @@ trait WarehouseHasRelationShips
             ->with([$relation => $constraint]);
     }
 
-    public function genInvoice($request)
+    public function genInvoice($request, $lang)
     {
         $client = $this->client()->find($this->client_id);
 
-        $total = 0;
+        $using = [];
 
-        if ($client->special_rate) {
-            $total = $client->real_price * $request->total_real_weight;
-        } elseif ($client->pay_volume) {
-            $total = $client->vol_price * $request->total_volumetric_weight;
-        } else {
-            $branch = $this->toBranch()->find($request->branch_to);
-            $total = ($request->is_dhl ? $branch->dhl_price : $branch->real_price) * $request->total_real_weight;
+        if ($request->has('chk_t_real_weight')) {
+            $using = ['i_using' => 'R'];
+        } elseif ($request->has('chk_t_volumetric_weight')) {
+            $using = ['i_using' => 'V'];
         }
 
         $invoice = $this->invoice()->updateOrCreate(
@@ -69,23 +67,15 @@ trait WarehouseHasRelationShips
                 'client_email' => $request->client_email,
                 'volumetric_weight' => $request->total_volumetric_weight,
                 'real_weight' => $request->total_real_weight,
-                'total' => $total,
+                'total' => $request->total,
                 'notes' => $request->notes,
-            ]
+            ] + $using
         );
 
-        $datails = $request->invoice_detail ?: [];
+        $details = $request->invoice_detail ?: [];
 
-        foreach ($datails as $data) {
+        foreach ($details as $data) {
             $input = new Fluent($data);
-
-            $volWeight = ($input->length && $input->width && $input->height) ? ($input->length * $input->width * $input->height) / 139 : 0;
-            $whole = intval($volWeight);
-            $dec = $volWeight - $whole;
-
-            if ($dec > 0) {
-                $volWeight = $whole + 1;
-            }
 
             $invoice->details()->updateOrCreate(['id' => $input->wdid, ], [
                 'qty' => $input->qty,
@@ -93,12 +83,17 @@ trait WarehouseHasRelationShips
                 'length' => $input->length,
                 'width' => $input->width,
                 'height' => $input->height,
-                'vol_weight' => $volWeight,
+                'vol_weight' => $input->vol_weight,
                 'real_weight' => $input->real_weight,
+                'is_dhll' => isset($input->is_dhll),
             ]);
         }
 
         $box = $client->boxes()->active()->first();
         $this->toBranch->notify(new WarehouseActivity($this->created_at, $this->id, "{$box->branch_code}{$client->id}", $invoice->id, auth()->user()->full_name));
+
+        if ($invoice) {
+            \Mail::to($invoice->client)->send(new InvoiceCreated($invoice, $lang));
+        }
     }
 }

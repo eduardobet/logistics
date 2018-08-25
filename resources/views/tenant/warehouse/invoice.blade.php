@@ -9,15 +9,18 @@
     </div>
 </div><!-- row -->
 
-<div class="mg-t-20">
-    <button class="btn btn-sm btn-outline-success btn-add-more" type="button"
-    data-url="{{ route('tenant.warehouse.invoice-detail-tmpl', $tenant->domain) }}"
-    data-loading-text="<i class='fa fa-spinner fa-spin '></i> {{ __('Loading') }}..."
-    {{ isset($mode) && $mode == 'edit' ? ' disabled' : null }}
-    >
-        <i class="fa fa-plus"></i> {{ __('Add') }}
-    </button>
-</div>
+@if (!$invoice->total)
+    <div class="mg-t-20">
+        <button class="btn btn-sm btn-outline-success btn-add-more" type="button"
+        data-url="{{ route('tenant.warehouse.invoice-detail-tmpl', $tenant->domain) }}"
+        data-loading-text="<i class='fa fa-spinner fa-spin '></i> {{ __('Loading') }}..."
+        {{ isset($warehouse) && $warehouse->client_id ? null : 'disabled' }}
+        id="btn-add-details"
+        >
+            <i class="fa fa-plus"></i> {{ __('Add') }}
+        </button>
+    </div>
+@endif
 
 <div class="mg-t-25"></div>
 <div id="details-container">
@@ -35,7 +38,7 @@
                 <div class="input-group-prepend">
                     <div class="input-group-text">
                         <label class="ckbox wd-16 mg-b-0">
-                        <input type="checkbox" id="chk-t-volumetric-weight"><span></span>
+                        <input type="checkbox" id="chk-t-volumetric-weight" name="chk_t_volumetric_weight"{{ $invoice->i_using == 'V' ? ' checked' : null }}><span></span>
                         </label>
                     </div>
                 </div>
@@ -51,7 +54,7 @@
                 <div class="input-group-prepend">
                 <div class="input-group-text">
                     <label class="ckbox wd-16 mg-b-0">
-                    <input type="checkbox" id="chk-t-real-weight"><span></span>
+                    <input type="checkbox" id="chk-t-real-weight" name="chk_t_real_weight"{{ $invoice->i_using == 'R' ? ' checked' : null }}><span></span>
                     </label>
                 </div>
                 </div>

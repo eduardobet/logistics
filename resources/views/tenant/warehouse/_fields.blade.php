@@ -18,8 +18,7 @@
         <div class="form-group">
         
              <label class="form-control-label">{{ __('Type') }}: 
-                <span class="tx-danger">*</span>
-                <strong id="loader-client_id"></strong>    
+                <span class="tx-danger">*</span>  
              </label>
              {!! Form::select('type', ['' => '----']+['A' => __('Air'), 'M' => __('Maritime'), ], null, ['class' => 'form-control', 'id' => 'type', 'required' => 'required', ]) !!}
 
@@ -50,7 +49,7 @@
                 </a>
 
                 @can('create-invoice')
-                    <a target="_blank" title="{{ __('Invoice') }}" href="{{ route('tenant.invoice.create', [$tenant->domain, 'wh' => $warehouse->id, 'branch_id' => $branch->id, ]) }}" class="btn btn-outline-dark" role="button">
+                    <a target="_blank" href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $invoice->id ]) }}" class="btn btn-outline-dark" role="button" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
                         <i class="fa fa-file-text-o"></i>
                     </a>
                 @endcan
@@ -108,8 +107,8 @@
         <div class="form-group">
         
              <label class="form-control-label">{{ __('Client') }}: 
-                <span class="tx-danger">*</span>
-                <strong id="loader-client_id"></strong>    
+                <span class="tx-danger"></span>
+                <strong id="loader-client_id"></strong>
              </label>
              @if (isset($clients))
                 <select name="client_id" id="client_id" class="form-control select2" style="width: 100%">
@@ -133,6 +132,7 @@
 
 </div><!-- row -->
 
+@if ($mode == 'edit')
 <div class="row hidden" id="btn-invoice-container" style="display:none">
     <div class="col-lg-12">
         <button class="btn btn-info btn-sm" type="button" id="btn-invoice" 
@@ -143,6 +143,7 @@
         </button>
     </div>
 </div><!-- row -->
+@endif
 
 <div id="invoice-container" {{$mode == 'create' ? ' style=display:none': null }}>
     @includeWhen($mode == 'edit', 'tenant.warehouse.invoice', [
@@ -160,8 +161,23 @@
     </div>
     <div class="col-lg-6">
         <div class="form-group mg-b-10-force">
-            <label class="form-control-label">{{ __('Referencias / Detalles Extras') }}: <span class="tx-danger">*</span> </label>
-            {!! Form::textarea('reference', null, ['class' => 'form-control', 'required' => 'required', 'rows' => 4, 'id' => 'reference', ]) !!}
+            <label class="form-control-label">{{ __('Referencias / Detalles Extras') }}: <span class="tx-danger"></span> </label>
+            {!! Form::textarea('reference', null, ['class' => 'form-control', 'rows' => 4, 'id' => 'reference', ]) !!}
+        </div>
+    </div>
+</div><!-- row -->
+
+<div class="row mg-t-10">
+    <div class="col-lg-6">
+        <div class="form-group mg-b-10-force">
+            <label class="form-control-label">{{ __('Total packages') }}: <span class="tx-danger">*</span></label>
+            {!! Form::text('tot_packages', null, ['class' => 'form-control', 'required' => 1, 'id' => 'tot_packages' , ]) !!}
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="form-group mg-b-10-force">
+            <label class="form-control-label">{{ __('Total weight') }}: <span class="tx-danger">*</span></label>
+            {!! Form::text('tot_weight', null, ['class' => 'form-control', 'required' => 1, 'id' => 'reference', ]) !!}
         </div>
     </div>
 </div><!-- row -->
@@ -175,7 +191,7 @@
     </div>
 </div>
 
-@if ($mode != 'edit')
+@if (!$invoice->total)
 <div class="row mg-t-25 justify-content-between">
     <div class="col-lg-12">
         <button id="btn-wh-save" type="submit" class="btn btn-primary bg-royal bd-1 bd-gray-400">{{ __('Save') }}</button>

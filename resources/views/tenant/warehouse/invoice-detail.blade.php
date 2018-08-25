@@ -51,17 +51,27 @@ $key = isset($key) ? $key : ':index:';
     <div class="col-lg-5">
         <div class="row">
 
-            <div class="col-5">
+            <div class="col-4">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('P/Vol') }}:</label>
                     {!! Form::text("invoice_detail[{$key}][vol_weight]", $idetail->vol_weight, ['class' => 'form-control form-control-sm inline-calc volumetric_weight', 'readonly' => '', 'data-i' => "{$key}", 'id' => "volumetric_weight-{$key}", ]) !!}
                 </div>
             </div>
 
-            <div class="col-5">
+            <div class="col-4">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('P/Real') }}:</label>
                     {!! Form::text("invoice_detail[{$key}][real_weight]", $idetail->real_weight, ['class' => 'form-control form-control-sm inline-calc real_weight', 'data-i' => "{$key}", 'id' => "real_weight-{$key}", ]) !!}
+                </div>
+            </div>
+
+            <div class="col-2">
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                <div class="form-check">
+                    {!! Form::checkbox("invoice_detail[{$key}][is_dhll]", '2.25', $idetail->is_dhll==true, ['class' => 'form-check-input is_dhll', 'data-i' => "{$key}", 'id' => "is_dhll-{$key}", ]) !!}
+                    <label class="form-check-label" for="is_dhll-{{ $key }}">DHL?</label>
                 </div>
             </div>
             

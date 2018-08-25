@@ -15,26 +15,58 @@
 {{ __('Invoice date', [], $lang) }}: {{ $invoice->created_at->format('d-m-Y') }}
 
 <table style="width: 100%" cellspacing="0">
-    <tr>
-        <th style="border: solid 1px;">{{ __('Qty', [], $lang) }}</th>
-        <th style="border: solid 1px;">{{ __('Type', [], $lang) }}</th>
-        <th style="border: solid 1px;">{{ __('Description', [], $lang) }}</th>
-        <th style="border: solid 1px;">{{ __('Purchase ID', [], $lang) }}</th>
-        <th style="border: solid 1px;text-align:right;">{{ __('Total', [], $lang) }}</th>
-    </tr>
-
+    @if (!$invoice->warehouse_id)
+        <tr>
+            <th style="border: solid 1px;">{{ __('Qty', [], $lang) }}</th>
+            <th style="border: solid 1px;">{{ __('Type', [], $lang) }}</th>
+            <th style="border: solid 1px;">{{ __('Description', [], $lang) }}</th>
+            <th style="border: solid 1px;">{{ __('Purchase ID', [], $lang) }}</th>
+            <th style="border: solid 1px;text-align:right;">{{ __('Total', [], $lang) }}</th>
+        </tr>
+     @else
+        <tr>
+            <th style="border: solid 1px;">{{ __('Qty', [], $lang) }}</th>
+            <th style="border: solid 1px;">{{ __('Type', [], $lang) }}</th>
+            <th style="border: solid 1px;">{{ __('Length', [], $lang) }}</th>
+            <th style="border: solid 1px;">{{ __('Width', [], $lang) }}</th>
+            <th style="border: solid 1px;">{{ __('Height', [], $lang) }}</th>
+            <th style="border: solid 1px;">{{ __('P/Vol', [], $lang) }}</th>
+            <th style="border: solid 1px;">{{ __('P/Real', [], $lang) }}</th>
+            <th style="border: solid 1px;">DHL?</th>
+        </tr>
+     @endif
     
     @foreach ($invoice->details as $detail)
-        <tr>
-            <td style="border: solid 1px;">{{ $detail->qty }}</td>
-            <td style="border: solid 1px;">{{ [1 => __('Online shopping', [], $lang), 2 => __('Card commission', [], $lang), ][$detail->type] }}</td>
-            <td style="border: solid 1px;">{{ $detail->description }}</td>
-            <td style="border: solid 1px;">{{ $detail->id_remote_store }}</td>
-            <td style="border: solid 1px;text-align:right;">${{ number_format($detail->total, 2) }}</td>
-        </tr>
+        @if (!$invoice->warehouse_id)
+            <tr>
+                <td style="border: solid 1px;">{{ $detail->qty }}</td>
+                <td style="border: solid 1px;">{{ [1 => __('Online shopping', [], $lang), 2 => __('Card commission', [], $lang), ][$detail->type] }}</td>
+                <td style="border: solid 1px;">{{ $detail->description }}</td>
+                <td style="border: solid 1px;">{{ $detail->id_remote_store }}</td>
+                <td style="border: solid 1px;text-align:right;">${{ number_format($detail->total, 2) }}</td>
+            </tr>
+        @else
+            <tr>
+                <td style="border: solid 1px;">{{ $detail->qty }}</td>
+                <td style="border: solid 1px;">{{ [1=>'Sobre',2=>'Bulto', 3=>'Paquete',4=>'Caja/Peq.', 5=>'Caja/Med.', 6=>'Caja/Grande', ][$detail->type] }}</td>
+                <td style="border: solid 1px;">{{ $detail->length }}</td>
+                <td style="border: solid 1px;">{{ $detail->width }}</td>
+                <td style="border: solid 1px;">{{ $detail->height }}</td>
+                <td style="border: solid 1px;">{{ $detail->vol_weight }}</td>
+                <td style="border: solid 1px;">{{ $detail->real_weight }}</td>
+                <td style="border: solid 1px;">{{ $detail->is_dhll ? 'DHL' : null }}</td>
+            </tr>
+        @endif    
+    
     @endforeach
     
 </table>
+
+@if ($invoice->warehouse_id)  
+<br><br>
+{{ __('Tracking numbers', [], $lang) }} <br>
+{!! $invoice->warehouse->trackings !!}
+@endif
 
 <br><br>
 <strong>

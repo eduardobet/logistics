@@ -26,6 +26,7 @@ class CreateInvoiceDetailsTable extends Migration
             $table->float('total')->nullable();
             $table->string('description')->nullable();
             $table->string('id_remote_store')->nullable();
+            $table->tinyInteger('is_dhll')->nullable()->default(0);
 
             $table->timestamps();
         });

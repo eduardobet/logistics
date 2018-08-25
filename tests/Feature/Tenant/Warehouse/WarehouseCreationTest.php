@@ -43,7 +43,7 @@ class WarehouseCreationTest extends TestCase
         $response->assertRedirect(route('tenant.warehouse.create', $tenant->domain));
 
         $response->assertSessionHasErrors([
-            'branch_from', 'branch_to', 'client_id', 'reference', 'type',
+            'branch_from', 'branch_to', 'type', 'tot_weight', 'tot_packages',
         ]);
     }
 
@@ -91,6 +91,8 @@ class WarehouseCreationTest extends TestCase
             'mailer_id' => $mailer->id,
             'qty' => 2,
             'gen_invoice' => 1,
+            'tot_packages' => 2,
+            'tot_weight' => 21,
 
             //
             'client_name' => $client->full_name,
@@ -100,8 +102,8 @@ class WarehouseCreationTest extends TestCase
             'total' => $client->vol_price * 21,
             'notes' => 'The notes of the invoice',
             'invoice_detail' => [
-                ['qty' => 1, 'type' => 1, 'length' => 12, 'width' => 12, 'height' => 12, 'real_weight' => 14,  ],
-                ['qty' => 1, 'type' => 2, 'length' => 10, 'width' => 10, 'height' => 10, 'real_weight' => 9 , ],
+                ['qty' => 1, 'type' => 1, 'length' => 12, 'width' => 12, 'height' => 12, 'vol_weight' => 13, 'real_weight' => 14, ],
+                ['qty' => 1, 'type' => 2, 'length' => 10, 'width' => 10, 'height' => 10, 'vol_weight' => 8, 'real_weight' => 9, ],
             ]
         ]);
         $response->assertStatus(302);
@@ -119,6 +121,8 @@ class WarehouseCreationTest extends TestCase
             'mailer_id' => $mailer->id,
             'qty' => 2,
             'status' => 'A',
+            'tot_packages' => 2,
+            'tot_weight' => 21,
         ]);
 
         $this->assertDatabaseHas('invoices', [
@@ -203,6 +207,8 @@ class WarehouseCreationTest extends TestCase
             'mailer_id' => $mailer->id,
             'qty' => 2,
             'gen_invoice' => 1,
+            'tot_packages' => 2,
+            'tot_weight' => 21,
 
             //
             'client_name' => $client->full_name,
@@ -212,8 +218,8 @@ class WarehouseCreationTest extends TestCase
             'total' => $client->real_price * 23,
             'notes' => 'The notes of the invoice',
             'invoice_detail' => [
-                ['qty' => 1, 'type' => 1, 'length' => 12, 'width' => 12, 'height' => 12, 'real_weight' => 14, ],
-                ['qty' => 1, 'type' => 2, 'length' => 10, 'width' => 10, 'height' => 10, 'real_weight' => 9, ],
+                ['qty' => 1, 'type' => 1, 'length' => 12, 'width' => 12, 'height' => 12, 'vol_weight' => 13, 'real_weight' => 14, ],
+                ['qty' => 1, 'type' => 2, 'length' => 10, 'width' => 10, 'height' => 10, 'vol_weight' => 8, 'real_weight' => 9, ],
             ]
         ]);
         $response->assertStatus(302);
@@ -291,6 +297,8 @@ class WarehouseCreationTest extends TestCase
             'mailer_id' => $mailer->id,
             'qty' => 2,
             'gen_invoice' => 1,
+            'tot_packages' => 2,
+            'tot_weight' => 21,
 
             //
             'client_name' => $client->full_name,
@@ -380,17 +388,19 @@ class WarehouseCreationTest extends TestCase
             'qty' => 2,
             'is_dhl' => true,
             'gen_invoice' => 1,
+            'tot_packages' => 2,
+            'tot_weight' => 21,
 
             //
             'client_name' => $client->full_name,
             'client_email' => $client->email,
             'total_volumetric_weight' => 21,
             'total_real_weight' => 23,
-            'total' => $branchB->real_price * 23,
+            'total' => $branchB->dhl_price * 23,
             'notes' => 'The notes of the invoice',
             'invoice_detail' => [
-                ['qty' => 1, 'type' => 1, 'length' => 12, 'width' => 12, 'height' => 12, 'real_weight' => 14, ],
-                ['qty' => 1, 'type' => 2, 'length' => 10, 'width' => 10, 'height' => 10, 'real_weight' => 9, ],
+                ['qty' => 1, 'type' => 1, 'length' => 12, 'width' => 12, 'height' => 12, 'vol_weight' => 13, 'real_weight' => 14, ],
+                ['qty' => 1, 'type' => 2, 'length' => 10, 'width' => 10, 'height' => 10, 'vol_weight' => 8, 'real_weight' => 9, ],
             ]
         ]);
         $response->assertStatus(302);

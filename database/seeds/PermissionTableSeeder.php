@@ -15,6 +15,11 @@ class PermissionTableSeeder extends Seeder
         $tenant = Tenant::whereId(1)->first();
 
         $tenant->permissions()->createMany([
+            // mailer
+            ["name" => "Registrar Remitentes", "slug" => "create-mailer", "header" => "Remitentes",],
+            ["name" => "Editar Remitentes", "slug" => "edit-mailer", "header" => "Remitentes",],
+            ["name" => "Ver Remitentes", "slug" => "show-mailer", "header" => "Remitentes",],
+
             // warehouse
             ["name" => "Registrar Warehouse", "slug" => "create-warehouse", "header" => "Warehouse",],
             ["name" => "Editar Warehouse", "slug" => "edit-warehouse", "header" => "Warehouse",],

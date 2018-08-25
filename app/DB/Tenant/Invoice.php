@@ -15,7 +15,7 @@ class Invoice extends Model
      */
     protected $fillable = [
         'created_by_code', 'tenant_id', 'updated_by_code', 'branch_id', 'client_name', 'client_email', 'status', 'volumetric_weight', 'real_weight', 'total',
-        'notes', 'warehouse_id', 'client_id', 'is_paid',
+        'notes', 'warehouse_id', 'client_id', 'is_paid', 'i_using',
     ];
 
     /**
@@ -70,6 +70,11 @@ class Invoice extends Model
     public function branch()
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class);
     }
 
     public function scopeWithAndWhereHas($query, $relation, $constraint)

@@ -2,6 +2,7 @@
 
 namespace Logistics\DB\Tenant;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
 use Logistics\Traits\TenantHasRelationships;
 
@@ -31,8 +32,6 @@ class Tenant extends Model
 
         static::saved(function ($tenant) {
             __do_forget_cache(__class__, ["{$tenant->domain}"], []);
-            
-            $tenant->touchEnvFile();
         });
     }
 
@@ -42,47 +41,26 @@ class Tenant extends Model
         return true;
     }
 
-    /**
-     * Format env file content
-     *
-     * @param  string $domainName
-     * @return string
-     */
-    private function getContent(string $domainName)
+    public function setConfigs()
     {
-        return $content = "APP_URL={$this->domain}\nAPP_DOMAIN={$this->domain}\nAPP_NAME=\"{$this->name}\"\nSESSION_DOMAIN={$domainName}\nTENANT_COUNTRY={$this->country_id}\nTENANT_TIMEZONE={$this->timezone}\nMAIL_DRIVER={$this->mail_driver}\nMAIL_HOST={$this->mail_host}\nMAIL_PORT={$this->mail_port}\nMAIL_USERNAME={$this->mail_username}\nMAIL_PASSWORD={$this->mail_password}\nMAIL_ENCRYPTION={$this->mail_encryption}\nMAIL_FROM_ADDRESS={$this->mail_from_address}\nMAIL_FROM_NAME=\"{$this->mail_from_name}\"\nMAILGUN_DOMAIN={$this->mailgun_domain}\nMAILGUN_SECRET={$this->mailgun_secret}";
-    }
+        Config::set('mail.from', ['address' => $this->mail_from_address, 'name' => $this->mail_from_name]);
+        Config::set('mail.driver', $this->mail_driver);
+        Config::set('mail.host', $this->mail_host);
+        Config::set('mail.port', $this->mail_port);
+        Config::set('mail.encryption', $this->mail_encryption);
+        Config::set('mail.username', $this->mail_username);
+        Config::set('mail.password', $this->mail_password);
+        Config::set('services.mailgun.domain', $this->mailgun_domain);
+        Config::set('services.mailgun.secret', $this->mailgun_secret);
 
-    /**
-     * Create the env file for the current saved app
-     *
-     * @return string
-     */
-    public function touchEnvFile()
-    {
-        $hostParts = explode('//', $this->domain);
-        $domainName = $this->domain; //$hostParts[1];
-        $envFile = base_path('envs/' . $domainName);
+        // app
+        Config::set('app.name', $this->name);
+        Config::set('app.url', $this->domain);
+        Config::set('app.domain', $this->domain);
+        Config::set('app.locale', $this->lang);
+        Config::set('app.country', $this->country_id);
+        Config::set('app.timezone', $this->timezone);
 
-        try {
-            \Illuminate\Support\Facades\File::put($envFile, $this->getContent($domainName));
-        } catch (\Exception $e) {
-        }
-
-
-        //\Illuminate\Support\Facades\Artisan::call('config:clear');
-
-        return $envFile;
-    }
-
-    public function touchEnvFileForConsole()
-    {
-        config([
-            'app.name' => $this->name,
-            'app.url' => $this->domain,
-            'app.locale' => $this->lang,
-            'app.country' => $this->country_id,
-            'app.timezone' => $this->timezone,
-        ]);
+        Config::set('session.domain', $this->domain);
     }
 }

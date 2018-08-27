@@ -47,8 +47,6 @@ class ResetPwdNotification extends Notification implements ShouldQueue
         $tenant = $notifiable->company;
         $lang = $tenant->lang ? $tenant->lang : localization()->getCurrentLocale();
 
-        $tenant->touchEnvFileForConsole();
-
         // URL::forceRootUrl($tenant->domain);
 
         $url = URL::temporarySignedRoute(

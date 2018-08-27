@@ -126,53 +126,31 @@ class TenantTest extends TestCase
     }
 
     /** @test */
-    public function it_touches_the_env_file_in_the_right_place()
-    {
-        $tenant = factory(TenantModel::class)->create();
-
-        // $domain = explode('//', $tenant->domain);
-        $domain = $tenant->domain;
-
-        $tenant->touchEnvFile();
-
-        //$envFile = base_path("envs/{$domain[1]}");
-        $envFile = base_path("envs/{$domain}");
-
-        $this->assertFileExists($envFile);
-
-        // File::delete($envFile);
-    }
-
-    /** @test */
     public function it_touches_the_env_file_with_the_right_content()
     {
         $tenant = factory(TenantModel::class)->create();
-        //$domain = explode('//', $tenant->domain)[1];
-        $domain = $tenant->domain;
-        $envFile = $tenant->touchEnvFile();
-        $contentArray = file($envFile);
 
-        $this->assertGreaterThan(0, count($contentArray));
+        $tenant->setConfigs();
 
-        $this->assertEquals([
-            "APP_URL={$tenant->domain}\n",
-            "APP_DOMAIN={$tenant->domain}\n",
-            "APP_NAME=\"{$tenant->name}\"\n",
-            "SESSION_DOMAIN={$domain}\n",
-            "TENANT_COUNTRY={$tenant->country_id}\n",
-            "TENANT_TIMEZONE={$tenant->timezone}\n",
-            "MAIL_DRIVER={$tenant->mail_driver}\n",
-            "MAIL_HOST={$tenant->mail_host}\n",
-            "MAIL_PORT={$tenant->mail_port}\n",
-            "MAIL_USERNAME={$tenant->mail_username}\n",
-            "MAIL_PASSWORD={$tenant->mail_password}\n",
-            "MAIL_ENCRYPTION={$tenant->mail_encryption}\n",
-            "MAIL_FROM_ADDRESS={$tenant->mail_from_address}\n",
-            "MAIL_FROM_NAME=\"{$tenant->mail_from_name}\"\n",
-            "MAILGUN_DOMAIN={$tenant->mailgun_domain}\n",
-            "MAILGUN_SECRET={$tenant->mailgun_secret}",
-        ], $contentArray);
+        $this->assertEquals(config('app.name'), $tenant->name);
+        $this->assertEquals(config('app.url'), $tenant->domain);
+        $this->assertEquals(config('app.domain'), $tenant->domain);
+        $this->assertEquals(config('app.locale'), $tenant->lang);
+        $this->assertEquals(config('app.country'), $tenant->country_id);
+        $this->assertEquals(config('app.timezone'), $tenant->timezone);
 
-        File::delete($envFile);
+        $this->assertEquals(config('session.domain'), $tenant->domain);
+
+        $this->assertEquals(config('mail.driver'), $tenant->mail_driver);
+        $this->assertEquals(config('mail.host'), $tenant->mail_host);
+        $this->assertEquals(config('mail.port'), $tenant->mail_port);
+        $this->assertEquals(config('mail.from.address'), $tenant->mail_from_address);
+        $this->assertEquals(config('mail.from.name'), $tenant->mail_from_name);
+        $this->assertEquals(config('mail.encryption'), $tenant->mail_encryption);
+        $this->assertEquals(config('mail.username'), $tenant->mail_username);
+        $this->assertEquals(config('mail.password'), $tenant->mail_password);
+
+        $this->assertEquals(config('services.mailgun.domain'), $tenant->mailgun_domain);
+        $this->assertEquals(config('services.mailgun.secret'), $tenant->mailgun_secret);
     }
 }

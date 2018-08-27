@@ -12,9 +12,13 @@ trait Tenant
      * Get the actual tenant based on the url
      * @return Eloquent
      */
-    protected function getTenant()
+    protected function getTenant($domain = null)
     {
-        $host = get_host();
+        if ($domain) {
+            $host = $domain;
+        } else {
+            $host = get_host();
+        }
 
         $tenant = cache()->rememberForever("$host", function () use ($host) {
             return Model::whereDomain($host)->first();

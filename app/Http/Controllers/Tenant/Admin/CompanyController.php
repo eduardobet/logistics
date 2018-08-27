@@ -51,8 +51,6 @@ class CompanyController extends Controller
             $this->saveRemoteAddr($request, $company);
             $this->saveConditions($request, $company);
 
-            $company->touchEnvFile();
-
             return redirect()->route('tenant.admin.company.edit', $request->domain)
                 ->with('flash_success', __('The :what has been updated.', ['what' => __('Company')]));
         }

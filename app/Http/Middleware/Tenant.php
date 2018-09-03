@@ -33,8 +33,6 @@ class Tenant
                 app()->singleton('tenant', function () use ($tenant) {
                     return $tenant;
                 });
-
-                dd(app('tenant'));
             }
 
             view()->share([

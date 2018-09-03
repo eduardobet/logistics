@@ -1,7 +1,7 @@
 @extends('layouts.tenant')
 
 @section('title')
-  {{ __('Branches') }} | {{ config('app.name', '') }}
+  {{ __('Clients') }} | {{ config('app.name', '') }}
 @endsection
 
 @section('content')

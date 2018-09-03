@@ -1,12 +1,15 @@
 <?php
 
 Route::group(['domain' => '{domain}', 'middleware' => 'tenant'], function () {
-    Route::get('/', function () {
-        return view()->shared('tenant');
-    })->name('tenant.home');
+    $type = auth()->check() && auth()->user()->isAdmin() ? 'admin' : 'employee';
+
+    Route::get('/', 'Tenant\Employee\DashboardController@index')->name("tenant.{$type}.dashboard.home")
+    ->middleware('auth')
+    ->name('tenant.home');
 
     // auth
     Route::group(['prefix' => 'auth'], function () {
+       
         // Authentication Routes...
         Route::get('login', 'Tenant\Auth\LoginController@showLoginForm')->name('tenant.auth.get.login');
         Route::post('login', 'Tenant\Auth\LoginController@login')->name('tenant.auth.post.login');

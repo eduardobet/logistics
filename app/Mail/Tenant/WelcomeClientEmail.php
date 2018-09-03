@@ -54,6 +54,8 @@ class WelcomeClientEmail extends Mailable
         $air = $addresses->where('type', 'A')->first();
         $maritime = $addresses->where('type', 'M')->first();
 
+        $this->tenant->setConfigs();
+
         return $this->subject(__('Welcome') . ' ' . $this->client->full_name)
             ->markdown('tenant.mails.welcome-client')
             ->with([

@@ -1,5 +1,10 @@
 <?php
 
+Breadcrumbs::for('tenant.admin.dashboard.home', function ($trail) {
+    $trail->add(__('Dashboard'), route('tenant.home', request()->domain));
+});
+
+
 Breadcrumbs::for('tenant.admin.dashboard', function ($trail) {
     $trail->add(__('Dashboard'), route('tenant.admin.dashboard', request()->domain));
 });

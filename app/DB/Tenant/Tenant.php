@@ -43,7 +43,8 @@ class Tenant extends Model
 
     public function setConfigs()
     {
-        Config::set('mail.from', ['address' => $this->mail_from_address, 'name' => $this->mail_from_name]);
+        Config::set('mail.from.address', $this->mail_from_address);
+        Config::set('mail.from.name', $this->mail_from_name);
         Config::set('mail.driver', $this->mail_driver);
         Config::set('mail.host', $this->mail_host);
         Config::set('mail.port', $this->mail_port);

@@ -26,6 +26,11 @@ trait ClientHasRelationShips
         return $this->first_name . ' ' . $this->last_name;
     }
 
+    public function tenant()
+    {
+        return $this->belongsTo(\Logistics\DB\Tenant\Tenant::class);
+    }
+
     public function scopeWithAndWhereHas($query, $relation, $constraint)
     {
         return $query->whereHas($relation, $constraint)

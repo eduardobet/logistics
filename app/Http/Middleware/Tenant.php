@@ -29,6 +29,14 @@ class Tenant
                 ->route('app.home')
                 ->with('flash_inactive_tenant', __('This client is inactive. Please contact your administrator!'));
         } else {
+            if (!app()->runningInConsole()) {
+                app()->singleton('tenant', function () use ($tenant) {
+                    return $tenant;
+                });
+
+                dd(app('tenant'));
+            }
+
             view()->share([
                 'tenant' => $tenant,
             ]);

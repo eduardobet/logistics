@@ -7,8 +7,10 @@ use Logistics\Traits\Tenant;
 use Logistics\DB\Tenant\Client;
 use Logistics\Traits\PaymentList;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Logistics\Exports\PaymentsExport;
 use Illuminate\Support\Facades\Validator;
+use Logistics\Mail\Tenant\PaymentCreated;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Notifications\Tenant\PaymentActivity;
 
@@ -131,6 +133,8 @@ class PaymentController extends Controller
             if (!$pending) {
                 $invoice->update(['is_paid' => true]);
             }
+
+            Mail::to($client = $invoice->client)->send(new PaymentCreated($tenant, $client, $invoice, $payment));
 
             return response()->json([
                 'error' => false,

@@ -18,7 +18,7 @@ class CustomMailTransportManager extends TransportManager
 
         
         if (!app()->environment('testing')) {
-            $tenant = $this->getTenant();
+            $tenant = $this->getTenant('middleton-services.test');
 
             if (!$tenant) {
                 $tenant = app('tenant');

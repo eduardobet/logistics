@@ -33,7 +33,7 @@ class WarehouseRequest extends AppFormRequest
             'trackings' => 'sometimes|string',
             'type' => 'required|in:A,M',
             'tot_packages' => 'required|integer',
-            'tot_weight' => 'required|integer',
+            'tot_weight' => 'required|numeric',
         ];
 
         if ($this->isEdit()) {

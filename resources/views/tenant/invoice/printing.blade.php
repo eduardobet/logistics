@@ -20,7 +20,11 @@
             </td>
         </tr>
 
-        <tr><td colspan="2">&nbsp;</td></tr>
+        <tr><td colspan="2" style="text-align:center">&nbsp;
+        @if (request('html'))
+            <button type="button" id="print-invoice">{{ __('Print :what', ['what' => __('Invoice') ]) }}</button>
+        @endif    
+        </td></tr>
 
         <tr>
             <td style="width:50%; padding-left:10px; vertical-align: top; border: solid 1px">
@@ -36,7 +40,12 @@
                 <div style="padding-left:10px;">
                     {{ $client->full_name }} / {{ $box }} <br>
                     {{ __('Telephones') }}: {{ $client->telephones }} <br>
-                    <h3>{{ __('Invoice') }}#: {{ $invoice->id }} <br>
+                    <h3>{{ __('Invoice') }}#: {{ $invoice->id }} 
+                        @if ($invoice->warehouse_id)
+                        &nbsp;&nbsp; /&nbsp;&nbsp; <a href="{{ route('tenant.warehouse.edit', [$tenant->domain, $invoice->warehouse_id, ]) }}" target="_blank">{{ __('Warehouse') }}#: {{ $invoice->warehouse_id }}</a>
+                        
+                        @endif
+                    <br>
                     {{ __('Invoice date') }}: {{ $invoice->created_at->format('d-m-Y') }}
                     </h3>
                 </div>
@@ -142,7 +151,16 @@
     <p>
         {{ $tenant->conditionsInvoice->first()->content }}
     </p>
-
-
+    @if (request('html'))
+    <script>
+        var $btnPrintInvoice = document.querySelector('#print-invoice');
+        if ($btnPrintInvoice) {
+            $btnPrintInvoice.addEventListener('click', function(e) {
+                window.open("{{ route('tenant.invoice.print-invoice', [$tenant->domain, $invoice->id, ]) }}",'_blank');
+                e.preventDefault();
+            });
+        }
+    </script>
+    @endif
   </body>
 </html>

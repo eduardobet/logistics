@@ -50,7 +50,7 @@
 
                 @can('create-invoice')
                     @if ($invoice->total)    
-                        <a target="_blank" href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $invoice->id ]) }}" class="btn btn-outline-dark" role="button" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
+                        <a target="_blank" href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $invoice->id, 'html' => '1', ]) }}" class="btn btn-outline-dark" role="button" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
                             <i class="fa fa-file-text-o"></i>
                         </a>
                     @endif
@@ -117,7 +117,7 @@
                     <option value="">----</option>
                     @foreach ($clients as $client)
                         <option value='{{ $client->id }}'
-                            data-pay_volume='{{ $client->pay_volume }}' data-special_rate='{{ $client->special_rate }}' data-special_maritime='{{ $client->special_maritime }}'
+                            data-pay_volume='{{ var_export($client->pay_volume) }}' data-special_rate='{{ var_export($client->special_rate) }}' data-special_maritime='{{ var_export($client->special_maritime) }}'
                             data-vol_price='{{ $client->vol_price }}'  data-real_price='{{ $client->real_price }}'
                             {{ (isset($warehouse) && $warehouse->client_id == $client->id) || old('client_id') == $client->id ? " selected": null }}
                         >

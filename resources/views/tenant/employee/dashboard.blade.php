@@ -13,7 +13,7 @@
     <div class="container">
 
         <div class="slim-pageheader">
-            {{ Breadcrumbs::render() }}
+            {{ Breadcrumbs::render()->toHtml() ? Breadcrumbs::render() : 'Dashboard' }}
             <h6 class="slim-pagetitle"> {{ $branch->name }} </h6>
          </div><!-- slim-pageheader -->
 

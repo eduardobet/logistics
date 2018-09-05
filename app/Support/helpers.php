@@ -31,9 +31,17 @@ if (!function_exists('get_host')) {
     function get_host(string $host = null)
     {
         if (is_null($host)) {
-            // $host = request()->getSchemeAndHttpHost();
+            $domain = request()->getHttpHost();
 
-            return request()->getHttpHost();
+            if (stripos($domain, 'www.') !== false) {
+                $parts = explode('www.', strtolower($domain));
+
+                if (isset($parts[1])) {
+                    $domain = $parts[1];
+                }
+            }
+
+            return $domain;
         }
 
         $hostParts = explode('.', $host);

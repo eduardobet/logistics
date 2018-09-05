@@ -250,7 +250,7 @@ class InvoiceController extends Controller
             'amountPaid' => $payments->sum('amount_paid')
         ];
 
-        if (app()->environment('testing')) {
+        if (app()->environment('testing') || request('html')) {
             return view('tenant.invoice.printing', $data);
         } else {
             $pdf = \PDF::loadView('tenant.invoice.printing', $data);

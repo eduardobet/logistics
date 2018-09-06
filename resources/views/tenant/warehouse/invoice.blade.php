@@ -31,54 +31,93 @@
 
 <div class="row mg-t-25">
 
-    <div class="col-4">
-        <div class="form-group mg-b-10-force">
-            <label class="form-control-label">Total P/Vol:&nbsp;</label>
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">
-                        <label class="ckbox wd-16 mg-b-0">
-                        <input type="checkbox" id="chk-t-volumetric-weight" name="chk_t_volumetric_weight"{{ $invoice->i_using == 'V' ? ' checked' : null }}><span></span>
-                        </label>
+    <div class="col-lg-5">
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group mg-b-10-force">
+                    <label class="form-control-label">Total P/Vol:&nbsp;</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <label class="ckbox wd-16 mg-b-0">
+                                <input type="checkbox" id="chk-t-volumetric-weight" name="chk_t_volumetric_weight"{{ $invoice->i_using == 'V' ? ' checked' : null }}><span></span>
+                                </label>
+                            </div>
+                        </div>
+                        {!! Form::text('total_volumetric_weight', $invoice->volumetric_weight, ['class' => 'form-control', 'id' => 'total_volumetric_weight', 'readonly' => '', ]) !!}
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                 <b>$</b> <strong id="dsp-t-vol"></strong>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                {!! Form::email('total_volumetric_weight', $invoice->volumetric_weight, ['class' => 'form-control', 'id' => 'total_volumetric_weight', 'readonly' => '', ]) !!}
+            </div>
+
+            <div class="col-6">
+                <div class="form-group mg-b-10-force">
+                    <label class="form-control-label">Total P/Real:&nbsp;</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <label class="ckbox wd-16 mg-b-0">
+                                <input type="checkbox" id="chk-t-real-weight" name="chk_t_real_weight"{{ $invoice->i_using == 'R' ? ' checked' : null }}><span></span>
+                                </label>
+                            </div>
+                        </div>
+                        {!! Form::text('total_real_weight', $invoice->real_weight, ['class' => 'form-control', 'id' => 'total_real_weight', 'readonly' => '', ]) !!}
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <b>$</b> <strong id="dsp-t-real"></strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </div><!-- col-lg-4 -->
 
-    <div class="col-4">
-        <div class="form-group mg-b-10-force">
-            <label class="form-control-label">Total P/Real:&nbsp;</label>
-            <div class="input-group">
-                <div class="input-group-prepend">
-                <div class="input-group-text">
-                    <label class="ckbox wd-16 mg-b-0">
-                    <input type="checkbox" id="chk-t-real-weight" name="chk_t_real_weight"{{ $invoice->i_using == 'R' ? ' checked' : null }}><span></span>
-                    </label>
+    <div class="col-lg-5">
+        <div class="row">
+            <div class="col-7">
+                <div class="form-group mg-b-10-force">
+                    <label class="form-control-label">Total {{ __('Cubic feet') }}:&nbsp;</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <label class="ckbox wd-16 mg-b-0">
+                                <input type="checkbox" id="chk-t-cubic-feet" name="chk_t_cubic_feet"{{ $invoice->i_using == 'C' ? ' checked' : null }}><span></span>
+                                </label>
+                            </div>
+                        </div>
+                        {!! Form::text('total_cubic_feet', $invoice->cubic_feet, ['class' => 'form-control', 'id' => 'total_cubic_feet', 'readonly' => '', ]) !!}
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <b>$</b> <strong id="dsp-t-cubic"></strong>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                </div>
-                {!! Form::email('total_real_weight', $invoice->real_weight, ['class' => 'form-control', 'id' => 'total_real_weight', 'readonly' => '', ]) !!}
             </div>
-        </div>
-    </div>
 
-    <div class="col-4">
-        <div class="form-group mg-b-10-force">
-            <label class="form-control-label">{{ __('Total to invoice') }}: <span class="tx-danger">*</span></label>
-            {!! Form::email('total', $invoice->total, ['class' => 'form-control', 'id' => 'total', 'placeholder' => '000,00$', 'readonly' => '', ]) !!}
-        </div>
-    </div>
-</div>
+            <div class="col-5">
+                <div class="form-group mg-b-10-force">
+                    <label class="form-control-label">{{ __('Maritime rate') }}: <span class="tx-danger"></span></label>
+                    {!! Form::text('maritime_rate', $invoice->cubic_feet ? $invoice->total / $invoice->cubic_feet : null, ['class' => 'form-control', 'id' => 'maritime_rate', ]) !!}
+                </div>
+            </div>
+        </div>    
+    </div><!-- col-lg-4 -->
 
-<div class="row mg-b-20">
-    <div class="col-4">
-        <strong id="dsp-t-vol"></strong>
-    </div>
-    <div class="col-4">
-        <strong id="dsp-t-real"></strong>
-    </div>
-    <div class="col-4">
-        <strong id="dsp-t-final"></strong>
-    </div>
+    <div class="col-lg-2">
+        <div class="row">
+            <div class="col">
+                <div class="form-group mg-b-10-force">
+                    <label class="form-control-label">{{ __('Total to invoice') }}: <span class="tx-danger">*</span></label>
+                    {!! Form::text('total', $invoice->total, ['class' => 'form-control', 'id' => 'total', 'placeholder' => '000,00$', 'readonly' => '', ]) !!}
+                </div>
+            </div>
+        </div>    
+    </div><!-- col-lg-4 -->
+    
 </div>

@@ -32,6 +32,7 @@
                   <th>{{ __('ID') }}</th>
                   <th>{{ __('Code') }}</th>
                   <th>{{ __('Name') }}</th>
+                  <th>{{ __('Color') }}</th>
                   <th>{{ __('Address') }}</th>
                   <th>{{ __('Telephones') }}</th>
                   <th class="text-center">{{ __('Actions') }}</th>
@@ -45,6 +46,13 @@
                       <th scope="row">{{ $branch->id }}</th>
                       <td>{{ $branch->code }}</td>
                       <td>{{ $branch->name }}</td>
+                      <td>
+                        @if ($branch->color)
+                          <span class="{{ $branch->color }}">
+                            <i class="fa fa-check-square-o"></i>  
+                          </span>
+                        @endif
+                      </td>
                       <td>{{ $branch->address }}</td>
                       <td>{{ $branch->telephones }}</td>
                       <td>

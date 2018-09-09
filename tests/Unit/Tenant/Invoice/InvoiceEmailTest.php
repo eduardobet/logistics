@@ -20,7 +20,7 @@ class InvoiceEmailTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $tenant = factory(TenantModel::class)->create();
+        $tenant = factory(TenantModel::class)->create(['lang' => 'en']);
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
         $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
 

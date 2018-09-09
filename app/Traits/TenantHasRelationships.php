@@ -73,4 +73,9 @@ trait TenantHasRelationships
     {
         return $this->hasMany(\Logistics\DB\Tenant\Payment::class);
     }
+
+    public function cargoEntries()
+    {
+        return $this->hasMany(\Logistics\DB\Tenant\CargoEntry::class);
+    }
 }

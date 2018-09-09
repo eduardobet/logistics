@@ -7,6 +7,7 @@ use Logistics\Traits\Tenant;
 use Logistics\DB\Tenant\Branch;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Http\Requests\Tenant\BranchRequest;
+use Logistics\DB\Tenant\Color;
 
 class BranchController extends Controller
 {
@@ -32,7 +33,9 @@ class BranchController extends Controller
 
     public function create()
     {
-        return view('tenant.branch.create');
+        return view('tenant.branch.create', [
+            'colors' => (new Color())->getColorAsList(),
+        ]);
     }
 
     public function store(BranchRequest $request)
@@ -52,10 +55,11 @@ class BranchController extends Controller
             'dv' => $request->dv,
             'direct_comission' => $request->has('direct_comission'),
             'should_invoice' => $request->has('should_invoice'),
-            'vol_price' => $request->vol_price,
-            'real_price' => $request->real_price,
-            'dhl_price' => $request->dhl_price,
-            'maritime_price' => $request->maritime_price,
+            'vol_price' => $request->vol_price ? $request->vol_price : 0,
+            'real_price' => $request->real_price ? $request->real_price : 0,
+            'dhl_price' => $request->dhl_price ? $request->dhl_price : 0,
+            'maritime_price' => $request->maritime_price ? $request->maritime_price : 0,
+            'color' => $request->color,
         ]);
 
         if ($branch) {
@@ -75,7 +79,10 @@ class BranchController extends Controller
     {
         $branchData = $this->getTenant()->branches()->findOrFail($id);
 
-        return view('tenant.branch.edit', compact('branchData'));
+        return view('tenant.branch.edit', [
+            'colors' => (new Color())->getColorAsList(),
+            'branchData' => $branchData,
+        ]);
     }
 
     public function update(BranchRequest $request)
@@ -97,10 +104,11 @@ class BranchController extends Controller
         $branch->direct_comission = $request->has('direct_comission');
         $branch->should_invoice = $request->has('should_invoice');
 
-        $branch->real_price = $request->real_price;
-        $branch->vol_price = $request->vol_price;
-        $branch->dhl_price = $request->dhl_price;
-        $branch->maritime_price = $request->maritime_price;
+        $branch->real_price = $request->real_price ? $request->real_price : 0;
+        $branch->vol_price = $request->vol_price ? $request->vol_price : 0;
+        $branch->dhl_price = $request->dhl_price ? $request->dhl_price : 0;
+        $branch->maritime_price = $request->maritime_price ? $request->maritime_price : 0;
+        $branch->color = $request->color;
 
         $updated = $branch->save();
 

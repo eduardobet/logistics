@@ -81,6 +81,7 @@ class BranchEditionTest extends TestCase
             'vol_price',
             'dhl_price',
             'maritime_price',
+            'color',
         ]);
     }
 
@@ -144,6 +145,7 @@ class BranchEditionTest extends TestCase
             'vol_price' => 1.75,
             'dhl_price' => 2.25,
             'maritime_price' => 250,
+            'color' => 'blue',
         ]);
 
         $this->assertDatabaseHas('branches', [
@@ -168,6 +170,7 @@ class BranchEditionTest extends TestCase
             'vol_price' => 1.75,
             'dhl_price' => 2.25,
             'maritime_price' => 250,
+            'color' => 'blue',
         ]);
 
         $response->assertRedirect(route('tenant.admin.branch.list', $tenant->domain));

@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
         $this->call(CountryTableSeeder::class);
         $this->call(DepartmentTableSeeder::class);
         $this->call(ZoneTableSeeder::class);
+        $this->call(ColorTableSeeder::class);
+        $this->call(ColorTranslationTableSeeder::class);
 
         if (!app()->environment('production')) {
             $this->call(TenantSeeder::class);

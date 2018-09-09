@@ -59,6 +59,22 @@
 </div>
 
 <div class="row">
+    <div class="col-lg-12">
+        <div class="form-group">
+            <label class="form-control-label">{{ __('Color') }}: <span class="tx-danger">*</span></label>
+            <select name="color" id="color" class="form-control select2" style="width: 100%">
+                <option value="">---</option>
+                @foreach ($colors as $color)
+                    <option value="{{ $color->class_name }}"{{ $color->class_name == old('color', $branchData->color) ? " selected" : null }}>
+                       <span class="{{$color->class_name}}"></span> {{ $color->translation->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="row">
 
     <div class="col-lg-3 col-sm-6">
         <div class="form-group">

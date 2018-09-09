@@ -29,3 +29,11 @@
 @include('tenant.common._footer')
 
 @endsection
+
+@section('xtra_scripts')
+    <script>
+        $(function() {
+            $("#color").select2()
+        })
+    </script>
+@endsection

@@ -39,7 +39,7 @@
                     <p class="earning-label">{{ __('Today profits') }}</p>
                     
                     @can('show-payment')
-                      <a href="{{ route('tenant.payment.list', [$tenant->domain, 'branch_id' => $branch->id]) }}" class="statement-link"> {{ __('Show movements') }} <i class="fa fa-angle-right mg-l-5"></i></a>
+                      <a href="{{ route('tenant.payment.list', [$tenant->domain, 'branch_id' => $branch->id, 'from' => date('Y-m-d'), 'to' => date('Y-m-d') ]) }}" class="statement-link"> {{ __('Show movements') }} <i class="fa fa-angle-right mg-l-5"></i></a>
                     @endcan
 
                   </div>

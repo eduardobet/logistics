@@ -29,7 +29,7 @@ class CreateInvoicesTable extends Migration
             $table->float('total');
             $table->text("notes")->nullable();
             $table->boolean("is_paid")->nullable()->default(false);
-            $table->string("i_using", 1)->nullable(); // [R]eal, V[Olume]
+            $table->string("i_using", 1)->nullable(); // [R]eal, V[Olume], C[ubic feet]
 
             $table->timestamps();
         });

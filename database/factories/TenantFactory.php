@@ -4,16 +4,16 @@ use Faker\Generator as Faker;
 use Logistics\DB\Tenant\Tenant;
 
 $factory->define(Tenant::class, function (Faker $faker) {
-    $domain = app()->environment('production') ? '507ofertas.com' : 'middleton-services.test';
+    $domain = app()->environment('production') ? 'sealcargotrack.com' : 'sealcargotrack.test';
     
     return [
         'domain' => $domain,
-        'name' => 'Middleton Services S.A.',
+        'name' => 'Seal Logistics',
         'status' => 'A',
-        'lang' => 'en',
+        'lang' => 'es',
         'address' => 'Centro Comercial Los Andes, Local G9-4, Arriba de las oficinas de Claro Pasillo de Cable Onda',
         'telephones' => '399-5706, 394-2899, 6519-4037',
-        'emails' => "prla@tenant.com",
+        'emails' => "prla@sealcargotrack.com",
         'ruc' => "RUC",
         'dv' => "DV",
         'country_id' => 1,

@@ -1,6 +1,7 @@
 {
     "Actions": "Acciones",
     "Active": "Activo",
+    "Account activation": "Activación de cuenta",
     "Activate reception branch": "Activar sucursal recibimiento",
     "Activate warehouse invoice": "Activar facturación en warehouse",
     "Activity": "Actividades",
@@ -36,6 +37,7 @@
     "Country": "País",
     "Consignee": "Consignatario",
     "Create": "Crear",
+    "Create your password": "Crear tu contraseña",
     "Creating :what": "Creando :what",
     "created a payment": "ha creado un pago",
     "created a warehouse": "ha creado un almacén",

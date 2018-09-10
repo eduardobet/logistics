@@ -24,10 +24,10 @@ class AccountActivationController extends Controller
             ->first();
 
         if (!$employee) {
-            return redirect()->route('tenant.home', $tenant->domain)->with('flash_error', __('We could not find a user associated with this email!'));
+            return redirect()->route('tenant.auth.get.login', $tenant->domain)->with('flash_error', __('We could not find a user associated with this email!'));
         }
 
-        return view('tenant.auth.unlock', compact('user'));
+        return view('tenant.auth.unlock', compact('employee'));
     }
 
     public function unlock(Request $request)
@@ -39,7 +39,7 @@ class AccountActivationController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('tenant.home', $request->domain)
+            return redirect()->route('tenant.auth.get.login', $request->domain)
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -53,7 +53,7 @@ class AccountActivationController extends Controller
             ->first();
 
         if (!$employee) {
-            return redirect()->route('tenant.home', $request->domain)->with('flash_error', __('We could not find a user associated with this email!'));
+            return redirect()->route('tenant.auth.get.login', $request->domain)->with('flash_error', __('We could not find a user associated with this email!'));
         }
 
         $employee->password = bcrypt($request->password);

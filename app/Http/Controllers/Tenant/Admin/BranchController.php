@@ -35,6 +35,7 @@ class BranchController extends Controller
     {
         return view('tenant.branch.create', [
             'colors' => (new Color())->getColorAsList(),
+            'branchData' => (new Branch()),
         ]);
     }
 

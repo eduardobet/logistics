@@ -54,6 +54,8 @@ trait WarehouseHasRelationShips
             $using = ['i_using' => 'R'];
         } elseif ($request->has('chk_t_volumetric_weight')) {
             $using = ['i_using' => 'V'];
+        } elseif ($request->has('chk_t_cubic_feet')) {
+            $using = ['i_using' => 'C'];
         }
 
         $invoice = $this->invoice()->updateOrCreate(
@@ -67,6 +69,7 @@ trait WarehouseHasRelationShips
                 'client_email' => $request->client_email,
                 'volumetric_weight' => $request->total_volumetric_weight,
                 'real_weight' => $request->total_real_weight,
+                'cubic_feet' => $request->total_cubic_feet,
                 'total' => $request->total,
                 'notes' => $request->notes,
             ] + $using

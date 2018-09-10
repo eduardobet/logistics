@@ -7,6 +7,7 @@ use Logistics\DB\User;
 use Logistics\DB\Tenant\Box;
 use Logistics\DB\Tenant\Branch;
 use Logistics\DB\Tenant\Client;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -420,5 +421,62 @@ class PaymentCreationTest extends TestCase
         $invoice = $invoice->fresh();
         
         $this->assertEquals(true, (bool)$invoice->is_paid);
+    }
+
+    /** @test */
+    public function the_client_receives_an_email_with_his_payment_voucher()
+    {
+        $this->withoutExceptionHandling();
+
+        Mail::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+        $admin->branchesForInvoice()->sync([$branch->id,]);
+
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'pay_volume' => true, 'vol_price' => 2.00 ]);
+        $box = factory(Box::class)->create([
+            'tenant_id' => $tenant->id,
+            'client_id' => $client->id,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
+        ]);
+
+        $invoice = $tenant->invoices()->create([
+            'branch_id' => $branch->id,
+            'client_id' => $client->id,
+            'total' => 100,
+        ]);
+
+        $detail = $invoice->details()->create([
+            'qty' => 1,
+            'type' => 1,
+            'description' => 'Buying from amazon',
+            'id_remote_store' => '122452222',
+            'total' => 100,
+        ]);
+
+        \Gate::define('create-payment', function ($admin) {
+            return true;
+        });
+
+        $response = $this->actingAs($admin)->post(route('tenant.payment.store', [$tenant->domain]), [
+            'invoice_id' => $invoice->id,
+            'amount_paid' => 100,
+            'payment_method' => 1,
+            'payment_ref' => 'The invoice has been paid.',
+        ], $this->headers());
+
+        $invoice = $invoice->fresh();
+        $payment = $invoice->fresh()->payments->fresh()->first();
+
+        Mail::assertQueued(\Logistics\Mail\Tenant\PaymentCreated::class, function ($mail) use ($tenant, $client, $invoice, $payment) {
+            return $mail->hasTo($client->email) &&
+             $mail->invoice->id = $invoice->id &&
+             $mail->payment->id = $payment->id;
+        });
     }
 }

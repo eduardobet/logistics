@@ -3,9 +3,14 @@
 Route::group(['domain' => '{domain}', 'middleware' => 'tenant'], function () {
     $type = auth()->check() && auth()->user()->isAdmin() ? 'admin' : 'employee';
 
-    Route::get('/', 'Tenant\Employee\DashboardController@index')->name("tenant.{$type}.dashboard.home")
-    ->middleware('auth')
+    Route::get('/home', function () {
+        return "";
+    })
     ->name('tenant.home');
+
+    Route::get('/', 'Tenant\Employee\DashboardController@index')
+    ->middleware('auth')
+    ->name("tenant.{$type}.dashboard.home");
 
     // auth
     Route::group(['prefix' => 'auth'], function () {

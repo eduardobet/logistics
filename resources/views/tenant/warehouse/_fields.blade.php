@@ -50,7 +50,7 @@
 
                 @can('create-invoice')
                     @if ($invoice->total)    
-                        <a target="_blank" href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $invoice->id ]) }}" class="btn btn-outline-dark" role="button" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
+                        <a target="_blank" href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $invoice->id, 'html' => '1', ]) }}" class="btn btn-outline-dark" role="button" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
                             <i class="fa fa-file-text-o"></i>
                         </a>
                     @endif

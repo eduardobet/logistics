@@ -15,14 +15,13 @@
                 @endcan
 
                 @can('show-client')
-                  <li><a href="#!">{{ __('Search client') }}</a></li>
                   <li><a href="{{ route('tenant.client.list', $tenant->domain) }}">{{ __('Client list') }}</a></li>
                 @endcan
               </ul>
             </div><!-- dropdown-menu -->
           </li>
 
-          <li class="nav-item with-sub {{ active(['tenant.warehouse.create', 'tenant.warehouse.list','tenant.warehouse.edit']) }}">
+          <li class="nav-item with-sub {{ active(['tenant.warehouse.create', 'tenant.warehouse.list','tenant.warehouse.edit', 'tenant.warehouse.cargo-entry.create', 'tenant.warehouse.cargo-entry.edit', 'tenant.warehouse.cargo-entry.list']) }}">
             <a class="nav-link" href="#">
               <i class="icon ion-ios-box-outline"></i>
               <span>{{ __('Warehouse' )}}</span>
@@ -34,12 +33,11 @@
                 @endcan
 
                 @can('show-warehouse')  
-                  <li><a href="#">{{ __('Search warehouse') }}</a></li>
                   <li><a href="{{ route('tenant.warehouse.list', $tenant->domain) }}">{{ __('Warehouse list') }}</a></li>
                 @endcan
 
-                <li><a href="#">{{ __('Bill package') }}</a></li>
-                <li><a href="#">{{ __('Order package') }}</a></li>
+                <li><a href="{{ route('tenant.warehouse.cargo-entry.create', $tenant->domain) }}">{{ __('Cargo entry') }}</a></li>
+                <li><a href="{{ route('tenant.warehouse.cargo-entry.list', $tenant->domain) }}">{{ __('Cargo entries') }}</a></li>
               </ul>
             </div><!-- dropdown-menu -->
           </li>
@@ -55,8 +53,6 @@
                   <li><a href="{{ route('tenant.invoice.create', [$tenant->domain, 'branch_id' => $branch->id, ]) }}">{{ __('New invoice') }}</a></li>
                 @endcan
 
-                <li><a href="#">{{ __('Search invoice') }}</a></li>
-                <li><a href="#">{{ __('New payment') }}</a></li>
                 <li><a href="{{ route('tenant.invoice.list', $tenant->domain) }}">{{ __('Invoices list') }}</a></li>
               </ul>
             </div><!-- dropdown-menu -->
@@ -70,9 +66,9 @@
             <div class="sub-item">
               <ul>
                 <li><a href="{{ route('tenant.payment.list', [$tenant->domain, 'branch_id' => $branch->id, ])  }}">{{ __('Payments') }}</a></li>
-                <li><a href="#">{{ __('New expense') }}</a></li>
+                <!--<li><a href="#">{{ __('New expense') }}</a></li>
                 <li><a href="#">{{ __('Expense list') }}</a></li>
-                <li><a href="#">{{ __('Petty cash') }}</a></li>
+                <li><a href="#">{{ __('Petty cash') }}</a></li>-->
               </ul>
             </div><!-- dropdown-menu -->
           </li>

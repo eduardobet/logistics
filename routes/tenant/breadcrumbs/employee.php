@@ -88,3 +88,19 @@ Breadcrumbs::for('tenant.get.search', function ($trail) use ($type) {
     $trail->parent("tenant.{$type}.dashboard");
     $trail->add(__('Search'), '');
 });
+
+// warehouses
+Breadcrumbs::for('tenant.warehouse.cargo-entry.list', function ($trail) use ($type) {
+    $trail->parent("tenant.{$type}.dashboard");
+    $trail->add(__('Cargo entries'), '');
+});
+Breadcrumbs::for('tenant.warehouse.cargo-entry.create', function ($trail) use ($type) {
+    $trail->parent("tenant.{$type}.dashboard");
+    $trail->add(__('Cargo entries'), route('tenant.warehouse.cargo-entry.list', request()->domain));
+    $trail->add(__('Creating :what', ['what' => __('Cargo entry')]), route('tenant.warehouse.cargo-entry.create', request()->domain));
+});
+Breadcrumbs::for('tenant.warehouse.cargo-entry.show', function ($trail) use ($type) {
+    $trail->parent("tenant.{$type}.dashboard");
+    $trail->add(__('Cargo entries'), route('tenant.warehouse.cargo-entry.list', request()->domain));
+    $trail->add(__('Showing :what', ['what' => __('Cargo entry')]), route('tenant.warehouse.cargo-entry.show', [request()->domain, request('id')]));
+});

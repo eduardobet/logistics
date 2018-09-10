@@ -57,7 +57,7 @@ class LoginTest extends TestCase
         $response->assertViewIs('tenant.auth.login');
 
         $response = $this->post(route('tenant.auth.post.login', $tenant->domain), ['email' => $admin->email, 'password' => 'secret123']);
-        $response->assertRedirect('en/admin/dashboard');
+        $response->assertRedirect('es/admin/dashboard');
 
         $this->assertTrue(auth()->check());
     }
@@ -71,7 +71,7 @@ class LoginTest extends TestCase
         $employee = factory(User::class)->states('employee')->create(['tenant_id' =>$tenant->id, ]);
 
         $response = $this->post(route('tenant.auth.post.login', $tenant->domain), ['email' => $employee->email, 'password' => 'secret123']);
-        $response->assertRedirect('en/employee/dashboard');
+        $response->assertRedirect('es/employee/dashboard');
 
         $this->assertTrue(auth()->check());
     }

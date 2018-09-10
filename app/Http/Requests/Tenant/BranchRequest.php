@@ -38,10 +38,11 @@ class BranchRequest extends AppFormRequest
             'vol_price' => 'sometimes|numeric',
             'dhl_price' => 'sometimes|numeric',
             'maritime_price' => 'sometimes|numeric',
+            'color' => 'required',
         ];
 
         if ($this->isEdit()) {
-            $rules['name'] = ['required', 'string', 'between:6,255', Rule::unique('branches')->ignore($this->id)];
+            $rules['name'] = ['required', 'string', 'between:3,255', Rule::unique('branches')->ignore($this->id)];
 
             $this->redirectRoute = 'tenant.admin.branch.edit';
         }

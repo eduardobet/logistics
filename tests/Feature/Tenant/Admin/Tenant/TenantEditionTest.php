@@ -75,7 +75,7 @@ class TenantEditionTest extends TestCase
 
         $this->assertDatabaseHas('tenants', [
             'name' => 'Company Name Updated',
-            'domain' => 'middleton-services.test',
+            'domain' => 'sealcargotrack.test',
             'status' => 'A',
             'ruc' => 'RUC',
             'dv' => 'DV',
@@ -147,8 +147,8 @@ class TenantEditionTest extends TestCase
 
         $response->assertSessionHasErrors(['domain', 'status']);
         $response->assertRedirect(route('tenant.admin.company.edit', $tenant->domain));
-        $this->assertEquals('middleton-services.test', $tenant->fresh()->first()->domain);
-        $this->assertEquals('Middleton Services S.A.', $tenant->fresh()->first()->name);
+        $this->assertEquals('sealcargotrack.test', $tenant->fresh()->first()->domain);
+        $this->assertEquals('Seal Logistics', $tenant->fresh()->first()->name);
     }
 
     /** @test */
@@ -183,8 +183,8 @@ class TenantEditionTest extends TestCase
             'conditions.*.cstatus',
         ]);
         $response->assertRedirect(route('tenant.admin.company.edit', $tenant->domain));
-        $this->assertEquals('middleton-services.test', ($tenant = $tenant->fresh()->first())->domain);
-        $this->assertEquals('Middleton Services S.A.', $tenant->name);
+        $this->assertEquals('sealcargotrack.test', ($tenant = $tenant->fresh()->first())->domain);
+        $this->assertEquals('Seal Logistics', $tenant->name);
     }
 
     /** @test */

@@ -29,7 +29,7 @@ class EmployeeActivationTest extends TestCase
             'token' => $employee->token
         ]));
 
-        $response->assertRedirect(route('tenant.home', $tenant->domain));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
         $response->assertSessionHas('flash_error');
     }
 
@@ -44,7 +44,7 @@ class EmployeeActivationTest extends TestCase
 
         $response = $this->post(route('tenant.employee.post.unlock', [$tenant->domain]));
 
-        $response->assertRedirect(route('tenant.home', $tenant->domain));
+        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
         $response->assertSessionHas('errors');
         $this->assertDatabaseHas('users', [
             'email' => $employee->email,

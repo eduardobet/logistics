@@ -8,6 +8,7 @@ use Logistics\DB\Tenant\Invoice;
 use Logistics\DB\Tenant\Payment;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Logistics\Notifications\Tenant\WarehouseInvoiced;
 
 class InvoiceCreated extends Mailable implements ShouldQueue
 {
@@ -38,6 +39,8 @@ class InvoiceCreated extends Mailable implements ShouldQueue
         $box = $client->boxes()->active()->get()->first();
         $box = "{$box->branch_code}{$client->id}";
         $lang = $this->tenantLang ? : localization()->getCurrentLocale();
+
+        $client->notify(new WarehouseInvoiced());
         
         return $this->subject(__('Invoice', [], $lang) . ' #' . $this->invoice->id)
             ->markdown('tenant.mails.invoice')

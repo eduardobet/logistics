@@ -4,11 +4,12 @@ namespace Logistics\DB\Tenant;
 
 use Logistics\Traits\Tenant;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Logistics\Traits\ClientHasRelationShips;
 
 class Client extends Model
 {
-    use Tenant, ClientHasRelationShips;
+    use Tenant, ClientHasRelationShips, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -54,5 +55,18 @@ class Client extends Model
 
             __do_forget_cache(__class__, $keys, []);
         });
+    }
+
+    /**
+     * Route notifications for the Nexmo channel.
+     *
+     * @param  \Illuminate\Notifications\Notification  $notification
+     * @return string
+     */
+    public function routeNotificationForNexmo($notification)
+    {
+        // return '+50762285507';
+
+        return '+50762325312';
     }
 }

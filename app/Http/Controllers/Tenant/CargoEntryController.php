@@ -18,6 +18,8 @@ class CargoEntryController extends Controller
      */
     public function index()
     {
+        $branch = auth()->user()->currentBranch();
+
         $cargoEntries = $this->getTenant()->cargoEntries()->with([
             'branch' => function ($branch) {
                 $branch->select(['id', 'name']);
@@ -25,7 +27,8 @@ class CargoEntryController extends Controller
             'creator' => function ($creator) {
                 $creator->select(['id', 'first_name', 'last_name',]);
             }
-        ]);
+        ])
+        ->where('branch_id', $branch->id);
 
         $searching = 'N';
 

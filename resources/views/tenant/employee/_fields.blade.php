@@ -9,7 +9,7 @@
         <a class="nav-link" href="#permissions" data-toggle="tab">{{ __('Permissions') }}</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#branch-list" data-toggle="tab">{{ __('Branch list') }}</a>
+        <a class="nav-link" href="#branch-list" data-toggle="tab">{{ __('Branch list') }} ({{ __('Warehouse') }})</a>
     </li>
 </ul>
 
@@ -83,7 +83,21 @@
                     </div>
                 </div>
 
-                <div class="col-lg-9">
+                <div class="col-lg-4">
+                    <div class="form-group mg-b-10-force">
+                        <label class="form-control-label">{{__('Branch')}}: <span class="tx-danger">*</span></label>
+                        <select name="branches[]" id="in_branch" class="form-control select2" style="width: 100%" required>
+                            <option value="">---</option>
+                            @foreach ($branches as $inBranch)
+                                <option value="{{ $inBranch->id }}"{{ $inBranch->id == old('branches.0', ($employee->branches->count() ? $employee->branches->first()->id : null)) ? ' selected' : null }}>
+                                    {{ $inBranch->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
                     <div class="form-group">
                         <label class="form-control-label">{{ __('Address') }}:</label>
                         {{ Form::text('address', null, ['class' => 'form-control', ]) }}

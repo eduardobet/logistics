@@ -84,7 +84,7 @@
                 <li><a href="{{ route('tenant.admin.company.edit', $tenant->domain) }}">{{ __('Configuration') }}</a></li>
                 <li><a href="{{ route('tenant.admin.branch.list', $tenant->domain) }}">{{ __('Branches') }}</a></li>
                 <li><a href="{{ route('tenant.admin.position.list', $tenant->domain) }}">{{ __('Positions') }}</a></li>
-                <li><a href="{{ route('tenant.admin.employee.list', $tenant->domain) }}">{{ __('Users') }}</a></li>
+                <li><a href="{{ route('tenant.admin.employee.list', $tenant->domain) }}">{{ __('Employees') }}</a></li>
                 @endif
 
                 @can('show-mailer')

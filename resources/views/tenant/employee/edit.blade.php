@@ -19,7 +19,6 @@
 
          <div class="section-wrapper">
             {!! Form::model($employee, ['route' => ['tenant.admin.employee.update', $tenant->domain], 'method' => 'PATCH']) !!}
-            {!! Form::hidden('branches[]', $branch->id) !!}
             {!! Form::hidden('id', $employee->id) !!}
             
                 @include('tenant.employee._fields',  [
@@ -34,3 +33,12 @@
 @include('tenant.common._footer')
 
 @endsection
+
+@section('xtra_scripts')
+    <script>
+        var cache = {};
+        $(function() {
+            $("#in_branch").select2({width: 'resolve'});
+        });
+    </script>
+@stop

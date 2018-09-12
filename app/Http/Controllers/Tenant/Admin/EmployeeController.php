@@ -83,7 +83,7 @@ class EmployeeController extends Controller
     public function edit($domain, $id)
     {
         $tenant = $this->getTenant();
-        $employee = $tenant->employees()->where('id', $id)->firstOrFail();
+        $employee = $tenant->employees()->with('branches')->where('id', $id)->firstOrFail();
 
         return view('tenant.employee.edit', [
             'employee' => $employee,

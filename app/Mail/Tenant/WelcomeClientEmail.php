@@ -8,8 +8,9 @@ use Illuminate\Mail\Mailable;
 use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Tenant;
 use Illuminate\Queue\SerializesModels;
+use Logistics\Mail\ConfigurableMailable;
 
-class WelcomeClientEmail extends Mailable
+class WelcomeClientEmail extends ConfigurableMailable
 {
     use Queueable, SerializesModels;
 
@@ -54,7 +55,19 @@ class WelcomeClientEmail extends Mailable
         $air = $addresses->where('type', 'A')->first();
         $maritime = $addresses->where('type', 'M')->first();
 
-        $this->tenant->setConfigs();
+        // $this->tenant->setConfigs();
+
+        app()->forgetInstance('swift.transport');
+        app()->forgetInstance('swift.mailer');
+        app()->forgetInstance('mailer');
+
+        $transport = (new \Swift_SmtpTransport($this->tenant->mail_host, $this->tenant->mail_port))
+            ->setUsername($this->tenant->mail_username)
+            ->setPassword($this->tenant->mail_password)
+            ->setEncryption(null);
+
+        \Mail::setSwiftMailer(new \Swift_Mailer($transport));
+
 
         return $this->subject(__('Welcome') . ' ' . $this->client->full_name)
             ->markdown('tenant.mails.welcome-client')

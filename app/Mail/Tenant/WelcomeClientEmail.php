@@ -10,7 +10,7 @@ use Logistics\DB\Tenant\Tenant;
 use Illuminate\Queue\SerializesModels;
 use Logistics\Mail\ConfigurableMailable;
 
-class WelcomeClientEmail extends ConfigurableMailable
+class WelcomeClientEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -54,22 +54,10 @@ class WelcomeClientEmail extends ConfigurableMailable
         $addresses = $this->tenant->remoteAddresses;
         $air = $addresses->where('type', 'A')->first();
         $maritime = $addresses->where('type', 'M')->first();
+        $lang = $this->tenant->lang ? : localization()->getCurrentLocale();
 
-        // $this->tenant->setConfigs();
-
-        app()->forgetInstance('swift.transport');
-        app()->forgetInstance('swift.mailer');
-        app()->forgetInstance('mailer');
-
-        $transport = (new \Swift_SmtpTransport($this->tenant->mail_host, $this->tenant->mail_port))
-            ->setUsername($this->tenant->mail_username)
-            ->setPassword($this->tenant->mail_password)
-            ->setEncryption(null);
-
-        \Mail::setSwiftMailer(new \Swift_Mailer($transport));
-
-
-        return $this->subject(__('Welcome') . ' ' . $this->client->full_name)
+        return $this->subject(__('Welcome', [], $lang) . ' ' . $this->client->full_name)
+            ->from($this->tenant->mail_from_address, $this->tenant->mail_from_name)
             ->markdown('tenant.mails.welcome-client')
             ->with([
                 'tenant' => $this->tenant,
@@ -78,7 +66,7 @@ class WelcomeClientEmail extends ConfigurableMailable
                 'air' => $air,
                 'maritime' => $maritime,
                 'branch' => $branch,
-                'lang' => $this->tenant->lang ? : localization()->getCurrentLocale(),
+                'lang' => $lang,
                 'subcopy' => $branch->address . '<br>' . $branch->telephones
             ]);
     }

@@ -248,8 +248,6 @@ class ClientController extends Controller
             return response()->json(['error' => true, 'msg' => __('Not Found.'), ], 404);
         }
 
-        // event(new ClientWasCreatedEvent($tenant, $client));
-
         dispatch(new \Logistics\Jobs\Tenant\SendClientWelcomeEmail($tenant, $client));
 
         return response()->json(['error' => false, 'msg' => __('Success'), ]);

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\Mail\Tenant\WelcomeClientEmail;
 use Logistics\DB\Tenant\Tenant as TenantModel;
+use Logistics\Jobs\Tenant\SendClientWelcomeEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Logistics\Events\Tenant\ClientWasCreatedEvent;
 
@@ -21,7 +22,7 @@ class WelcomeClientEmailTest extends TestCase
     /** @test */
     public function email_has_the_correct_data()
     {
-        $tenant = factory(TenantModel::class)->create();
+        $tenant = factory(TenantModel::class)->create(['lang' => 'en']);
         $tenant->remoteAddresses()->createMany([
             ['type' => 'A', 'address' => 'In the middle of remote air', 'telephones' => '555-5555', 'status' => 'A', ],
             ['type' => 'M', 'address' => 'In the middle of remote maritimes', 'telephones' => '555-5555', 'status' => 'A', ],
@@ -83,7 +84,7 @@ class WelcomeClientEmailTest extends TestCase
             'branch_code' => $branch->code,
         ]);
 
-        event(new ClientWasCreatedEvent($tenant, $client));
+        dispatch(new SendClientWelcomeEmail($tenant, $client));
 
         Mail::assertSent(WelcomeClientEmail::class, function ($mail) use ($tenant, $client) {
             return $mail->hasTo($client->email)

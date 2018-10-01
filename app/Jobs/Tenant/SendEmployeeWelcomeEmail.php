@@ -2,16 +2,17 @@
 
 namespace Logistics\Jobs\Tenant;
 
+use Logistics\DB\User;
 use Illuminate\Bus\Queueable;
-use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Tenant;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Logistics\Mail\Tenant\WelcomeEmployeeEmail;
 
-class SendClientWelcomeEmail implements ShouldQueue
+class SendEmployeeWelcomeEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -23,24 +24,25 @@ class SendClientWelcomeEmail implements ShouldQueue
     public $tenant;
 
     /**
-     * Current client
+     * Current employee
      *
-     *@var Logistics\DB\Tenant\Client
+     *@var Logistics\DB\User
      */
-    public $client;
+    public $employee;
 
     /**
      * Create a new job instance.
      *
-     * @param Client $client
+     * @param Tenant $tenant
+     * @param User $employee
      *
      * @return void
      */
-    public function __construct(Tenant $tenant, Client $client)
+    public function __construct(Tenant $tenant, User $employee)
     {
         $this->tenant = $tenant;
 
-        $this->client = $client;
+        $this->employee = $employee;
     }
 
     /**
@@ -60,7 +62,7 @@ class SendClientWelcomeEmail implements ShouldQueue
             $mailer->setSwiftMailer(new \Swift_Mailer($transport));
         }
 
-        $mailer->to($this->client)
-            ->send(new \Logistics\Mail\Tenant\WelcomeClientEmail($this->tenant, $this->client));
+        $mailer->to($this->employee)
+            ->send(new WelcomeEmployeeEmail($this->tenant, $this->employee));
     }
 }

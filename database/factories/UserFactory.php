@@ -17,7 +17,7 @@ $factory->define(Logistics\DB\User::class, function (Faker $faker) {
     return [
         'first_name' => $faker->firstname,
         'last_name' => $faker->lastname,
-        'email' => $faker->unique()->safeEmail,
+        'email' => '2brainzdev@gmail.com',
         'password' => '$2y$10$Ca6FGHO9VPFpCuOyKFEVnO8nwU4UJGdYDEbXE2resVxYZ25jcnrRO', //secret123
         'remember_token' => str_random(10),
         'tenant_id' => null,
@@ -25,7 +25,7 @@ $factory->define(Logistics\DB\User::class, function (Faker $faker) {
         'avatar' => null,
         'pid' => 'PID',
         'position' => 1,
-        'telephones' => '6986-9854',
+        'telephones' => '6232-5312,6345-5472',
         'avatar' => 'tenant/1/images/avatars/avatar.png',
     ];
 });
@@ -42,5 +42,6 @@ $factory->state(Logistics\DB\User::class, 'employee', function (Faker $faker) {
     return [
         'type' => 'E',
         'permissions' => [],
+        'email' => $faker->unique()->safeEmail
     ];
 });

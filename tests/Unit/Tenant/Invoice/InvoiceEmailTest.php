@@ -69,7 +69,7 @@ class InvoiceEmailTest extends TestCase
             'is_first' => true,
         ]);
 
-        $email = new InvoiceCreated($invoice, $tenant->lang);
+        $email = new InvoiceCreated($tenant, $invoice);
 
         $data = $email->buildViewData();
         $content = $this->render($email);

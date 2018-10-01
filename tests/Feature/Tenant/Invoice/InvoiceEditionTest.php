@@ -7,10 +7,10 @@ use Logistics\DB\User;
 use Logistics\DB\Tenant\Box;
 use Logistics\DB\Tenant\Branch;
 use Logistics\DB\Tenant\Client;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Queue;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Logistics\Jobs\Tenant\SendInvoiceCreatedEmail;
 
 class InvoiceEditionTest extends TestCase
 {
@@ -66,7 +66,7 @@ class InvoiceEditionTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        Mail::fake();
+        Queue::fake();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
@@ -181,7 +181,7 @@ class InvoiceEditionTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        Mail::fake();
+        Queue::fake();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
@@ -248,8 +248,10 @@ class InvoiceEditionTest extends TestCase
             'payment_ref' => 'The client paid $90.00',
         ]);
 
-        Mail::assertQueued(\Logistics\Mail\Tenant\InvoiceCreated::class, function ($mail) use ($client) {
-            return $mail->hasTo($client->email) && $mail->invoice->id = 1;
+        $invoice = $client->fresh()->clientInvoices->first();
+
+        Queue::assertPushed(SendInvoiceCreatedEmail::class, function ($job) use ($invoice) {
+            return $job->invoice->id === $invoice->id;
         });
     }
 
@@ -258,7 +260,7 @@ class InvoiceEditionTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        Mail::fake();
+        Queue::fake();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
@@ -307,8 +309,8 @@ class InvoiceEditionTest extends TestCase
             'msg' => __("Success"),
         ]);
 
-        Mail::assertQueued(\Logistics\Mail\Tenant\InvoiceCreated::class, function ($mail) use ($client) {
-            return $mail->hasTo($client->email) && $mail->invoice->id = 1;
+        Queue::assertPushed(SendInvoiceCreatedEmail::class, function ($job) use ($invoice) {
+            return $job->invoice->id === $invoice->id;
         });
     }
 }

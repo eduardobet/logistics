@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Logistics\DB\Tenant\Invoice;
 use Illuminate\Support\Facades\Mail;
-use Logistics\Mail\Tenant\InvoiceCreated;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -54,8 +53,6 @@ class InvoiceActivity extends Notification implements ShouldQueue
         $client = $this->invoice->client;
         $box = $client->boxes()->active()->first();
         $box = $box->branch_code .''.$client->id;
-
-        Mail::to($client)->send(new InvoiceCreated($this->invoice, $this->tenantLang));
 
         return [
             'title' => $this->userFullname . ' ' . __('created an invoice'),

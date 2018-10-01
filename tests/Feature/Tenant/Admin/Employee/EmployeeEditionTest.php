@@ -6,10 +6,11 @@ use Tests\TestCase;
 use Logistics\DB\User;
 use Logistics\DB\Tenant\Branch;
 use Logistics\DB\Tenant\Permission;
-use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Logistics\Jobs\Tenant\SendEmployeeWelcomeEmail;
 
 class EmployeeEditionTest extends TestCase
 {
@@ -101,6 +102,8 @@ class EmployeeEditionTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
+        Queue::fake();
+
         $tenant = factory(TenantModel::class)->create();
         $permissionA = factory(Permission::class)->create(['tenant_id' => $tenant->id, ]);
         $permissionB = factory(Permission::class)->create(['tenant_id' => $tenant->id, 'name' => 'Perm Name B', 'slug' => 'p-b' ]);
@@ -162,11 +165,11 @@ class EmployeeEditionTest extends TestCase
     }
 
     /** @test */
-    public function event_is_fired_is_the_email_has_changed()
+    public function job_is_pushed_if_the_email_has_changed()
     {
         $this->withoutExceptionHandling();
 
-        Event::fake();
+        Queue::fake();
 
         $tenant = factory(TenantModel::class)->create();
         $permissionA = factory(Permission::class)->create(['tenant_id' => $tenant->id, ]);
@@ -205,16 +208,17 @@ class EmployeeEditionTest extends TestCase
         $response->assertSessionHas(['flash_success']);
         $response->assertRedirect(route('tenant.admin.employee.list', $tenant->domain));
 
-        Event::assertDispatched(\Logistics\Events\Tenant\EmployeeWasCreatedEvent::class, function ($event) use ($tenant, $employee) {
-            return $event->tenant->id === $tenant->id
-                && $event->employee->id === $employee->id;
+        Queue::assertPushed(SendEmployeeWelcomeEmail::class, function ($job) use ($tenant, $employee) {
+            return $job->tenant->id === $tenant->id
+                && $job->employee->id === $employee->id;
         });
     }
 
     /** @test */
     public function admin_can_change_the_employee_to_main_admin()
     {
-        // $this->withoutExceptionHandling();
+        $this->withoutExceptionHandling();
+        Queue::fake();
 
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
@@ -252,7 +256,8 @@ class EmployeeEditionTest extends TestCase
     /** @test */
     public function admin_can_lock_or_inactive_the_employee()
     {
-        // $this->withoutExceptionHandling();
+        $this->withoutExceptionHandling();
+        Queue::fake();
 
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);

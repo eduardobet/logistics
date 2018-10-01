@@ -100,7 +100,7 @@ class LoginTest extends TestCase
 
         $tenantB = factory(TenantModel::class)->create(['domain' => 'tenant-b.test', 'name' => 'Tenant B']);
         $adminA = factory(User::class)->states('admin')->create();
-        $adminB = factory(User::class)->states('admin')->create();
+        $adminB = factory(User::class)->states('admin')->create(['email' => 'admin.b@gmail.com']);
 
         $response = $this->post(route('tenant.auth.post.login', $tenantB->domain), ['email' => $adminA->email, 'password' => 'secret123']);
         $this->assertFalse(auth()->check());

@@ -56,17 +56,4 @@ class Client extends Model
             __do_forget_cache(__class__, $keys, []);
         });
     }
-
-    /**
-     * Route notifications for the Nexmo channel.
-     *
-     * @param  \Illuminate\Notifications\Notification  $notification
-     * @return string
-     */
-    public function routeNotificationForNexmo($notification)
-    {
-        // return '+50762285507';
-
-        return '+50762325312';
-    }
 }

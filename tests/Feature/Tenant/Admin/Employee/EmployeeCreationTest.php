@@ -7,11 +7,12 @@ use Logistics\DB\User;
 use Logistics\DB\Tenant\Branch;
 use Logistics\DB\Tenant\Permission;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Logistics\Mail\Tenant\WelcomeEmployeeEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Logistics\Jobs\Tenant\SendEmployeeWelcomeEmail;
 
 class EmployeeCreationTest extends TestCase
 {
@@ -114,6 +115,8 @@ class EmployeeCreationTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
+        Queue::fake();
+
         $tenant = factory(TenantModel::class)->create();
         $permission = factory(Permission::class)->create(['tenant_id' => $tenant->id, ]);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
@@ -174,6 +177,7 @@ class EmployeeCreationTest extends TestCase
     public function it_successfully_creates_a_main_administrator()
     {
         $this->withoutExceptionHandling();
+        Queue::fake();
 
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
@@ -211,6 +215,7 @@ class EmployeeCreationTest extends TestCase
     public function admin_can_create_other_admin()
     {
         $this->withoutExceptionHandling();
+        Queue::fake();
 
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
@@ -234,14 +239,14 @@ class EmployeeCreationTest extends TestCase
     }
 
     /** @test */
-    public function employee_was_created_event_fired()
+    public function employee_was_created_queue_pushed()
     {
         $this->withoutExceptionHandling();
 
-        Event::fake();
+        Queue::fake();
 
         $tenant = factory(TenantModel::class)->create();
-        $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
         $admin->branches()->sync([$branch->id]);
 
@@ -259,40 +264,9 @@ class EmployeeCreationTest extends TestCase
 
         $employee = $tenant->employees->where('type', 'E')->fresh()->first();
 
-        Event::assertDispatched(\Logistics\Events\Tenant\EmployeeWasCreatedEvent::class, function ($event) use ($tenant, $employee) {
-            return $event->tenant->id === $tenant->id
-                && $event->employee->id === $employee->id;
-        });
-    }
-
-    /** @test */
-    public function the_employee_gets_a_password_creation_link_by_email()
-    {
-        // $this->withoutExceptionHandling();
-
-        Mail::fake();
-
-        $tenant = factory(TenantModel::class)->create();
-        $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
-        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
-        $admin->branches()->sync([$branch->id]);
-
-        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store', $tenant->domain), [
-            'first_name' => 'Firstname',
-            'last_name' => 'Lastname',
-            'email' => 'employee@tenant.test',
-            'type' => 'E',
-            'status' => 'L',
-            'branches' => [$branch->id],
-            'pid' => 'PID',
-            'telephones' => '555-5555',
-            'position' => 1,
-        ]);
-
-        $employee = $tenant->employees->where('type', 'E')->fresh()->first();
-
-        Mail::assertSent(WelcomeEmployeeEmail::class, function ($mail) use ($employee) {
-            return $mail->hasTo($employee->email);
+        Queue::assertPushed(SendEmployeeWelcomeEmail::class, function ($job) use ($tenant, $employee) {
+            return $job->tenant->id === $tenant->id
+                && $job->employee->id === $employee->id;
         });
     }
 }

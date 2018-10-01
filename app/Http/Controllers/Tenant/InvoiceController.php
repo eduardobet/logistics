@@ -8,11 +8,10 @@ use Illuminate\Support\Fluent;
 use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Payment;
 use Logistics\Traits\InvoiceList;
-use Illuminate\Support\Facades\Mail;
 use Logistics\Exports\InvoicesExport;
-use Logistics\Mail\Tenant\InvoiceCreated;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Http\Requests\Tenant\InvoiceRequest;
+use Logistics\Jobs\Tenant\SendInvoiceCreatedEmail;
 use Logistics\Notifications\Tenant\InvoiceActivity;
 
 class InvoiceController extends Controller
@@ -115,6 +114,8 @@ class InvoiceController extends Controller
             $tenant->branches->where('id', $request->branch_id)->first()
                    ->notify(new InvoiceActivity($invoice, $payment->id, auth()->user()->full_name));
 
+            dispatch(new SendInvoiceCreatedEmail($tenant, $invoice));
+
             return redirect()->route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $request->branch_id, ])
                 ->with('flash_success', __('The :what has been created.', ['what' => __('Invoice') ]));
         }
@@ -191,7 +192,7 @@ class InvoiceController extends Controller
             $payment->payment_ref = $request->payment_ref;
             $payment->save();
 
-            Mail::to($invoice->client)->send(new InvoiceCreated($invoice, $tenant->lang));
+            dispatch(new SendInvoiceCreatedEmail($tenant, $invoice));
 
             return redirect()->route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $request->branch_id,])
                 ->with('flash_success', __('The :what has been updated.', ['what' => __('Invoice') ]));
@@ -264,12 +265,11 @@ class InvoiceController extends Controller
         $tenant = $this->getTenant();
         $invoice = $tenant->invoices()->with('details')->findOrFail($invoiceId);
 
-
         if (!$invoice) {
             return response()->json(['error' => true, 'msg' => __('Not Found.'), ], 404);
         }
 
-        Mail::to($invoice->client)->send(new InvoiceCreated($invoice, $tenant->lang));
+        dispatch(new SendInvoiceCreatedEmail($tenant, $invoice));
 
         return response()->json(['error' => false, 'msg' => __('Success'), ]);
     }

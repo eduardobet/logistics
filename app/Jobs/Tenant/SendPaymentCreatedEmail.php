@@ -3,7 +3,6 @@
 namespace Logistics\Jobs\Tenant;
 
 use Illuminate\Bus\Queueable;
-use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Tenant;
 use Logistics\DB\Tenant\Invoice;
 use Logistics\DB\Tenant\Payment;
@@ -26,13 +25,6 @@ class SendPaymentCreatedEmail implements ShouldQueue
     public $tenant;
 
     /**
-     * Current client
-     *
-     *@var Logistics\DB\Tenant\Client
-     */
-    public $client;
-
-    /**
      * Current invoice
      *
      *@var Logistics\DB\Tenant\Invoice
@@ -50,16 +42,14 @@ class SendPaymentCreatedEmail implements ShouldQueue
      * Create a new job instance.
      *
      * @param Tenant $tenant
-     * @param Client $client
      * @param Invoice $invoice
      * @param Payment $payment
      *
      * @return void
      */
-    public function __construct(Tenant $tenant, Client $client, Invoice $invoice, Payment $payment)
+    public function __construct(Tenant $tenant, Invoice $invoice, Payment $payment)
     {
         $this->tenant = $tenant;
-        $this->client = $client;
         $this->invoice = $invoice;
         $this->payment = $payment;
     }
@@ -81,7 +71,7 @@ class SendPaymentCreatedEmail implements ShouldQueue
             $mailer->setSwiftMailer(new \Swift_Mailer($transport));
         }
 
-        $mailer->to($this->invoice->client->email)
-            ->send(new PaymentCreated($this->tenant, $this->client, $this->invoice, $this->payment));
+        $mailer->to($client = $this->invoice->client)
+            ->send(new PaymentCreated($this->tenant, $client, $this->invoice, $this->payment));
     }
 }

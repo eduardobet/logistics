@@ -5,7 +5,7 @@
         @endcomponent
 @endslot
 
-{{ __('Hello :who welcome to :what', ['who' => $client->full_name, 'what' => $tenant->name ] , [], $lang) }}. {{ __('Below, your box information', [], $lang) }}: <br>
+{{ __('Hello :who welcome to :what', ['who' => $client->full_name, 'what' => $tenant->name ], $lang) }}. {{ __('Below, your box information', [], $lang) }}: <br>
 {{ __('Box number', [], $lang) }}: <b>{{ $box_code }}{{ $client->id }}</b> <br><br>
 
 {{ __('This is the address you should use when making your purchases:', [], $lang) }} <br>

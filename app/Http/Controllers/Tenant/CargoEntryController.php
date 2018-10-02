@@ -88,7 +88,7 @@ class CargoEntryController extends Controller
         ]);
 
         if ($cargoEntry) {
-            return redirect()->route('tenant.warehouse.cargo-entry.create', $tenant->domain)
+            return redirect()->route('tenant.warehouse.cargo-entry.show', [$tenant->domain, $cargoEntry->id])
                 ->with('flash_success', __('The :what has been created.', ['what' => __('Cargo entry')]));
         }
 

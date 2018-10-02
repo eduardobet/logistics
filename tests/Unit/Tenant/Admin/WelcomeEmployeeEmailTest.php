@@ -39,7 +39,7 @@ class WelcomeEmployeeEmailTest extends TestCase
         $this->assertContains("Hello {$employee->full_name}", $content);
         $this->assertContains("welcome to {$tenant->name}", $content);
         $this->assertContains("Please click the following link to activate your account.", $content);
-        $this->assertContains(URL::signedRoute('tenant.employee.get.unlock', [$tenant->domain, $employee->email, $employee->token]), $content);
+        $this->assertContains(route('tenant.employee.get.unlock', [$tenant->domain, $employee->email, $employee->token]), $content);
         $this->assertContains("Some other interesting links:", $content);
         $this->assertContains(route('tenant.home', $tenant->domain), $content);
         $this->assertContains(route("tenant.{$type}.dashboard", $tenant->domain), $content);

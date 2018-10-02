@@ -23,12 +23,11 @@ Route::group(['domain' => '{domain}', 'middleware' => 'tenant'], function () {
         // TODO: password reset
         Route::get('password/reset', 'Tenant\Auth\ForgotPasswordController@showLinkRequestForm')->name('tenant.user.password.request');
         Route::post('password/email', 'Tenant\Auth\ForgotPasswordController@sendResetLinkEmail')->name('tenant.user.password.email');
-        Route::get('password/reset/{token}', 'Tenant\Auth\ResetPasswordController@showResetForm')->name('tenant.user.password.reset')->middleware('signed');
+        Route::get('password/reset/{token}', 'Tenant\Auth\ResetPasswordController@showResetForm')->name('tenant.user.password.reset');
         Route::post('password/reset', 'Tenant\Auth\ResetPasswordController@reset')->name('tenant.user.password.post.reset');
 
         Route::get('unlock/{email}/{token}', 'Tenant\Auth\AccountActivationController@showUnlockForm')
-            ->name('tenant.employee.get.unlock')
-            ->middleware('signed');
+            ->name('tenant.employee.get.unlock');
         Route::post('unlock', 'Tenant\Auth\AccountActivationController@unlock')
             ->name('tenant.employee.post.unlock');
     });

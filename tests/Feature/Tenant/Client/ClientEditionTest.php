@@ -4,11 +4,14 @@ namespace Tests\Feature\Tenant\Client;
 
 use Tests\TestCase;
 use Logistics\DB\User;
+use Logistics\DB\Tenant\Box;
 use Logistics\DB\Tenant\Branch;
 use Logistics\DB\Tenant\Client;
-use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\job;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
+use Logistics\Jobs\Tenant\SendClientWelcomeEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ClientEditionTest extends TestCase
@@ -68,7 +71,7 @@ class ClientEditionTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        Event::fake();
+        Queue::fake();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
@@ -136,13 +139,15 @@ class ClientEditionTest extends TestCase
         $response->assertRedirect(route('tenant.client.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
 
-        Event::assertNotDispatched(\Logistics\Events\Tenant\ClientWasCreatedEvent::class);
+        Queue::assertNotPushed(SendClientWelcomeEmail::class);
     }
 
     /** @test */
     public function client_extra_contacts_can_be_updated()
     {
         $this->withoutExceptionHandling();
+
+        Queue::fake();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
@@ -212,6 +217,8 @@ class ClientEditionTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
+        Queue::fake();
+
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
@@ -257,12 +264,19 @@ class ClientEditionTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        Event::fake();
+        Queue::fake();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $client = factory(Client::class)->create(['tenant_id' => $tenant->id, ]);
+        $box = factory(Box::class)->create([
+            'tenant_id' => $tenant->id,
+            'client_id' => 1,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
+        ]);
+
 
         \Gate::define('edit-client', function ($admin) {
             return true;
@@ -300,8 +314,8 @@ class ClientEditionTest extends TestCase
         $response->assertRedirect(route('tenant.client.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
 
-        Event::assertDispatched(\Logistics\Events\Tenant\ClientWasCreatedEvent::class, function ($event) use ($client) {
-            return $event->client->id === $client->id;
+        Queue::assertPushed(SendClientWelcomeEmail::class, function ($job) use ($client) {
+            return $job->client->id === $client->id;
         });
     }
 
@@ -310,7 +324,7 @@ class ClientEditionTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        Event::fake();
+        Queue::fake();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
@@ -338,8 +352,8 @@ class ClientEditionTest extends TestCase
             'msg' => __("Success"),
         ]);
 
-        Event::assertDispatched(\Logistics\Events\Tenant\ClientWasCreatedEvent::class, function ($event) use ($client) {
-            return $event->client->id === $client->id;
+        Queue::assertPushed(SendClientWelcomeEmail::class, function ($job) use ($client) {
+            return $job->client->id === $client->id;
         });
     }
 }

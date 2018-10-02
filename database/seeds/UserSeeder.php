@@ -20,17 +20,19 @@ class UserSeeder extends Seeder
 
         $admin1 = factory(User::class)->states('admin')->create([
             'tenant_id' => $tenant->id,
-            'email' => 'main-admin@middleton-services.test',
+            'email' => '2brainzdev@gmail.com',
             'permissions' => Permission::all()->pluck('slug')->toArray(),
         ]);
         $admin1->branches()->sync([$prla->id]);
         $admin1->branchesForInvoice()->sync([$miami->id]);
 
-        $employee1 = factory(User::class)->states('employee')->create([
-            'tenant_id' => $tenant->id,
-            'email' => 'employee1@middleton-services.test',
-        ]);
-        $employee1->branches()->sync([$prla->id]);
-        $employee1->branchesForInvoice()->sync([$miami->id]);
+        if (!app()->environment('production')) {
+            $employee1 = factory(User::class)->states('employee')->create([
+                'tenant_id' => $tenant->id,
+                'email' => 'employee1@middleton-services.test',
+                ]);
+            $employee1->branches()->sync([$prla->id]);
+            $employee1->branchesForInvoice()->sync([$miami->id]);
+        }
     }
 }

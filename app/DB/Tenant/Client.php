@@ -4,11 +4,12 @@ namespace Logistics\DB\Tenant;
 
 use Logistics\Traits\Tenant;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Logistics\Traits\ClientHasRelationShips;
 
 class Client extends Model
 {
-    use Tenant, ClientHasRelationShips;
+    use Tenant, ClientHasRelationShips, Notifiable;
 
     /**
      * The attributes that are mass assignable.

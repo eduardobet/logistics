@@ -96,7 +96,7 @@ class WarehouseController extends Controller
         if ($warehouse) {
             $details = $request->invoice_detail ? : [];
             if (count($details)) {
-                $warehouse->genInvoice($request, $tenant->lang);
+                $warehouse->genInvoice($request, $tenant);
             }
             
             return redirect()->route('tenant.warehouse.edit', [$tenant->domain, $warehouse->id])
@@ -173,7 +173,7 @@ class WarehouseController extends Controller
             $details = $request->invoice_detail ? : [];
 
             if (count($details)) {
-                $warehouse->genInvoice($request, $tenant->lang);
+                $warehouse->genInvoice($request, $tenant);
             }
 
             return redirect()->route('tenant.warehouse.edit', [$tenant->domain, $warehouse->id])

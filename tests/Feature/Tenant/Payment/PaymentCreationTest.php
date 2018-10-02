@@ -7,10 +7,10 @@ use Logistics\DB\User;
 use Logistics\DB\Tenant\Box;
 use Logistics\DB\Tenant\Branch;
 use Logistics\DB\Tenant\Client;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Queue;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Logistics\Jobs\Tenant\SendPaymentCreatedEmail;
 
 class PaymentCreationTest extends TestCase
 {
@@ -276,7 +276,7 @@ class PaymentCreationTest extends TestCase
     /** @test */
     public function it_successfully_creates_a_payment()
     {
-        // $this->withoutExceptionHandling();
+        $this->withoutExceptionHandling();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
@@ -428,7 +428,7 @@ class PaymentCreationTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        Mail::fake();
+        Queue::fake();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
@@ -473,10 +473,8 @@ class PaymentCreationTest extends TestCase
         $invoice = $invoice->fresh();
         $payment = $invoice->fresh()->payments->fresh()->first();
 
-        Mail::assertQueued(\Logistics\Mail\Tenant\PaymentCreated::class, function ($mail) use ($tenant, $client, $invoice, $payment) {
-            return $mail->hasTo($client->email) &&
-             $mail->invoice->id = $invoice->id &&
-             $mail->payment->id = $payment->id;
+        Queue::assertPushed(SendPaymentCreatedEmail::class, function ($job) use ($tenant, $client, $invoice, $payment) {
+            return $job->invoice->id = $invoice->id && $job->payment->id = $payment->id;
         });
     }
 }

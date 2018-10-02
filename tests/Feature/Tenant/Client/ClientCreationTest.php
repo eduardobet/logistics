@@ -7,9 +7,10 @@ use Logistics\DB\User;
 use Logistics\DB\Tenant\Box;
 use Logistics\DB\Tenant\Branch;
 use Logistics\DB\Tenant\Client;
-use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
+use Logistics\Jobs\Tenant\SendClientWelcomeEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ClientCreationTest extends TestCase
@@ -69,12 +70,17 @@ class ClientCreationTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        Event::fake();
+        Queue::fake();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $admin->branches()->sync([$branch->id]);
+
+        $tenant->remoteAddresses()->createMany([
+            ['type' => 'A', 'address' => '8450 NW 70 TH ST MIAMI, FLORIDA 33166-2687', 'telephones' => '+1(786)3252841', 'status' => 'A', ],
+            ['type' => 'M', 'address' => '8454 NW 70 TH ST MIAMI, FLORIDA 33166', 'telephones' => '+1(786)3252841', 'status' => 'A', ],
+        ]);
 
         \Gate::define('create-client', function ($admin) {
             return true;
@@ -141,21 +147,28 @@ class ClientCreationTest extends TestCase
 
         $this->assertCount(1, $client->boxes);
 
-        Event::assertDispatched(\Logistics\Events\Tenant\ClientWasCreatedEvent::class, function ($event) use ($client) {
-            return $event->client->id === $client->id;
+        Queue::assertPushed(SendClientWelcomeEmail::class, function ($job) use ($client) {
+            return $job->client->id === $client->id;
         });
     }
 
     /** @test */
     public function client_extra_contacts_can_be_created()
     {
-        //$this->withoutExceptionHandling();
-        Event::fake();
+        $this->withoutExceptionHandling();
+        
+        Queue::fake();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $admin->branches()->sync([$branch->id]);
+
+        $tenant->remoteAddresses()->createMany([
+            ['type' => 'A', 'address' => '8450 NW 70 TH ST MIAMI, FLORIDA 33166-2687', 'telephones' => '+1(786)3252841', 'status' => 'A', ],
+            ['type' => 'M', 'address' => '8454 NW 70 TH ST MIAMI, FLORIDA 33166', 'telephones' => '+1(786)3252841', 'status' => 'A', ],
+        ]);
+
 
         $this->actingAs($admin);
 
@@ -196,6 +209,8 @@ class ClientCreationTest extends TestCase
     public function the_client_cannot_have_more_than_one_active_box_at_a_time()
     {
         $this->withoutExceptionHandling();
+        Queue::fake();
+
 
         $tenant = factory(TenantModel::class)->create();
         $tenant->remoteAddresses()->createMany([

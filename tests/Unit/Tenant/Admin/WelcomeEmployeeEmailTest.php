@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Logistics\Mail\Tenant\WelcomeEmployeeEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Logistics\Events\Tenant\EmployeeWasCreatedEvent;
+use Logistics\Jobs\Tenant\SendEmployeeWelcomeEmail;
 
 class WelcomeEmployeeEmailTest extends TestCase
 {
@@ -20,7 +20,7 @@ class WelcomeEmployeeEmailTest extends TestCase
     /** @test */
     public function email_has_the_correct_data()
     {
-        $tenant = factory(TenantModel::class)->create();
+        $tenant = factory(TenantModel::class)->create(['lang' => 'en']);
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, ]);
@@ -55,7 +55,7 @@ class WelcomeEmployeeEmailTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, ]);
 
-        event(new EmployeeWasCreatedEvent($tenant, $employee));
+        dispatch(new SendEmployeeWelcomeEmail($tenant, $employee));
 
         Mail::assertSent(WelcomeEmployeeEmail::class, function ($mail) use ($tenant, $employee) {
             return $mail->hasTo($employee->email)

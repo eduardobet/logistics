@@ -2,23 +2,16 @@
 
 namespace Logistics\Mail\Tenant;
 
+use Logistics\DB\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Logistics\DB\Tenant\Tenant;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Logistics\DB\Tenant\Tenant;
-use Logistics\DB\User;
 
 class WelcomeEmployeeEmail extends Mailable
 {
     use Queueable, SerializesModels;
-
-    /**
-     * The newly created employee
-     *
-     *@var Logistics\DB\User
-     */
-    public $employee;
 
     /**
      * Current tenant
@@ -26,6 +19,13 @@ class WelcomeEmployeeEmail extends Mailable
      *@var Logistics\DB\Tenant\Tenant
      */
     public $tenant;
+
+    /**
+     * The newly created employee
+     *
+     *@var Logistics\DB\User
+     */
+    public $employee;
 
     /**
      * Create a new message instance.

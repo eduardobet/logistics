@@ -7,10 +7,11 @@ use Logistics\DB\User;
 use Logistics\DB\Tenant\Box;
 use Logistics\DB\Tenant\Branch;
 use Logistics\DB\Tenant\Client;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Logistics\Jobs\Tenant\SendInvoiceCreatedEmail;
 
 class InvoiceCreationTest extends TestCase
 {
@@ -65,8 +66,6 @@ class InvoiceCreationTest extends TestCase
     public function it_successfuly_creates_the_invoice()
     {
         $this->withoutExceptionHandling();
-
-        Mail::fake();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
@@ -149,7 +148,7 @@ class InvoiceCreationTest extends TestCase
     }
 
     /** @test */
-    public function payment_is_not_generated_amount_paid_is_zero()
+    public function payment_is_not_generated_if_amount_paid_is_zero()
     {
         $this->withoutExceptionHandling();
 
@@ -211,7 +210,7 @@ class InvoiceCreationTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        Mail::fake();
+        Queue::fake();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
@@ -253,8 +252,10 @@ class InvoiceCreationTest extends TestCase
             'payment_ref' => 'The client paid $80.00',
         ]);
 
-        Mail::assertQueued(\Logistics\Mail\Tenant\InvoiceCreated::class, function ($mail) use ($client) {
-            return $mail->hasTo($client->email) && $mail->invoice->id = 1;
+        $invoice = $client->fresh()->clientInvoices->first();
+
+        Queue::assertPushed(SendInvoiceCreatedEmail::class, function ($job) use ($invoice) {
+            return $job->invoice->id === $invoice->id;
         });
     }
 }

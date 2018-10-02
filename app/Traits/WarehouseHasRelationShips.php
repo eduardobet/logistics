@@ -4,6 +4,7 @@ namespace Logistics\Traits;
 
 use Illuminate\Support\Fluent;
 use Logistics\Mail\Tenant\InvoiceCreated;
+use Logistics\Jobs\Tenant\SendInvoiceCreatedEmail;
 use Logistics\Notifications\Tenant\WarehouseActivity;
 
 trait WarehouseHasRelationShips
@@ -44,7 +45,7 @@ trait WarehouseHasRelationShips
             ->with([$relation => $constraint]);
     }
 
-    public function genInvoice($request, $lang)
+    public function genInvoice($request, $tenant)
     {
         $client = $this->client()->find($this->client_id);
 
@@ -96,7 +97,7 @@ trait WarehouseHasRelationShips
         $this->toBranch->notify(new WarehouseActivity($this->created_at, $this->id, "{$box->branch_code}{$client->id}", $invoice->id, auth()->user()->full_name));
 
         if ($invoice) {
-            \Mail::to($invoice->client)->send(new InvoiceCreated($invoice, $lang));
+            dispatch(new SendInvoiceCreatedEmail($tenant, $invoice));
         }
     }
 }

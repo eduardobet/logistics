@@ -9,9 +9,8 @@ use Logistics\DB\Tenant\Tenant;
 use Logistics\DB\Tenant\Invoice;
 use Logistics\DB\Tenant\Payment;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class PaymentCreated extends Mailable implements ShouldQueue
+class PaymentCreated extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -41,6 +40,7 @@ class PaymentCreated extends Mailable implements ShouldQueue
     public function build()
     {
         return $this->subject(__('Payment', [], $this->tenant->lang) . ' #' . $this->payment->id)
+            ->from($this->tenant->mail_from_address, $this->tenant->mail_from_name)
             ->markdown('tenant.mails.payment')
             ->with([
                 'lang' => $this->tenant->lang,

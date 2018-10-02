@@ -40,7 +40,7 @@ class Branch extends Model
         static::saved(function ($model) {
             $keys = ["branches.tenant.{$model->tenant_id}", "employee.branches.{$model->tenant_id}"];
             
-            do_forget_cache(__class__, $keys);
+            __do_forget_cache(__class__, $keys, []);
         });
     }
 

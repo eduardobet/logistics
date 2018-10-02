@@ -4,27 +4,26 @@ namespace Logistics\Mail\Tenant;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Logistics\DB\Tenant\Tenant;
 use Logistics\DB\Tenant\Invoice;
-use Logistics\DB\Tenant\Payment;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class InvoiceCreated extends Mailable implements ShouldQueue
+class InvoiceCreated extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $tenant;
     public $invoice;
-    public $tenantLang;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Invoice $invoice, $tenantLang)
+    public function __construct(Tenant $tenant, Invoice $invoice)
     {
+        $this->tenant = $tenant;
         $this->invoice = $invoice;
-        $this->tenantLang = $tenantLang;
     }
 
     /**
@@ -37,12 +36,13 @@ class InvoiceCreated extends Mailable implements ShouldQueue
         $client = $this->invoice->client;
         $box = $client->boxes()->active()->get()->first();
         $box = "{$box->branch_code}{$client->id}";
-        $lang = $this->tenantLang ? : localization()->getCurrentLocale();
-        
+        $lang = $this->tenant->lang ? : localization()->getCurrentLocale();
+
         return $this->subject(__('Invoice', [], $lang) . ' #' . $this->invoice->id)
+            ->from($this->tenant->mail_from_address, $this->tenant->mail_from_name)
             ->markdown('tenant.mails.invoice')
             ->with([
-                'tenant' => $this->invoice->tenant,
+                'tenant' => $this->tenant,
                 'ibranch' => $this->invoice->branch,
                 'client' => $client,
                 'box' => $box,

@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Tenant;
 use Illuminate\Queue\SerializesModels;
+use Logistics\Mail\ConfigurableMailable;
 
 class WelcomeClientEmail extends Mailable
 {
@@ -53,10 +54,10 @@ class WelcomeClientEmail extends Mailable
         $addresses = $this->tenant->remoteAddresses;
         $air = $addresses->where('type', 'A')->first();
         $maritime = $addresses->where('type', 'M')->first();
+        $lang = $this->tenant->lang ? : localization()->getCurrentLocale();
 
-        $this->tenant->setConfigs();
-
-        return $this->subject(__('Welcome') . ' ' . $this->client->full_name)
+        return $this->subject(__('Welcome', [], $lang) . ' ' . $this->client->full_name)
+            ->from($this->tenant->mail_from_address, $this->tenant->mail_from_name)
             ->markdown('tenant.mails.welcome-client')
             ->with([
                 'tenant' => $this->tenant,
@@ -65,7 +66,7 @@ class WelcomeClientEmail extends Mailable
                 'air' => $air,
                 'maritime' => $maritime,
                 'branch' => $branch,
-                'lang' => $this->tenant->lang ? : localization()->getCurrentLocale(),
+                'lang' => $lang,
                 'subcopy' => $branch->address . '<br>' . $branch->telephones
             ]);
     }

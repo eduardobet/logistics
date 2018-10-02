@@ -20,8 +20,6 @@
          <div class="section-wrapper">
             {!! Form::open(['route' => ['tenant.admin.employee.store', $tenant->domain]]) !!}
             
-            {!! Form::hidden('branches[]', $branch->id) !!}
-            
                 @include('tenant.employee._fields', [
                     'status' => ['L' => __('Lock'),]
                 ])
@@ -34,3 +32,12 @@
 @include('tenant.common._footer')
 
 @endsection
+
+@section('xtra_scripts')
+    <script>
+        var cache = {};
+        $(function() {
+            $("#in_branch").select2({width: 'resolve'});
+        });
+    </script>
+@stop

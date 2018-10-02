@@ -15,12 +15,15 @@ class TenantServiceProvier extends ServiceProvider
      */
     public function boot()
     {
-        if (!app()->environment('testing')) {
-            $tenant = $this->getTenant();
+        try {
+            if (!app()->environment('testing')) {
+                $tenant = $this->getTenant();
 
-            if ($tenant) {
-                $tenant->setConfigs();
+                if ($tenant) {
+                    $tenant->setConfigs();
+                }
             }
+        } catch (\Exception $e) {
         }
     }
 

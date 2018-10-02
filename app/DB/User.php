@@ -45,11 +45,15 @@ class User extends Authenticatable
      */
     public static function boot()
     {
+        parent::boot();
+        
         static::creating(function ($user) {
             $user->token = str_random(30);
         });
-        
-        parent::boot();
+
+        static::saved(function ($user) {
+            __do_forget_cache(__class__, ["employee.branches.{$user->id}"], []);
+        });
     }
 
     /**

@@ -48,12 +48,16 @@
                       <td>{{ $employee->status }}</td>
                       <td>
                         <a href="{{ route('tenant.admin.employee.edit', [$tenant->domain, $employee->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                        
+                        @if ($employee->status == 'L')
+                        
                         &nbsp;&nbsp;&nbsp;
                         <a href="#!" class="resend-welcome-email" data-url="{{ route('tenant.admin.employee.welcome.email.resend', $tenant->domain) }}"
                           data-toggle="tooltip" data-placement="left" title="{{ __('Resend welcome email') }}" data-employee-id="{{ $employee->id }}"
                           >
                           <i class="fa fa-envelope"></i>
                         </a>
+                        @endif
 
                       </td>
                     </tr>

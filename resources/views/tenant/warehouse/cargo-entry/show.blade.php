@@ -23,7 +23,7 @@
                 <div class="col-sm-9">
                     <div class="card card-status">
                         <div class="form-group mg-b-0-force">
-                            <h4 class="tx-bold tx-inverse">{{ strtoupper(__('Tracking numbers')) }} (#)<span class="tx-danger">*</span></h4>
+                            <h4 class="tx-bold tx-inverse">{{ strtoupper(__('Tracking numbers')) }} ({{ count(explode("\n", $cargo_entry->trackings)) }})<span class="tx-danger">*</span></h4>
                         
                             {!! Form::textarea('trackings', $cargo_entry->trackings, ['rows' => 14, 'class' => 'form-control mg-b-6-force', 'readonly' => 1, ]) !!}
                         </div>

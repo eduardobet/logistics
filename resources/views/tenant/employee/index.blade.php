@@ -48,6 +48,13 @@
                       <td>{{ $employee->status }}</td>
                       <td>
                         <a href="{{ route('tenant.admin.employee.edit', [$tenant->domain, $employee->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                        &nbsp;&nbsp;&nbsp;
+                        <a href="#!" class="resend-welcome-email" data-url="{{ route('tenant.admin.employee.welcome.email.resend', $tenant->domain) }}"
+                          data-toggle="tooltip" data-placement="left" title="{{ __('Resend welcome email') }}" data-employee-id="{{ $employee->id }}"
+                          >
+                          <i class="fa fa-envelope"></i>
+                        </a>
+
                       </td>
                     </tr>
 
@@ -72,4 +79,44 @@
 
  @include('tenant.common._footer')
 
+@endsection
+
+@section('xtra_scripts')
+    <script>
+      $(function() {
+        $('[data-toggle="tooltip"]').tooltip();
+        $(".resend-welcome-email").click(function() {
+          var $self = $(this);
+          var url = $self.data('url');
+          var employeeId = $self.data('employee-id');
+
+          if (!$self.hasClass('resending')) {
+            $self.addClass('resending');
+            $.ajax({
+              url: url,
+              data: {employee_id: employeeId, _token: "{{ csrf_token() }}"},
+              method: 'POST',
+            })
+            .done(function(data) {
+              if (data.error == true) {
+                swal("", data.msg, "error");
+              } else {
+                swal("", data.msg, "success");
+              }
+              $self.removeClass('resending');
+            })
+            .fail(function(hxr) {
+              if (error = (hxr.responseJSON.errors || hxr.responseJSON.msg  ) ) {
+                swal("", error, "error")
+              } else {
+                swal("", "{{ __('Error') }}", "error")
+              }
+              $self.removeClass('resending');
+            });
+
+          }
+
+        });
+      });
+    </script>
 @endsection

@@ -23,7 +23,7 @@ class EmployeeActivationTest extends TestCase
         $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, ]);
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
 
-        $response = $this->get(URL::signedRoute('tenant.employee.get.unlock', [
+        $response = $this->get(route('tenant.employee.get.unlock', [
             $tenant->domain,
             'email' => 'unknown_employee@tenant.test',
             'token' => $employee->token
@@ -64,7 +64,7 @@ class EmployeeActivationTest extends TestCase
         $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, 'status' => 'L', ]);
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
 
-        $response = $this->get(URL::signedRoute('tenant.employee.get.unlock', [$tenant->domain, 'email' => $employee->email, 'token' => $employee->token]));
+        $response = $this->get(route('tenant.employee.get.unlock', [$tenant->domain, 'email' => $employee->email, 'token' => $employee->token]));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.auth.unlock');
 
@@ -83,19 +83,5 @@ class EmployeeActivationTest extends TestCase
             'tenant_id' => $tenant->id,
             'token' => null,
         ]);
-    }
-
-    /** @test */
-    public function show_403_error_if_url_is_tempted()
-    {
-        // $this->withoutExceptionHandling();
-
-        $tenant = factory(TenantModel::class)->create();
-        $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, 'status' => 'L', ]);
-        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
-        $url = URL::signedRoute('tenant.employee.get.unlock', [$tenant->domain, 'email' => $employee->email, 'token' => $employee->token]);
-
-        $response = $this->get($url . 'XXX');
-        $response->assertStatus(403);
     }
 }

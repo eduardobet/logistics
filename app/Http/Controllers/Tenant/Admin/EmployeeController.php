@@ -136,4 +136,18 @@ class EmployeeController extends Controller
                 'what' => __('The employee'),
             ]));
     }
+
+    public function resentWelcomeEmail()
+    {
+        $tenant = $this->getTenant();
+        $employee = $tenant->employees()->where('id', request()->employee_id)->first();
+
+        if (!$employee) {
+            return response()->json(['error' => true, 'msg' => __('Not Found.'), ], 404);
+        }
+
+        dispatch(new SendEmployeeWelcomeEmail($tenant, $employee));
+
+        return response()->json(['error' => false, 'msg' => __('Success'), ]);
+    }
 }

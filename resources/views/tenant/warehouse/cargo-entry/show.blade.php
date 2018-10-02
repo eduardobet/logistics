@@ -34,12 +34,17 @@
                     <div class="card card-status">
                         <h4 class="tx-bold tx-inverse">RECA-{{ $cargo_entry->id }}</h4>
                         <div class="mg-t-0">
-                        <p><b>{{ __('Record details') }}:</b><br>
-                        <b>{{ __('Created by') }}:</b> {{ $cargo_entry->creator->full_name  }} <br>
-                        <b>{{ __('Date') }}:</b> {{ $cargo_entry->created_at->format('d/m/Y') }}<br>
-                        <b>{{ __('Hour') }}:</b> {{ $cargo_entry->created_at->format('g:i A') }}<br>
-                        <b>{{ __('Branch') }}:</b> {{ $cargo_entry->branch->name }}<br>
-                        </p>
+                            <p>
+                                <b>{{ __('Record details') }}:</b><br>
+                                <b>{{ __('Created by') }}:</b> {{ $cargo_entry->creator->full_name  }} <br>
+                                <b>{{ __('Date') }}:</b> {{ $cargo_entry->created_at->format('d/m/Y') }}<br>
+                                <b>{{ __('Hour') }}:</b> {{ $cargo_entry->created_at->format('g:i A') }}<br>
+                                <b>{{ __('Branch') }}:</b> {{ $cargo_entry->branch->name }}<br>
+                                <br>
+                                <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.warehouse.cargo-entry.create', $tenant->domain) }}">
+                                    <i class="fa fa-plus mg-r-5"></i> {{ __('Create') }}
+                                </a>
+                            </p>
                         </div>
                     </div><!-- card -->
                 </div><!-- col-3 -->

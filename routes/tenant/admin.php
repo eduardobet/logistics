@@ -30,4 +30,5 @@ Route::group(['middleware' => ['auth', 'admin'], 'prefix' => 'admin'], function 
     Route::post('dashboard/employees/store', 'Tenant\Admin\EmployeeController@store')->name('tenant.admin.employee.store');
     Route::get('dashboard/employees/{id}/edit', 'Tenant\Admin\EmployeeController@edit')->name('tenant.admin.employee.edit');
     Route::patch('dashboard/employees/update', 'Tenant\Admin\EmployeeController@update')->name('tenant.admin.employee.update');
+    Route::post('dashboard/employees/resend-welcome-email', 'Tenant\Admin\EmployeeController@resentWelcomeEmail')->name('tenant.admin.employee.welcome.email.resend');
 });

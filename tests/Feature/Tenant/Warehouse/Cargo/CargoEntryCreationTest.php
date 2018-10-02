@@ -72,6 +72,6 @@ class CargoEntryCreationTest extends TestCase
         ]);
 
         $response->assertStatus(302);
-        $response->assertRedirect(route('tenant.warehouse.cargo-entry.create', [$tenant->domain]));
+        $response->assertRedirect(route('tenant.warehouse.cargo-entry.show', [$tenant->domain, 1]));
     }
 }

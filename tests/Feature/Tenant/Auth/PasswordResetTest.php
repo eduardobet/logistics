@@ -47,7 +47,7 @@ class PasswordResetTest extends TestCase
         $this->withoutExceptionHandling();
 
         $tenant = factory(TenantModel::class)->create();
-        $response = $this->get(URL::signedRoute('tenant.user.password.reset', [$tenant->domain, 'token' => 'tenant-user-password-reset-token']));
+        $response = $this->get(route('tenant.user.password.reset', [$tenant->domain, 'token' => 'tenant-user-password-reset-token']));
 
         $response->assertStatus(200);
         $response->assertViewIs('tenant.auth.reset');

@@ -17,7 +17,7 @@
             <h2 class="signin-title-primary">{{ __('Welcome') }}!</h2>
 
             <div class="form-group">
-              <input type="email" class="form-control" placeholder="{{ __('Email') }}" name="email" required="" value="{{ old('email') }}">
+              <input type="email" class="form-control" placeholder="{{ __('Email') }}" name="email" id="email" required="" value="{{ old('email') }}">
             </div><!-- form-group -->
 
             <div class="form-group mg-b-50">
@@ -36,3 +36,17 @@
       </form>  
 
 @endsection
+
+
+@section('xtra_scripts')
+  <script>
+    $(function() {
+      $("#email").blur(function(e) {
+        if (email = $.trim(this.value)) {
+          var at = '@';
+          if (!email.includes('@')) this.value = `${email}${at}{{ $tenant->domain }}`
+        }
+      });
+    })
+  </script>
+@stop

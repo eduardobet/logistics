@@ -49,6 +49,7 @@ class BranchController extends Controller
             'faxes' => $request->faxes,
             'emails' => $request->emails,
             'code' => $request->code,
+            'initial' => $request->initial,
             'status' => $request->status,
             'lat' => $request->lat,
             'lng' => $request->lng,
@@ -97,6 +98,7 @@ class BranchController extends Controller
         $branch->faxes = $request->faxes;
         $branch->emails = $request->emails;
         $branch->code = $request->code;
+        $branch->initial = $request->initial;
         $branch->status = $request->status;
         $branch->lat = $request->lat;
         $branch->lng = $request->lng;

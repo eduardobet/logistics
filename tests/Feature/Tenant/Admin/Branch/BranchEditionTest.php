@@ -73,6 +73,7 @@ class BranchEditionTest extends TestCase
         $response->assertSessionHasErrors([
             'name',
             'code',
+            'initial',
             'address',
             'emails',
             'telephones',
@@ -132,6 +133,7 @@ class BranchEditionTest extends TestCase
             'telephones' => '655-5555',
             'faxes' => '655-5454',
             'code' => 'CODE',
+            'initial' => 'INIT',
             "lat" => '12234',
             "lng" => '4344',
             "ruc" => '123-23-33',
@@ -158,6 +160,7 @@ class BranchEditionTest extends TestCase
             'telephones' => '655-5555',
             'faxes' => '655-5454',
             'code' => 'CODE',
+            'initial' => 'INIT',
             "lat" => '12234',
             "lng" => '4344',
             "ruc" => '123-23-33',

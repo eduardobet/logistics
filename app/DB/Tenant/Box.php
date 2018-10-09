@@ -12,7 +12,7 @@ class Box extends Model
      * @var array
      */
     protected $fillable = [
-        'tenant_id', 'client_id', 'branch_id', 'status', 'branch_code',
+        'tenant_id', 'client_id', 'branch_id', 'status', 'branch_code', 'branch_initial',
     ];
 
     /**

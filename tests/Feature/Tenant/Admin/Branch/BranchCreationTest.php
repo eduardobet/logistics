@@ -81,6 +81,7 @@ class BranchCreationTest extends TestCase
             'dhl_price',
             'maritime_price',
             'color',
+            'initial',
         ]);
     }
 
@@ -128,6 +129,7 @@ class BranchCreationTest extends TestCase
             'telephones' => '555-5555',
             'faxes' => '555-5454',
             'code' => 'CODE',
+            'initial' => 'INITIAL',
             "lat" => '12234',
             "lng" => '4344',
             "ruc" => 'RUC',
@@ -147,6 +149,7 @@ class BranchCreationTest extends TestCase
             "created_by_code" => $admin->id,
             "name" => "Branch Name one",
             "code" => "CODE",
+            'initial' => 'INITIAL',
             "address" => "In the middle of nowhere",
             "telephones" => "555-5555",
             "emails" => "contact@branch.test, sales@branch.test",

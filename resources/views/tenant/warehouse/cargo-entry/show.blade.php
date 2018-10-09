@@ -17,7 +17,7 @@
             <h6 class="slim-pagetitle"> {{ $branch->name }} </h6>
          </div><!-- slim-pageheader -->
 
-         <div class="section-wrapper">
+         <div class="section---wrapper">
 
             <div class="row row-xs">
                 <div class="col-sm-9">

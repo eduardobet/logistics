@@ -60,7 +60,7 @@ trait ClientHasRelationShips
         }
     }
 
-    public function genBox($branchId, $branchCode)
+    public function genBox($branchId, $branchCode, $branchInitial)
     {
         $boxes = $this->boxes()->active()->get();
 
@@ -77,6 +77,7 @@ trait ClientHasRelationShips
             'status' => 'A',
             'branch_id' => $branchId,
             'branch_code' => $branchCode,
+            'branch_initial' => $branchInitial,
         ]);
     }
 

@@ -31,6 +31,7 @@
                 <tr>
                   <th>{{ __('ID') }}</th>
                   <th>{{ __('Code') }}</th>
+                  <th>{{ __('Initial') }}</th>
                   <th>{{ __('Name') }}</th>
                   <th>{{ __('Color') }}</th>
                   <th>{{ __('Address') }}</th>
@@ -45,6 +46,7 @@
                     <tr>
                       <th scope="row">{{ $branch->id }}</th>
                       <td>{{ $branch->code }}</td>
+                      <td>{{ $branch->initial }}</td>
                       <td>{{ $branch->name }}</td>
                       <td>
                         @if ($branch->color)

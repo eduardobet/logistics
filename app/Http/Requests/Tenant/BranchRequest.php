@@ -33,6 +33,7 @@ class BranchRequest extends AppFormRequest
             'telephones' => 'required|string|mass_phone',
             'faxes' => 'nullable|string|mass_phone',
             'code' => 'required|string',
+            'initial' => 'required|string',
             'status' => 'required|string|in:A,I',
             'real_price' => 'sometimes|numeric',
             'vol_price' => 'sometimes|numeric',

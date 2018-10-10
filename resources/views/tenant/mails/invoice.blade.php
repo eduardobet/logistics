@@ -1,7 +1,7 @@
 @component('mail::layout')
     @slot('header')
         @component('mail::header', ['url' => config('app.url')])
-            {{ __('Invoice', [], $lang) }} #{{ $invoice->id }}
+            {{ __('Invoice', [], $lang) }} #{{ $ibranch->initial }}-{{ $invoice->id }}
         @endcomponent
 @endslot
 

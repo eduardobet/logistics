@@ -79,7 +79,7 @@ class ClientController extends Controller
         ]);
 
         if ($client) {
-            $client->genBox($request->branch_id, $request->branch_code);
+            $client->genBox($request->branch_id, $request->branch_code, $request->branch_initial);
 
             dispatch(new \Logistics\Jobs\Tenant\SendClientWelcomeEmail($tenant, $client));
 

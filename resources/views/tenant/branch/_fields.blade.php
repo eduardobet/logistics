@@ -10,24 +10,24 @@
         </div>
     </div>
 
-    <div class="col-lg-3">
+    <div class="col-lg-5">
         <div class="form-group">
             <label class="form-control-label">{{ __('Address') }}: <span class="tx-danger">*</span></label>
             {{ Form::text('address', null, ['class' => 'form-control', 'required' => 'required']) }}
         </div>
     </div>
 
-    <div class="col-lg-3">
+    <div class="col-lg-2">
         <div class="form-group">
             <label class="form-control-label">{{ __('Code') }}: <span class="tx-danger">*</span></label>
             {{ Form::text('code', null, ['class' => 'form-control', 'required' => 'required']) }}
         </div>
     </div>
 
-    <div class="col-lg-3">
-        <div class="form-group mg-b-10-force">
-            <label class="form-control-label">{{__('Status')}}: <span class="tx-danger">*</span></label>
-            {!! Form::select('status', ['A' => __('Active'), 'I' => __('Inactive')], null, ['class' => 'form-control']) !!}
+    <div class="col-lg-2">
+        <div class="form-group">
+            <label class="form-control-label">{{ __('Initial') }}: <span class="tx-danger">*</span></label>
+            {{ Form::text('initial', null, ['class' => 'form-control', 'required' => 'required']) }}
         </div>
     </div>
 
@@ -59,7 +59,7 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-12">
+    <div class="col-lg-9">
         <div class="form-group">
             <label class="form-control-label">{{ __('Color') }}: <span class="tx-danger">*</span></label>
             <select name="color" id="color" class="form-control select2" style="width: 100%">
@@ -70,6 +70,13 @@
                     </option>
                 @endforeach
             </select>
+        </div>
+    </div>
+
+    <div class="col-lg-3">
+        <div class="form-group mg-b-10-force">
+            <label class="form-control-label">{{__('Status')}}: <span class="tx-danger">*</span></label>
+            {!! Form::select('status', ['A' => __('Active'), 'I' => __('Inactive')], null, ['class' => 'form-control']) !!}
         </div>
     </div>
 </div>

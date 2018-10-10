@@ -101,6 +101,7 @@ class ClientCreationTest extends TestCase
             'status' => 'A',
             'branch_id' => 1,
             'branch_code' => 'B-CODE',
+            'branch_initial' => 'B-INITIAL',
 
             // optional
             'country_id' => 1,
@@ -143,9 +144,13 @@ class ClientCreationTest extends TestCase
         $response->assertRedirect(route('tenant.client.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
 
-        $client = $tenant->clients->first();
+        $client = $tenant->clients->fresh()->first();
 
-        $this->assertCount(1, $client->boxes);
+        tap($client->boxes->first(), function ($box) use ($branch) {
+            $this->assertEquals($box->branch_id, $branch->id);
+            $this->assertEquals($box->branch_code, 'B-CODE');
+            $this->assertEquals($box->branch_initial, 'B-INITIAL');
+        });
 
         Queue::assertPushed(SendClientWelcomeEmail::class, function ($job) use ($client) {
             return $job->client->id === $client->id;

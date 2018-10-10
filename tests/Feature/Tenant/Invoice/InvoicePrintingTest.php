@@ -92,7 +92,7 @@ class InvoicePrintingTest extends TestCase
         $content = $response->getContent();
 
         $this->assertContains("{$branch->name}", $content);
-        $this->assertContains("{$branch->ruc} DV {$branch->dv}", $content);
+        $this->assertContains("{$branch->ruc} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DV {$branch->dv}", $content);
         $this->assertContains("{$branch->address}", $content);
         $this->assertContains("{$branch->telephones}", $content);
 

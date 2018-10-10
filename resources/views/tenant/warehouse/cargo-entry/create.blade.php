@@ -17,7 +17,7 @@
             <h6 class="slim-pagetitle"> {{ $branch->name }} </h6>
          </div><!-- slim-pageheader -->
 
-         <div class="section-wrapper">
+         <div class="section---wrapper">
             {!! Form::open(['route' => ['tenant.warehouse.cargo-entry.store', $tenant->domain]]) !!}
 
             @include('tenant.common._notifications')
@@ -72,12 +72,11 @@
             }
         });
 
-        countTracking();
+        countTracking($.trim($("#trackings").val()));
     });
     
     function countTracking(trackings) {
-        trackings = trackings || $("#trackings");
-        var qty = (trackings.match(/\r?\n/g) || '').length + 1;
+        var qty = !trackings ? 0 : (trackings.match(/\r?\n/g) || '').length + 1;
         $("#qty").val( qty );
         $("#qty-dsp").text(qty);
     }

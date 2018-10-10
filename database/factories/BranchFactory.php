@@ -14,6 +14,7 @@ $factory->define(\Logistics\DB\Tenant\Branch::class, function (Faker $faker) {
         'status' => 'A',
         'tenant_id' => 0,
         'code' => 'CODE',
+        'initial' => 'INITIAL',
         'ruc' => null,
         'dv' => null,
         'logo' => null,

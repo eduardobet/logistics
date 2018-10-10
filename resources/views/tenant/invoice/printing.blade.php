@@ -31,7 +31,7 @@
                 <h3>{{ __('Company') }}:</h3>
                 {{ $ibranch->name }} <br>
                 {{ $ibranch->address }} <br>
-                {{ __('TAX ID') }}: {{ $ibranch->ruc }} {{ __('DV') }} {{ $ibranch->dv }} <br>
+                {{ __('TAX ID') }}: {{ $ibranch->ruc }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ __('DV') }} {{ $ibranch->dv }} <br>
                 {{ $ibranch->telephones }}<br>
             </td>
 
@@ -40,7 +40,7 @@
                 <div style="padding-left:10px;">
                     {{ $client->full_name }} / {{ $box }} <br>
                     {{ __('Telephones') }}: {{ $client->telephones }} <br>
-                    <h3>{{ __('Invoice') }}#: {{ $invoice->id }} 
+                    <h3>{{ __('Invoice') }}#: {{ $ibranch->initial }}-{{ $invoice->id }} 
                         @if ($invoice->warehouse_id)
                         &nbsp;&nbsp; /&nbsp;&nbsp; <a href="{{ route('tenant.warehouse.edit', [$tenant->domain, $invoice->warehouse_id, ]) }}" target="_blank">{{ __('Warehouse') }}#: {{ $invoice->warehouse_id }}</a>
                         

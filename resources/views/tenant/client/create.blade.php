@@ -21,6 +21,7 @@
             {!! Form::open(['route' => ['tenant.client.store', $tenant->domain]]) !!}
                 <input type="hidden" name="branch_id" value="{{ $branch->id }}">
                 <input type="hidden" name="branch_code" value="{{ $branch->code }}">
+                <input type="hidden" name="branch_initial" value="{{ $branch->initial }}">
                 {!! Form::hidden('branches[]', $branch->id) !!}
             
                 @include('tenant.client._fields', [

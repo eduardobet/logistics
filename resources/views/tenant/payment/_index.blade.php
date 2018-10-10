@@ -51,12 +51,12 @@
             <td class="text-center">
                 @if (!isset($exporting))
                     @can('edit-invoice')
-                        <a target="_blank" title="{{ __('Edit') }}" href="{{ route('tenant.invoice.edit', [$tenant->domain, $payment->invoice_id, 'branch_id' => $payment->invoice_branch_id,]) }}"><i class="fa fa-external-link" aria-hidden="true"></i> ({{ $payment->invoice_id }})</a> 
+                        <a target="_blank" title="{{ __('Edit') }}" href="{{ route('tenant.invoice.edit', [$tenant->domain, $payment->invoice_id, 'branch_id' => $payment->invoice_branch_id,]) }}"><i class="fa fa-external-link" aria-hidden="true"></i> ({{ $payment->branch_initial }}-{{ $payment->invoice_id }})</a> 
                     @else
-                        ({{ $payment->invoice_id }})
+                        ({{ $payment->branch_initial }}-{{ $payment->invoice_id }})
                     @endcan
                 @else
-                    {{ $payment->invoice_id }}  
+                    {{ $payment->branch_initial }}-{{ $payment->invoice_id }}  
                 @endif
             </td>
             <td>{{ $payment->created_at_dsp }}</td>

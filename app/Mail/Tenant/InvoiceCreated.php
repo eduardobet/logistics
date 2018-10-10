@@ -37,13 +37,15 @@ class InvoiceCreated extends Mailable
         $box = $client->boxes()->active()->get()->first();
         $box = "{$box->branch_code}{$client->id}";
         $lang = $this->tenant->lang ? : localization()->getCurrentLocale();
+        $ibranch = $this->invoice->branch;
+        $title = " #{$ibranch->initial}-{$this->invoice->id}";
 
-        return $this->subject(__('Invoice', [], $lang) . ' #' . $this->invoice->id)
+        return $this->subject(__('Invoice', [], $lang) . $title )
             ->from($this->tenant->mail_from_address, $this->tenant->mail_from_name)
             ->markdown('tenant.mails.invoice')
             ->with([
                 'tenant' => $this->tenant,
-                'ibranch' => $this->invoice->branch,
+                'ibranch' => $ibranch,
                 'client' => $client,
                 'box' => $box,
                 'payments' => $this->invoice->payments,

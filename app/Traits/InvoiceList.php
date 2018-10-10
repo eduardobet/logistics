@@ -28,7 +28,7 @@ trait InvoiceList
                 $query->select('id', 'invoice_id', 'is_first', 'amount_paid');
             }])
             ->withAndWhereHas('branch', function ($query) use ($branch) {
-                $query->where('id', $branch->id)->select('id', 'code', 'name');
+                $query->where('id', $branch->id)->select('id', 'code', 'name', 'initial');
             });
 
         if (($from = request('from')) && ($to = request('to'))) {

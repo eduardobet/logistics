@@ -68,7 +68,12 @@ trait PaymentList
             'clients.id as client_id',
             'boxes.branch_code as client_box',
             'invoices.branch_id as invoice_branch_id',
-            'branches.name as branch_name, branches.ruc, branches.dv, branches.telephones as branch_telephones, branches.address as branch_address'
+            'branches.name as branch_name', 
+            'branches.ruc',
+            'branches.dv',
+            'branches.telephones as branch_telephones',
+            'branches.address as branch_address', 
+            'branches.initial as branch_initial'
         );
 
         if ($searching == 'Y') {

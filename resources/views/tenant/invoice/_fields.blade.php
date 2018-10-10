@@ -38,7 +38,10 @@
     <div class="col-lg-2">
         <div class="form-group">
             <label class="form-control-label">{{ __('ID') }}:</label>
-            {!! Form::text("id", null, ['class' => 'form-control ', 'readonly' => 1, ]) !!}
+            {!! Form::text("id_dsp", $invoice->branch ? "{$invoice->branch->initial}-{$invoice->id}" : null, ['class' => 'form-control ', 'readonly' => 1, ]) !!}
+            
+            {!! Form::hidden('id', null) !!}
+            
         </div>
     </div>
 

@@ -27,7 +27,7 @@
         
         @foreach ($invoices as $invoice)
         <tr>
-            <th scope="row">{{ $invoice->id }}</th>
+            <th scope="row">{{ $invoice->branch->initial }}-{{ $invoice->id }}</th>
             <td>{{ $invoice->created_at->format('d-m-Y') }}</td>
             <td>{{ $invoice->branch->code }}{{ $invoice->client->id }}</td>
             <td>{{ $invoice->client->full_name }}</td>

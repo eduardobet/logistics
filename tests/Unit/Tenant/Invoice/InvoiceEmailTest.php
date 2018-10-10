@@ -76,9 +76,9 @@ class InvoiceEmailTest extends TestCase
 
         $this->assertTrue($data['invoice']->is($invoice));
 
-        $this->assertEquals("Invoice #{$invoice->id}", $email->build()->subject);
+        $this->assertEquals("Invoice #{$branchB->initial}-{$invoice->id}", $email->build()->subject);
 
-        $this->assertContains("#{$invoice->id}", $content);
+        $this->assertContains("#{$branchB->initial}-{$invoice->id}", $content);
         $this->assertContains("{$branch->name}", $content);
         $this->assertContains("{$branch->ruc} DV {$branch->dv}", $content);
         $this->assertContains("{$branch->address}", $content);

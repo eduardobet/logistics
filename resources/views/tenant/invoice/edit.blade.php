@@ -28,6 +28,32 @@
                 {!! Form::hidden('qty', null, ['id' => 'qty',]) !!}
             </form>
          </div>
+
+         <div class="section-wrapper mg-t-15">
+            <div class="mg-b-15">
+                <label class="section-title">{{ __('Activity Log') }}</label>
+            </div>
+            <div class="col-lg-12">
+                
+                @if ($invoice->creator)
+                    <p>{{ __('Created by') }} <b>{{ $invoice->creator->full_name }}</b> | <b>{{ $invoice->created_at->format('d/m/Y') }}</b> | {{ $invoice->created_at->format('g:i A') }} </p>
+                @endif
+
+                <?php $lPayment = $payments->last(); ?>
+                @if ($lPayment && $lPayment->creator)
+                    <p>{{ __('Last payment by') }} <b>{{ $lPayment->creator->full_name }}</b> | <b>{{ $lPayment->created_at->format('d/m/Y') }}</b> | {{ $lPayment->created_at->format('g:i A') }} </p>
+                @endif
+
+                @if ($invoice && $invoice->is_paid)
+                    <p>{{ __('Delivered by') }} <b>{{ $lPayment->creator->full_name }}</b> | <b>{{ $lPayment->created_at->format('d/m/Y') }}</b> | {{ $lPayment->created_at->format('g:i A') }} </p>
+                @endif
+                
+                @if ($invoice->status == 'I')
+                    <p>{{ __('Deleted by') }} <b>{{ $invoice->editor->full_name }}</b> | <b>{{ $invoice->updated_at->format('d/m/Y') }}</b> | {{ $invoice->updated_at->format('g:i A') }} </p>
+                @endif
+                
+            </div>
+         </div>
     
     </div> <!-- container -->     
 </div> <!-- slim-mainpanel -->

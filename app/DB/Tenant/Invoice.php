@@ -64,7 +64,14 @@ class Invoice extends Model
 
     public function creator()
     {
-        return $this->belongsTo(User::class, 'created_by_code');
+        return $this->belongsTo(User::class, 'created_by_code')
+            ->select('id', 'first_name', 'last_name');
+    }
+
+    public function editor()
+    {
+        return $this->belongsTo(User::class, 'updated_by_code')
+            ->select('id', 'first_name', 'last_name');
     }
 
     public function branch()

@@ -49,7 +49,7 @@ class WarehouseEditionTest extends TestCase
     /** @test */
     public function it_updates_the_warehouse_for_direct_comission()
     {
-        //$this->withoutExceptionHandling();
+        $this->withoutExceptionHandling();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
@@ -59,6 +59,8 @@ class WarehouseEditionTest extends TestCase
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $admin->branches()->sync([$branch->id]);
         $admin->branchesForInvoice()->sync([$branch->id,]);
+
+        $this->actingAs($admin);
 
         \Gate::define('edit-warehouse', function ($admin) {
             return true;
@@ -89,6 +91,8 @@ class WarehouseEditionTest extends TestCase
             'warehouse_id' => $warehouse->id,
             'client_id' => $client->id,
             'branch_id' => $warehouse->branch_to,
+            'created_by_code' => $admin->id,
+            'updated_by_code' => $admin->id,
             'client_name' => 'The Name of the client',
             'client_email' => 'email@client.com',
             'volumetric_weight' => 8,

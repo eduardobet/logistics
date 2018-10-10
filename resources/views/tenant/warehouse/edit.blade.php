@@ -19,36 +19,9 @@
 
          <div class="section-wrapper">
 
-            <div class="row col-12">
-                <div class="col-2 text-center">Cantidad</div>
-                <div class="col-2 text-center">Peso Bruto</div>
-                <div class="col-2 text-center">Volume</div>
-                <div class="col-2 text-center">Peso Taseable</div>
-                <div class="col-2 text-center">En Almacen</div>
-                <div class="col-2 text-center">Estado</div>
-            </div>
-
-            <div class="row col-12">
-                <div class="col-2 text-center"><h4 class="tx-bold tx-inverse">{{ $warehouse->qty }} Piezas</H4></div>
-                <div class="col-2 text-center"><h4 class="tx-bold tx-inverse">{{ $invoice->real_weight }} LBS</H4></div>
-                <div class="col-2 text-center"><h4 class="tx-bold tx-inverse">0 Cubic Feet</H4></div>
-                <div class="col-2 text-center"><h4 class="tx-bold tx-inverse">00,0 LBS</H4></div>
-                <div class="col-2 text-center"><h4 class="tx-bold tx-inverse">1 Pieces</H4></div>
-                <div class="col-2 text-center"><h4 class="tx-bold tx-inverse">Recibido</H4></div>
-            </div>
-
-            <div class="row col-12">
-                <div class="col-2 text-center"><h4 class="tx-bold tx-inverse"></H4></div>
-                <div class="col-2 text-center"><h4 class="tx-bold tx-inverse">{{ number_format(($invoice->real_weight * 0.4535), 2) }} KGS</H4></div>
-                <div class="col-2 text-center"><h4 class="tx-bold tx-inverse">0.00 m3</H4></div>
-                <div class="col-2 text-center"><h4 class="tx-bold tx-inverse">0.0 KGS</H4></div>
-                <div class="col-2 text-center"><h4 class="tx-bold tx-inverse">0.00$</H4></div>
-                <div class="col-2 text-center"><h4 class="tx-bold tx-inverse"></H4></div>
-            </div>
-
-         </div>
-
-         <hr>
+        
+        @include('tenant.warehouse._resume')
+        
 
          <div class="section-wrapper">
 
@@ -60,7 +33,36 @@
                 
                 {!! Form::hidden('qty', null, ['id' => 'qty',]) !!}
             </form>
+            
          </div>
+
+
+        <div class="section-wrapper mg-t-15">
+            <div class="mg-b-15">
+                <label class="section-title">{{ __('Activity Log') }}</label>
+            </div>
+            <div class="col-lg-12">
+                <p>{{ __('Created by') }} <b>{{ $warehouse->creator->full_name }}</b> | <b>{{ $warehouse->created_at->format('d/m/Y') }}</b> | {{ $warehouse->created_at->format('g:i A') }} </p>
+                
+                @if ($warehouse->editor)
+                    <p>{{ __('Edited by') }} <b>{{ $warehouse->editor->full_name }}</b> | <b>{{ $warehouse->updated_at->format('d/m/Y') }}</b> | {{ $warehouse->updated_at->format('g:i A') }} </p>
+                @endif
+
+                @if ($invoice && $invoice->created_at)
+                    <p>{{ __('Invoiced by') }} <b>{{ $invoice->creator->full_name }}</b> | <b>{{ $invoice->created_at->format('d/m/Y') }}</b> | {{ $warehouse->created_at->format('g:i A') }} </p>
+                @endif
+
+                @if ($invoice && $invoice->is_paid)
+                    <?php $payments = $invoice->payments; $lPayment = $payments->last(); ?>
+                    <p>{{ __('Delivered by') }} <b>{{ $lPayment->creator->full_name }}</b> | <b>{{ $lPayment->created_at->format('d/m/Y') }}</b> | {{ $lPayment->created_at->format('g:i A') }} </p>
+                @endif
+                
+            </div>
+         </div>
+
+
+
+
     
     </div> <!-- container -->     
 </div> <!-- slim-mainpanel -->

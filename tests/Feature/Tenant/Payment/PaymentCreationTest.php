@@ -424,6 +424,75 @@ class PaymentCreationTest extends TestCase
     }
 
     /** @test */
+    public function the_warehouse_invoice_should_be_paid_in_totality_in_one_payment()
+    {
+        $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Other branch']);
+
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+        $admin->branchesForInvoice()->sync([$branch->id, ]);
+
+        $this->actingAs($admin);
+
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'pay_volume' => true, 'vol_price' => 2.00]);
+        $box = factory(Box::class)->create([
+            'tenant_id' => $tenant->id,
+            'client_id' => $client->id,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
+        ]);
+
+        $warehouse = $tenant->warehouses()->create([
+            'branch_to' => $branchB->id,
+            'branch_from' => $branch->id,
+            'client_id' => $client->id,
+            'trackings' => '1234',
+            'reference' => 'The reference',
+            'qty' => 1,
+            'type' => 'A',
+        ]);
+
+        $invoice = $tenant->invoices()->create([
+            'branch_id' => $branch->id,
+            'client_id' => $client->id,
+            'total' => 100,
+            'warehouse_id' => $warehouse->id,
+        ]);
+
+        $detail = $invoice->details()->create([
+            'qty' => 1,
+            'type' => 1,
+            'total' => 100,
+        ]);
+      
+        \Gate::define('create-payment', function ($admin) {
+            return true;
+        });
+
+        $response = $this->actingAs($admin)->post(route('tenant.payment.store', [$tenant->domain]), [
+            'invoice_id' => $invoice->id,
+            'amount_paid' => 50,
+            'payment_method' => 1,
+            'payment_ref' => 'The payment reference',
+        ], $this->headers());
+
+        $invoice = $invoice->fresh();
+
+        $response->assertStatus(500);
+
+        $this->assertArraySubset([
+            'error' => true,
+            'msg' => 'The invoice of a warehouse cannot be partially paid.',
+        ], $response->json());
+
+        $this->assertEquals(false, (bool)$invoice->is_paid);
+    }
+
+    /** @test */
     public function the_client_receives_an_email_with_his_payment_voucher()
     {
         $this->withoutExceptionHandling();

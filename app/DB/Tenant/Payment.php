@@ -37,4 +37,16 @@ class Payment extends Model
     {
         return $this->belongsTo(\Logistics\DB\Tenant\Invoice::class);
     }
+
+    public function creator()
+    {
+        return $this->belongsTo(\Logistics\DB\User::class, 'created_by_code')
+            ->select('id', 'first_name', 'last_name');
+    }
+
+    public function editor()
+    {
+        return $this->belongsTo(\Logistics\DB\User::class, 'updated_by_code')
+            ->select('id', 'first_name', 'last_name');
+    }
 }

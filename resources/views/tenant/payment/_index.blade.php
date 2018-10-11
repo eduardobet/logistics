@@ -64,7 +64,11 @@
             <td>{{ $payment->client_box }}{{ $payment->client_id }}</td>
             <td class="pdf-a-right">{{ $sign }} {{ number_format($payment->amount_paid, 2) }}</td>
             @if (!isset($exporting))
-                <td class="text-center" style="font-size: 15px"></td>
+                <td class="text-center" style="font-size: 15px">
+                    @can('show-payment')
+                        <a title="{{ __('Show') }}" href="{{ route('tenant.payment.show', [$tenant->domain, $payment->id, ]) }}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                    @endcan
+                </td>
             @endif
             </tr>
 

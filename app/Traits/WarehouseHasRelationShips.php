@@ -39,6 +39,18 @@ trait WarehouseHasRelationShips
         return $this->belongsTo(\Logistics\DB\Tenant\Branch::class, 'branch_to');
     }
 
+    public function creator()
+    {
+        return $this->belongsTo(\Logistics\DB\User::class, 'created_by_code')
+            ->select('id', 'first_name', 'last_name');
+    }
+
+    public function editor()
+    {
+        return $this->belongsTo(\Logistics\DB\User::class, 'updated_by_code')
+            ->select('id', 'first_name', 'last_name');
+    }
+
     public function scopeWithAndWhereHas($query, $relation, $constraint)
     {
         return $query->whereHas($relation, $constraint)

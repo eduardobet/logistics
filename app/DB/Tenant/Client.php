@@ -56,4 +56,16 @@ class Client extends Model
             __do_forget_cache(__class__, $keys, []);
         });
     }
+
+    public function creator()
+    {
+        return $this->belongsTo(\Logistics\DB\User::class, 'created_by_code')
+            ->select('id', 'first_name', 'last_name');
+    }
+
+    public function editor()
+    {
+        return $this->belongsTo(\Logistics\DB\User::class, 'updated_by_code')
+            ->select('id', 'first_name', 'last_name');
+    }
 }

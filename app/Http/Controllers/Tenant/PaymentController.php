@@ -108,6 +108,14 @@ class PaymentController extends Controller
             ], 404);
         }
 
+        if ($invoice->warehouse_id && $request->amount_paid < $invoice->total) {
+            return response()->json([
+                'msg' => __('The invoice of a warehouse cannot be partially paid.'),
+                'error' => true,
+            ], 500);
+
+        }
+
         $pending = $invoice->total - $invoice->payments->sum('amount_paid');
 
         if ($request->amount_paid > $pending) {
@@ -152,12 +160,26 @@ class PaymentController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  string  $domain
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($domain, $id)
     {
-        //
+        $tenant = $this->getTenant();
+
+        $payment = $tenant->payments()
+            ->with([
+                'creator',
+                'invoice' => function($invoice) {
+                    $invoice->with('branch');
+                }
+            ])
+            ->findOrFail($id);
+
+        return view('tenant.payment.show', [
+            'payment' => $payment
+        ]);
     }
 
     /**

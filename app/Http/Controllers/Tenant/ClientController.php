@@ -116,7 +116,9 @@ class ClientController extends Controller
      */
     public function edit($tenant, $id)
     {
-        $client = $this->getTenant()->clients()->with('boxes')->findOrFail($id);
+        $client = $this->getTenant()->clients()
+            ->with(['boxes','creator', 'editor'])
+            ->findOrFail($id);
 
         return view('tenant.client.edit', [
             'client' => $client,

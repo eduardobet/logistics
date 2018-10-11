@@ -132,14 +132,22 @@ class WarehouseController extends Controller
     {
         $tenant = $this->getTenant();
 
-        $warehouse = $tenant->warehouses()->where('id', $id)->firstOrFail();
+        $warehouse = $tenant->warehouses()
+            ->with(['editor', 'creator'])
+            ->where('id', $id)->firstOrFail();
+
+        $invoice = $warehouse->invoice()->with(['creator', 'payments' => function($payment){
+            $payment->with('creator');
+        }])->first();
+
+        if (!$invoice) $invoice = new Invoice;
 
         return view('tenant.warehouse.edit', [
             'warehouse' => $warehouse,
             'branches' => $this->branches(),
             'userBranches' => $this->branches()->whereIn('id', auth()->user()->branchesForInvoice->pluck('id')->toArray()),
             'mailers' => $this->mailers(),
-            'invoice' => $warehouse->invoice ?: new Invoice,
+            'invoice' => $invoice,
             'clients' => (new Client)->getClientsByBranch($warehouse->branch_to),
         ]);
     }
@@ -166,6 +174,7 @@ class WarehouseController extends Controller
         $warehouse->type = $request->type;
         $warehouse->tot_packages = $request->tot_packages ?: 0;
         $warehouse->tot_weight = $request->tot_weight ?: 0;
+        $warehouse->force_updated_at = time();
             
         $updated = $warehouse->save();
         

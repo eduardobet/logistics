@@ -88,6 +88,12 @@ Breadcrumbs::for('tenant.get.search', function ($trail) use ($type) {
     $trail->parent("tenant.{$type}.dashboard");
     $trail->add(__('Search'), '');
 });
+Breadcrumbs::for('tenant.payment.show', function ($trail) use ($type) {
+    $trail->parent("tenant.{$type}.dashboard");
+    $trail->add(__('Payments'), route('tenant.payment.list', request()->domain));
+    $trail->add(__('Showing :what', ['what' => __('Payment')]), route('tenant.payment.show', [request()->domain, request('id')]));
+});
+
 
 // warehouses
 Breadcrumbs::for('tenant.warehouse.cargo-entry.list', function ($trail) use ($type) {

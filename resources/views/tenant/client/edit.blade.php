@@ -24,9 +24,25 @@
             @include('tenant.client._fields', [
                 'departments' => $departments->toArray(),
                 'zones' => $zones->toArray(),
+                'mode' => 'edit',
             ])
             </form>
          </div>
+
+         <div class="section-wrapper mg-t-15">
+            <div class="mg-b-15">
+                <label class="section-title">{{ __('Activity Log') }}</label>
+            </div>
+            <div class="col-lg-12">
+                @if ($client->creator)
+                    <p>{{ __('Created by') }} <b>{{ $client->creator->full_name }}</b> | <b>{{ $client->created_at->format('d/m/Y') }}</b> | {{ $client->created_at->format('g:i A') }} </p>
+                @endif    
+                @if ($client->editor)
+                    <p>{{ __('Edited by') }} <b>{{ $client->editor->full_name }}</b> | <b>{{ $client->updated_at->format('d/m/Y') }}</b> | {{ $client->updated_at->format('g:i A') }} </p>
+                @endif
+                
+            </div>
+          </div>
 
      </div> <!-- container -->     
 </div> <!-- slim-mainpanel -->   

@@ -28,6 +28,7 @@
                     'departments' => [],
                     'zones' => [],
                     'client' => new Logistics\DB\Tenant\Client,
+                    'mode' => 'create',
                 ])
             </form>
         </div>

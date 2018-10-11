@@ -148,7 +148,9 @@ class InvoiceController extends Controller
     public function edit($domain, $id)
     {
         $tenant = $this->getTenant();
-        $invoice = $tenant->invoices()->with(['details', 'payments'])->findOrFail($id);
+        $invoice = $tenant->invoices()->with(['details', 'creator', 'payments' => function($payment) {
+            $payment->with(['creator']);
+        }])->findOrFail($id);
 
         return view('tenant.invoice.edit', [
             'clients' => (new Client())->getClientsByBranch(request('branch_id')),

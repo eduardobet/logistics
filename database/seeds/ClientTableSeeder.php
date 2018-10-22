@@ -19,7 +19,7 @@ class ClientTableSeeder extends Seeder
         $clientB = factory(Client::class)->create(['tenant_id' => $tenant->id, ]);
         $branch = $tenant->branches->where('name', '=', 'Los Andes 2')->first();
 
-        $clientA->genBox($branch->id, $branch->code);
-        $clientB->genBox($branch->id, $branch->code);
+        $clientA->genBox($branch->id, $branch->code, 'LA');
+        $clientB->genBox($branch->id, $branch->code, 'LA');
     }
 }

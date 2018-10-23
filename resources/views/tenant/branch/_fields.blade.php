@@ -82,6 +82,28 @@
 </div>
 
 <div class="row">
+    <div class="col-8">
+        <div class="form-group">
+            <label class="form-control-label">{{ __('Logo') }}:</label>
+            <div class="custom-file">
+                <input type="file" name="logo" class="custom-file-input" id="logo" lang="{{ config('app.locale') }}" accept="image/png, image/jpeg">
+                <label class="custom-file-label" for="customFile">{{ __('Choose file') }}</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-4 mg-t-30-force">
+        <div class="form-group">
+            @if ($branchData->logo)
+                <button type="button" class="btn btn-info btn-sm btn-view-image">
+                    <i class="fa fa-eye"></i>
+                </button>
+            @endif
+        </div>
+    </div>
+</div>
+
+<div class="row">
 
     <div class="col-lg-3 col-sm-6">
         <div class="form-group">

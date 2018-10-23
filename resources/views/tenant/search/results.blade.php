@@ -37,6 +37,14 @@
                 @include('tenant.search._inv')
             @endif
 
+            @if (isset($reca) && $reca === true)
+                @include('tenant.search._reca')
+            @endif
+
+            @if (isset($tracking) && $tracking === true)
+                @include('tenant.search._trackings')
+            @endif
+
         </div>
 
       </div><!-- container -->

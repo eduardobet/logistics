@@ -5,6 +5,8 @@ namespace Tests\Feature\Tenant\Admin\Branch;
 use Tests\TestCase;
 use Logistics\DB\User;
 use Logistics\DB\Tenant\Branch;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -65,6 +67,7 @@ class BranchCreationTest extends TestCase
             'vol_price' => 'XX',
             'dhl_price' => 'XX',
             'maritime_price' => 'XX',
+            'logo' => 'invalid',
         ]);
         $response->assertStatus(302);
         $response->assertRedirect(route('tenant.admin.branch.create', $tenant->domain));
@@ -82,6 +85,7 @@ class BranchCreationTest extends TestCase
             'maritime_price',
             'color',
             'initial',
+            'logo'
         ]);
     }
 
@@ -170,5 +174,48 @@ class BranchCreationTest extends TestCase
 
         $response->assertRedirect(route('tenant.admin.branch.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
+    }
+
+    /** @test */
+    public function a_branch_can_have_a_logo()
+    {
+        $this->withoutExceptionHandling();
+
+        Storage::fake('public');
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+
+        $file = UploadedFile::fake()->image('logo.jpg');
+
+        $response = $this->actingAs($admin)->post(route('tenant.admin.branch.store', $tenant->domain), [
+            'name' => 'The other branch',
+            'address' => 'In the middle of nowhere',
+            'emails' => 'contact@branch.test, sales@branch.test',
+            'telephones' => '555-5555',
+            'faxes' => '555-5454',
+            'code' => 'CODE',
+            'initial' => 'INITIAL',
+            "lat" => '12234',
+            "lng" => '4344',
+            "ruc" => 'RUC',
+            "dv" => 'DV',
+            'status' => 'A',
+            'direct_comission' => '1',
+            'should_invoice' => '1',
+            'real_price' => 2.50,
+            'vol_price' => 1.75,
+            'dhl_price' => 2.25,
+            'maritime_price' => 250,
+            'color' => 'red',
+            'logo' => $file,
+        ]);
+
+        $branch = $branch->all()->fresh()->last();
+
+        $this->assertEquals("tenant/{$tenant->id}/images/logos/{$file->hashName()}", $branch->logo);
+        Storage::disk('public')->assertExists("tenant/{$tenant->id}/images/logos/{$file->hashName()}");
     }
 }

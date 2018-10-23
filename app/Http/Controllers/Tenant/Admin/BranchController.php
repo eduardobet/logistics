@@ -4,10 +4,12 @@ namespace Logistics\Http\Controllers\Tenant\Admin;
 
 use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
-use Logistics\DB\Tenant\Branch;
-use Logistics\Http\Controllers\Controller;
-use Logistics\Http\Requests\Tenant\BranchRequest;
 use Logistics\DB\Tenant\Color;
+use Logistics\DB\Tenant\Branch;
+use Illuminate\Support\Facades\Storage;
+use Logistics\Http\Controllers\Controller;
+use Logistics\Events\Tenant\BranchLogoAdded;
+use Logistics\Http\Requests\Tenant\BranchRequest;
 
 class BranchController extends Controller
 {
@@ -65,6 +67,8 @@ class BranchController extends Controller
         ]);
 
         if ($branch) {
+            $this->uploadLogo($request, $branch);
+
             return redirect()->route('tenant.admin.branch.list', $request->domain)
                 ->with('flash_success', __('The :what has been created.', ['what' => __('Branch') ]));
         }
@@ -116,6 +120,8 @@ class BranchController extends Controller
         $updated = $branch->save();
 
         if ($updated) {
+            $this->uploadLogo($request, $branch);
+            
             return redirect()->route('tenant.admin.branch.list', $request->domain)
                 ->with('flash_success', __('The :what has been updated.', ['what' => __('Branch')]));
         }
@@ -126,5 +132,20 @@ class BranchController extends Controller
                     'action' => __('Update'),
                     'what' => __('The branch'),
                 ]));
+    }
+
+    protected function uploadLogo($request, $branch)
+    {
+        if ($request->hasFile('logo')) {
+            if (Storage::disk('public')->exists($branch->logo)) {
+                Storage::disk('public')->delete($branch->logo);
+            }
+
+            $branch->update([
+                'logo' => $request->logo->store("tenant/{$branch->tenant_id}/images/logos", 'public'),
+            ]);
+
+            event(new BranchLogoAdded($branch));
+        }
     }
 }

@@ -5,6 +5,8 @@ namespace Tests\Feature\Tenant\Admin\Branch;
 use Tests\TestCase;
 use Logistics\DB\User;
 use Logistics\DB\Tenant\Branch;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -66,6 +68,7 @@ class BranchEditionTest extends TestCase
             'vol_price' => 'XX',
             'dhl_price' => 'XX',
             'maritime_price' => 'XX',
+            'logo' => 'invalid',
         ]);
         $response->assertStatus(302);
         $response->assertRedirect(route('tenant.admin.branch.edit', [$tenant->domain, 1]));
@@ -83,6 +86,7 @@ class BranchEditionTest extends TestCase
             'dhl_price',
             'maritime_price',
             'color',
+            'logo',
         ]);
     }
 
@@ -178,5 +182,59 @@ class BranchEditionTest extends TestCase
 
         $response->assertRedirect(route('tenant.admin.branch.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
+    }
+
+    /** @test */
+    public function branch_logo_can_be_edited_and_the_old_one_is_removed()
+    {
+        $this->withoutExceptionHandling();
+
+        Storage::fake('public');
+
+        $tenant = factory(TenantModel::class)->create();
+        $file = UploadedFile::fake()->image('logo.jpg');
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+
+        Storage::disk('public')->put(
+            "tenant/{$tenant->id}/images/logos/logo.png",
+            file_get_contents(storage_path('fixtures/less-than-200px-wide-image.png'))
+        );
+
+        $branch = $branch->fresh()->first();
+        $branch->logo = "tenant/{$tenant->id}/images/logos/logo.png";
+        $branch->save();
+
+        $response = $this->actingAs($admin)->patch(route('tenant.admin.branch.update', $tenant->domain), [
+            'name' => 'Branch Name Updated',
+            'address' => 'In the middle of nowhere',
+            'emails' => 'contact@branch.test, sales@branch.test',
+            'telephones' => '655-5555',
+            'faxes' => '655-5454',
+            'code' => 'CODE',
+            'initial' => 'INIT',
+            "lat" => '12234',
+            "lng" => '4344',
+            "ruc" => '123-23-33',
+            "dv" => '04',
+            'status' => 'A',
+            'direct_comission' => '1',
+            'should_invoice' => '1',
+            'id' => $branch->id,
+
+            'real_price' => 2.50,
+            'vol_price' => 1.75,
+            'dhl_price' => 2.25,
+            'maritime_price' => 250,
+            'color' => 'blue',
+            'logo' => $file,
+        ]);
+
+        $branch = $branch->fresh()->first();
+
+        Storage::disk('public')->assertMissing("tenant/{$tenant->id}/images/logos/logo.png");
+        $this->assertEquals("tenant/{$tenant->id}/images/logos/{$file->hashName()}", $branch->logo);
+        Storage::disk('public')->assertExists("tenant/{$tenant->id}/images/logos/{$file->hashName()}");
     }
 }

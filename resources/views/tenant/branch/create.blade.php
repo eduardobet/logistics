@@ -18,7 +18,7 @@
          </div><!-- slim-pageheader -->
 
          <div class="section-wrapper">
-            {!! Form::open(['route' => ['tenant.admin.branch.store', $tenant->domain]]) !!}
+            {!! Form::open(['route' => ['tenant.admin.branch.store', $tenant->domain], 'files' => true,]) !!}
                 @include('tenant.branch._fields')
             </form>
          </div>

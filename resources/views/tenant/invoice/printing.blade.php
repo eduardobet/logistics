@@ -12,7 +12,7 @@
 
         <tr>
             <td style="width:100%;" colspan="2">
-                <?php $logo = storage_path('app/public/'.$tenant->logo); $mime = @mime_content_type($logo);  ?>
+                <?php $logo = storage_path('app/public/'.($branch->logo ? $branch->logo : $tenant->logo)); $mime = @mime_content_type($logo);  ?>
 
                 @if ($mime)
                 <img src="data:{{ $mime }};base64,{{ base64_encode(file_get_contents( $logo )) }}" alt="Company logo" width="200px"   />

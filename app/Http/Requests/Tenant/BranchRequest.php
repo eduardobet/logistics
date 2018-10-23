@@ -40,6 +40,7 @@ class BranchRequest extends AppFormRequest
             'dhl_price' => 'sometimes|numeric',
             'maritime_price' => 'sometimes|numeric',
             'color' => 'required',
+            'logo' => 'sometimes|mimes:png,jpg,jpeg|max:1024',
         ];
 
         if ($this->isEdit()) {

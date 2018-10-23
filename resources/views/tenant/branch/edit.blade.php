@@ -18,7 +18,7 @@
          </div><!-- slim-pageheader -->
 
          <div class="section-wrapper">
-            {!! Form::model($branchData, ['route' => ['tenant.admin.branch.update', $tenant->domain], 'method' => 'PATCH']) !!}
+            {!! Form::model($branchData, ['route' => ['tenant.admin.branch.update', $tenant->domain], 'method' => 'PATCH','files' => true,]) !!}
             {!! Form::hidden('id', $branchData->id) !!}
                 @include('tenant.branch._fields')
             </form>
@@ -29,4 +29,16 @@
 
 @include('tenant.common._footer')
 
+@endsection
+
+@section('xtra_scripts')
+    <script>
+        $(function() {
+            $(".btn-view-image").click(function() {
+                swal({
+                    imageUrl: '{{ asset("storage/".$branchData->logo) }}',
+                })
+            });
+        });
+    </script>
 @endsection

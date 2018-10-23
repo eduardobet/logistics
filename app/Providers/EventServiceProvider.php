@@ -20,6 +20,10 @@ class EventServiceProvider extends ServiceProvider
         \Logistics\Events\Tenant\CompanyLogoAdded::class => [
             \Logistics\Listeners\Tenant\ScheduleCompanyLogoProcessing::class,
         ],
+
+        \Logistics\Events\Tenant\BranchLogoAdded::class => [
+            \Logistics\Listeners\Tenant\ScheduleBranchLogoProcessing::class,
+        ],
     ];
 
     /**

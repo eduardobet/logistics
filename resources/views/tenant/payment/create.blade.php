@@ -17,7 +17,7 @@
                                 <div class="form-group mg-b-10-force">
                                     <label class="form-control-label">{{ __('Amount paid') }}:</label>
                                     <?php $pending = isset($invoice) && isset($payments) ? $invoice->total - $payments->sum('amount_paid') : 0;  ?>
-                                    {!! Form::number("p_amount_paid", $pending, ['class' => 'form-control ', 'id' => 'p_amount_paid', 'required' => '1', 'step' => "0.01", 'min' => "1", 'max' => $pending, 'onclick' => 'this.select()', ] + ['readonly' => 1]) !!}
+                                    {!! Form::number("p_amount_paid", $pending, ['class' => 'form-control ', 'id' => 'p_amount_paid', 'required' => '1', 'step' => "0.01", 'min' => "1", 'max' => $pending, 'onclick' => 'this.select()', ]) !!}
                                 </div>
                             </div>
                             

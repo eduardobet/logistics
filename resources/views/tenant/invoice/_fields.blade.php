@@ -113,7 +113,7 @@
     <div class="col-lg-2">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">{{ __('Amount paid') }}:</label>
-            {!! Form::text("amount_paid", $payment ? $payment->amount_paid : 0, ['class' => 'form-control ', 'id' => 'amount_paid',  ]) !!}
+            {!! Form::text("amount_paid", $payment ? $payment->amount_paid : 0, ['class' => 'form-control ', 'id' => 'amount_paid',  ]+($payment&&$payment->amount_paid?['readonly' => 1]:[]) ) !!}
         </div>
     </div>
 

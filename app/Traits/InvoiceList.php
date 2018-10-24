@@ -40,6 +40,16 @@ trait InvoiceList
             $searching = 'Y';
         }
 
+        if (request('invoice_type')) {
+            if (request('invoice_type') == '1') {
+                $invoices = $invoices->whereNotNull('warehouse_id');
+            }else if (request('invoice_type') == '2') {
+                $invoices = $invoices->whereNull('warehouse_id');
+            }
+
+            $searching = 'Y';
+        }
+
         if ($searching == 'Y') {
             $invoices = $invoices->orderBy('invoices.id')->get();
         } else {

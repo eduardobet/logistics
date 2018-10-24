@@ -5,6 +5,7 @@
         <th>{{ __('Date') }}</th>
         <th>{{ __('Box') }}</th>
         <th>{{ __('Client') }}</th>
+        <th>{{ __('Type') }}</th>
         <th class="pdf-a-right">{{ __('Amount') }}</th>
         <th class="text-center">{{ __('Status') }}</th>
         @if (!isset($exporting))
@@ -31,6 +32,13 @@
             <td>{{ $invoice->created_at->format('d-m-Y') }}</td>
             <td>{{ $invoice->branch->code }}{{ $invoice->client->id }}</td>
             <td>{{ $invoice->client->full_name }}</td>
+            <td>
+                @if ($invoice->warehouse_id)
+                    <b>{{ __('Warehouse') }}</b>
+                @else
+                    <b>{{ __('Internet') }}</b>   
+                @endif
+            </td>
             <td class="pdf-a-right">{{ $sign }} {{ number_format($invoice->total, 2) }}</td>
             <td class="text-center" id="status-text-{{ $invoice->id }}">
             @if ($invoice->is_paid)

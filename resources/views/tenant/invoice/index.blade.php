@@ -66,7 +66,11 @@
                  {!! Form::select('client_id', ['' => '----'], null, ['class' => 'form-control select2', 'id' => 'client_id', 'width' => '100% !important', ]) !!}
             </div>
 
-             <div class="col-lg-2">
+            <div class="col-lg-1">
+                {!! Form::select('invoice_type', ['' => __('Type'), '1' => __('Warehouse'), '2' => __('Internet') ], null, ['class' => 'form-control select2', 'id' => 'invoice_type', 'width' => '100% !important', ]) !!}
+            </div>
+
+             <div class="col-lg-1">
                 
                 <div class="input-group">
                     <div class="input-group-append">
@@ -268,7 +272,8 @@ select2ize = function($child, items) {
             var to = $.trim($("#to").val());
             var branch = $("#branch_id").val();
             var client = $("#client_id").val();
-            window.location = `{{ route('tenant.invoice.list', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}`;
+            var invoiceType = $("#invoice_type").val();
+            window.location = `{{ route('tenant.invoice.list', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&invoice_type=${invoiceType}`;
         });
 
         $("#export-xls, #export-pdf").click(function() {
@@ -276,9 +281,10 @@ select2ize = function($child, items) {
             var to = $.trim($("#to").val());
             var branch = $("#branch_id").val();
             var client = $("#client_id").val();
+            var invoiceType = $("#invoice_type").val();
             var pdf = this.id === 'export-pdf' ? '&pdf=1' : '';
             
-            if(from && to) window.open(`{{ route('tenant.invoice.export', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}${pdf}`, '_blank');
+            if(from && to) window.open(`{{ route('tenant.invoice.export', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&invoice_type=${invoiceType}${pdf}`, '_blank');
         });
 
 

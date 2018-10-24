@@ -18,7 +18,7 @@
          </div><!-- slim-pageheader -->
 
          <div class="section---wrapper">
-            {!! Form::open(['route' => ['tenant.warehouse.cargo-entry.store', $tenant->domain]]) !!}
+            {!! Form::open(['route' => ['tenant.warehouse.cargo-entry.store', $tenant->domain], 'name' => 'frm-cargo-entry', 'id' => 'frm-cargo-entry', ]) !!}
 
             @include('tenant.common._notifications')
 
@@ -26,7 +26,15 @@
                 <div class="col-sm-12">
                     <div class="card card-status">
                         <div class="form-group mg-b-0-force">
-                        <h4 class="tx-bold tx-inverse">{{ strtoupper(__('Tracking numbers')) }} (<span id="qty-dsp"></span>)<span class="tx-danger">*</span></h4>
+                        <h4 class="tx-bold tx-inverse">{{ strtoupper(__('Tracking numbers')) }} (<span id="qty-dsp"></span>)<span class="tx-danger">*</span>
+
+                            <label class="badge badge-success" style="display:none" id="sisyphus-indicator-saving">
+                                <small><em>{{ __('Saving') }}...</em></small>
+                            </label>
+                            <label class="badge badge-warning" style="display:none" id="sisyphus-indicator-restoring">
+                                <small><em>{{ __('Restoring') }}...</em></small>
+                            </label>
+                        </h4>
                         
                         {!! Form::textarea('trackings', null, ['rows' => 14, 'class' => 'form-control mg-b-6-force', 'required' => 1, 'id' => 'trackings', ]) !!}
                         
@@ -73,7 +81,18 @@
         });
 
         countTracking($.trim($("#trackings").val()));
-    });
+
+        $( "#frm-cargo-entry" ).sisyphus(
+            {
+            onSave: function(){
+                $("#sisyphus-indicator-saving").show().fadeOut(2e3);
+            }
+            ,onRestore: function(){
+                $("#sisyphus-indicator-restoring").show().fadeOut(2e3);
+                countTracking($.trim($("#trackings").val()));
+            }
+        });
+     });
     
     function countTracking(trackings) {
         var qty = !trackings ? 0 : (trackings.match(/\r?\n/g) || '').length + 1;

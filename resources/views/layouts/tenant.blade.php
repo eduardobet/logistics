@@ -11,7 +11,7 @@
 
     <title>@yield('title', config('app.name', ''))</title>
 
-    <link href="{{ asset('css/tenant.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/tenant.css') }}" rel="stylesheet">
     @yield('xtra_styles')
 </head>
 <body class="dasbhoard-3">
@@ -21,7 +21,7 @@
         @yield('content')
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ mix('js/app.js') }}"></script>
     <script>
         
         @if ($success = session()->get('flash_success'))

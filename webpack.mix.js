@@ -13,3 +13,8 @@ let mix = require('laravel-mix');
 
 mix.js('resources/assets/js/app.js', 'public/js')
    .sass('resources/assets/sass/tenant.scss', 'public/css');
+
+if (mix.inProduction()) {
+    mix.version();
+    console.log('running versioning');
+}

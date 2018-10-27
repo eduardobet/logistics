@@ -42,6 +42,12 @@ class CargoEntryController extends Controller
             $searching = 'Y';
         }
 
+        if ($type = request('type')) {
+            if ($type == 'M') $cargoEntries = $cargoEntries->where('type', $type)->orWhereNull('type');
+            else if ($type == 'M') $cargoEntries = $cargoEntries->where('type', $type);
+            $searching = 'Y';
+        }
+
         $cargoEntries = $cargoEntries->orderBy('id', 'DESC')->paginate(15);
 
         return view('tenant.warehouse.cargo-entry.list', [
@@ -72,6 +78,7 @@ class CargoEntryController extends Controller
         $validation = Validator::make($request->all(), [
             'branch_id' => 'required|integer',
             'trackings' => 'required',
+            'type' => 'sometimes|in:N,M'
         ]);
 
         $tenant = $this->getTenant();
@@ -85,6 +92,7 @@ class CargoEntryController extends Controller
         $cargoEntry = $tenant->cargoEntries()->create([
             'branch_id' => $request->branch_id,
             'trackings' => $request->trackings,
+            'type' => $request->type,
         ]);
 
         if ($cargoEntry) {

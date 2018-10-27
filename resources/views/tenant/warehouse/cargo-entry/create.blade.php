@@ -25,7 +25,7 @@
             <div class="row row-xs">
                 <div class="col-sm-12">
                     <div class="card card-status">
-                        <div class="form-group mg-b-0-force">
+                        <div class="form-group mg-b-20-force">
                         <h4 class="tx-bold tx-inverse">{{ strtoupper(__('Tracking numbers')) }} (<span id="qty-dsp"></span>)<span class="tx-danger">*</span>
 
                             <label class="badge badge-success" style="display:none" id="sisyphus-indicator-saving">
@@ -37,9 +37,19 @@
                         </h4>
                         
                         {!! Form::textarea('trackings', null, ['rows' => 14, 'class' => 'form-control mg-b-6-force', 'required' => 1, 'id' => 'trackings', ]) !!}
-                        
+
+                    </div>
+                    
+                    <div class="form-group mg-b-20-force">
+                        <label for="type" class="form-label">{{ __('Type') }}</label>
+                         {!! Form::select('type', ['N' => __('Normal'), 'M' =>  __('Misidentified') ], old('type', request('type')), ['class'=> 'form-control', 'id' => 'type',]) !!}
+                    </div>
+                    
+                    
+                    <div class="form-group mg-b-0-force">
                         <button class="btn btn-primary" type="submit"><b>{{ __('Save') }}</b></button><br>
-                        </div>
+                    </div>
+
                     </div><!-- card -->
                 </div><!-- col-sm-12 -->
 
@@ -82,7 +92,7 @@
 
         countTracking($.trim($("#trackings").val()));
 
-        $( "#frm-cargo-entry" ).sisyphus(
+        var $sisyphus = $( "#frm-cargo-entry" ).sisyphus(
             {
             onSave: function(){
                 $("#sisyphus-indicator-saving").show().fadeOut(2e3);
@@ -92,6 +102,27 @@
                 countTracking($.trim($("#trackings").val()));
             }
         });
+
+        // 
+        $("#type").change(function() {
+            swal({
+                    title: '{{__("Are you sure") }}?',
+                    text: "{{ __('All unsaved data will be lost') }}!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: '{{ __("No") }}',
+                    confirmButtonText: '{{ __("Yes") }}'
+                })
+                .then((result) => {
+                    if (result.value) {
+                        if ($sisyphus) $sisyphus.manuallyReleaseData();
+                        window.location = "{{ route('tenant.warehouse.cargo-entry.create', [$tenant->domain, ]) }}?type="+this.value;
+                    }
+                 });
+         });
+
      });
     
     function countTracking(trackings) {

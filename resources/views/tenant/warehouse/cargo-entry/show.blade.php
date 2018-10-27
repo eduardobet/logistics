@@ -40,6 +40,18 @@
                                 <b>{{ __('Date') }}:</b> {{ $cargo_entry->created_at->format('d/m/Y') }}<br>
                                 <b>{{ __('Hour') }}:</b> {{ $cargo_entry->created_at->format('g:i A') }}<br>
                                 <b>{{ __('Branch') }}:</b> {{ $cargo_entry->branch->name }}<br>
+
+                                @if (!$cargo_entry->type || $cargo_entry->type == 'N' )
+                                    <label class="badge badge-success">
+                                        {{ __('Normal') }}
+                                    </label>
+                                @elseif($cargo_entry->type == 'M')
+                                    
+                                    <label class="badge badge-danger">
+                                        {{ __('Misidentified') }}
+                                    </label>
+                                @endif
+
                                 <br>
                                 <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.warehouse.cargo-entry.create', $tenant->domain) }}">
                                     <i class="fa fa-plus mg-r-5"></i> {{ __('Create') }}

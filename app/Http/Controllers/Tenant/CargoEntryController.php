@@ -27,8 +27,8 @@ class CargoEntryController extends Controller
             'creator' => function ($creator) {
                 $creator->select(['id', 'first_name', 'last_name',]);
             }
-        ])
-        ->where('branch_id', $branch->id);
+        ]);
+        //->where('branch_id', $branch->id);
 
         $searching = 'N';
 

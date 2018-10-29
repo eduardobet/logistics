@@ -19,6 +19,17 @@ trait WarehouseHasRelationShips
         return do_diff_for_humans($this->created_at);
     }
 
+    /**
+     * Get created at for display.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getCreatedAtDspAttribute($value)
+    {
+        return $this->created_at->format('d-m-Y H:i a');
+    }
+
     public function invoice()
     {
         return $this->hasOne(\Logistics\DB\Tenant\Invoice::class);

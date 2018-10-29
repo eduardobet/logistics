@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!--seal control panel--->
+<!--seal control panel-->
 <!--code by Josue Artaud "thebrain"-->
 <!--theme slim mod by Eduardo Betancourt-->
 <!--project for seal logistic miami-panama-->
-<html lang="en">
+<html lang="{{ config('app.locale') }}">
 
 <head>
   <!-- Required meta tags -->
@@ -96,30 +96,97 @@
   <script src="{{ mix('js/app.js') }}"></script>
   
   <script type="text/javascript">
-        _submitEvent = function() {
-            $.ajax({
-                type: "POST",
-                url: "{{ route('tenant.tracking.post', [$tenant->domain]) }}",
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "term": $("#q-tracking").val(),
-                    "g-recaptcha-response": $("#g-recaptcha-response").val()
-                },
-                dataType: "json",
-                success: function(data) {
-                    console.log('submit successfully');
-                    console.log(data);
-                    $('#g-recaptcha-response').html(data.token)
-                },
-                error: function(data) {
-                    console.log('error');
-                }
-            });
-        };
+     _submitEvent = function() {
+        $.ajax({
+            type: "POST",
+            url: "{{ route('tenant.tracking.post', [$tenant->domain]) }}",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "term": $("#q-tracking").val(),
+                "g-recaptcha-response": $("#g-recaptcha-response").val()
+            },
+            dataType: "json",
+            success: function(resp) {
+                $('#g-recaptcha-response').html(resp.token)
+                console.log('resp = ', resp)
+
+                markFirstBox(resp.data);
+                markSecondBox(resp.data);
+                markThirdBox(resp.data, resp.data.las);
+                markMisidentified(resp.data.mReca);
+            },
+            error: function(error) {
+                console.log('error = ', error);
+            }
+        });
+      };
+
+      function markFirstBox(data)
+      {
+        if (!data) return;
+
+        var firstReca = data.recas[0];
+        if (firstReca) {
+          infoize(firstReca, 'first', 'tx-purple');
+        }
+      }
+
+      function markSecondBox(data)
+      {
+        if (!data) return;
+        var secondReca = data.recas[1];
+        if (secondReca) {
+          infoize(secondReca, 'second', 'tx-warning');
+        }
+      }
+
+      function markThirdBox(data)
+      {
+        if (!data) return;
+
+        if (data.recas[1] && data.last_wh && !data.mReca) {
+          infoize(data.last_wh, 'third', 'tx-primary');
+        }
+      }
+
+      function markFourthBox(data)
+      {
+        if (!data) return;
+
+        if (!data.mReca) {
+          infoize(secondReca, 'fourth', 'tx-danger');
+        }
+      }
+
+      function markFifthBox(recas, invoice, mReca)
+      {
+        var secondReca = recas[1];
+        if (secondReca && invoiced && !data.mReca) {
+          infoize(secondReca, 'fifth', 'tx-success');
+        }
+      }
+
+      function markMisidentified(mReca)
+      {
+        if (mReca) {
+          $("#misidentified-container").toggleClass('d-none');
+        }
+      }
+
+      function resetter(){}
+
+      function infoize(data, number, highlightclass)
+      {
+        var branch = data.branch || data.to_branch;
+
+        if (number == 'third') console.log(data, number, highlightclass)
+
+        $("#"+number+"-icon").removeClass('tx-gray-300').addClass(highlightclass); 
+         $("#"+number+"-title").removeClass('tx-gray-300');
+         $("#"+number+"-description").removeClass('tx-gray-300');
+         $("#"+number+"-localization").removeClass('tx-gray-300').html(`<i class="fa fa-map-marker"></i> ${branch.name}`);
+         $("#"+number+"-date").removeClass('tx-gray-300').html(`<i class="fa fa-map-calendar"></i> ${data.created_at_dsp}`);
+      }
     </script>
-
-
 </body>
-
-
 </html>

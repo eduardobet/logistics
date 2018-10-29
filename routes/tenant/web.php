@@ -12,17 +12,9 @@ Route::group(['domain' => '{domain}', 'middleware' => 'tenant'], function () {
     ->middleware('auth')
     ->name("tenant.{$type}.dashboard.home");
 
-    Route::get('/tracking', function(){
-        return view('tenant.tracking.index');
-    })->name('tenant.tracking.get');
-
-    Route::post('/tracking', function () {
-        return response()->json([
-            'token' => request('g-recaptcha-response')
-        ]);
-    })->name('tenant.tracking.post');
+    //Tracking
+    Route::get('tracking', 'Tenant\TrackingController@showTrackingForm')->name('tenant.tracking.get');
     
-
     // auth
     Route::group(['prefix' => 'auth'], function () {
        

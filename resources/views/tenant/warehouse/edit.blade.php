@@ -283,7 +283,7 @@
                     totalReal += parseFloat($realWeight.val() || '0') * realPrice;
                     totalVol += parseFloat($volWeight.val() || '0') * volPrice;
 
-                    console.log('-----calculating......','volPrice =', volPrice, 'realPrice = ', realPrice)
+                    console.log('-----calculating......','volPrice =', volPrice, 'realPrice = ', realPrice, 'payVol = ', payVol)
 
                 } // if
             }); // each

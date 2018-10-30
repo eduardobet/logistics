@@ -43,23 +43,26 @@
 
     <div class="slim-mainpanel">
 
-    <form action="{{ route('tenant.tracking.post', [$tenant->domain]) }}" method="POST">
+    <form action="{{ route('tenant.tracking.post') }}" method="POST" id="frm-tracking">
         
         <div class="section-wrapper mg-t-20 mg-b-20">
             <div class="col-lg-12">
                 <div class="input-group">
                     <input id="q-tracking" name="q-tracking" type="text" class="form-control form-control-lg" placeholder="{{ __('Enter a tracking number and press enter or click the button') }}">
 
-                    @captcha("{{ config('app.locale') }}")
+                    {{--@captcha("{{ config('app.locale') }}")--}}
 
                     <span class="input-group-btn">
-                        <button type="submit" class="btn bg-mantle tx-white bd-gray-500 btn-lg" type="button"><i class="fa fa-search"></i></button>
+                        <button type="submit" class="btn bg-mantle tx-white bd-gray-500 btn-lg" id="btn-tracking" disabled>
+                            <i class="fa fa-search"></i>
+                         </button>
                     </span>
                 </div><!-- input-group -->
             </div>
             
         </div><!-- section-wrapper -->
 
+        <input type="hidden" name="should-reset" id="should-reset" value="">
     </form>
 
 
@@ -96,27 +99,63 @@
   <script src="{{ mix('js/app.js') }}"></script>
   
   <script type="text/javascript">
-     _submitEvent = function() {
+    $(document).ready(function(){
+
+      $("#q-tracking").blur(function() {
+        if ($.trim(this.value)) {
+          $(":submit").removeAttr("disabled");  
+        } else $(":submit").prop("disabled", true); 
+      });
+
+      $("#q-tracking").focus(function() {
+          resetter()
+      });
+
+      // TOdo: remove
+      $("#frm-tracking").submit(function(e) {
+        _submitEvent()
+        e.preventDefault();
+      });
+
+    });
+
+    _submitEvent = function() {
+        var $btnTrack = $("#btn-tracking");
+        var $qTrack = $("#q-tracking");
+        $btnTrack.html("<i class='fa fa-spinner fa-spin'></i>")
+        $qTrack.prop('readonly', true);
+        
         $.ajax({
             type: "POST",
-            url: "{{ route('tenant.tracking.post', [$tenant->domain]) }}",
+            url: "{{ route('tenant.tracking.post') }}",
             data: {
                 "_token": "{{ csrf_token() }}",
-                "term": $("#q-tracking").val(),
+                "term": $.trim($("#q-tracking").val()),
                 "g-recaptcha-response": $("#g-recaptcha-response").val()
             },
             dataType: "json",
             success: function(resp) {
                 $('#g-recaptcha-response').html(resp.token)
-                console.log('resp = ', resp)
 
                 markFirstBox(resp.data);
                 markSecondBox(resp.data);
-                markThirdBox(resp.data, resp.data.las);
+                markThirdBox(resp.data);
+                markFourthBox(resp.data);
+                markFifthBox(resp.data);
                 markMisidentified(resp.data.mReca);
+
+                $btnTrack.prop('disabled', true).html("<i class='fa fa-search'></i>")
+                $qTrack.val('').prop('readonly', false);
+
+                $("#should-reset").val('Y');
             },
             error: function(error) {
-                console.log('error = ', error);
+              var eObj = error.responseJSON.msg ? error.responseJSON.msg : (error.responseJSON.errors ? error.responseJSON.errors : null);
+              var _error = eObj ? eObj : "{{ __('Error while trying to :action :what', ['action' => __('Track'), 'what' => __('The package'), ]) }}";
+              swal('', _error, 'error');
+
+              $btnTrack.prop('disabled', true).html("<i class='fa fa-search'></i>");
+              $qTrack.val('').prop('readonly', false);
             }
         });
       };
@@ -153,16 +192,16 @@
       {
         if (!data) return;
 
-        if (!data.mReca) {
-          infoize(secondReca, 'fourth', 'tx-danger');
+        if (!data.mReca && data.recas[1] && data.last_wh) {
+          infoize(data.last_wh, 'fourth', 'tx-danger');
         }
       }
 
-      function markFifthBox(recas, invoice, mReca)
+      function markFifthBox(data)
       {
-        var secondReca = recas[1];
-        if (secondReca && invoiced && !data.mReca) {
-          infoize(secondReca, 'fifth', 'tx-success');
+        if (!data) return;
+        if (!data.mReca && data.recas[1] && data.last_wh) {
+          infoize(data.last_wh.invoice.payments[0], 'fifth', 'tx-success', data.last_wh.to_branch);
         }
       }
 
@@ -173,15 +212,26 @@
         }
       }
 
-      function resetter(){}
+      function resetter(){
+        var $shouldReset = $("#should-reset");
+        if ($shouldReset.val() == 'Y') {
+          ['first', 'second', 'third', 'fourth', 'fifth'].forEach(function(number) {
+              $("#"+number+"-icon").addClass('tx-gray-300'); 
+              $("#"+number+"-title").addClass('tx-gray-300');
+              $("#"+number+"-description").addClass('tx-gray-300');
+              $("#"+number+"-localization").addClass('tx-gray-300').html('');
+              $("#"+number+"-date").addClass('tx-gray-300').html('');
+          });
 
-      function infoize(data, number, highlightclass)
+          $shouldReset.val('');
+        }
+      }
+
+      function infoize(data, number, highlightclass, _branch)
       {
-        var branch = data.branch || data.to_branch;
+        var branch = _branch || data.branch || data.to_branch;
 
-        if (number == 'third') console.log(data, number, highlightclass)
-
-        $("#"+number+"-icon").removeClass('tx-gray-300').addClass(highlightclass); 
+         $("#"+number+"-icon").removeClass('tx-gray-300').addClass(highlightclass); 
          $("#"+number+"-title").removeClass('tx-gray-300');
          $("#"+number+"-description").removeClass('tx-gray-300');
          $("#"+number+"-localization").removeClass('tx-gray-300').html(`<i class="fa fa-map-marker"></i> ${branch.name}`);

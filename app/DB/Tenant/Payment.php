@@ -16,6 +16,13 @@ class Payment extends Model
     ];
 
     /**
+    * The accessors to append to the model's array form.
+    *
+    * @var array
+    */
+    protected $appends = ['created_at_dsp'];
+
+    /**
      * The "booting" method of the model.
      *
      * @return void
@@ -48,5 +55,16 @@ class Payment extends Model
     {
         return $this->belongsTo(\Logistics\DB\User::class, 'updated_by_code')
             ->select('id', 'first_name', 'last_name');
+    }
+
+    /**
+    * Get created at for display.
+    *
+    * @param  string  $value
+    * @return string
+    */
+    public function getCreatedAtDspAttribute($value)
+    {
+        return $this->created_at->format('d-m-Y H:i a');
     }
 }

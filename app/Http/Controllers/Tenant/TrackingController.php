@@ -11,7 +11,7 @@ class TrackingController extends Controller
 {
     use Tenant;
 
-    public function showTrackingForm() 
+    public function showTrackingForm()
     {
         return view('tenant.tracking.index');
     }
@@ -47,7 +47,10 @@ class TrackingController extends Controller
             'data' => [
                 'recas' => $recas,
                 'mReca' => $mReca,
-                'last_wh' => $lastWh = $tenant->warehouses()->with(['toBranch', 'invoice'])
+                'last_wh' => $lastWh = $tenant->warehouses()
+                    ->with(['toBranch', 'invoice' => function ($invoice) {
+                        $invoice->with('payments')->orderBy('id', 'DESC');
+                    }])
                     ->where('trackings', 'like', "%$request->term%")->get()->last(),
             ]
         ], 200);

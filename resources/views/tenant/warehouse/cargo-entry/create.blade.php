@@ -92,8 +92,8 @@
 
         countTracking($.trim($("#trackings").val()));
 
-        var $sisyphus = $( "#frm-cargo-entry" ).sisyphus(
-            {
+        var $sisyphus = $( "#frm-cargo-entry" ).sisyphus({
+            excludeFields: $("input[name='_token']"),
             onSave: function(){
                 $("#sisyphus-indicator-saving").show().fadeOut(2e3);
             }

@@ -1,72 +1,3 @@
-<!--
-<div class="row justify-content-between">
-
-    <div class="col-sm-auto col-lg-auto">
-        <div class="card card-status">
-            <div class="media">
-                <div class="text-center">
-                    <i class="icon fa fa-truck tx-purple"></i>
-                    <h4>MIAMI</h4>
-                    <p>Recibido en Casillero</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="col-sm-auto col-lg-auto">
-        <div class="card card-status">
-            <div class="media">
-                <div class="text-center">
-                    <i class="icon fa fa-plane tx-warning"></i>
-                    <h4>PANAMÁ</h4>
-                    <p>Centro de Distribucion</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="col-sm-auto col-lg-auto ">
-        <div class="card card-status">
-            <div class="media">
-                <div class="text-center">
-                    <i class="icon fa fa-edit tx-primary"></i>
-                    <h4>FACTURADO</h4>
-                    <p>Enviado a Sucursal</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="col-sm-auto col-lg-auto">
-        <div class="card card-status">
-            <div class="media">
-                <div class="text-center">
-                    <i class="icon fa fa-home tx-danger"></i>
-                    <h4>SUCURSAL</h4>
-                    <p>Disponible para Retiro</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-sm-auto col-lg-auto">
-        <div class="card card-status">
-            <div class="media">
-                <div class="text-center">
-                    <i class="icon fa fa-check-circle tx-success"></i>
-                    <h4>ENTREGADO</h4>
-                    <p>Retirado por Cliente</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
--->
-
-<!-- TEXTO INACTIVO -->
 <div class="row justify-content-between">
 
     <div class="col-sm-auto col-lg-auto">
@@ -113,33 +44,33 @@
         </div>
     </div>
 
-
+    <!--
     <div class="col-sm-auto col-lg-auto">
         <div class="card card-status">
             <div class="media">
                 <div class="text-center">
-                    <i class="icon fa fa-home tx-gray-300" id="fourth"></i>
-                    <h4 class="tx-gray-300" id="fourth">{{ strtoupper( __('Branch') ) }}</h4>
-                    <p class="tx-gray-300" id="fourth">{{ __('Available for delivery') }}</p>
+                    <i class="icon fa fa-home tx-gray-300" id="fourth-icon"></i>
+                    <h4 class="tx-gray-300" id="fourth-title">{{ strtoupper( __('Branch') ) }}</h4>
+                    <p class="tx-gray-300" id="fourth-description">{{ __('Available for delivery') }}</p>
                     <p class="tx-gray-300" id="fourth-localization"></p>
                     <p class="tx-gray-300" id="fourth-date"></p>
                 </div>
             </div>
         </div>
     </div>
+    -->
 
     <div class="col-sm-auto col-lg-auto">
         <div class="card card-status">
             <div class="media">
                 <div class="text-center">
                     <i class="icon fa fa-check-circle tx-gray-300" id="fifth-icon"></i>
-                    <h4 class="tx-gray-300" id="fifth-icon">{{ strtoupper( __('Delivered') ) }}</h4>
-                    <p class="tx-gray-300" id="fifth-icon">{{ __('Client picked up') }}</p>
-                    <p class="tx-gray-300" id="fifth-localization"></p>
+                    <h4 class="tx-gray-300" id="fifth-title">{{ strtoupper( __('Delivered') ) }}</h4>
+                    <p class="tx-gray-300" id="fifth-description">{{ __('Client picked up') }}</p>
+                    <p class="tx-gray-300" id="fifth-localization">&nbsp;</p>
                     <p class="tx-gray-300" id="fifth-date"></p>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!--TEXTO INACTIVO-->

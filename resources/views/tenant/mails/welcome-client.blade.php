@@ -18,8 +18,12 @@
 <h3>{{ __('For Maritime Shipments', [], $lang) }}:</h3>
 {{ $client->first_name }} {{ $box_code }}{{ $client->id }} {{ $client->last_name }} <br>
 {{ $maritime->address }} <br>
-{{ $maritime->telephones }} <br><br><br>
+{{ $maritime->telephones }} <br> <br>
 
+<h3>{{ __('For tracking', [], $lang) }}:</h3>
+{{ route('tenant.tracking.get', $tenant->domain) }}
+
+<br><br><br>
 {{ __('Remember your purchases must always contain your box', [], $lang) }}: <b>{{ $box_code }}{{ $client->id }}</b>
 
 @isset($subcopy)

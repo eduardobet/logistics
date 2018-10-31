@@ -84,23 +84,14 @@ trait ClientHasRelationShips
     public function getClientsByBranch($branchId)
     {
         $tenant = $this->getTenant();
-        $key = "clients.tenant.{$tenant->id}.branch.{$branchId}";
 
-        $clients = cache()->get($key, function () use ($tenant, $key, $branchId) {
-            $clients = $tenant->clients()
+        return $tenant->clients()
                 ->whereStatus('A')
                 ->whereNotNull('email')
                 ->orderBy('first_name')
                 ->withAndWhereHas('boxes', function ($query) use ($branchId) {
                     $query->where('branch_id', '=', $branchId)->where('status', '=', 'A');
                 })->get();
-
-            cache()->forever($key, $clients);
-
-            return $clients;
-        });
-
-        return $clients;
     }
 
     /**

@@ -78,4 +78,26 @@ trait TenantHasRelationships
     {
         return $this->hasMany(\Logistics\DB\Tenant\CargoEntry::class);
     }
+
+    /**
+     * Get the telephones for display.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getTelephonesDspAttribute($value)
+    {
+        return getEntXtra($this->telephones);
+    }
+
+    /**
+     * Get the emails for display.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getEmailsDspAttribute($value)
+    {
+        return getEntXtra($this->emails);
+    }
 }

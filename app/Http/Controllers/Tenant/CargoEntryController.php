@@ -27,8 +27,8 @@ class CargoEntryController extends Controller
             'creator' => function ($creator) {
                 $creator->select(['id', 'first_name', 'last_name',]);
             }
-        ])
-        ->where('branch_id', $branch->id);
+        ]);
+        //->where('branch_id', $branch->id);
 
         $searching = 'N';
 
@@ -39,6 +39,12 @@ class CargoEntryController extends Controller
 
         if ($branch = request('branch_id')) {
             $cargoEntries = $cargoEntries->where('branch_id', $branch);
+            $searching = 'Y';
+        }
+
+        if ($type = request('type')) {
+            if ($type == 'M') $cargoEntries = $cargoEntries->where('type', $type)->orWhereNull('type');
+            else if ($type == 'M') $cargoEntries = $cargoEntries->where('type', $type);
             $searching = 'Y';
         }
 
@@ -72,6 +78,7 @@ class CargoEntryController extends Controller
         $validation = Validator::make($request->all(), [
             'branch_id' => 'required|integer',
             'trackings' => 'required',
+            'type' => 'sometimes|in:N,M'
         ]);
 
         $tenant = $this->getTenant();
@@ -85,6 +92,7 @@ class CargoEntryController extends Controller
         $cargoEntry = $tenant->cargoEntries()->create([
             'branch_id' => $request->branch_id,
             'trackings' => $request->trackings,
+            'type' => $request->type,
         ]);
 
         if ($cargoEntry) {

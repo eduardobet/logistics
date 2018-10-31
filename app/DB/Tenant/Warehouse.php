@@ -22,6 +22,13 @@ class Warehouse extends Model
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['created_at_dsp'];
+
+    /**
      * The "booting" method of the model.
      *
      * @return void

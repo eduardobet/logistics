@@ -32,12 +32,13 @@ class CargoEntryCreationTest extends TestCase
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
 
         $response = $this->actingAs($admin)->post(route('tenant.warehouse.cargo-entry.store', $tenant->domain), [
+            'type' => 'X'
         ]);
         $response->assertStatus(302);
         $response->assertRedirect(route('tenant.warehouse.cargo-entry.create', $tenant->domain));
 
         $response->assertSessionHasErrors([
-            'branch_id', 'trackings',
+            'branch_id', 'trackings', 'type',
         ]);
     }
 
@@ -69,6 +70,42 @@ class CargoEntryCreationTest extends TestCase
             "created_by_code" => $admin->id,
             'branch_id' => $branch->id,
             'trackings' => '12345,234434,55645',
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('tenant.warehouse.cargo-entry.show', [$tenant->domain, 1]));
+    }
+
+    /** @test */
+    public function it_successfuly_creates_the_misidentified_cargo_entry()
+    {
+        $this->withoutExceptionHandling();
+
+        // Notification::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch Name', ]);
+
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+        $admin->branchesForInvoice()->sync([$branch->id, ]);
+
+        $response = $this->actingAs($admin)->get(route('tenant.warehouse.cargo-entry.create', $tenant->domain));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.warehouse.cargo-entry.create');
+
+        $response = $this->actingAs($admin)->post(route('tenant.warehouse.cargo-entry.store', $tenant->domain), [
+            'branch_id' => $branch->id,
+            'trackings' => '12345,234434,55645',
+            'type' => 'M',
+        ]);
+
+        $this->assertDatabaseHas('cargo_entries', [
+            "tenant_id" => $tenant->id,
+            "created_by_code" => $admin->id,
+            'branch_id' => $branch->id,
+            'trackings' => '12345,234434,55645',
+            'type' => 'M',
         ]);
 
         $response->assertStatus(302);

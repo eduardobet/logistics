@@ -22,21 +22,24 @@
           
         </div><!-- slim-pageheader -->
 
-        <div class="row mg-b-10">
+        <div class="section-wrapper">
 
-            <div class="col-lg-3">
-
-                <div class="input-group">
-                    <div class="input-group-prepend">
+            
+            <div class="row mg-b-10">
+                
+                <div class="col-lg-3">
+                    
+                    <div class="input-group">
+                        <div class="input-group-prepend">
                         <div class="input-group-text">
                             {{ __('From') }}
                         </div>
                     </div>
                     <input type="text" class="form-control fc-datepicker hasDatepicker" placeholder="YYYY-MM-DD" value="{{ request('from', date('Y-m-d')) }}" id="from">
                 </div>
-
+                
             </div>
-
+            
             <div class="col-lg-3">
                 <div class="input-group">
                     <div class="input-group-prepend">
@@ -44,23 +47,23 @@
                             {{ __('To') }}
                         </div>
                     </div>
-                     <input type="text" class="form-control fc-datepicker hasDatepicker" placeholder="YYYY-MM-DD" value="{{ request('to', date('Y-m-d')) }}" id="to">
+                    <input type="text" class="form-control fc-datepicker hasDatepicker" placeholder="YYYY-MM-DD" value="{{ request('to', date('Y-m-d')) }}" id="to">
                 </div>
             </div>
-
+            
             <div class="col-lg-4">
                 <div class="input-group">
                     <select name="branch_id" id="branch_id" class="form-control select2" style="width: 100%">
                         <option value="">{{ __('Branch') }}</option>
                         @foreach ($branches as $aBranch)
-                            <option value="{{ $aBranch->id }}"{{ $aBranch->id == $branch->id ? " selected" : null }}>
-                                {{ $aBranch->name }}
-                            </option>
+                        <option value="{{ $aBranch->id }}"{{ $aBranch->id == $branch->id ? " selected" : null }}>
+                            {{ $aBranch->name }}
+                        </option>
                         @endforeach
                     </select>
                 </div>
             </div>
-
+            
             <div class="col-lg-2">
                 <div class="input-group">
                     <button class="btn" type="button" id="filter">
@@ -68,9 +71,9 @@
                     </button>
                 </div>
             </div>
-
+            
         </div>
-
+        
         <div class="table-responsive-sm">
             <table class="table table-hover mg-b-0 pdf-table">
                 <thead>
@@ -79,38 +82,52 @@
                         <th>{{ __('Date') }}</th>
                         <th>{{ __('Branch') }}</th>
                         <th>{{ __('Created by') }}</th>
+                        <th>{{ __('Type') }}</th>
                         <th class="text-center">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     
                     @foreach ($cargo_entries as $cargo_entry)
-                        <tr>
-                            <th scope="row">{{ $cargo_entry->id }}</th>
-                            <td>{{ $cargo_entry->created_at->format('d/m/Y g:i A') }}</td>
+                    <tr>
+                        <th scope="row">{{ $cargo_entry->id }}</th>
+                        <td>{{ $cargo_entry->created_at->format('d/m/Y g:i A') }}</td>
                             <td>{{ $cargo_entry->branch->name }}</td>
                             <td>{{ $cargo_entry->creator->full_name }}</td>
+                            <td>
+                                @if (!$cargo_entry->type || $cargo_entry->type == 'N' )
+                                    <label class="badge badge-success">
+                                        {{ __('Normal') }}
+                                    </label>
+                                @elseif($cargo_entry->type == 'M')
+                                    
+                                    <label class="badge badge-danger">
+                                        {{ __('Misidentified') }}
+                                    </label>
+                                @endif
+                            </td>
                             <td class="text-center">
                                 <a target="_blank" title="{{ __('View') }}" href="{{ route('tenant.warehouse.cargo-entry.show', [$tenant->domain, $cargo_entry->id]) }}"><i class="fa fa-eye"></i></a>
                             </td>
                         </tr>
-                    @endforeach
-
-                </tbody>
-            </table>
-            
-            @if ($searching == 'N')
-              <div id="result-paginated" class="mg-t-25">
-                  {{ $cargo_entries->links() }}
-              </div> 
-           @endif
+                        @endforeach
+                        
+                    </tbody>
+                </table>
+                
+                @if ($searching == 'N')
+                <div id="result-paginated" class="mg-t-25">
+                    {{ $cargo_entries->links() }}
+                </div> 
+                @endif
+            </div>
         </div>
-
-      </div><!-- container -->
-</div><!-- slim-mainpanel -->
-
-
- @include('tenant.common._footer')
+            
+        </div><!-- container -->
+    </div><!-- slim-mainpanel -->
+    
+    
+    @include('tenant.common._footer')
 
 @endsection
 

@@ -12,6 +12,9 @@ Route::group(['domain' => '{domain}', 'middleware' => 'tenant'], function () {
     ->middleware('auth')
     ->name("tenant.{$type}.dashboard.home");
 
+    //Tracking
+    Route::get('tracking', 'Tenant\TrackingController@showTrackingForm')->name('tenant.tracking.get');
+    
     // auth
     Route::group(['prefix' => 'auth'], function () {
        

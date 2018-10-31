@@ -189,3 +189,87 @@ if (!function_exists('do_diff_for_humans')) {
         return \Lang::choice($txt, $delta, compact('delta', 'since'));
     }
 }
+
+/**
+ * [getCssIcon description].
+ *
+ * @param string $type
+ * @param array  $opt
+ *
+ * @return array
+ */
+function getCssIcon($type = 'T', $opt = [])
+{
+    $cssIcon = null;
+    $protocol = null;
+    switch ($type) {
+        case 'T':
+            $cssIcon = isset($opt['icon']) ? : 'fa fa-phone-square';
+            $protocol = 'tel:';
+            break;
+
+        case 'F':
+            $cssIcon = isset($opt['icon']) ? : 'fa fa-fax';
+            $protocol = 'tel:';
+            break;
+
+        case 'E':
+            $cssIcon = isset($opt['icon']) ? : 'fa fa-envelope';
+            $protocol = 'mailto:';
+            break;
+
+        case 'U':
+            $cssIcon = isset($opt['icon']) ? : 'fa fa-external-link-square';
+            break;
+
+        default:
+            break;
+    }
+
+    return [$cssIcon, $protocol];
+}
+
+if (!function_exists('getEntXtra')) {
+    /**
+     * Formats enterprise extra infor for enterprise presenter.
+     *
+     * @param string $xtraValStr comma separated
+     * @param string $type       (Tel, Fax, Email, Url)
+     * @param string $display    (inline or block)
+     * @param array  $opt
+     *
+     * @return null|string
+     */
+    function getEntXtra($xtraValStr, $type = 'T', $display = 'i', $opt = null)
+    {
+        if (empty(trim($xtraValStr))) {
+            return;
+        }
+
+        $newXtraValStr = [];
+        $icon = null;
+        $cssClasses = isset($opt['class']) ? : 'text-dark';
+        $extra = explode(',', $xtraValStr);
+
+        list($cssIcon, $protocol) = getCssIcon($type, $opt);
+
+        $icon = "<i class='" . $cssIcon . "'></i>&nbsp;";
+
+        for ($i = 0; $i < count($extra); ++$i) {
+            $newXtraValStr[] = ($display == 'b' ? '<li>' : '') . "<a class='" . $cssClasses . "' href='" . $protocol . $extra[$i] . "' target='_blank'>" . $extra[$i] . '</a>' . ($display == 'b' ? '</li>' : '');
+        }
+
+        if ($display == 'b') {
+            $icon = '';
+            $xtraValStr = '<ul class="no-bullet">' . $icon . implode('', $newXtraValStr) . '</ul>';
+        } else {
+            $xtraValStr = $icon . implode(', ', $newXtraValStr);
+        }
+
+        if (empty(trim($xtraValStr))) {
+            $xtraValStr = null;
+        }
+
+        return $xtraValStr;
+    }
+}

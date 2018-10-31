@@ -19,6 +19,15 @@ class Invoice extends Model
     ];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'is_paid' => 'boolean',
+    ];
+
+    /**
      * The "booting" method of the model.
      *
      * @return void

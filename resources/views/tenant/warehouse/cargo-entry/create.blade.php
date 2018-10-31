@@ -105,9 +105,13 @@
 
         // 
         $("#type").change(function() {
-            swal({
+            var url = "{{ route('tenant.warehouse.cargo-entry.create', [$tenant->domain, ]) }}?type="+this.value;
+            if (!$.trim( $("#trackings").val() )) window.location = url
+            else {
+                swal({
                     title: '{{__("Are you sure") }}?',
                     text: "{{ __('All unsaved data will be lost') }}!",
+                    
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -118,9 +122,10 @@
                 .then((result) => {
                     if (result.value) {
                         if ($sisyphus) $sisyphus.manuallyReleaseData();
-                        window.location = "{{ route('tenant.warehouse.cargo-entry.create', [$tenant->domain, ]) }}?type="+this.value;
+                        window.location = url;
                     }
-                 });
+                });
+            }
          });
 
      });

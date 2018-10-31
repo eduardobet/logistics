@@ -50,7 +50,7 @@
                 <div class="input-group">
                     <input id="q-tracking" name="q-tracking" type="text" class="form-control form-control-lg" placeholder="{{ __('Enter a tracking number and press enter or click the button') }}">
 
-                    {{--@captcha("{{ config('app.locale') }}")--}}
+                    @captcha("{{ config('app.locale') }}")
 
                     <span class="input-group-btn">
                         <button type="submit" class="btn bg-mantle tx-white bd-gray-500 btn-lg" id="btn-tracking" disabled>
@@ -108,14 +108,14 @@
       });
 
       $("#q-tracking").focus(function() {
-          resetter()
+          resetter();
       });
 
       // TOdo: remove
-      $("#frm-tracking").submit(function(e) {
+      /*$("#frm-tracking").submit(function(e) {
         _submitEvent()
         e.preventDefault();
-      });
+      });*/
 
     });
 
@@ -190,17 +190,18 @@
 
       function markFourthBox(data)
       {
-        if (!data) return;
-
-        if (!data.mReca && data.recas[1] && data.last_wh) {
-          infoize(data.last_wh, 'fourth', 'tx-danger');
+        console.log('data.recas.length = ', data.recas.length)
+        if (!data || data.recas.length < 3) return;
+        var lastReca = data.recas[data.recas.length - 1];
+        if (lastReca && !data.mReca && data.recas[1] && data.last_wh) {
+          infoize(lastReca, 'fourth', 'tx-danger');
         }
       }
 
       function markFifthBox(data)
       {
         if (!data) return;
-        if (!data.mReca && data.recas[1] && data.last_wh) {
+        if (!data.mReca && data.recas[1] && data.last_wh && data.last_wh.invoice && data.last_wh.invoice.is_paid) {
           infoize(data.last_wh.invoice.payments[0], 'fifth', 'tx-success', data.last_wh.to_branch);
         }
       }
@@ -208,7 +209,7 @@
       function markMisidentified(mReca)
       {
         if (mReca) {
-          $("#misidentified-container").toggleClass('d-none');
+          $("#misidentified-container").removeClass('d-none');
         }
       }
 
@@ -223,6 +224,7 @@
               $("#"+number+"-date").addClass('tx-gray-300').html('');
           });
 
+          $("#misidentified-container").addClass('d-none');
           $shouldReset.val('');
         }
       }
@@ -235,7 +237,7 @@
          $("#"+number+"-title").removeClass('tx-gray-300');
          $("#"+number+"-description").removeClass('tx-gray-300');
          $("#"+number+"-localization").removeClass('tx-gray-300').html(`<i class="fa fa-map-marker"></i> ${branch.name}`);
-         $("#"+number+"-date").removeClass('tx-gray-300').html(`<i class="fa fa-map-calendar"></i> ${data.created_at_dsp}`);
+         $("#"+number+"-date").removeClass('tx-gray-300').html(`<i class="fa fa-calendar"></i> ${data.created_at_dsp}`);
       }
     </script>
 </body>

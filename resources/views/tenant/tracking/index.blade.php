@@ -74,9 +74,8 @@
       </div>
 
       <div class="section-wrapper mg-t-20 mg-b-20 d-none" id="status-box-info">
-        <h3 class="tx-primary" id="info-term">9872349238472398472394</h3>
-        <p class="mg-b-0 mg-sm-b-0" id="info-ubication"><i class="fa fa-map-marker"></i> Ubicacion: Los Andes</p>
-        <p class="mg-b-0 mg-sm-b-0" id="info-date"><i class="fa fa-calendar"></i> Fecha: 00/00/0000 / Hora: 00:00Pm</p>
+        <h3 class="tx-primary">{{ __('Tracking') }}:</h3>
+        <h3 class="tx-primary" id="info-term"></h3>
       </div><!-- section-wrapper -->
 
     </div>
@@ -103,7 +102,7 @@
 
       $("#q-tracking").blur(function() {
         if ($.trim(this.value)) {
-          $(":submit").removeAttr("disabled");  
+          $(":submit").removeAttr("disabled");
         } else $(":submit").prop("disabled", true); 
       });
 
@@ -143,6 +142,9 @@
                 markFourthBox(resp.data);
                 markFifthBox(resp.data);
                 markMisidentified(resp.data.mReca);
+
+                $("#info-term").html($qTrack.val());
+                $("#status-box-info").removeClass('d-none');
 
                 $btnTrack.prop('disabled', true).html("<i class='fa fa-search'></i>")
                 $qTrack.val('').prop('readonly', false);
@@ -225,6 +227,8 @@
           });
 
           $("#misidentified-container").addClass('d-none');
+          $("#status-box-info").addClass('d-none');
+          $("#info-term").html('');
           $shouldReset.val('');
         }
       }

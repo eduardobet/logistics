@@ -11,7 +11,7 @@ use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Logistics\Jobs\Tenant\SendInvoiceCreatedEmail;
 
-class InvoiceEditionTest extends TestCase
+class InvoiceShowTest extends TestCase
 {
     use RefreshDatabase;
 

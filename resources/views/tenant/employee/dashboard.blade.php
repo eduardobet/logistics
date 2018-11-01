@@ -17,7 +17,7 @@
             <h6 class="slim-pagetitle"> {{ $branch->name }} </h6>
          </div><!-- slim-pageheader -->
 
-         <div class="section-wrapper">
+         <div class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
             
             @include('tenant.employee.dashboard._totals')
             @include('tenant.employee.dashboard._last_activities_and_profit')

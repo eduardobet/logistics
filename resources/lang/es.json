@@ -1,4 +1,4 @@
-{
+{   ":qty fine are included": ":qty multa están incluídos",
     "Actions": "Acciones",
     "Active": "Activo",
     "Account activation": "Activación de cuenta",
@@ -82,6 +82,8 @@
     "Enterprise name": "Nombre empresa",
     "Error while trying to :action :what": "Error tratando de :action :what",
     "Extra contacts": "Contactos adicionales",
+    "Fine :who": "Multar :who",
+    "Fine for leaving packages more than 10 days in warehouse": "Multa por dejar paquestes por más de 10 días en bodega",
     "First Name": "Nombres",
     "Forgot password": "Olvidé mi contraseña",
     "For Aerial Shipments": "Para enviós aéreos",
@@ -182,6 +184,7 @@
     "Send Link": "Enviar enlace",
     "Sender email": "Correo remitente",
     "Sender name": "Nombre remitente",
+    "Send to :who": "Enviar a :who",
     "Sent to branch": "Enviado a Sucursal",
     "Service No": "# servicio",
     "Shipped": "Enviado",

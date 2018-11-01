@@ -23,6 +23,8 @@ class InvoiceDetail extends Model
         'description',
         'id_remote_store',
         'total',
+        'vol_price',
+        'real_price',
         'is_dhll',
     ];
 }

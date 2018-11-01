@@ -55,6 +55,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('invoice/invoice-detail-tmpl', 'Tenant\InvoiceController@invoiceDetTpl')->name('tenant.invoice.invoice-detail-tmpl');
     Route::get('invoice/{id}/print-invoice', 'Tenant\InvoiceController@print')->name('tenant.invoice.print-invoice');
     Route::post('invoice/{id}/resend-invoice-email', 'Tenant\InvoiceController@resendInvoice')->name('tenant.invoice.invoice.resend');
+    Route::post('invoice/penalize', 'Tenant\InvoiceController@penalize')->name('tenant.invoice.penalize');
+    Route::post('invoice/inactive', 'Tenant\InvoiceController@inactive')->name('tenant.invoice.inactive');
 
     // payment
     Route::get('payment/list', 'Tenant\PaymentController@index')->name('tenant.payment.list')->middleware(['can:show-payment']);

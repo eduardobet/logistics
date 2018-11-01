@@ -17,7 +17,7 @@
             <h6 class="slim-pagetitle"> {{ $branch->name }} </h6>
          </div><!-- slim-pageheader -->
 
-         <div class="section-wrapper">
+         <div class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
             {!! Form::model($client, ['route' => ['tenant.client.update', $tenant->domain, $client->id], 'method' => 'PATCH', ]) !!}
             <input type="hidden" name="branch_id" value="{{ $branch->id }}">
             <input type="hidden" name="branch_code" value="{{ $branch->code }}">

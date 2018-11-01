@@ -99,6 +99,7 @@ class WarehouseCreationTest extends TestCase
             'client_email' => $client->email,
             'total_volumetric_weight' => 21,
             'total_real_weight' => 23,
+            'chk_t_volumetric_weight' => true,
             'total' => $client->vol_price * 21,
             'notes' => 'The notes of the invoice',
             'invoice_detail' => [
@@ -138,6 +139,7 @@ class WarehouseCreationTest extends TestCase
             'real_weight' => 23,
             'total' => $client->vol_price * 21,
             'notes' => 'The notes of the invoice',
+            'i_using' => 'V',
         ]);
 
         tap($branchB->invoices->first()->details->first(), function ($detail) {
@@ -149,6 +151,9 @@ class WarehouseCreationTest extends TestCase
             $this->assertEquals($detail->height, 12);
             $this->assertEquals($detail->vol_weight, 13);
             $this->assertEquals($detail->real_weight, 14);
+            $this->assertEquals($detail->real_price, 0);
+            $this->assertEquals($detail->vol_price, $client->vol_price);
+            $this->assertEquals($detail->total, $client->vol_price * $detail->vol_price);
         });
 
         tap($branchB->invoices->first()->details->last(), function ($detail) {
@@ -160,6 +165,9 @@ class WarehouseCreationTest extends TestCase
             $this->assertEquals($detail->height, 10);
             $this->assertEquals($detail->vol_weight, 8);
             $this->assertEquals($detail->real_weight, 9);
+            $this->assertEquals($detail->real_price, 0);
+            $this->assertEquals($detail->vol_price, $client->vol_price);
+            $this->assertEquals($detail->total, $client->vol_price * $detail->vol_price);
         });
 
         $this->assertCount(1, $branchB->notifications);

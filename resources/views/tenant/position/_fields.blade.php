@@ -30,6 +30,6 @@
 
 <div class="row mg-t-25 justify-content-between">
     <div class="col-lg-12">
-        <button type="submit" class="btn btn-primary bg-royal bd-1 bd-gray-400">{{ __('Save') }}</button>
+        <button type="submit" class="btn btn-primary  bd-1 bd-gray-400">{{ __('Save') }}</button>
     </div>
 </div>

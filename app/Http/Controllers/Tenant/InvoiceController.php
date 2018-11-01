@@ -9,6 +9,7 @@ use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Payment;
 use Logistics\Traits\InvoiceList;
 use Logistics\Exports\InvoicesExport;
+use Illuminate\Support\Facades\Validator;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Http\Requests\Tenant\InvoiceRequest;
 use Logistics\Jobs\Tenant\SendInvoiceCreatedEmail;
@@ -85,6 +86,7 @@ class InvoiceController extends Controller
             'branch_id' => $request->branch_id,
             'client_id' => $request->client_id,
             'total' => $request->total,
+            'notes' => $request->notes,
         ]);
 
         if ($invoice) {
@@ -142,6 +144,7 @@ class InvoiceController extends Controller
         $invoice = $tenant->invoices()->with([
             'details',
             'creator',
+            'editor',
             'branch',
             'payments' => function ($payment) {
                 $payment->with(['creator']);
@@ -165,7 +168,7 @@ class InvoiceController extends Controller
     public function edit($domain, $id)
     {
         $tenant = $this->getTenant();
-        $invoice = $tenant->invoices()->with(['details', 'creator', 'payments' => function($payment) {
+        $invoice = $tenant->invoices()->with(['details', 'creator', 'editor', 'payments' => function ($payment) {
             $payment->with(['creator']);
         }])->findOrFail($id);
 
@@ -192,6 +195,7 @@ class InvoiceController extends Controller
 
         $invoice->client_id = $request->client_id;
         $invoice->total = $request->total;
+        $invoice->notes = $request->notes;
         $invoice->save();
 
         if ($invoice) {
@@ -291,5 +295,91 @@ class InvoiceController extends Controller
         dispatch(new SendInvoiceCreatedEmail($tenant, $invoice));
 
         return response()->json(['error' => false, 'msg' => __('Success'), ]);
+    }
+
+    public function penalize(Request $request)
+    {
+        $validator = $this->validateFine($request);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'msg' => $validator->errors()->first(),
+                'error' => true,
+            ], 500);
+        }
+
+        $tenant = $this->getTenant();
+        $invoice = $tenant->invoices()->where('is_paid', false)->with(['payments'])->find($request->invoice_id);
+
+        if (!$invoice) {
+            return response()->json([
+                'msg' => __('Not Found.'),
+                'error' => true,
+            ], 404);
+        }
+
+        $fined = $invoice->update([
+            'total' => $request->fine_total + $invoice->total,
+            'fine_total' => $request->fine_total,
+            'fine_ref' => $request->fine_ref,
+        ]);
+        
+        if ($fined) {
+            $totalPaid = $invoice->fresh()->payments->fresh()->sum('amount_paid');
+            $pending = $invoice->total - $totalPaid;
+
+            return response()->json([
+                'error' => false,
+                'msg' => __('Success'),
+                'total' => number_format($invoice->total, 2),
+                'totalPaid' => number_format($totalPaid, 2),
+                'pending' => number_format($pending, 2),
+            ], 200);
+        }
+            
+        return response()->json([
+            'error' => true,
+            'msg' => __('Error'),
+        ], 500);
+    }
+
+    public function inactive(Request $request)
+    {
+        $tenant = $this->getTenant();
+        $invoice = $tenant->invoices()->where('is_paid', false)->with(['payments'])->find($request->invoice_id);
+
+        if (!$invoice) {
+            return response()->json([
+                'msg' => __('Not Found.'),
+                'error' => true,
+            ], 404);
+        }
+
+        $inactive = $invoice->update([
+            'status' => 'I',
+        ]);
+        
+        if ($inactive) {
+            return response()->json([
+                'error' => false,
+                'msg' => __('Success'),
+            ], 200);
+        }
+            
+        return response()->json([
+            'error' => true,
+            'msg' => __('Error'),
+        ], 500);
+    }
+
+    private function validateFine($request, $extraRules = [])
+    {
+        $rules = [
+            'invoice_id' => 'required',
+            'fine_total' => 'required|numeric',
+            'fine_ref' => 'required|between:3,255',
+        ];
+
+        return Validator::make($request->all(), array_merge($rules, $extraRules));
     }
 }

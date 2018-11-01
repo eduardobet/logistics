@@ -15,7 +15,7 @@ class Invoice extends Model
      */
     protected $fillable = [
         'created_by_code', 'tenant_id', 'updated_by_code', 'branch_id', 'client_name', 'client_email', 'status', 'volumetric_weight', 'real_weight', 'total',
-        'notes', 'warehouse_id', 'client_id', 'is_paid', 'i_using', 'cubic_feet',
+        'notes', 'warehouse_id', 'client_id', 'is_paid', 'i_using', 'cubic_feet', 'fine_total', 'fine_ref',
     ];
 
     /**

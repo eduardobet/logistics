@@ -25,6 +25,8 @@
           
         </div><!-- slim-pageheader -->
 
+        <div  class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
+
         <div class="table table-responsive-sm">
             <table class="table table-hover mg-b-0">
               <thead>
@@ -67,6 +69,8 @@
               </tbody>
             </table>
           </div>
+        
+        </div>
 
 
 

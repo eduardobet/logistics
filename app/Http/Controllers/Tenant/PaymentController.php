@@ -113,7 +113,6 @@ class PaymentController extends Controller
                 'msg' => __('The invoice of a warehouse cannot be partially paid.'),
                 'error' => true,
             ], 500);
-
         }
 
         $pending = $invoice->total - $invoice->payments->sum('amount_paid');
@@ -136,18 +135,20 @@ class PaymentController extends Controller
         if ($payment) {
             $invoice->branch->notify(new PaymentActivity($payment, $invoice->client_id, $tenant->lang, auth()->user()->full_name));
 
-            $pending = $invoice->total - $invoice->fresh()->payments->fresh()->sum('amount_paid');
+            $totalPaid = $invoice->fresh()->payments->fresh()->sum('amount_paid');
+            $pending = $invoice->total - $totalPaid;
 
             if (!$pending) {
                 $invoice->update(['is_paid' => true]);
             }
 
-            dispatch( new SendPaymentCreatedEmail($tenant, $invoice, $payment));
+            dispatch(new SendPaymentCreatedEmail($tenant, $invoice, $payment));
 
             return response()->json([
                 'error' => false,
                 'msg' => __('Success'),
-                'pending' => $pending,
+                'pending' => number_format($pending, 2),
+                'totalPaid' => number_format($totalPaid, 2),
             ], 200);
         }
 
@@ -171,7 +172,7 @@ class PaymentController extends Controller
         $payment = $tenant->payments()
             ->with([
                 'creator',
-                'invoice' => function($invoice) {
+                'invoice' => function ($invoice) {
                     $invoice->with('branch');
                 }
             ])

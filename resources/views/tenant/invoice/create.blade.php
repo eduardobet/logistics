@@ -17,7 +17,7 @@
             <h6 class="slim-pagetitle"> {{ $branch->name }} </h6>
          </div><!-- slim-pageheader -->
 
-         <div class="section-wrapper">
+         <div class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
             {!! Form::open(['route' => ['tenant.invoice.store', $tenant->domain]]) !!}
                 @include('tenant.invoice._fields', [
                     'invoice' => new \Logistics\DB\Tenant\Invoice,

@@ -313,4 +313,50 @@ class InvoiceEditionTest extends TestCase
             return $job->invoice->id === $invoice->id;
         });
     }
+
+    /** @test */
+    public function it_successfuly_inactives_the_invoice()
+    {
+        $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+        $admin->branchesForInvoice()->sync([$branch->id,]);
+
+        \Gate::define('edit-invoice', function ($admin) {
+            return true;
+        });
+
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'pay_volume' => true, 'vol_price' => 2.00 ]);
+
+        $box = factory(Box::class)->create([
+            'tenant_id' => $tenant->id,
+            'client_id' => $client->id,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
+        ]);
+
+        $invoice = $tenant->invoices()->create([
+            'branch_id' => $branch->id,
+            'client_id' => $client->id,
+            'total' => 160,
+        ]);
+        
+        $response = $this->actingAs($admin)->post(route('tenant.invoice.inactive', [$tenant->domain, $invoice->id]), [
+            'invoice_id' => $invoice->id,
+        ], $this->headers());
+        
+        $invoice = $invoice->fresh()->first();
+        
+        $response->assertStatus(200);
+        $response->assertJson([
+            'error' => false,
+            'msg' => 'Success',
+        ]);
+
+        $this->assertEquals('I', $invoice->status);
+    }
 }

@@ -22,7 +22,7 @@
           
         </div><!-- slim-pageheader -->
 
-        <div class="section-wrapper">
+        <div class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
 
             
             <div class="row mg-b-10">

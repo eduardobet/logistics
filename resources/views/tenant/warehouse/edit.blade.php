@@ -17,13 +17,13 @@
             <h6 class="slim-pagetitle"> {{ $branch->name }} / WH-{{ $warehouse->id  }} </h6>
          </div><!-- slim-pageheader -->
 
-         <div class="section-wrapper">
+         <div class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
 
         
         @include('tenant.warehouse._resume')
         
 
-         <div class="section-wrapper">
+         <div class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
 
             {!! Form::model($warehouse, ['route' => ['tenant.warehouse.update', $tenant->domain, $warehouse->id], 'method' => 'PATCH', 'id' => 'frm-edit', ]) !!}
                 @include('tenant.warehouse._fields', [
@@ -284,6 +284,8 @@
                     totalVol += parseFloat($volWeight.val() || '0') * volPrice;
 
                     console.log('-----calculating......','volPrice =', volPrice, 'realPrice = ', realPrice, 'payVol = ', payVol)
+                    console.log('realWeight = ', $realWeight.val());
+                    console.log('volWeight = ', $volWeight.val());
 
                 } // if
             }); // each

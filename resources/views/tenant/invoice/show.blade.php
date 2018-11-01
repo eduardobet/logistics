@@ -89,7 +89,6 @@
                             </tr>
                         @endforeach
 
-
                         {{--
                         <tr>
                           <td>Servicio de Encomienda</td>
@@ -111,7 +110,17 @@
                           <td colspan="2" rowspan="4" class="valign-middle">
                             <div class="invoice-notes">
                               <label class="section-label-sm tx-gray-500">{{ __('Notes') }}.</label>
-                              <p>{{ $invoice->notes }}</p>
+                              <p>
+                                {{ $invoice->notes }}
+                                @if ($invoice->fine_total)
+                                <br>
+                                <b><em>
+                                    {{ __(':qty fine is included', ['qty' => '$ ' . number_format($invoice->fine_total, 2) ]) }}
+                                    <br>
+                                    {{ $invoice->fine_ref }}
+                                </em></b>
+                                @endif
+                              </p>
                             </div><!-- invoice-notes -->
                             <div class="invoice-notes">
                               <label class="section-label-sm tx-gray-500">{{ __('Tracking numbers') }}</label>
@@ -123,16 +132,16 @@
                             </div><!-- invoice-notes -->
                           </td>
                           <td class="tx-right">{{ __('Total') }}</td>
-                          <td colspan="2" class="tx-right">${{ number_format( $invoice->total, 2 ) }}</td>
+                          <td colspan="2" class="tx-right">$<span id="total-dsp">{{ number_format( $invoice->total, 2 ) }}</span></td>
                         </tr>
                         <tr>
                           <td class="tx-right">{{ __('Credit') }}</td>
-                          <td colspan="2" class="tx-right">${{ number_format( $invoice->payments->sum('amount_paid'), 2) }}</td> <!-- SOLO APLICAN LOS ABONOS EN FACTURAS DE COMPRA POR INTERNET-->
+                          <td colspan="2" class="tx-right">$<span id="amount_paid-dsp">{{ number_format( $invoice->payments->sum('amount_paid'), 2) }}</span></td> <!-- SOLO APLICAN LOS ABONOS EN FACTURAS DE COMPRA POR INTERNET-->
                         </tr>
 
                         <tr>
                           <td class="tx-right tx-uppercase tx-bold tx-inverse">{{ __('Total') }} {{ __('Pendiente') }}</td> <!-- MONTO RESTANTE EN LA FACTURA, SI ES PAGADO COMPLETO ESTE CAMPO DEBE SER IGUAL A CERO 0-->
-                          <td colspan="2" class="tx-right"><h4 class="tx-primary tx-bold tx-lato">${{ number_format( $pending = $invoice->total - $invoice->payments->sum('amount_paid'), 2) }}</h4></td>
+                          <td colspan="2" class="tx-right"><h4 class="tx-primary tx-bold tx-lato">$<span id="pending-dsp">{{ number_format( $pending = $invoice->total - $invoice->payments->sum('amount_paid'), 2) }}</span></h4></td>
                         </tr>
                       </tbody>
                     </table>
@@ -141,24 +150,47 @@
                   <hr class="mg-b-50">
                   <div class="row">
 
-                    <div class="col col-sm-3">
-                        <button type="button" id="pay" class="btn btn-success btn-block"{{ !$pending ? ' disabled' : null }}>{{ strtoupper( __('New payment') ) }}</button>
+                    <div class="col-md-2">
+                        <button type="button" id="pay" class="btn btn-success btn-block terminate"{{ !$pending || $invoice->status == 'I' ? ' disabled' : null }} data-toggle="modal" data-target="#modal-payment">
+                          {{ strtoupper( __('New payment') ) }}
+                        </button>
                     </div>
                     <!-- se abre el modal con el formulario de registro de pagos-->
 
-                    <div class="col col-sm-3">
-                        <button id="send-to-client" class="btn btn-warning btn-block">ENVIAR A CLIENTE</button>
+                    <div class="col-md-3">
+                        <button id="send-to-client" class="btn btn-warning btn-block terminate" data-loading-text="<i class='fa fa-spinner fa-spin '></i>"
+                        {{ $invoice->status == 'I' ? ' disabled' : null }}
+                        >
+                         {{ strtoupper( __('Send to :who', ['who' => __('Client')]) ) }}
+                        </button>
                     </div>
                     <!-- se le reenvia al cliente la factura-->
 
-                    <div class="col col-sm-3">
-                        <button id="penalize-client" class="btn btn-danger btn-block">MULTAR CLIENTE</button>
+                    <div class="col-md-3">
+                        <button id="penalize-client" class="btn btn-purple btn-block terminate"{{ !$pending || $invoice->status == 'I' ? ' disabled' : null }} data-toggle="modal" data-target="#modal-penalize">
+                          {{ strtoupper( __('Fine :who', ['who' => __('Client')]) ) }}
+                        </button>
                     </div> 
                     <!-- SE AGREGA UNA LINEA A LA FACTURA CON TITULO DE MULTA POR DEJAR PAQUETS MAS DE 10 DIAS EN BODEGA ( ESTO SOLO APLICA A FACTURAS DE WAREHOUSE)-->
 
-                    <div class="col col-sm-3">
-                        <a href="" class="btn btn-primary btn-block">EDITAR / ELIMINAR </a>
+                    <div class="col-md-2">
+                        @can('edit-invoice')
+                        <a href="{{ route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch->id, 'client_id' => request('client_id'), ]) }}" class="btn btn-primary btn-block">
+                            {{ strtoupper( __('Edit') ) }}
+                        </a>
+                        @endcan
+                    </div>
+
+                    <div class="col-md-2">
+                        @can('delete-invoice')
+                            <button id="btn-delete" class="btn btn-danger btn-block terminate"{{ $invoice->is_paid || $invoice->status == 'I' ? ' disabled' : null }}
+                            data-loading-text="<i class='fa fa-spinner fa-spin '></i> ..."
+                            >
+                            {{ strtoupper( __('Delete') ) }}
+                            </button>
+                        @endcan
                     </div> 
+                    
                     <!-- POSIBILIDAD DE EDITR DETALLES DE FACTURAS MAS NO CLIENTE MODIFICAR CLIENTE, ESTO ES CUANDO EL FACTOR HUMANO ENTRA, POSIBILIDAD DE ELIMINARLA, PERO DEBE MOSTRARSE EN LA LISTA DE FACTURA COMO ELIMIDADO Y DEBE AGREGARSE NOTAS DE POR QUE
                     SOLO USUARIO QUE MANEJA CAJA y/o ADMINISTRADORES PUEDEN MODIFICAR O ELIMINAR FACTURA, IGUAL EL LOG DEBE GUARDAR TODO CAMBIO Y DETALLES EFECTUADOS EN LAS FACTURAS-->
 
@@ -171,14 +203,31 @@
               <div class="section-wrapper mg-t-15">
 
             <div class="mg-b-15">
-                      <label class="section-title">Registro de Actividad</label>
+                      <label class="section-title">{{ __('Activity Log') }}</label>
                     </div>
                     <div class="col-lg-12">
-                        <p>Creado por <b>usuario</b> | <b>00/00/0000</b> | 00:00PM  </p>
-                        <p>Modificado por <b>usuario</b> | <b>00/00/0000</b> | 00:00PM  </p>
-                        <p>Pago Recibido por <b>usuario</b> | <b>00/00/0000</b> | 00:00PM  </p>
-                        <p>Factura Enviada por <b>usuario</b> | <b>00/00/0000</b> | 00:00PM  </p>
-                        <p>Registro Enviado por <b>usuario</b> | <b>00/00/0000</b> | 00:00PM  </p>
+
+                        @if ($invoice->creator)
+                            <p>{{ __('Created by') }} <b>{{ $invoice->creator->full_name }}</b> | <b>{{ $invoice->created_at->format('d/m/Y') }}</b> | {{ $invoice->created_at->format('g:i A') }} </p>
+                        @endif
+
+                        @if ($invoice->editor)
+                            <p>{{ __('Edited by') }} <b>{{ $invoice->editor->full_name }}</b> | <b>{{ $invoice->updated_at->format('d/m/Y') }}</b> | {{ $invoice->updated_at->format('g:i A') }} </p>
+                        @endif
+
+                        <?php $lPayment = $invoice->payments->last(); ?>
+                        @if ($lPayment && $lPayment->creator)
+                            <p>{{ __('Last payment by') }} <b>{{ $lPayment->creator->full_name }}</b> | <b>{{ $lPayment->created_at->format('d/m/Y') }}</b> | {{ $lPayment->created_at->format('g:i A') }} </p>
+                        @endif
+
+                        @if ($invoice && $invoice->is_paid)
+                            <p>{{ __('Delivered by') }} <b>{{ $lPayment->creator->full_name }}</b> | <b>{{ $lPayment->created_at->format('d/m/Y') }}</b> | {{ $lPayment->created_at->format('g:i A') }} </p>
+                        @endif
+                        
+                        @if ($invoice->status == 'I')
+                            <p>{{ __('Deleted by') }} <b>{{ $invoice->editor->full_name }}</b> | <b>{{ $invoice->updated_at->format('d/m/Y') }}</b> | {{ $invoice->updated_at->format('g:i A') }} </p>
+                        @endif
+
                       </div>
                   </div>
 
@@ -187,4 +236,272 @@
     <!-- container -->
   </div>
   <!-- slim-mainpanel -->
+
+@include('common._modal-payment', [
+  'payments' => $invoice->payments,
+])
+
+@include('common._modal-penalize', [])
+
+@endsection
+
+@section('xtra_scripts')
+  <script>
+  
+    $(function() {
+
+        // payment
+        var $baseModalPayment = $('#modal-payment');
+        var $launcherPayment = null;
+
+       $("#pay").click(function(e) {
+            $launcherPayment = $(this);
+            $baseModalPayment.on('shown.bs.modal', function () {
+               $launcherPayment.prop('disabled', true);
+            });
+        });
+
+
+        $('#btn-cancel-payment').click(function() {
+            $("#p_amount_paid, #p_payment_method, #p_payment_ref").val("");
+            $launcherPayment.prop('disabled', false);
+        });
+
+        $("#form-payment").submit(function(e) {
+            
+            var $btnSubmit = $('#btn-submit-payment');
+            var url = "{{ route('tenant.payment.store', $tenant->domain) }}";
+            var loadingText = $btnSubmit.data('loading-text');
+
+            if ($btnSubmit.html() !== loadingText) {
+                $btnSubmit.data('original-text', $btnSubmit.html());
+                $btnSubmit.prop('disabled', true).html(loadingText);
+            }
+
+            var request = $.ajax({
+                method: 'post',
+                url: url,
+                data: $.extend({
+                    _token	: $("meta[name='csrf-token']").attr('content'),
+                    '_method': 'POST',
+                    'invoice_id': "{{ $invoice->id }}",
+                    'amount_paid': $("#p_amount_paid").val(),
+                    'payment_method': $("#p_payment_method").val(),
+                    'payment_ref': $("#p_payment_ref").val(),
+                }, {})
+            });
+
+            request.done(function(data){
+                if (data.error == false) {
+                    swal("", data.msg, "success");
+                    $("#p_amount_paid, #p_payment_method, #p_payment_ref").val("");
+
+                    $("#pending-dsp").html(data.pending);
+                    $("#amount_paid-dsp").html(data.totalPaid);
+                    $("#p_amount_paid").attr('max', data.pending);
+                    $baseModalPayment.modal('hide');
+
+                    if (!data.pending) $launcherPayment.prop('disabled', true);
+                    else $launcherPayment.prop('disabled', false);
+
+                } else {
+                    swal("", data.msg, "error");
+                }
+
+                $btnSubmit.prop('disabled', false).html($btnSubmit.data('original-text'));
+            })
+            .fail(function( jqXHR, textStatus ) {
+                
+                var error = "{{ __('Error') }}";
+
+                if (jqXHR.responseJSON.msg) {
+                    error = jqXHR.responseJSON.msg;
+                }
+                
+                swal("", error, "error");
+                $btnSubmit.prop('disabled', false).html($btnSubmit.data('original-text'));
+
+                $launcherPayment.prop('disabled', false);
+            });
+
+            e.preventDefault();
+        }); // payment
+
+        // resend invoice
+        $("#send-to-client").click(function() {
+            var $self = $(this);
+            var loadingText = $self.data('loading-text');
+
+            if ($(this).html() !== loadingText) {
+                $self.data('original-text', $(this).html());
+                $self.prop('disabled', true).html(loadingText);
+            }
+
+            var request = $.ajax({
+                method: 'post',
+                url: "{{ route('tenant.invoice.invoice.resend', [$tenant->domain, $invoice->id, ]) }}",
+                data: $.extend({
+                    _token	: $("meta[name='csrf-token']").attr('content'),
+                    '_method': 'POST',
+                }, {})
+            });
+
+            request.done(function(data){
+                if (data.error == false) {
+                    swal(data.msg, "", "success");
+                } else {
+                    swal(data.msg, "", "error");
+                }
+
+                $self.prop('disabled', false).html($self.data('original-text'));
+            })
+            .fail(function( jqXHR, textStatus ) {
+                swal(textStatus, "", "error");
+                $self.prop('disabled', false).html($self.data('original-text'));
+            });
+
+        });
+        // resend invoice
+
+        // fine
+        var $baseModalPenalize = $('#modal-penalize');
+        var $launcherPenalize = null;
+
+        $("#penalize-client").click(function(e) {
+            $launcherPenalize = $(this);
+            $baseModalPenalize.on('shown.bs.modal', function () {
+               $launcherPenalize.prop('disabled', true);
+            });
+        });
+
+
+        $('#btn-cancel-penalize').click(function() {
+            $("#fine_total, #fine_ref").val("");
+            $launcherPenalize.prop('disabled', false);
+        });
+
+        $("#form-penalize").submit(function(e) {
+            
+            var $btnSubmit = $('#btn-submit-penalize');
+            var url = "{{ route('tenant.invoice.penalize', $tenant->domain) }}";
+            var loadingText = $btnSubmit.data('loading-text');
+
+            if ($btnSubmit.html() !== loadingText) {
+                $btnSubmit.data('original-text', $btnSubmit.html());
+                $btnSubmit.prop('disabled', true).html(loadingText);
+            }
+
+            var request = $.ajax({
+                method: 'post',
+                url: url,
+                data: $.extend({
+                    _token	: $("meta[name='csrf-token']").attr('content'),
+                    '_method': 'POST',
+                    'invoice_id': "{{ $invoice->id }}",
+                    'fine_total': $("#fine_total").val(),
+                    'fine_ref': $("#fine_ref").val(),
+                }, {})
+            });
+
+            request.done(function(data){
+                if (data.error == false) {
+                    swal("", data.msg, "success");
+                    $("#fine_total, #fine_ref").val("");
+
+                    $("#total-dsp").html(data.total);
+                    $("#pending-dsp").html(data.pending);
+                    $("#amount_paid-dsp").html(data.totalPaid);
+                    $baseModalPenalize.modal('hide');
+
+                    if (!data.pending) $launcherPenalize.prop('disabled', true);
+                    else $launcherPenalize.prop('disabled', false);
+
+                } else {
+                    swal("", data.msg, "error");
+                }
+
+                $btnSubmit.prop('disabled', false).html($btnSubmit.data('original-text'));
+            })
+            .fail(function( jqXHR, textStatus ) {
+                
+                var error = "{{ __('Error') }}";
+
+                if (jqXHR.responseJSON.msg) {
+                    error = jqXHR.responseJSON.msg;
+                }
+                
+                swal("", error, "error");
+                $btnSubmit.prop('disabled', false).html($btnSubmit.data('original-text'));
+
+                $launcherPenalize.prop('disabled', false);
+            });
+
+            e.preventDefault();
+        }); // fine
+
+        // delete
+        $("#btn-delete").click(function(e) {
+            var self = $(this);
+            swal({
+                title: '{{__("Are you sure") }}?',                    
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: '{{ __("No") }}',
+                confirmButtonText: '{{ __("Yes") }}'
+            })
+            .then((result) => {
+                if (result.value) {
+                    inactivate(self);
+                }
+            });
+         });
+        // delete
+
+    }); // jquery
+
+
+    function inactivate($btnSubmit) {
+        $(".terminate").prop('disabled', true);
+        var loadingText = $btnSubmit.data('loading-text');
+
+            if ($btnSubmit.html() !== loadingText) {
+                $btnSubmit.data('original-text', $btnSubmit.html());
+                $btnSubmit.html(loadingText);
+            }
+
+        var request = $.ajax({
+            method: 'post',
+            url: "{{ route('tenant.invoice.inactive', $tenant->domain) }}",
+            data: $.extend({
+                _token	: $("meta[name='csrf-token']").attr('content'),
+                '_method': 'POST',
+                'invoice_id': "{{ $invoice->id }}",
+            }, {})
+        });
+
+        request.done(function(data){
+            if (data.error == false) {
+                swal("", data.msg, "success");
+            } else {
+                swal("", data.msg, "error");
+            }
+            $btnSubmit.html($btnSubmit.data('original-text'));
+        })
+        .fail(function( jqXHR, textStatus ) {
+            
+            var error = "{{ __('Error') }}";
+
+            if (jqXHR.responseJSON.msg) {
+                error = jqXHR.responseJSON.msg;
+            }
+            
+            swal("", error, "error");
+            $(".terminate").prop('disabled', false);
+            $btnSubmit.html($btnSubmit.data('original-text'));
+        });
+    }
+  
+  </script>
 @endsection

@@ -17,7 +17,7 @@
             <h6 class="slim-pagetitle"> {{ $branch->name }} / FAC-{{ $invoice->id }} </h6>
          </div><!-- slim-pageheader -->
 
-         <div class="section-wrapper">
+         <div class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
             {!! Form::model($invoice, ['route' => ['tenant.invoice.update', $tenant->domain, $invoice->id], 'method' => 'PATCH']) !!}
                 @include('tenant.invoice._fields', [
                     'mode' => 'edit',
@@ -37,6 +37,10 @@
                 
                 @if ($invoice->creator)
                     <p>{{ __('Created by') }} <b>{{ $invoice->creator->full_name }}</b> | <b>{{ $invoice->created_at->format('d/m/Y') }}</b> | {{ $invoice->created_at->format('g:i A') }} </p>
+                @endif
+
+                @if ($invoice->editor)
+                    <p>{{ __('Edited by') }} <b>{{ $invoice->editor->full_name }}</b> | <b>{{ $invoice->updated_at->format('d/m/Y') }}</b> | {{ $invoice->updated_at->format('g:i A') }} </p>
                 @endif
 
                 <?php $lPayment = $payments->last(); ?>

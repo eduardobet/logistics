@@ -51,6 +51,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('invoice/store', 'Tenant\InvoiceController@store')->name('tenant.invoice.store');
     Route::get('invoice/{id}/edit', 'Tenant\InvoiceController@edit')->name('tenant.invoice.edit')->middleware(['can:edit-invoice']);
     Route::patch('invoice/{id}/update', 'Tenant\InvoiceController@update')->name('tenant.invoice.update');
+    Route::get('invoice/{id}/show', 'Tenant\InvoiceController@show')->name('tenant.invoice.show');
     Route::get('invoice/invoice-detail-tmpl', 'Tenant\InvoiceController@invoiceDetTpl')->name('tenant.invoice.invoice-detail-tmpl');
     Route::get('invoice/{id}/print-invoice', 'Tenant\InvoiceController@print')->name('tenant.invoice.print-invoice');
     Route::post('invoice/{id}/resend-invoice-email', 'Tenant\InvoiceController@resendInvoice')->name('tenant.invoice.invoice.resend');

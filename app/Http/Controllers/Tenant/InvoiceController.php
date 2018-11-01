@@ -131,12 +131,29 @@ class InvoiceController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  string  $domain
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($domain, $id)
     {
-        //
+        $tenant = $this->getTenant();
+
+        $invoice = $tenant->invoices()->with([
+            'details',
+            'creator',
+            'branch',
+            'payments' => function ($payment) {
+                $payment->with(['creator']);
+            },
+            'client' => function ($client) {
+                $client->with(['boxes']);
+            },
+        ])->findOrFail($id);
+
+        return view('tenant.invoice.show', [
+            'invoice' => $invoice,
+        ]);
     }
 
     /**

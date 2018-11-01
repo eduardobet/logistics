@@ -70,6 +70,11 @@
                 <i class="fa fa-money"></i></a>
             </button>
 
+            @can('show-invoice')
+            &nbsp;&nbsp;&nbsp;
+            <a target="_blank" title="{{ __('Show') }}" href="{{ route('tenant.invoice.show', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch_id, 'client_id' => $invoice->client->id, ]) }}"><i class="fa fa-eye"></i></a>
+            @endcan
+
             &nbsp;&nbsp;&nbsp;
             <a title="{{ __('Email') }}" href="#!" class="email-invoice"
                 data-toggle="tooltip" data-placement="left" title="{{ __('Resend invoice email') }}" data-invoice-id="{{ $invoice->id }}"

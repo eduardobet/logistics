@@ -26,6 +26,8 @@
 </head>
 
 <body>
+  <div class="noty-container"></div>  
+
   <div class="slim-header">
     <div class="container">
       <div class="slim-header-left">
@@ -136,12 +138,16 @@
             success: function(resp) {
                 $('#g-recaptcha-response').html(resp.token)
 
-                markFirstBox(resp.data);
-                markSecondBox(resp.data);
-                markThirdBox(resp.data);
-                markFourthBox(resp.data);
-                markFifthBox(resp.data);
-                markMisidentified(resp.data.mReca);
+                if (!resp.data.recas.length) {
+                  showNoty();
+                } else {
+                  markFirstBox(resp.data);
+                  markSecondBox(resp.data);
+                  markThirdBox(resp.data);
+                  markFourthBox(resp.data);
+                  markFifthBox(resp.data);
+                  markMisidentified(resp.data.mReca);
+                }
 
                 $("#info-term").html($qTrack.val());
                 $("#status-box-info").removeClass('d-none');
@@ -242,6 +248,17 @@
          $("#"+number+"-description").removeClass('tx-gray-300');
          $("#"+number+"-localization").removeClass('tx-gray-300').html(`<i class="fa fa-map-marker"></i> ${branch.name}`);
          $("#"+number+"-date").removeClass('tx-gray-300').html(`<i class="fa fa-calendar"></i> ${data.created_at_dsp}`);
+      }
+
+      function showNoty() {
+        new Noty({
+            type: 'error',
+            layout: 'top',
+            text: '{{ __("Not Found.") }}',
+            container: '.noty-container',
+            killer: true,
+            timeout: 2000,
+        }).show();
       }
     </script>
 </body>

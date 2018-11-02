@@ -39,6 +39,7 @@ class PermissionTableSeeder extends Seeder
             ["name" => "Registrar Facturas", "slug" => "create-invoice", "header" => "Facturas",],
             ["name" => "Editar Facturas", "slug" => "edit-invoice", "header" => "Facturas",],
             ["name" => "Ver Facturas", "slug" => "show-invoice", "header" => "Facturas",],
+            ["name" => "Eliminar Facturas", "slug" => "delete-invoice", "header" => "Facturas",],
 
             // payment
             ["name" => "Registrar Pagos", "slug" => "create-payment", "header" => "Pagos",],

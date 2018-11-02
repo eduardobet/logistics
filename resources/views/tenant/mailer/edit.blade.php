@@ -17,7 +17,7 @@
             <h6 class="slim-pagetitle"> {{ $branch->name }} </h6>
          </div><!-- slim-pageheader -->
 
-        <div class="section-wrapper">
+        <div class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
             @include('tenant.common._notifications')
 
             {!! Form::model(new \Logistics\DB\Tenant\Mailer, ['route' => ['tenant.mailer.update', $tenant->domain, request('id')], 'method' => 'PATCH', ]) !!}
@@ -47,7 +47,7 @@
 
             <div class="row mg-t-25 justify-content-between">
                 <div class="col-lg-12">
-                    <button type="submit" class="btn btn-primary bg-royal bd-1 bd-gray-400">{{ __('Save') }}</button>
+                    <button type="submit" class="btn btn-primary  bd-1 bd-gray-400">{{ __('Save') }}</button>
                 </div>
             </div>
             

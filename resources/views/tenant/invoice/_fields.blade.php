@@ -12,7 +12,7 @@
                 title="{{ __('New payment') }}" data-invoice-id="{{ $invoice->id }}"
                 data-toggle="modal"
                 data-target="#modal-payment"
-                {{ $invoice->total == $payments->sum('amount_paid') ? ' disabled' : null }}
+                {{ $invoice->status == 'I' || $invoice->total == $payments->sum('amount_paid') ? ' disabled' : null }}
             >
                 <i class="fa fa-money"></i></a>
             </button>
@@ -23,6 +23,7 @@
                 data-url="{{ route('tenant.invoice.invoice.resend', [$tenant->domain, $invoice->id, ]) }}"
                 data-toggle="tooltip" data-placement="left" title="{{ __('Resend invoice email') }}" data-invoice-id="{{ $invoice->id }}"
                 data-loading-text="<i class='fa fa-spinner fa-spin '></i>"
+                {{ $invoice->status == 'I' ? ' disabled' : null }}
             >
                 <i class="fa fa-envelope"></i></a>
             </button>
@@ -140,10 +141,19 @@
 
 </div>
 
+<div class="row {{ $mode=='edit' ? null : ' d-none' }}" id="invoice-notes">
+    <div class="col-lg-12">
+        <div class="form-group mg-b-10-force">
+            <label class="form-control-label">{{ __('Notes') }}</label>
+            {!! Form::textarea('notes', $invoice->notes, ['class' => 'form-control', 'rows' => 4, ]) !!}
+        </div>
+    </div>
+</div>
+
 <div class="row mg-t-25 justify-content-between">
     <div class="col-lg-12">
-        <button id="btn-wh-save" type="submit" class="btn btn-primary bg-royal bd-1 bd-gray-400"
-        {{ isset($payments) && $invoice->total == $payments->sum('amount_paid') ? ' disabled' : null }}
+        <button id="btn-wh-save" type="submit" class="btn btn-primary  bd-1 bd-gray-400"
+        {{ $invoice->status == 'I' || (isset($payments) && $invoice->total == $payments->sum('amount_paid')) ? ' disabled' : null }}
         >{{ __('Save') }}</button>
     </div>
 </div>

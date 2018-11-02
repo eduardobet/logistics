@@ -16,8 +16,8 @@
             </p>
             <small>
 
-            @can('edit-invoice')
-                <a target="_blank" href="{{ route('tenant.invoice.edit', [$tenant->domain, $result->id]) }}"><i class="fa fa-pencil-square-o"></i> {{ __('Edit') }} </a>
+            @can('show-invoice')
+                <a target="_blank" href="{{ route('tenant.invoice.show', [$tenant->domain, $result->id, 'branch_id' => $result->client->boxes->first()->branch_id, 'client_id' => $result->client->id, ]) }}"><i class="fa fa-eye"></i> {{ __('Show') }} </a>
                 &nbsp;&nbsp;&nbsp;&nbsp;
             @endcan
 

@@ -24,6 +24,8 @@
           
         </div><!-- slim-pageheader -->
 
+        <div class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
+
         <div class="row mg-b-10">
 
             <div class="col-lg-2">
@@ -84,6 +86,7 @@
               </div> 
            @endif
         </div>
+     </div>
 
       </div><!-- container -->
 </div><!-- slim-mainpanel -->

@@ -69,25 +69,62 @@
                   <div class="table-responsive mg-t-40">
                     <table class="table table-invoice">
                       <thead>
-                        <tr>
-                          <th class="wd-20p">{{ __('Type') }}</th> <!--Compra por internet / Encomienda / Comision Tarjeta-->
-                          <th class="wd-40p">{{ __('Description') }}</th><!-- Una Compra en (sitio web) / Un Flete Aereo. Maritimo en caso de warehouse-->
-                          <th class="tx-center">{{ __('Qty') }}</th> <!--cantidad de libras a facturar-->
-                          <th class="tx-right">{{ __('Price') }}</th> <!--en este caso deberia aplicar aca 2,50 o el precio estipulado de las libras-->
-                          <th class="tx-right">{{ __('Amount') }}</th>
-                        </tr>
+                        @if (!$invoice->warehouse_id)
+                            <tr>
+                                <th class="wd-20p">{{ __('Type') }}</th> <!--Compra por internet / Encomienda / Comision Tarjeta-->
+                                <th class="wd-40p">{{ __('Description') }}</th><!-- Una Compra en (sitio web) / Un Flete Aereo. Maritimo en caso de warehouse-->
+                                <th class="tx-center">{{ __('Qty') }}</th> <!--cantidad de libras a facturar-->
+                                <th class="tx-right">{{ __('Price') }}</th> <!--en este caso deberia aplicar aca 2,50 o el precio estipulado de las libras-->
+                                <th class="tx-right">{{ __('Amount') }}</th>
+                            </tr>
+                        @else
+                            <tr>
+                                <th class="wd-20p">{{ __('Type') }}</th>
+                                <th class="wd-40p">{{ __('Description') }}</th>
+                                <th class="tx-center">{{ __('Qty') }}</th>
+                                <th class="tx-right">{{ __('Price') }}</th>
+                                <th class="tx-right">{{ __('Amount') }}</th>
+                            </tr>
+                        @endif
                       </thead>
                       <tbody>
 
-                        @foreach ($invoice->details as $detail)
-                            <tr>
-                                <td>{{ [1=> __('Online shopping'), 2=> __('Card commission'), 3 => __('Direct comission') ][$detail->type] }}</td>
-                                <td class="tx-12">{{ $detail->description }}</td>
-                                <td class="tx-center">{{ $detail->qty }}</td>
-                                <td class="tx-right">${{ number_format( $detail->total, 2 ) }}</td>
-                                <td class="tx-right">${{ number_format( $detail->qty * $detail->total, 2 ) }}</td>
-                            </tr>
-                        @endforeach
+                        @if (!$invoice->warehouse_id)
+                            
+                            @foreach ($invoice->details as $detail)
+                                <tr>
+                                    <td>{{ [1=> __('Online shopping'), 2=> __('Card commission'), 3 => __('Direct comission') ][$detail->type] }}</td>
+                                    <td class="tx-12">{{ $detail->description }}</td>
+                                    <td class="tx-center">{{ $detail->qty }}</td>
+                                    <td class="tx-right">${{ number_format( $detail->total, 2 ) }}</td>
+                                    <td class="tx-right">${{ number_format( $detail->qty * $detail->total, 2 ) }}</td>
+                                </tr>
+                            @endforeach
+                        @else
+                            @foreach ($invoice->details as $detail)
+                                <tr>
+                                    <td>{{ ['A' => __('Air'), 'M' => __('Maritime'), ][$invoice->warehouse->type] }}</td>
+                                    <td>{{ [1=>'Sobre',2=>'Bulto', 3=>'Paquete',4=>'Caja/Peq.', 5=>'Caja/Med.', 6=>'Caja/Grande', ][$detail->type] }}</td>
+                                    <td class="tx-center">
+                                        @if ($invoice->i_using == 'V')
+                                           {{ $detail->vol_weight }}
+                                        @elseif ($invoice->i_using == 'R')
+                                           {{ $detail->real_weight }}
+                                        @else
+                                        @endif
+                                    </td>
+                                    <td class="tx-right">
+                                        @if ($invoice->i_using == 'V')
+                                           ${{ number_format( $detail->vol_price, 2 ) }}
+                                        @elseif ($invoice->i_using == 'R')
+                                           ${{ number_format( $detail->real_price, 2 ) }}
+                                        @else
+                                        @endif
+                                    </td>
+                                    <td class="tx-right">${{ number_format( $detail->total, 2 ) }}</td>
+                                </tr>
+                            @endforeach
+                        @endif
 
                         {{--
                         <tr>

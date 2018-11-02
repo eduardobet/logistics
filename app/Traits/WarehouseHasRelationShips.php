@@ -104,14 +104,20 @@ trait WarehouseHasRelationShips
         foreach ($details as $data) {
             $input = new Fluent($data);
 
+            $qty = $input->qty;
+            $total = 0;
+
             $invoice->details()->updateOrCreate(['id' => $input->wdid, ], [
-                'qty' => $input->qty,
+                'qty' => $qty,
                 'type' => $input->type,
                 'length' => $input->length,
                 'width' => $input->width,
                 'height' => $input->height,
                 'vol_weight' => $input->vol_weight,
                 'real_weight' => $input->real_weight,
+                'real_price' => $input->real_price,
+                'vol_price' => $input->vol_price,
+                'total' => $this->getTotal($request, $input),
                 'is_dhll' => isset($input->is_dhll),
             ]);
         }
@@ -122,5 +128,18 @@ trait WarehouseHasRelationShips
         if ($invoice) {
             dispatch(new SendInvoiceCreatedEmail($tenant, $invoice));
         }
+    }
+    
+    public function getTotal($request, $input)
+    {
+        $total = 0;
+
+        if ($request->has('chk_t_real_weight')) {
+            $total = $input->real_weight * $input->real_price;
+        } elseif ($request->has('chk_t_volumetric_weight')) {
+            $total = $input->vol_weight * $input->vol_price;
+        } elseif ($request->has('chk_t_cubic_feet')) {}
+
+        return $total;
     }
 }

@@ -85,7 +85,10 @@ $key = isset($key) ? $key : ':index:';
                         <i class="fa fa-times"></i>
                     </button>
                 </div>
-                <input type="hidden" name="invoice_detail[{{ $key }}][wdid]" value="{{ $idetail->id }}">
+                <input type="hidden" name="invoice_detail[{{ $key }}][wdid]" value="{{ $idetail->id }}" id="wdid-{{ $key }}">
+                <input type="hidden" name="invoice_detail[{{ $key }}][real_price]" value="{{ $idetail->real_price }}" id="real_price-{{ $key }}">
+                <input type="hidden" name="invoice_detail[{{ $key }}][vol_price]" value="{{ $idetail->vol_price }}" id="vol_price-{{ $key }}">
+                <input type="hidden" name="invoice_detail[{{ $key }}][total]" value="{{ $idetail->total }}" id="total-{{ $key }}">
             </div>
 
         </div>

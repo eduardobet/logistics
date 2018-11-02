@@ -103,8 +103,8 @@ class WarehouseCreationTest extends TestCase
             'total' => $client->vol_price * 21,
             'notes' => 'The notes of the invoice',
             'invoice_detail' => [
-                ['qty' => 1, 'type' => 1, 'length' => 12, 'width' => 12, 'height' => 12, 'vol_weight' => 13, 'real_weight' => 14, ],
-                ['qty' => 1, 'type' => 2, 'length' => 10, 'width' => 10, 'height' => 10, 'vol_weight' => 8, 'real_weight' => 9, ],
+                ['qty' => 1, 'type' => 1, 'length' => 12, 'width' => 12, 'height' => 12, 'vol_weight' => 13, 'real_weight' => 14, 'vol_price' => $client->vol_price,  ],
+                ['qty' => 1, 'type' => 2, 'length' => 10, 'width' => 10, 'height' => 10, 'vol_weight' => 8, 'real_weight' => 9, 'vol_price' => $client->vol_price, ],
             ]
         ]);
         $response->assertStatus(302);
@@ -142,7 +142,7 @@ class WarehouseCreationTest extends TestCase
             'i_using' => 'V',
         ]);
 
-        tap($branchB->invoices->first()->details->first(), function ($detail) {
+        tap($branchB->invoices->first()->details->first(), function ($detail) use($client) {
             $this->assertEquals($detail->invoice_id, 1);
             $this->assertEquals($detail->qty, 1);
             $this->assertEquals($detail->type, 1);
@@ -153,10 +153,10 @@ class WarehouseCreationTest extends TestCase
             $this->assertEquals($detail->real_weight, 14);
             $this->assertEquals($detail->real_price, 0);
             $this->assertEquals($detail->vol_price, $client->vol_price);
-            $this->assertEquals($detail->total, $client->vol_price * $detail->vol_price);
+            $this->assertEquals($detail->total, $client->vol_price * $detail->vol_weight);
         });
 
-        tap($branchB->invoices->first()->details->last(), function ($detail) {
+        tap($branchB->invoices->first()->details->last(), function ($detail) use($client) {
             $this->assertEquals($detail->invoice_id, 1);
             $this->assertEquals($detail->qty, 1);
             $this->assertEquals($detail->type, 2);
@@ -167,7 +167,7 @@ class WarehouseCreationTest extends TestCase
             $this->assertEquals($detail->real_weight, 9);
             $this->assertEquals($detail->real_price, 0);
             $this->assertEquals($detail->vol_price, $client->vol_price);
-            $this->assertEquals($detail->total, $client->vol_price * $detail->vol_price);
+            $this->assertEquals($detail->total, $client->vol_price * $detail->vol_weight);
         });
 
         $this->assertCount(1, $branchB->notifications);

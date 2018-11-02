@@ -146,6 +146,7 @@ class InvoiceController extends Controller
             'creator',
             'editor',
             'branch',
+            'warehouse',
             'payments' => function ($payment) {
                 $payment->with(['creator']);
             },

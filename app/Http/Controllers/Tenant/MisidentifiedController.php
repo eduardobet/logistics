@@ -18,7 +18,30 @@ class MisidentifiedController extends Controller
      */
     public function index()
     {
-        //
+        $tenant = $this->getTenant();
+
+        $searching = 'N';
+        $misidentified = $tenant->misidentifiedPackages()
+            ->with(['toBranch', 'client', 'cargoEntry'])
+            ->orderBy('id', 'DESC');
+
+        if (($from = request('from')) && ($to = request('to'))) {
+            $misidentified = $misidentified->whereRaw(' date(misidentified_packages.created_at) between ? and ? ', [$from, $to]);
+            $searching = 'Y';
+        }
+
+        if ($branch = request('branch_to')) {
+            $misidentified = $misidentified->where('branch_to', $branch);
+            $searching = 'Y';
+        }
+
+        $misidentified = $misidentified->paginate(20);
+
+        return view('tenant.misidentified-package.index', [
+            'misidentified_packages' => $misidentified,
+            'searching' => $searching,
+            'branches' => $this->branches()->pluck('name', 'id'),
+        ]);
     }
 
     /**
@@ -28,7 +51,11 @@ class MisidentifiedController extends Controller
      */
     public function create()
     {
-        return view('tenant.misidentified-package.create');
+        $tenant = $this->getTenant();
+
+        return view('tenant.misidentified-package.create', [
+            'branches' => $this->branches()->pluck('name', 'id'),
+        ]);
     }
 
     /**
@@ -77,9 +104,13 @@ class MisidentifiedController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($domain, $id)
     {
-        //
+        $tenant = $this->getTenant();
+
+        return view('tenant.misidentified-package.show', [
+            'misidentified_package' => $tenant->misidentifiedPackages()->findOrFail($id)
+        ]);
     }
 
     /**
@@ -122,6 +153,8 @@ class MisidentifiedController extends Controller
             'g-recaptcha-response' => 'required|captcha',
             'trackings' => 'required',
             'branch_to' => 'required',
+            'client_id' => 'sometimes|integer',
+            'cargo_ebtry_id' => 'sometimes|integer',
         ];
 
         return Validator::make($request->all(), array_merge($rules, $extraRules));

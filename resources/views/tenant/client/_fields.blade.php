@@ -166,7 +166,8 @@
     </div><!-- tab informations -->
 
     <div class="tab-pane" id="extra-contacts">
-
+        
+        @if (!isset($hide_more))
         <div class="mg-t-25">
             <button class="btn btn-sm btn-outline-success btn-add-more" type="button"
             data-url="{{ route('tenant.client.contact-tmpl', $tenant->domain) }}"
@@ -175,11 +176,12 @@
                 <i class="fa fa-plus"></i> {{ __('Add') }}
             </button>
         </div>
+        @endif
 
         <div id="details-container">
             <div class="mg-t-25"></div>
             @foreach ($client->extraContacts as $key => $econtact)
-                @include('tenant.client.extra-contacts', ['econtact' => $econtact])
+                @include('tenant.client.extra-contacts', ['econtact' => $econtact, 'mode' => $mode, ])
             @endforeach
         </div>
 
@@ -187,8 +189,11 @@
 
 </div><!-- tab-content -->
 
+
+@if ($mode != 'show')
 <div class="row mg-t-25 justify-content-between">
     <div class="col-lg-12">
         <button type="submit" class="btn btn-primary  bd-1 bd-gray-400">{{ __('Save') }}</button>
     </div>
 </div>
+@endif

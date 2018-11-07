@@ -17,6 +17,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('client/extra-contacts-tmpl', 'Tenant\ClientController@econtactTmpl')->name('tenant.client.contact-tmpl');
     Route::delete('client/extra-contacts-destroy', 'Tenant\ClientController@deleteExtraContact')->name('tenant.client.extra-contact.destroy');
     Route::post('client/resend-welcome-email', 'Tenant\ClientController@resentWelcomeEmail')->name('tenant.client.welcome.email.resend');
+    Route::get('client/{id}/show', 'Tenant\ClientController@show')->name('tenant.client.show')->middleware(['can:show-client']);
 
     //mailers
     Route::get('mailer/list', 'Tenant\MailerController@index')->name('tenant.mailer.list')->middleware(['can:show-mailer']);

@@ -13,22 +13,12 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class CargoEntryViewTest extends TestCase
+class MisidentifiedPackageViewTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test */
-    public function it_redirects_to_login_if_not_logged_in_like_this_tenant_user()
-    {
-        // $this->withoutExceptionHandling();
-        $tenant = factory(TenantModel::class)->create();
-
-        $response = $this->get(route('tenant.warehouse.cargo-entry.show', [$tenant->domain, 1]), []);
-        $response->assertRedirect(route('tenant.auth.get.login', $tenant->domain));
-    }
-
-    /** @test */
-    public function it_successfully_shows_the_cargo_entry()
+    public function it_successfully_shows_the_misidentified_package()
     {
         $this->withoutExceptionHandling();
 
@@ -39,17 +29,17 @@ class CargoEntryViewTest extends TestCase
         $admin->branches()->sync([$branch->id]);
         $admin->branchesForInvoice()->sync([$branch->id,]);
 
-        $this->actingAs($admin);
-
-        $cargoEntry = $tenant->cargoEntries()->create([
-            'branch_id' => $branch->id,
-            'trackings' => '1234',
+        $misidentified = $tenant->misidentifiedPackages()->create([
+            'branch_to' => $branch->id,
+            'trackings' => '12345,234434,55645',
+            'client_id' => 1,
+            'cargo_entry_id' => 1,
         ]);
 
-        $response = $this->get(route('tenant.warehouse.cargo-entry.show', [$tenant->domain, $cargoEntry->id]));
+        $response = $this->get(route('tenant.misidentified-package.show', [$tenant->domain, $misidentified->id]));
         $response->assertStatus(200);
-        $response->assertViewIs('tenant.warehouse.cargo-entry.show');
+        $response->assertViewIs('tenant.misidentified-package.show');
 
-        $response->assertViewHas(['cargo_entry', ]);
+        $response->assertViewHas(['misidentified_package', ]);
     }
 }

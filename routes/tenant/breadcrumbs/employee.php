@@ -21,6 +21,11 @@ Breadcrumbs::for('tenant.client.edit', function ($trail) use ($type) {
     $trail->add(__('Clients'), route('tenant.client.list', request()->domain));
     $trail->add(__('Editing :what', ['what' => __('Client') ]), route('tenant.client.edit', [request()->domain, request('id')]));
 });
+Breadcrumbs::for('tenant.client.show', function ($trail) use ($type) {
+    $trail->parent("tenant.{$type}.dashboard");
+    $trail->add(__('Clients'), route('tenant.client.list', request()->domain));
+    $trail->add(__('Showing :what', ['what' => __('Client')]), route('tenant.client.show', [request()->domain, request('id')]));
+});
 
 // Profile
 Breadcrumbs::for('tenant.employee.profile.edit', function ($trail) use ($type) {

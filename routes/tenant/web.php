@@ -16,10 +16,10 @@ Route::group(['domain' => '{domain}', 'middleware' => 'tenant'], function () {
     Route::get('tracking', 'Tenant\TrackingController@showTrackingForm')->name('tenant.tracking.get');
 
     //Misidentified package
-    Route::get('malidentificados/list', 'Tenant\MisidentifiedController@index')->name('tenant.misidentified-package.index');
+    Route::get('malidentificados/list', 'Tenant\MisidentifiedController@index')->name('tenant.misidentified-package.index')
+        ->middleware('auth');
     Route::get('malidentificados/{id}/show', 'Tenant\MisidentifiedController@show')->name('tenant.misidentified-package.show');
     Route::get('malidentificados', 'Tenant\MisidentifiedController@create')->name('tenant.misidentified-package.create');
-    Route::post('malidentificados', 'Tenant\MisidentifiedController@store')->name('tenant.misidentified-package.store');
     
     // auth
     Route::group(['prefix' => 'auth'], function () {

@@ -19,7 +19,7 @@ class MisidentifiedPackageListTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
 
         $response = $this->get(route('tenant.misidentified-package.index', [$tenant->domain]), []);
-        $response->assertStatus(200);
+        $response->assertStatus(302);
     }
 
     /** @test */

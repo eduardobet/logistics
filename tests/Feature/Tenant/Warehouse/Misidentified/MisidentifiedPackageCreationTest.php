@@ -56,6 +56,7 @@ class MisidentifiedPackageCreationTest extends TestCase
         $response = $this->actingAs($admin)->get(route('tenant.misidentified-package.create', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.misidentified-package.create');
+        $response->assertViewHas('branches');
 
         $response = $this->actingAs($admin)->post(route('tenant.misidentified-package.store', $tenant->domain), [
             'branch_to' => $branch->id,

@@ -21,7 +21,10 @@
 {{ $maritime->telephones }} <br> <br>
 
 <h3>{{ __('For tracking', [], $lang) }}:</h3>
-{{ route('tenant.tracking.get', $tenant->domain) }}
+{{ route('tenant.tracking.get', $tenant->domain) }} <br> <br>
+
+<h3>{{ __('For misidentified packages', [], $lang) }}:</h3>
+{{ route('tenant.misidentified-package.create', $tenant->domain) }}
 
 <br><br><br>
 {{ __('Remember your purchases must always contain your box', [], $lang) }}: <b>{{ $box_code }}{{ $client->id }}</b>

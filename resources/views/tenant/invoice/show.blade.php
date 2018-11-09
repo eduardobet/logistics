@@ -187,14 +187,14 @@
                   <hr class="mg-b-50">
                   <div class="row">
 
-                    <div class="col-md-2">
+                    <div class="col-md-2 mg-t-10">
                         <button type="button" id="pay" class="btn btn-outline-success btn-block terminate"{{ !$pending || $invoice->status == 'I' ? ' disabled' : null }} data-toggle="modal" data-target="#modal-payment">
                           {{ strtoupper( __('New payment') ) }}
                         </button>
                     </div>
                     <!-- se abre el modal con el formulario de registro de pagos-->
 
-                    <div class="col-md-3">
+                    <div class="col-md-3 mg-t-10">
                         <button id="send-to-client" class="btn btn-outline-warning btn-block terminate" data-loading-text="<i class='fa fa-spinner fa-spin '></i>"
                         {{ $invoice->status == 'I' ? ' disabled' : null }}
                         >
@@ -203,14 +203,14 @@
                     </div>
                     <!-- se le reenvia al cliente la factura-->
 
-                    <div class="col-md-3">
+                    <div class="col-md-3 mg-t-10">
                         <button id="penalize-client" class="btn btn-outline-purple btn-block terminate"{{ !$pending || $invoice->status == 'I' ? ' disabled' : null }} data-toggle="modal" data-target="#modal-penalize">
                           {{ strtoupper( __('Fine :who', ['who' => __('Client')]) ) }}
                         </button>
                     </div> 
                     <!-- SE AGREGA UNA LINEA A LA FACTURA CON TITULO DE MULTA POR DEJAR PAQUETS MAS DE 10 DIAS EN BODEGA ( ESTO SOLO APLICA A FACTURAS DE WAREHOUSE)-->
 
-                    <div class="col-md-2">
+                    <div class="col-md-2 mg-t-10">
                         @can('edit-invoice')
                         <a href="{{ route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch->id, 'client_id' => request('client_id'), ]) }}" class="btn btn-outline-primary btn-block">
                             {{ strtoupper( __('Edit') ) }}
@@ -218,7 +218,7 @@
                         @endcan
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md-2 mg-t-10">
                         @can('delete-invoice')
                             <button id="btn-delete" class="btn btn-outline-danger btn-block terminate"{{ $invoice->is_paid || $invoice->status == 'I' ? ' disabled' : null }}
                             data-loading-text="<i class='fa fa-spinner fa-spin '></i> ..."
@@ -236,7 +236,7 @@
                   <div class="row mg-t-10">
                       <div class="col">
                           <a target="_blank" href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $invoice->id, ]) }}" class="btn btn-outline-dark btn-block" role="button" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
-                                <i class="fa fa-print"></i> {{ __('Print :what', ['what' => __('Invoice') ]) }}
+                                <i class="fa fa-print"></i> {{ strtoupper( __('Print :what', ['what' => __('Invoice') ]) ) }}
                             </a>
                       </div>
                   </div>

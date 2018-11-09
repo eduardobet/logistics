@@ -68,6 +68,10 @@
                
               </tbody>
             </table>
+
+            <div id="result-paginated" class="mg-t-25">
+                {{ $employees->links() }}
+            </div>
           </div>
 
         </div>

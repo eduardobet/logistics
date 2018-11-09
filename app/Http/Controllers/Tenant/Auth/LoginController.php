@@ -19,7 +19,7 @@ class LoginController extends Controller
     | redirecting them to your home screen. The controller uses a trait
     | to conveniently provide its functionality to your applications.
     |
-    */
+     */
 
     use Tenant, ThrottlesLogins;
 
@@ -56,17 +56,17 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email'   => 'required|email',
+            'email' => 'required|email',
             'password' => 'required|alpha_num_pwd',
         ]);
 
         if ($validator->fails()) {
             return redirect()->route('tenant.auth.get.login', $request->domain)
-              ->withErrors($validator)
-              ->withInput($request->only('email', 'remember'));
+                ->withErrors($validator)
+                ->withInput($request->only('email', 'remember'));
         }
 
-        
+
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
 
@@ -87,9 +87,9 @@ class LoginController extends Controller
         $this->incrementLoginAttempts($request);
 
         return redirect()->route('tenant.auth.get.login', $request->domain)
-                ->with('flash_error', __("Invalid Email and/or password or you've haven't unlocked your account yet."))
-                ->withErrors($validator)
-                ->withInput($request->only('email', 'remember'));
+            ->with('flash_error', __("Invalid Email and/or password or you've haven't unlocked your account yet."))
+            ->withErrors($validator)
+            ->withInput($request->only('email', 'remember'));
     }
 
     protected function doRedirect($request)
@@ -97,6 +97,7 @@ class LoginController extends Controller
         $type = $request->user()->type;
         $tenant = $this->getTenant();
 
+        $request->session()->regenerate();
         $this->clearLoginAttempts($request);
 
         if (!$tenant) {
@@ -110,7 +111,7 @@ class LoginController extends Controller
                 $prefix = 'admin';
             }
             $url = localization()->getLocalizedURL(
-                $tenant->lang ?: localization()->getCurrentLocale(),
+                $tenant->lang ? : localization()->getCurrentLocale(),
                 redirect()->intended(route("tenant.{$prefix}.dashboard", $request->domain))->getTargetUrl()
             );
 
@@ -126,9 +127,17 @@ class LoginController extends Controller
         return redirect()->route('app.home')->with('flash_error', __('Invalid user type.'));
     }
 
-    public function logout()
+    /**
+     * Log the user out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request)
     {
         auth()->logout();
+
+        $request->session()->invalidate();
 
         return redirect()->route('tenant.auth.get.login', request()->domain);
     }

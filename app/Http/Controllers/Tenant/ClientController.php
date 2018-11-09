@@ -100,17 +100,28 @@ class ClientController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  string  $domain
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($domain, $id)
     {
-        //
+        $client = $this->getTenant()->clients()
+            ->with(['boxes', 'creator', 'editor'])
+            ->findOrFail($id);
+
+        return view('tenant.client.show', [
+            'client' => $client,
+            'countries' => (new Country())->getCountryAsList($this->getTenantId()),
+            'departments' => (new Department())->getDepartmentAsList($client->country_id),
+            'zones' => (new Zone())->getZoneAsList($client->department_id),
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
+     * @param  string  $tenant
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */

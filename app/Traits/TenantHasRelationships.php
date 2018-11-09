@@ -79,6 +79,11 @@ trait TenantHasRelationships
         return $this->hasMany(\Logistics\DB\Tenant\CargoEntry::class);
     }
 
+    public function misidentifiedPackages()
+    {
+        return $this->hasMany(\Logistics\DB\Tenant\MisidentifiedPackage::class);
+    }
+
     /**
      * Get the telephones for display.
      *

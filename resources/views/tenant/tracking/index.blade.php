@@ -52,7 +52,7 @@
                 <div class="input-group">
                     <input id="q-tracking" name="q-tracking" type="text" class="form-control form-control-lg" placeholder="{{ __('Enter a tracking number and press enter or click the button') }}">
 
-                    @captcha("{{ config('app.locale') }}")
+                    @captcha(config('app.locale'))
 
                     <span class="input-group-btn">
                         <button type="submit" class="btn bg-mantle tx-white bd-gray-500 btn-lg" id="btn-tracking" disabled>

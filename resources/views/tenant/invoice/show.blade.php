@@ -188,14 +188,14 @@
                   <div class="row">
 
                     <div class="col-md-2">
-                        <button type="button" id="pay" class="btn btn-success btn-block terminate"{{ !$pending || $invoice->status == 'I' ? ' disabled' : null }} data-toggle="modal" data-target="#modal-payment">
+                        <button type="button" id="pay" class="btn btn-outline-success btn-block terminate"{{ !$pending || $invoice->status == 'I' ? ' disabled' : null }} data-toggle="modal" data-target="#modal-payment">
                           {{ strtoupper( __('New payment') ) }}
                         </button>
                     </div>
                     <!-- se abre el modal con el formulario de registro de pagos-->
 
                     <div class="col-md-3">
-                        <button id="send-to-client" class="btn btn-warning btn-block terminate" data-loading-text="<i class='fa fa-spinner fa-spin '></i>"
+                        <button id="send-to-client" class="btn btn-outline-warning btn-block terminate" data-loading-text="<i class='fa fa-spinner fa-spin '></i>"
                         {{ $invoice->status == 'I' ? ' disabled' : null }}
                         >
                          {{ strtoupper( __('Send to :who', ['who' => __('Client')]) ) }}
@@ -204,7 +204,7 @@
                     <!-- se le reenvia al cliente la factura-->
 
                     <div class="col-md-3">
-                        <button id="penalize-client" class="btn btn-purple btn-block terminate"{{ !$pending || $invoice->status == 'I' ? ' disabled' : null }} data-toggle="modal" data-target="#modal-penalize">
+                        <button id="penalize-client" class="btn btn-outline-purple btn-block terminate"{{ !$pending || $invoice->status == 'I' ? ' disabled' : null }} data-toggle="modal" data-target="#modal-penalize">
                           {{ strtoupper( __('Fine :who', ['who' => __('Client')]) ) }}
                         </button>
                     </div> 
@@ -212,7 +212,7 @@
 
                     <div class="col-md-2">
                         @can('edit-invoice')
-                        <a href="{{ route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch->id, 'client_id' => request('client_id'), ]) }}" class="btn btn-primary btn-block">
+                        <a href="{{ route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch->id, 'client_id' => request('client_id'), ]) }}" class="btn btn-outline-primary btn-block">
                             {{ strtoupper( __('Edit') ) }}
                         </a>
                         @endcan
@@ -220,7 +220,7 @@
 
                     <div class="col-md-2">
                         @can('delete-invoice')
-                            <button id="btn-delete" class="btn btn-danger btn-block terminate"{{ $invoice->is_paid || $invoice->status == 'I' ? ' disabled' : null }}
+                            <button id="btn-delete" class="btn btn-outline-danger btn-block terminate"{{ $invoice->is_paid || $invoice->status == 'I' ? ' disabled' : null }}
                             data-loading-text="<i class='fa fa-spinner fa-spin '></i> ..."
                             >
                             {{ strtoupper( __('Delete') ) }}
@@ -231,6 +231,14 @@
                     <!-- POSIBILIDAD DE EDITR DETALLES DE FACTURAS MAS NO CLIENTE MODIFICAR CLIENTE, ESTO ES CUANDO EL FACTOR HUMANO ENTRA, POSIBILIDAD DE ELIMINARLA, PERO DEBE MOSTRARSE EN LA LISTA DE FACTURA COMO ELIMIDADO Y DEBE AGREGARSE NOTAS DE POR QUE
                     SOLO USUARIO QUE MANEJA CAJA y/o ADMINISTRADORES PUEDEN MODIFICAR O ELIMINAR FACTURA, IGUAL EL LOG DEBE GUARDAR TODO CAMBIO Y DETALLES EFECTUADOS EN LAS FACTURAS-->
 
+                  </div>
+
+                  <div class="row mg-t-10">
+                      <div class="col">
+                          <a target="_blank" href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $invoice->id, ]) }}" class="btn btn-outline-dark btn-block" role="button" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
+                                <i class="fa fa-print"></i> {{ __('Print :what', ['what' => __('Invoice') ]) }}
+                            </a>
+                      </div>
                   </div>
 
 

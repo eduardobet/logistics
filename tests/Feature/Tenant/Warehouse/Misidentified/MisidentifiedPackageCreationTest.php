@@ -42,10 +42,6 @@ class MisidentifiedPackageCreationTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        InvisibleReCaptcha::shouldReceive('verifyResponse')
-            ->once()
-            ->andReturn(true);
-
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch Name', ]);
 
@@ -57,6 +53,10 @@ class MisidentifiedPackageCreationTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewIs('tenant.misidentified-package.create');
         $response->assertViewHas('branches');
+
+        InvisibleReCaptcha::shouldReceive('verifyResponse')
+            ->once()
+            ->andReturn(true);
 
         $response = $this->actingAs($admin)->post(route('tenant.misidentified-package.store', $tenant->domain), [
             'branch_to' => $branch->id,

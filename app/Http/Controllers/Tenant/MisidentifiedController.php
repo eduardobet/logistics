@@ -109,7 +109,7 @@ class MisidentifiedController extends Controller
         $tenant = $this->getTenant();
 
         return view('tenant.misidentified-package.show', [
-            'misidentified_package' => $tenant->misidentifiedPackages()->findOrFail($id)
+            'misidentified_package' => $tenant->misidentifiedPackages()->with('toBranch')->findOrFail($id),
         ]);
     }
 

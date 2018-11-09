@@ -18,7 +18,7 @@ Route::group(['domain' => '{domain}', 'middleware' => 'tenant'], function () {
     //Misidentified package
     Route::get('malidentificados/list', 'Tenant\MisidentifiedController@index')->name('tenant.misidentified-package.index')
         ->middleware('auth');
-    Route::get('malidentificados/{id}/show', 'Tenant\MisidentifiedController@show')->name('tenant.misidentified-package.show');
+    Route::get('malidentificados/{id}/show', 'Tenant\MisidentifiedController@show')->name('tenant.misidentified-package.show')->middleware('auth');
     Route::get('malidentificados', 'Tenant\MisidentifiedController@create')->name('tenant.misidentified-package.create');
     
     // auth

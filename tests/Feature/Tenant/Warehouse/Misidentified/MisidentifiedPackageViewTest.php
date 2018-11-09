@@ -20,7 +20,7 @@ class MisidentifiedPackageViewTest extends TestCase
     /** @test */
     public function it_successfully_shows_the_misidentified_package()
     {
-        $this->withoutExceptionHandling();
+        /// $this->withoutExceptionHandling();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
@@ -36,7 +36,7 @@ class MisidentifiedPackageViewTest extends TestCase
             'cargo_entry_id' => 1,
         ]);
 
-        $response = $this->get(route('tenant.misidentified-package.show', [$tenant->domain, $misidentified->id]));
+        $response = $this->actingAs($admin)->get(route('tenant.misidentified-package.show', [$tenant->domain, $misidentified->id]));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.misidentified-package.show');
 

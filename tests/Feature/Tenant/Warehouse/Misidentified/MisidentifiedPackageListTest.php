@@ -48,7 +48,7 @@ class MisidentifiedPackageListTest extends TestCase
             'cargo_entry_id' => 1,
         ]);
 
-        $response = $this->get(route('tenant.misidentified-package.index', $tenant->domain));
+        $response = $this->actingAs($admin)->get(route('tenant.misidentified-package.index', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.misidentified-package.index');
 

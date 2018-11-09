@@ -33,17 +33,18 @@
               </div><!-- col-5 -->
 
               <div class="col-md-7 col-lg-6 col-xl-7 mg-t-10 mg-md-t-0">
-                <div class="dash-headline-item-one">
-                  <div class="dash-item-overlay">
-                    <h1>$ {{ number_format($today_earnings, 2) }}</h1>
-                    <p class="earning-label">{{ __('Today profits') }}</p>
-                    
-                    @can('show-payment')
-                      <a href="{{ route('tenant.payment.list', [$tenant->domain, 'branch_id' => $branch->id, 'from' => date('Y-m-d'), 'to' => date('Y-m-d') ]) }}" class="statement-link"> {{ __('Show movements') }} <i class="fa fa-angle-right mg-l-5"></i></a>
-                    @endcan
-
-                  </div>
-                </div><!-- dash-headline-item-one -->
+                  <div class="card card-people-list pd-20">
+                    <div class="slim-card-title">{{ __('Today profits') }}</div>
+                    <div class="media">
+                        <div class="media-body">
+                            @can('show-payment')
+                              <h1>$ {{ number_format($today_earnings, 2) }}</h1>
+                            
+                              <a href="{{ route('tenant.payment.list', [$tenant->domain, 'branch_id' => $branch->id, 'from' => date('Y-m-d'), 'to' => date('Y-m-d') ]) }}" class="statement-link"> {{ __('Show movements') }} <i class="fa fa-angle-right mg-l-5"></i></a>
+                            @endcan
+                        </div>
+                    </div>
+                  </div><!-- card -->
               </div><!-- col-7 -->
 
             </div><!-- row -->

@@ -32,13 +32,14 @@ class CargoEntryCreationTest extends TestCase
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
 
         $response = $this->actingAs($admin)->post(route('tenant.warehouse.cargo-entry.store', $tenant->domain), [
-            'type' => 'X'
+            'type' => 'X',
+            'weight' => 'X',
         ]);
         $response->assertStatus(302);
         $response->assertRedirect(route('tenant.warehouse.cargo-entry.create', $tenant->domain));
 
         $response->assertSessionHasErrors([
-            'branch_id', 'trackings', 'type',
+            'branch_id', 'trackings', 'type', 'weight',
         ]);
     }
 
@@ -63,6 +64,7 @@ class CargoEntryCreationTest extends TestCase
         $response = $this->actingAs($admin)->post(route('tenant.warehouse.cargo-entry.store', $tenant->domain), [
             'branch_id' => $branch->id,
             'trackings' => '12345,234434,55645',
+            'weight' => 200,
         ]);
         
         $this->assertDatabaseHas('cargo_entries', [
@@ -70,6 +72,7 @@ class CargoEntryCreationTest extends TestCase
             "created_by_code" => $admin->id,
             'branch_id' => $branch->id,
             'trackings' => '12345,234434,55645',
+            'weight' => 200,
         ]);
 
         $response->assertStatus(302);

@@ -12,7 +12,7 @@ class CargoEntry extends Model
      * @var array
      */
     protected $fillable = [
-        'created_by_code', 'tenant_id', 'updated_by_code', 'branch_id', 'trackings', 'type',
+        'created_by_code', 'tenant_id', 'updated_by_code', 'branch_id', 'trackings', 'type', 'weight',
     ];
 
     /**

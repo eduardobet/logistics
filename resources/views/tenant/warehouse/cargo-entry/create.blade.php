@@ -39,10 +39,19 @@
                         {!! Form::textarea('trackings', null, ['rows' => 14, 'class' => 'form-control mg-b-6-force', 'required' => 1, 'id' => 'trackings', ]) !!}
 
                     </div>
-                    
-                    <div class="form-group mg-b-20-force">
-                        <label for="type" class="form-label">{{ __('Type') }}</label>
-                         {!! Form::select('type', ['N' => __('Normal'), 'M' =>  __('Misidentified') ], old('type', request('type')), ['class'=> 'form-control', 'id' => 'type',]) !!}
+
+                    <div class="row">
+
+                        <div class="form-group col-sm-6 mg-b-20-force">
+                            <label for="type" class="form-label">{{ __('Weight') }}</label>
+                            {!! Form::number('weight', null, ['class'=> 'form-control', 'id' => 'weight',]) !!}
+                        </div>
+                        
+                        <div class="form-group col-sm-6 mg-b-20-force">
+                            <label for="type" class="form-label">{{ __('Type') }}</label>
+                            {!! Form::select('type', ['N' => __('Normal'), 'M' =>  __('Misidentified') ], old('type', request('type')), ['class'=> 'form-control', 'id' => 'type',]) !!}
+                        </div>
+                        
                     </div>
                     
                     

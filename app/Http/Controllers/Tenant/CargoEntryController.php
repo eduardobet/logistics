@@ -43,8 +43,11 @@ class CargoEntryController extends Controller
         }
 
         if ($type = request('type')) {
-            if ($type == 'M') $cargoEntries = $cargoEntries->where('type', $type)->orWhereNull('type');
-            else if ($type == 'M') $cargoEntries = $cargoEntries->where('type', $type);
+            if ($type == 'M') {
+                $cargoEntries = $cargoEntries->where('type', $type)->orWhereNull('type');
+            } elseif ($type == 'M') {
+                $cargoEntries = $cargoEntries->where('type', $type);
+            }
             $searching = 'Y';
         }
 
@@ -78,7 +81,8 @@ class CargoEntryController extends Controller
         $validation = Validator::make($request->all(), [
             'branch_id' => 'required|integer',
             'trackings' => 'required',
-            'type' => 'sometimes|in:N,M'
+            'type' => 'sometimes|in:N,M',
+            'weight' => 'nullable|integer',
         ]);
 
         $tenant = $this->getTenant();
@@ -93,6 +97,7 @@ class CargoEntryController extends Controller
             'branch_id' => $request->branch_id,
             'trackings' => $request->trackings,
             'type' => $request->type,
+            'weight' => $request->weight ?: $request->weight,
         ]);
 
         if ($cargoEntry) {

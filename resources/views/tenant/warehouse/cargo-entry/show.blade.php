@@ -40,6 +40,7 @@
                                 <b>{{ __('Date') }}:</b> {{ $cargo_entry->created_at->format('d/m/Y') }}<br>
                                 <b>{{ __('Hour') }}:</b> {{ $cargo_entry->created_at->format('g:i A') }}<br>
                                 <b>{{ __('Branch') }}:</b> {{ $cargo_entry->branch->name }}<br>
+                                <b>{{ __('Weight') }}:</b> {{ $cargo_entry->weight }} (LBS)<br>
 
                                 @if (!$cargo_entry->type || $cargo_entry->type == 'N' )
                                     <label class="badge badge-success">

@@ -83,6 +83,7 @@
                         <th>{{ __('Branch') }}</th>
                         <th>{{ __('Created by') }}</th>
                         <th>{{ __('Type') }}</th>
+                        <th>{{ __('Weight') }}</th>
                         <th class="text-center">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
@@ -105,6 +106,9 @@
                                         {{ __('Misidentified') }}
                                     </label>
                                 @endif
+                            </td>
+                            <td>
+                                {{ $cargo_entry->weight }}
                             </td>
                             <td class="text-center">
                                 <a target="_blank" title="{{ __('View') }}" href="{{ route('tenant.warehouse.cargo-entry.show', [$tenant->domain, $cargo_entry->id]) }}"><i class="fa fa-eye"></i></a>

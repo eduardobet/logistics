@@ -8,6 +8,7 @@
             </div>
             <p class="mb-1">[{{ $result->branch->code }}] {{ $result->branch->name }}</p>
             <p class="mb-1">{{ $result->created_at->format('d/m/Y H:i a') }}</p>
+            <p class="mb-1">{{ $result->weight }} (LBS)</p>
             <p class="mb-1">
                  @if (!$result->type || $result->type == 'N' )
                     <label class="badge badge-success">

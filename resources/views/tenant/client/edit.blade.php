@@ -55,4 +55,12 @@
     @include('common._select2ize')
     @include('common._add_more')
     @include('common._toogle-for-text')
+
+    <script>
+      $(function() {
+          $("input[name='email']").blur(function() {
+              if ($.trim(this.value)) this.value = this.value.toLowerCase();
+          });
+      });
+    </script> 
 @endsection

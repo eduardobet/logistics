@@ -15,7 +15,7 @@ class SearchController extends Controller
         $tenant = $this->getTenant();
         $term = request('q', '');
 
-        if ($term) {
+        if ($term = strtolower($term)) {
             $branchesPrefix = implode($this->branches()->pluck('code')->toArray(), '|');
             preg_match("/($branchesPrefix)(\\d+)/i", $term, $matches);
             $qBranchCode = @$matches[1];
@@ -35,7 +35,6 @@ class SearchController extends Controller
                 $client = true;
 
                 if (!$results->count()) {
-
                     $data['cargo_entries'] = $tenant->cargoEntries()->with(['branch'])
                         ->where('trackings', 'like', "%$term%")->get();
 

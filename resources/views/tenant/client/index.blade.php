@@ -69,6 +69,12 @@
                
               </tbody>
             </table>
+
+            <div id="result-paginated" class="mg-t-25">
+                <hr>
+                {{ $clients->links() }}
+            </div>
+
           </div>
         
         </div>

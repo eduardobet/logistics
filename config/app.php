@@ -162,6 +162,7 @@ return [
         Logistics\Providers\AuthServiceProvider::class,
         // Logistics\Providers\BroadcastServiceProvider::class,
         Logistics\Providers\CustomValidationServiceProvider::class,
+        Logistics\Providers\DropboxServiceProvider::class,
         Logistics\Providers\EventServiceProvider::class,
         Logistics\Providers\RouteServiceProvider::class,
         Logistics\Providers\TenantServiceProvier::class,

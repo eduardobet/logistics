@@ -11,6 +11,7 @@
         </div><!-- slim-header-left -->
         <div class="slim-header-right">
 
+            <!--
             <div class="dropdown">
                 <a href="#!" class="header-notification">
                     <i class="icon ion-ios-bell-outline"></i>
@@ -18,6 +19,7 @@
                 </a>
                 <div class="dropdown-menu"></div>
             </div>
+            -->
 
             <div class="dropdown">
                 <a href="#" class="header-notification" data-toggle="dropdown">

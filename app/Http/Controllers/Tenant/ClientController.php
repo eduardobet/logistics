@@ -52,31 +52,40 @@ class ClientController extends Controller
     public function store(ClientRequest $request)
     {
         $tenant = $this->getTenant();
-        
-        $client = $tenant->clients()->create([
-            "created_by_code" => auth()->id(),
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'full_name' => $request->first_name . ' ' . $request->last_name,
-            'pid' => $request->pid,
-            'email' => $request->email,
-            'telephones' => $request->telephones,
-            'type' => $request->type,
-            'org_name' => $request->org_name,
-            'status' => $request->status,
 
-            // optionals
-            'country_id' => $request->country_id,
-            'department_id' => $request->department_id,
-            'city_id' => $request->city_id,
-            'address' => $request->address,
-            'notes' => $request->notes,
-            'pay_volume' => $request->has('pay_volume'),
-            'special_rate' => $request->has('special_rate'),
-            'special_maritime' => $request->has('special_maritime'),
-            'vol_price' => $request->vol_price ?: 0,
-            'real_price' => $request->real_price ?: 0,
-        ]);
+        $client = new \Logistics\DB\Tenant\Client;
+
+        if ($tenant->migration_mode && $request->manual_id) {
+            $client->incrementing = false;
+            $client->id = $request->manual_id;
+            $client->manual_id = $request->manual_id;
+        }
+
+        $client->tenant_id = $tenant->id;
+        $client->created_by_code = auth()->id();
+        $client->first_name = $request->first_name;
+        $client->last_name = $request->last_name;
+        $client->full_name = $request->first_name . ' ' . $request->last_name;
+        $client->pid = $request->pid;
+        $client->email = $request->email;
+        $client->telephones = $request->telephones;
+        $client->type = $request->type;
+        $client->org_name = $request->org_name;
+        $client->status = $request->status;
+
+        // optionals
+        $client->country_id = $request->country_id;
+        $client->department_id = $request->department_id;
+        $client->city_id = $request->city_id;
+        $client->address = $request->address;
+        $client->notes = $request->notes;
+        $client->pay_volume = $request->has('pay_volume');
+        $client->special_rate = $request->has('special_rate');
+        $client->special_maritime = $request->has('special_maritime');
+        $client->vol_price = $request->vol_price ? $request->vol_price : null;
+        $client->real_price = $request->real_price ? $request->real_price : null;
+        
+        $client->save();
 
         if ($client) {
             $client->genBox($request->branch_id, $request->branch_code, $request->branch_initial);
@@ -172,8 +181,8 @@ class ClientController extends Controller
         $client->pay_volume  = $request->has('pay_volume');
         $client->special_rate  = $request->has('special_rate');
         $client->special_maritime  = $request->has('special_maritime');
-        $client->vol_price  = $request->vol_price;
-        $client->real_price  = $request->real_price;
+        $client->vol_price = $request->vol_price ? $request->vol_price : null;
+        $client->real_price = $request->real_price ? $request->real_price : null;
 
         if ($oldEmail !== $request->email) {
             $client->email = $request->email;

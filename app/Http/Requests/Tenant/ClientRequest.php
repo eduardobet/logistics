@@ -2,11 +2,14 @@
 
 namespace Logistics\Http\Requests\Tenant;
 
+use Logistics\Traits\Tenant;
 use Illuminate\Validation\Rule;
 use Logistics\Http\Requests\AppFormRequest;
 
 class ClientRequest extends AppFormRequest
 {
+    use Tenant;
+    
     protected $redirectRoute = 'tenant.client.create';
 
     /**
@@ -26,6 +29,8 @@ class ClientRequest extends AppFormRequest
      */
     public function rules()
     {
+        $tenant = $this->getTenant();
+
         $rules = [
             'first_name' => 'required|string|between:3,255',
             'last_name' => 'required|string|between:3,255',
@@ -50,6 +55,10 @@ class ClientRequest extends AppFormRequest
             $rules['email'] = ['required', 'string', 'email', 'max:255', Rule::unique('clients')->ignore($this->id)];
 
             $this->redirectRoute = 'tenant.client.edit';
+        }
+
+        if ($tenant->migration_mode) {
+            $rules['manual_id'] = ['required','integer', Rule::unique('clients', 'id') ];
         }
 
         return $rules;

@@ -19,6 +19,7 @@ $factory->define(Tenant::class, function (Faker $faker) {
         'country_id' => 1,
         'logo' => 'tenant/1/images/logos/logo.png',
         'timezone' => 'America/Panama',
+        'migration_mode' => false,
       
 
         'mail_driver' => env('MAIL_DRIVER', 'smtp'),

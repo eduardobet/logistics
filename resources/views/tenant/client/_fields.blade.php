@@ -14,13 +14,24 @@
     <div class="tab-pane active" id="informations">
 
         <div class="row mg-t-25">
-                    
+
             <div class="col-lg-2">
-                <div class="form-group">
+                @if ($tenant->migration_mode && $mode == 'create')
                     <label class="form-control-label">#{{ __('Box') }}: </label>
-                    {!! Form::text("box", $client->boxes && $client->boxes->first() ? $client->boxes->first()->branch_code . '' . $client->id : null , ['placeholder' => 'PRXX0000', 'class' => 'form-control', 'disabled' => '' ]) !!}
-                </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">{{ $branch->code }}</span>
+                        </div>
+                        {!! Form::number("manual_id", null , ['class' => 'form-control', 'required' => 1,  ]) !!}
+                    </div>
+                @else
+                    <div class="form-group">
+                        <label class="form-control-label">#{{ __('Box') }}: </label>
+                        {!! Form::text("box", $client->boxes && $client->boxes->first() ? $client->boxes->first()->branch_code . '' . $client->id : null , ['placeholder' => 'PRXX0000', 'class' => 'form-control', 'disabled' => '' ]) !!}
+                    </div>
+                @endif
             </div>
+            
 
             <div class="col-lg-4">
                 <div class="form-group">

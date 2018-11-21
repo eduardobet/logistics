@@ -23,7 +23,17 @@
                 <input type="hidden" name="branch_code" value="{{ $branch->code }}">
                 <input type="hidden" name="branch_initial" value="{{ $branch->initial }}">
                 {!! Form::hidden('branches[]', $branch->id) !!}
-            
+
+                @if ($tenant->migration_mode)
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h4>
+                                <label class="badge badge-danger">{{ __('Migration mode') }}...</label>
+                            </h4>
+                        </div>
+                    </div>
+                @endif
+
                 @include('tenant.client._fields', [
                     'departments' => [],
                     'zones' => [],

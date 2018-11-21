@@ -57,7 +57,7 @@ class ClientRequest extends AppFormRequest
             $this->redirectRoute = 'tenant.client.edit';
         }
 
-        if ($tenant->migration_mode) {
+        if ($tenant->migration_mode && $this->isPost()) {
             $rules['manual_id'] = ['required','integer', Rule::unique('clients', 'id') ];
         }
 

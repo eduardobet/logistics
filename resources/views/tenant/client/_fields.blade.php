@@ -17,7 +17,7 @@
 
             <div class="col-lg-2">
                 @if ($tenant->migration_mode && $mode == 'create')
-                    <label class="form-control-label">#{{ __('Box') }}: </label>
+                    <label class="form-control-label">#{{ __('Box') }}: <span class="tx-danger">*</span></label>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">{{ $branch->code }}</span>

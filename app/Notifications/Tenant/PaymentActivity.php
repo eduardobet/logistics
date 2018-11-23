@@ -49,8 +49,9 @@ class PaymentActivity extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $box = Client::find($this->clientId)->boxes()->active()->first();
-        $box = $box->branch_code . '' . $this->clientId;
+        $client = Client::find($this->clientId);
+        $branch = $client->branch;
+        $box = $branch->code . '' . $client->manual_id;
         $lang = $this->tenantLang ? : localization()->getCurrentLocale();
 
         return [

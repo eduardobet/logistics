@@ -33,7 +33,7 @@ class InvoiceController extends Controller
             'searching' => $searching,
             'branch' => $branch,
             'sign' => '$',
-            'branches' => $this->branches(),
+            'branches' => $this->getBranches(),
         ]);
     }
 
@@ -151,7 +151,7 @@ class InvoiceController extends Controller
                 $payment->with(['creator']);
             },
             'client' => function ($client) {
-                $client->with(['boxes']);
+                $client->with(['branch']);
             },
         ])->findOrFail($id);
 
@@ -261,9 +261,8 @@ class InvoiceController extends Controller
         $invoice = $tenant->invoices()->with('details')->findOrFail($id);
         $payments = $invoice->payments;
 
-        $client = $invoice->client;
-        $box = $client->boxes()->active()->get()->first();
-        $box = "{$box->branch_code}{$client->id}";
+        $client = $invoice->client()->with('branch')->first();
+        $box = "{$client->branch->code}{$client->manual_id}";
 
         $data = [
             'creatorName' => $invoice->creator ? $invoice->creator->full_name : null,

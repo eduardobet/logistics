@@ -5,7 +5,7 @@
             <h5 class="mb-1">
              $ {{ number_format($result->total, 2) }}
             </h5>
-            <small> {{ $result->client->full_name }} / {{ $result->client->boxes->first()->branch_code }}{{ $result->id }}</small>
+            <small> {{ $result->client->full_name }} / {{ $result->branch ? $result->branch->code : null }}{{ $result->id }}</small>
             </div>
             <p class="mb-1">
                  @if ($result->is_paid)
@@ -17,7 +17,7 @@
             <small>
 
             @can('show-invoice')
-                <a target="_blank" href="{{ route('tenant.invoice.show', [$tenant->domain, $result->id, 'branch_id' => $result->client->boxes->first()->branch_id, 'client_id' => $result->client->id, ]) }}"><i class="fa fa-eye"></i> {{ __('Show') }} </a>
+                <a target="_blank" href="{{ route('tenant.invoice.show', [$tenant->domain, $result->id, 'branch_id' => $result->branch->id, 'client_id' => $result->client->id, ]) }}"><i class="fa fa-eye"></i> {{ __('Show') }} </a>
                 &nbsp;&nbsp;&nbsp;&nbsp;
             @endcan
 

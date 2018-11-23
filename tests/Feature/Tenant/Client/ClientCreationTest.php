@@ -146,6 +146,7 @@ class ClientCreationTest extends TestCase
             'type' => 'E',
             'org_name' => 'The Org Name',
             'status' => 'A',
+            'branch_id' => $branch->id,
 
             // optional
             'country_id' => 1,
@@ -159,7 +160,7 @@ class ClientCreationTest extends TestCase
             'vol_price' => 2.5,
             'real_price' => 2,
 
-            'manual_id' => null,
+            'manual_id' => 1,
         ]);
 
         $response->assertRedirect(route('tenant.client.list', $tenant->domain));
@@ -175,6 +176,68 @@ class ClientCreationTest extends TestCase
 
         Queue::assertPushed(SendClientWelcomeEmail::class, function ($job) use ($client) {
             return $job->client->id === $client->id;
+        });
+    }
+
+    /** @test */
+    public function it_successfully_increment_manual_id_when_not_in_migration_mode()
+    {
+        // $this->withoutExceptionHandling();
+
+        Queue::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+
+        $tenant->remoteAddresses()->createMany([
+            ['type' => 'A', 'address' => '8450 NW 70 TH ST MIAMI, FLORIDA 33166-2687', 'telephones' => '+1(786)3252841', 'status' => 'A', ],
+            ['type' => 'M', 'address' => '8454 NW 70 TH ST MIAMI, FLORIDA 33166', 'telephones' => '+1(786)3252841', 'status' => 'A', ],
+        ]);
+
+        factory(Client::class)->create(['tenant_id' => $tenant->id, 'email' => 'client0@company.com', 'manual_id' => 15, ]);
+
+        \Gate::define('create-client', function ($admin) {
+            return true;
+        });
+
+        $response = $this->actingAs($admin)->get(route('tenant.client.create', $tenant->domain));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.client.create');
+
+        $response = $this->actingAs($admin)->post(route('tenant.client.store', $tenant->domain), [
+            'first_name' => 'The',
+            'last_name' => 'Client',
+            'pid' => 'E-8-124926',
+            'email' => 'client@company.com',
+            'telephones' => '555-5555, 565-5425',
+            'type' => 'E',
+            'org_name' => 'The Org Name',
+            'status' => 'A',
+            'branch_id' => 1,
+            'branch_code' => 'B-CODE',
+            'branch_initial' => 'B-INITIAL',
+
+            // optional
+            'country_id' => 1,
+            'department_id' => 1,
+            'city_id' => 1,
+            'address' => 'In the middle of nowhere',
+            'notes' => 'Aditional notes',
+            'pay_volume' => 'Y',
+            'special_rate' => 'Y',
+            'special_maritime' => 'Y',
+            'vol_price' => 2.5,
+            'real_price' => 2,
+        ]);
+
+        $lastClient = $tenant->clients->fresh()->last();
+
+        $this->assertEquals(16, $lastClient->manual_id);
+
+        Queue::assertPushed(SendClientWelcomeEmail::class, function ($job) use ($lastClient) {
+            return $job->client->id === $lastClient->id;
         });
     }
 
@@ -221,23 +284,17 @@ class ClientCreationTest extends TestCase
             'manual_id' => 5,
         ]);
 
-        $this->assertDatabaseHas('clients', [
-            "tenant_id" => $tenant->id,
-            "created_by_code" => $admin->id,
-            "id" => 5,
-            'manual_id' => 5,
-        ]);
-
         $response->assertRedirect(route('tenant.client.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);
 
-        $client = $tenant->clients->fresh()->last();
+        $client = $tenant->clients->fresh()->where('manual_id', 5)->first();
 
-        tap($client->boxes->first(), function ($box) use ($branch) {
+        tap($client->boxes->first(), function ($box) use ($branch, $client) {
             $this->assertEquals($box->branch_id, $branch->id);
             $this->assertEquals($box->branch_code, 'B-CODE');
             $this->assertEquals($box->branch_initial, 'B-INITIAL');
-            $this->assertEquals($box->client_id, 5);
+            $this->assertEquals($box->client_id, $client->id);
+            $this->assertEquals(5, $client->manual_id);
         });
 
         Queue::assertPushed(SendClientWelcomeEmail::class, function ($job) use ($client) {

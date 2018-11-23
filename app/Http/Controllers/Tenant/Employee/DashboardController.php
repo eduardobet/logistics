@@ -30,13 +30,9 @@ class DashboardController extends Controller
 
         return view("tenant.employee.dashboard", [
             'tot_warehouses' => $this->warehouses()->where('branch_to', $branch->id)->count(),
-            'tot_clients' => $this->clients()->filter(function ($client, $key) use ($branch) {
-                return $client->boxes->where('branch_id', $branch->id);
-            })->count(),
+            'tot_clients' => $this->getClients()->where('branch_id', $branch->id)->count(),
             'tot_invoices' => $this->invoices()->where('branch_id', $branch->id)->count(),
-            'last_5_clients' => $this->clients()->filter(function ($client, $key) use ($branch) {
-                return $client->boxes->where('branch_id', $branch->id);
-            })->sortByDesc('created_at')->take(5),
+            'last_5_clients' => $this->getClients()->where('branch_id', $branch->id)->sortByDesc('created_at')->take(5),
             'today_earnings' => $tenant->payments()->whereDate('created_at', '=', date('Y-m-d'))->get()->sum('amount_paid')
         ]);
     }

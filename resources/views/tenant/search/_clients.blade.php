@@ -4,7 +4,7 @@
         <div href="#" class="list-group-item list-group-item-action flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
             <h5 class="mb-1">{{ $result->full_name }}</h5>
-            <small>{{ $result->boxes->first()->branch_code }}{{ $result->id }}</small>
+            <small>{{ $result->branch ? $result->branch->code : null }}{{ $result->id }}</small>
             </div>
             <p class="mb-1">{{ $result->email }}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

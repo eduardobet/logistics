@@ -29,7 +29,7 @@ class WarehouseController extends Controller
             'searching' => $searching,
             'branch' => $branch,
             'sign' => '$',
-            'branches' => $this->branches(),
+            'branches' => $this->getBranches(),
         ]);
     }
 
@@ -63,8 +63,8 @@ class WarehouseController extends Controller
     public function create()
     {
         return view('tenant.warehouse.create', [
-            'branches' => $this->branches(),
-            'userBranches' => $this->branches()->whereIn('id', auth()->user()->branchesForInvoice->pluck('id')->toArray()),
+            'branches' => $this->getBranches(),
+            'userBranches' => $this->getBranches()->whereIn('id', auth()->user()->branchesForInvoice->pluck('id')->toArray()),
             'mailers' => $this->mailers(),
             'invoice' => new Invoice,
         ]);
@@ -136,16 +136,18 @@ class WarehouseController extends Controller
             ->with(['editor', 'creator'])
             ->where('id', $id)->firstOrFail();
 
-        $invoice = $warehouse->invoice()->with(['creator', 'payments' => function($payment){
+        $invoice = $warehouse->invoice()->with(['creator', 'payments' => function ($payment) {
             $payment->with('creator');
         }])->first();
 
-        if (!$invoice) $invoice = new Invoice;
+        if (!$invoice) {
+            $invoice = new Invoice;
+        }
 
         return view('tenant.warehouse.edit', [
             'warehouse' => $warehouse,
-            'branches' => $this->branches(),
-            'userBranches' => $this->branches()->whereIn('id', auth()->user()->branchesForInvoice->pluck('id')->toArray()),
+            'branches' => $this->getBranches(),
+            'userBranches' => $this->getBranches()->whereIn('id', auth()->user()->branchesForInvoice->pluck('id')->toArray()),
             'mailers' => $this->mailers(),
             'invoice' => $invoice,
             'clients' => (new Client)->getClientsByBranch($warehouse->branch_to),
@@ -240,11 +242,9 @@ class WarehouseController extends Controller
             'warehouse' => $warehouse,
             'mailer' => $tenant->mailers()->select(['tenant_id', 'id', 'name'])->find($warehouse->mailer_id),
             'branchTo' => $tenant->branches()->select(['tenant_id', 'id', 'name', 'address'])->find($warehouse->branch_to),
-            'client' => $tenant->clients()->select(['tenant_id', 'id', 'first_name', 'last_name', 'address'])
-                ->with(['boxes' => function ($query) use ($warehouse) {
-                    $query->select(['id', 'client_id', 'branch_code', 'branch_id'])
-                        ->where('status', 'A')->where('branch_id', $warehouse->branch_to);
-                }])
+            'client' => $tenant->clients()
+                ->with('branch')
+                ->select(['tenant_id', 'id', 'first_name', 'last_name', 'address', 'branch_id', 'manual_id'])
                 ->find($warehouse->client_id),
             'invoice' => $warehouse->invoice()->select(['id', 'warehouse_id', 'total'])
                 ->with(['details' => function ($query) {

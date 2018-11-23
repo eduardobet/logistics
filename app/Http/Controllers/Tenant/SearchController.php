@@ -16,7 +16,7 @@ class SearchController extends Controller
         $term = request('q', '');
 
         if ($term = strtolower($term)) {
-            $branchesPrefix = implode($this->branches()->pluck('code')->toArray(), '|');
+            $branchesPrefix = implode($this->getBranches()->pluck('code')->toArray(), '|');
             preg_match("/($branchesPrefix)(\\d+)/i", $term, $matches);
             $qBranchCode = @$matches[1];
             $qClientId = @$matches[2];
@@ -27,10 +27,10 @@ class SearchController extends Controller
             $tracking = false;
             
             if ($qBranchCode && $qClientId) {
-                $results = $tenant->clients()->with('boxes')->where('id', $qClientId);
+                $results = $tenant->clients()->with('branch')->where('manual_id', $qClientId);
                 $client = true;
             } else {
-                $results = $tenant->clients()->with('boxes')->where('org_name', 'like', "%$term%")
+                $results = $tenant->clients()->with('branch')->where('org_name', 'like', "%$term%")
                     ->orWhere('full_name', 'like', "%$term%");
                 $client = true;
 
@@ -60,18 +60,18 @@ class SearchController extends Controller
                         if ($qType && $qId) {
                             switch ($qType) {
                                 case 'c':
-                                    $results = $tenant->clients()->with('boxes')->where('id', $qId);
+                                    $results = $tenant->clients()->with('branch')->where('manual_id', $qId);
                                     $client = true;
                                     break;
                                 case 'i':
                                     $results = $tenant->invoices()->with(['client' => function ($query) {
-                                        $query->with('boxes')->select(['id', 'first_name', 'last_name', 'org_name']);
+                                        $query->with('branch')->select(['id', 'first_name', 'last_name', 'org_name']);
                                     }])->where('id', $qId);
                                     $inv = true;
                                     break;
                                 case 'w':
                                     $results = $tenant->warehouses()->with(['client' => function ($query) {
-                                        $query->with('boxes')->select(['id', 'first_name', 'last_name', 'org_name']);
+                                        $query->with('branch')->select(['id', 'first_name', 'last_name', 'org_name']);
                                     },
                                     'fromBranch', 'toBranch',
                                     ])->where('id', $qId);

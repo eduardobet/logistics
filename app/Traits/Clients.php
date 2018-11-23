@@ -4,17 +4,17 @@ namespace Logistics\Traits;
 
 trait Clients
 {
-    public function client($id)
+    public function getClient($id)
     {
         return $this->client()->where('id', $id);
     }
 
-    public function clients()
+    public function getClients()
     {
         $tenant = $this->getTenant();
 
         return cache()->rememberForever("clients.tenant.{$tenant->id}", function () use ($tenant) {
-            return $tenant->clients()->with('boxes')->where('status', 'A')->get();
+            return $tenant->clients()->with('branch')->where('status', 'A')->get();
         });
     }
 }

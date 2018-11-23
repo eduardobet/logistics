@@ -121,7 +121,7 @@
                             data-vol_price='{{ $client->vol_price }}'  data-real_price='{{ $client->real_price }}'
                             {{ (isset($warehouse) && $warehouse->client_id == $client->id) || old('client_id') == $client->id ? " selected": null }}
                         >
-                        [{{ $client->boxes->first()->branch_code }}{{ $client->id }}] {{ $client->full_name }}
+                        [{{ $client->branch->code }}{{ $client->manual_id }}] {{ $client->full_name }}
                         </option>
                     @endforeach
                 </select>    

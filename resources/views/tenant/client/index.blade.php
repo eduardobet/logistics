@@ -27,6 +27,31 @@
 
         <div class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
 
+        <div class="row mg-b-10">
+            
+            <div class="col-lg-10">
+                <div class="input-group">
+                    <select name="branch_id" id="branch_id" class="form-control select2" style="width: 100%">
+                        <option value="">{{ __('Branch') }}</option>
+                        @foreach ($branches as $aBranch)
+                        <option value="{{ $aBranch->id }}"{{ $aBranch->id == $branch->id ? " selected" : null }}>
+                            {{ $aBranch->name }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            
+            <div class="col-lg-2">
+                <div class="input-group">
+                    <button class="btn" type="button" id="btn-filter">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+
         <div class="table-responsive-sm">
             <table class="table table-hover mg-b-0">
               <thead>
@@ -45,16 +70,16 @@
                   @foreach ($clients as $client)
                       
                     <tr>
-                      <th scope="row">{{ $client->id }}</th>
+                      <th scope="row">{{ $client->manual_id }}</th>
                       <td>{{ $client->first_name }}</td>
                       <td>{{ $client->last_name }}</td>
-                      <td>{{ $client->boxes->first()->branch_code }}{{ $client->id }}</td>
+                      <td>{{ $client->branch ? $client->branch->code : null }}{{ $client->manual_id }}</td>
                       <td>{{ $client->email }}</td>
                       <td>{{ $client->telephones }}</td>
                       <td class="text-center">
 
                         @can('edit-client')
-                          <a href="{{ route('tenant.client.edit', [$tenant->domain, $client->id]) }}"><i class="fa fa-pencil-square-o"></i></a>
+                          <a href="{{ $client->branch->id != $branch->id ? '#' : route('tenant.client.edit', [$tenant->domain, $client->id]) }}"><i class="fa fa-pencil-square-o"></i></a>
                           &nbsp;&nbsp;&nbsp;&nbsp;
                         @endcan
                         <a href="#!" class="resend-email-box" data-url="{{ route('tenant.client.welcome.email.resend', $tenant->domain) }}"
@@ -72,7 +97,7 @@
 
             <div id="result-paginated" class="mg-t-25">
                 <hr>
-                {{ $clients->links() }}
+                {{ $clients->appends(['branch_id' => request('branch_id') ])->links() }}
             </div>
 
           </div>
@@ -123,6 +148,17 @@
           }
 
         });
+        
+
+        // searching
+        $("#branch_id").select2({width: 'resolve', allowClear: true, 'placeholder': "{{ __('Branch') }}"});
+        $("#branch_id").change();
+
+        $("#btn-filter").click(function() {
+            var branch = $("#branch_id").val();
+            window.location = `{{ route('tenant.client.list', $tenant->domain) }}?branch_id=${branch}`;
+        });
+
       });
     </script>
 @endsection

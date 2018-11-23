@@ -40,7 +40,7 @@ class MisidentifiedController extends Controller
         return view('tenant.misidentified-package.index', [
             'misidentified_packages' => $misidentified,
             'searching' => $searching,
-            'branches' => $this->branches()->pluck('name', 'id'),
+            'branches' => $this->getBranches()->pluck('name', 'id'),
         ]);
     }
 
@@ -54,7 +54,7 @@ class MisidentifiedController extends Controller
         $tenant = $this->getTenant();
 
         return view('tenant.misidentified-package.create', [
-            'branches' => $this->branches()->pluck('name', 'id'),
+            'branches' => $this->getBranches()->pluck('name', 'id'),
         ]);
     }
 

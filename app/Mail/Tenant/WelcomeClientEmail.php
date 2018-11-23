@@ -49,8 +49,7 @@ class WelcomeClientEmail extends Mailable
      */
     public function build()
     {
-        $box = $this->client->boxes()->active()->get()->first();
-        $branch = $box->branch;
+        $branch = $this->client->branch;
         $addresses = $this->tenant->remoteAddresses;
         $air = $addresses->where('type', 'A')->first();
         $maritime = $addresses->where('type', 'M')->first();
@@ -62,7 +61,7 @@ class WelcomeClientEmail extends Mailable
             ->with([
                 'tenant' => $this->tenant,
                 'client' => $this->client,
-                'box_code' => $box->branch_code,
+                'box_code' => $branch->code,
                 'air' => $air,
                 'maritime' => $maritime,
                 'branch' => $branch,

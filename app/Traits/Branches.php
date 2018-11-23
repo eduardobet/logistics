@@ -4,12 +4,12 @@ namespace Logistics\Traits;
 
 trait Branches
 {
-    public function branch($id)
+    public function getBranch($id)
     {
         return $this->branches()->where('id', $id);
     }
 
-    public function branches()
+    public function getBranches()
     {
         $tenant = $this->getTenant();
 

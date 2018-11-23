@@ -5,7 +5,7 @@
             <h5 class="mb-1">
             {{ ['A' => __('Air'), 'M' => __('Maritime'), ][$result->type] }}
             </h5>
-            <small> {{ $result->client->full_name }} / {{ $result->client->boxes->first()->branch_code }}{{ $result->id }}</small>
+            <small> {{ $result->client->full_name }} / {{ $result->branch ? $result->branch->code : null }}{{ $result->id }}</small>
             </div>
             <p class="mb-1">[{{ $result->fromBranch->code }}] {{ $result->fromBranch->name }}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

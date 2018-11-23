@@ -122,8 +122,8 @@ trait WarehouseHasRelationShips
             ]);
         }
 
-        $box = $client->boxes()->active()->first();
-        $this->toBranch->notify(new WarehouseActivity($this->created_at, $this->id, "{$box->branch_code}{$client->id}", $invoice->id, auth()->user()->full_name));
+        $branch = $client->branch;
+        $this->toBranch->notify(new WarehouseActivity($this->created_at, $this->id, "{$branch->code}{$client->manual_id}", $invoice->id, auth()->user()->full_name));
 
         if ($invoice) {
             dispatch(new SendInvoiceCreatedEmail($tenant, $invoice));
@@ -138,7 +138,8 @@ trait WarehouseHasRelationShips
             $total = $input->real_weight * $input->real_price;
         } elseif ($request->has('chk_t_volumetric_weight')) {
             $total = $input->vol_weight * $input->vol_price;
-        } elseif ($request->has('chk_t_cubic_feet')) {}
+        } elseif ($request->has('chk_t_cubic_feet')) {
+        }
 
         return $total;
     }

@@ -11,6 +11,11 @@ trait ClientHasRelationShips
         return $this->hasMany(\Logistics\DB\Tenant\Box::class);
     }
 
+    public function branch()
+    {
+        return $this->belongsTo(\Logistics\DB\Tenant\Branch::class);
+    }
+
     public function extraContacts()
     {
         return $this->hasMany(\Logistics\DB\Tenant\ExtraContact::class);
@@ -89,8 +94,8 @@ trait ClientHasRelationShips
                 ->whereStatus('A')
                 ->whereNotNull('email')
                 ->orderBy('first_name')
-                ->withAndWhereHas('boxes', function ($query) use ($branchId) {
-                    $query->where('branch_id', '=', $branchId)->where('status', '=', 'A');
+                ->withAndWhereHas('branch', function ($query) use ($branchId) {
+                    $query->where('id', '=', $branchId)->where('status', '=', 'A');
                 })->get();
     }
 

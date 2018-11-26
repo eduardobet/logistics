@@ -59,6 +59,9 @@
       $(function() {
           $("input[name='email']").blur(function() {
               if ($.trim(this.value)) this.value = this.value.toLowerCase();
+          })
+          .focus(function(){
+              if ($.trim(this.value)) this.select();
           });
 
           $("#frm-client").submit(function(e) {

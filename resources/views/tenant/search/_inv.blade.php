@@ -21,7 +21,7 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;
             @endcan
 
-            <a title="{{ __('Email') }}" href="#!" class="email-invoice"
+            <a title="{{ __('Email') }}" href="#!" class="email-invoice{{ $tenant->email_allowed_dup===$result->email ? '-nope' : null }}"
                 data-toggle="tooltip" data-placement="top" title="{{ __('Resend invoice email') }}" data-invoice-id="{{ $result->id }}"
                 data-url="{{ route('tenant.invoice.invoice.resend', [$tenant->domain, $result->id, ]) }}"
                 data-toggle="tooltip" data-placement="top" title="{{ __('Resend invoice email') }}" data-invoice-id="{{ $result->id }}"

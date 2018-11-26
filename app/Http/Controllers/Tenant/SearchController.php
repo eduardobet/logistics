@@ -31,7 +31,8 @@ class SearchController extends Controller
                 $client = true;
             } else {
                 $results = $tenant->clients()->with('branch')->where('org_name', 'like', "%$term%")
-                    ->orWhere('full_name', 'like', "%$term%");
+                    ->orWhere('full_name', 'like', "%$term%")
+                    ->orWhere('email', 'like', "%$term%");
                 $client = true;
 
                 if (!$results->count()) {
@@ -65,13 +66,13 @@ class SearchController extends Controller
                                     break;
                                 case 'i':
                                     $results = $tenant->invoices()->with(['client' => function ($query) {
-                                        $query->with('branch')->select(['id', 'first_name', 'last_name', 'org_name']);
+                                        $query->with('branch')->select(['id', 'first_name', 'last_name', 'org_name', 'email']);
                                     }])->where('id', $qId);
                                     $inv = true;
                                     break;
                                 case 'w':
                                     $results = $tenant->warehouses()->with(['client' => function ($query) {
-                                        $query->with('branch')->select(['id', 'first_name', 'last_name', 'org_name']);
+                                        $query->with('branch')->select(['id', 'first_name', 'last_name', 'org_name', 'email']);
                                     },
                                     'fromBranch', 'toBranch',
                                     ])->where('id', $qId);

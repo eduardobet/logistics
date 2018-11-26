@@ -35,7 +35,6 @@ class ClientRequest extends AppFormRequest
             'first_name' => 'required|string|between:3,255',
             'last_name' => 'required|string|between:3,255',
             'pid' => 'required|string',
-            'email' => 'required|string|email|max:255|unique:clients',
             'telephones' => 'required|mass_phone',
             'type' => 'required|string|in:C,V,E',
             'org_name' => 'required_if:type,==,E|string|between:3,255',
@@ -52,9 +51,19 @@ class ClientRequest extends AppFormRequest
         ];
 
         if ($this->isEdit()) {
-            $rules['email'] = ['required', 'string', 'email', 'max:255', Rule::unique('clients')->ignore($this->id)];
+            $rules['email'] = ['required', 'string', 'email', 'max:255', ];
+
+            if ($tenant->email_allowed_dup && $this->email !== $tenant->email_allowed_dup) {
+                $rules['email'] = [Rule::unique('clients')->ignore($this->id)];
+            }
 
             $this->redirectRoute = 'tenant.client.edit';
+        } else {
+            $rules['email'] = ['required', 'string', 'email', 'max:255', ];
+
+            if ($tenant->email_allowed_dup && $this->email !== $tenant->email_allowed_dup) {
+                $rules['email'] = [Rule::unique('clients')];
+            }
         }
 
         if ($tenant->migration_mode && $this->isPost()) {

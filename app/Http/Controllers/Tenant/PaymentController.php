@@ -99,7 +99,7 @@ class PaymentController extends Controller
         }
 
         $tenant = $this->getTenant();
-        $invoice = $tenant->invoices()->with(['payments'])->find($request->invoice_id);
+        $invoice = $tenant->invoices()->with(['payments', 'client'])->find($request->invoice_id);
 
         if (!$invoice) {
             return response()->json([
@@ -141,8 +141,9 @@ class PaymentController extends Controller
             if (!$pending) {
                 $invoice->update(['is_paid' => true]);
             }
-
-            dispatch(new SendPaymentCreatedEmail($tenant, $invoice, $payment));
+            if ($invoice->client->email !== $tenant->email_allowed_dup) {
+                dispatch(new SendPaymentCreatedEmail($tenant, $invoice, $payment));
+            }
 
             return response()->json([
                 'error' => false,

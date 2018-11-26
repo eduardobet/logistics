@@ -18,7 +18,7 @@
          </div><!-- slim-pageheader -->
 
         <div class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
-            {!! Form::open(['route' => ['tenant.client.store', $tenant->domain]]) !!}
+            {!! Form::open(['route' => ['tenant.client.store', $tenant->domain], 'id' => 'frm-client']) !!}
                 <input type="hidden" name="branch_id" value="{{ $branch->id }}">
                 <input type="hidden" name="branch_code" value="{{ $branch->code }}">
                 <input type="hidden" name="branch_initial" value="{{ $branch->initial }}">
@@ -60,6 +60,28 @@
           $("input[name='email']").blur(function() {
               if ($.trim(this.value)) this.value = this.value.toLowerCase();
           });
+
+          $("#frm-client").submit(function(e) {
+            var $form = $(this).get(0);
+            if ($form.checkValidity()){
+            
+                swal({
+                    title: '{{__("Are you sure") }}?',                    
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: '{{ __("No") }}',
+                    confirmButtonText: '{{ __("Yes") }}'
+                })
+                .then((result) => {
+                    if (result.value) {
+                        $form.submit();
+                    }
+                });
+            }
+            e.preventDefault();
+          })
       });
     </script>  
 @endsection

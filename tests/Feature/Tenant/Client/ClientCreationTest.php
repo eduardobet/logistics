@@ -85,6 +85,42 @@ class ClientCreationTest extends TestCase
     }
 
     /** @test */
+    public function manual_id_shoul_be_unique_by_branch()
+    {
+        // $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create(['migration_mode' => true, ]);
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+
+        factory(Client::class)->create(['tenant_id' => $tenant->id, 'email' => 'client@company.com', 'branch_id' => $branch->id, 'manual_id' => 1, ]);
+
+
+        $response = $this->actingAs($admin)->post(route('tenant.client.store', $tenant->domain), [
+            'first_name' => 'The',
+            'last_name' => 'Client',
+            'pid' => 'E-8-124926',
+            'email' => 'client33@company.com',
+            'telephones' => '555-5555, 565-5425',
+            'type' => 'E',
+            'org_name' => 'The Org Name',
+            'status' => 'A',
+            'branch_id' => 1,
+            'branch_code' => 'B-CODE',
+            'branch_initial' => 'B-INITIAL',
+            'manual_id' => 1,
+        ]);
+        
+        $response->assertStatus(302);
+        $response->assertRedirect(route('tenant.client.create', $tenant->domain));
+
+        $response->assertSessionHasErrors([
+            'manual_id',
+        ]);
+    }
+
+    /** @test */
     public function it_successfully_creates_the_client()
     {
         $this->withoutExceptionHandling();

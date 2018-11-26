@@ -206,5 +206,6 @@ return [
         'remote_addresses.*.status' => __('Status'),
         'logo' => __('Logo'),
         'avatar' => __('Avatar'),
+        'manual_id' => __('Casillero'),
     ],
 ];

@@ -86,6 +86,11 @@ trait ClientHasRelationShips
         ]);
     }
 
+    public function getManualIdDspAttribute()
+    {
+        return str_pad($this->manual_id, 2, '0', STR_PAD_LEFT);
+    }
+
     public function getClientsByBranch($branchId)
     {
         $tenant = $this->getTenant();

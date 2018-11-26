@@ -283,7 +283,7 @@
                     data-pay_volume='${obj.pay_volume}' data-special_rate='${obj.special_rate}' data-special_maritime='${obj.special_maritime}'
                      data-vol_price='${obj.vol_price}'  data-real_price='${obj.real_price}'
                 >
-                   [${box}${obj.id}] ${obj.full_name}
+                   [${box}${obj.manual_id_dsp}] ${obj.full_name}
                 </option>`;
         }
         

@@ -6,7 +6,7 @@ trait Branches
 {
     public function getBranch($id)
     {
-        return $this->branches()->where('id', $id);
+        return $this->getBranches()->where('id', $id);
     }
 
     public function getBranches()

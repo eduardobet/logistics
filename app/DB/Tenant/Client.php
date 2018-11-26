@@ -40,7 +40,7 @@ class Client extends Model
      *
      * @var array
      */
-    protected $appends = ['full_name'];
+    protected $appends = ['full_name', 'manual_id_dsp'];
 
     /**
      * Boot the model

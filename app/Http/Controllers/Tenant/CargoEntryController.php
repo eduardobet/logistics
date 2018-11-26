@@ -56,7 +56,7 @@ class CargoEntryController extends Controller
         return view('tenant.warehouse.cargo-entry.list', [
             'cargo_entries' => $cargoEntries,
             'searching' => $searching,
-            'branches' => $this->branches(),
+            'branches' => $this->getBranches(),
         ]);
     }
 

@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-use Illuminate\Notifications\Messages\MailMessage;
-
 class InvoiceActivity extends Notification implements ShouldQueue
 {
     use Queueable;
@@ -51,8 +49,8 @@ class InvoiceActivity extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         $client = $this->invoice->client;
-        $box = $client->boxes()->active()->first();
-        $box = $box->branch_code .''.$client->id;
+        $branch = $client->branch;
+        $box = $branch->code .''.$client->manual_id;
 
         return [
             'title' => $this->userFullname . ' ' . __('created an invoice'),

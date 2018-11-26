@@ -6,6 +6,7 @@ use Logistics\DB\Tenant\Client;
 $factory->define(Client::class, function (Faker $faker) {
     return [
         "tenant_id" => 1,
+        "branch_id" => 1,
         "created_by_code" => null,
         'first_name' => ($fName = $faker->unique()->firstname),
         'last_name' => ($lName = $faker->unique()->lastname),

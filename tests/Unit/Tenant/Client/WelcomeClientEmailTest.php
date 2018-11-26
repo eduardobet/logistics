@@ -29,7 +29,7 @@ class WelcomeClientEmailTest extends TestCase
         ]);
 
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
-        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, ]);
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'manual_id' => 1, ]);
         $box = factory(Box::class)->create([
             'tenant_id' => $tenant->id,
             'client_id' => $client->id,

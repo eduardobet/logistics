@@ -25,6 +25,37 @@
 
         <div  class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
 
+        <div class="row mg-b-10">
+            
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="{{ __('Name') }} / ID" value="" id="filter">
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="input-group">
+                    <select name="branch_id" id="branch_id" class="form-control select2" style="width: 100%">
+                        <option value="">{{ __('Branch') }}</option>
+                        @foreach ($branches as $aBranch)
+                        <option value="{{ $aBranch->id }}"{{ $aBranch->id == $branch->id ? " selected" : null }}>
+                            {{ $aBranch->name }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            
+            <div class="col-lg-2">
+                <div class="input-group">
+                    <button class="btn" type="button" id="btn-filter">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+
         <div class="table-responsive-sm">
             <table class="table table-hover mg-b-0">
               <thead>
@@ -69,20 +100,15 @@
               </tbody>
             </table>
 
-            <div id="result-paginated" class="mg-t-25">
-                {{ $employees->links() }}
-            </div>
+            @if ($searching == 'N')
+              <div id="result-paginated" class="mg-t-25">
+                  {{ $employees->links() }}
+              </div>
+            @endif
+
           </div>
 
         </div>
-
-
-
-
-
-
-
-
 
       </div><!-- container -->
 </div><!-- slim-mainpanel -->
@@ -128,6 +154,18 @@
           }
 
         });
+
+
+        // searching
+        $("#branch_id").select2({width: 'resolve', allowClear: true, 'placeholder': "{{ __('Branch') }}"});
+        $("#branch_id").change();
+
+        $("#btn-filter").click(function() {
+            var filter = $.trim($("#filter").val());
+            var branch = $("#branch_id").val();
+            window.location = `{{ route('tenant.admin.employee.list', $tenant->domain) }}?filter=${filter}&branch_id=${branch}`;
+        });
+
       });
     </script>
 @endsection

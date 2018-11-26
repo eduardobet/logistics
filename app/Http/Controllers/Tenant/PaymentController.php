@@ -32,7 +32,7 @@ class PaymentController extends Controller
             'searching' => $searching,
             'branch' => $branch,
             'sign' => '$',
-            'branches' => $this->branches(),
+            'branches' => $this->getBranches(),
         ]);
     }
 

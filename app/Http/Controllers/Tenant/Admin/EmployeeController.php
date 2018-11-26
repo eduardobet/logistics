@@ -16,6 +16,7 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = $this->getTenant()->employees()->with('branches');
+        $searching = 'N';
 
         if ($filter = request('filter')) {
             if (is_numeric($filter)) {
@@ -23,11 +24,25 @@ class EmployeeController extends Controller
             } else {
                 $employees = $employees->where('full_name', 'like', "%{$filter}%");
             }
+
+            $searching = 'Y';
+        }
+
+        if ($branch = request('branch_id')) {
+            $employees = $employees->whereHas('branches', function ($query) use ($branch) {
+                $query->where('id', $branch);
+            });
+            
+            $searching = 'Y';
         }
 
         $employees = $employees->paginate(15);
 
-        return view('tenant.employee.index', compact('employees'));
+        return view('tenant.employee.index', [
+            'branches' => $this->getBranches(),
+            'employees' => $employees,
+            'searching' => $searching,
+        ]);
     }
 
     public function create()
@@ -35,7 +50,7 @@ class EmployeeController extends Controller
         return view('tenant.employee.create', [
             'positions' => $this->positions(),
             'permissions' => $this->permissions(),
-            'branches' => $this->branches(),
+            'branches' => $this->getBranches(),
             'employee' => new User(),
         ]);
     }
@@ -89,7 +104,7 @@ class EmployeeController extends Controller
             'employee' => $employee,
             'positions' => $this->positions(),
             'permissions' => $this->permissions(),
-            'branches' => $this->branches(),
+            'branches' => $this->getBranches(),
         ]);
     }
 

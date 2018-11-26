@@ -5,7 +5,6 @@ namespace Logistics\DB\Tenant;
 use Illuminate\Support\Fluent;
 use Illuminate\Database\Eloquent\Model;
 use Logistics\Traits\WarehouseHasRelationShips;
-use Logistics\Notifications\Tenant\WarehouseActivity;
 
 class Warehouse extends Model
 {

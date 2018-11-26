@@ -30,7 +30,7 @@ class InvoiceEmailTest extends TestCase
 
         $this->actingAs($admin);
 
-        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'pay_volume' => true, 'vol_price' => 2.00]);
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'pay_volume' => true, 'vol_price' => 2.00, 'manual_id' => 1, ]);
 
         $box = factory(Box::class)->create([
             'tenant_id' => $tenant->id,
@@ -83,7 +83,7 @@ class InvoiceEmailTest extends TestCase
         $this->assertContains("{$branch->ruc} DV {$branch->dv}", $content);
         $this->assertContains("{$branch->address}", $content);
         $this->assertContains("{$branch->telephones}", $content);
-        $this->assertContains("{$client->full_name} / {$box->branch_code}{$client->id}", $content);
+        $this->assertContains("{$client->full_name} / {$box->branch_code}{$client->manual_id}", $content);
         $this->assertContains("{$client->address}", $content);
         $this->assertContains("Telephones: {$client->telephones}", $content);
         $this->assertContains("Invoice date: {$invoice->created_at->format('d-m-Y')}", $content);

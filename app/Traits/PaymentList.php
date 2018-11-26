@@ -40,11 +40,6 @@ trait PaymentList
                         $join->where('invoices.id', '=', $invoiceId);
                     }
                 }
-            })
-            ->join('boxes', function ($join) use ($branch) {
-                $join->on('clients.id', '=', 'boxes.client_id')
-                    ->where('boxes.branch_id', '=', $branch->id)
-                    ->where('boxes.status', '=', 'A');
             });
 
         if (($from = request('from')) && ($to = request('to'))) {
@@ -66,13 +61,13 @@ trait PaymentList
             DB::raw("date_format(payments.created_at, '%d/%m/%Y') as created_at_dsp"),
             DB::raw("concat(clients.first_name, ' ', clients.last_name) as client_full_name"),
             'clients.id as client_id',
-            'boxes.branch_code as client_box',
+            'branches.code as client_box',
             'invoices.branch_id as invoice_branch_id',
-            'branches.name as branch_name', 
+            'branches.name as branch_name',
             'branches.ruc',
             'branches.dv',
             'branches.telephones as branch_telephones',
-            'branches.address as branch_address', 
+            'branches.address as branch_address',
             'branches.initial as branch_initial'
         );
 

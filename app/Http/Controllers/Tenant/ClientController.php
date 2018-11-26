@@ -24,10 +24,19 @@ class ClientController extends Controller
     {
         $tenant = $this->getTenant();
 
-        $clients = $tenant->clients()->with('boxes')->paginate(15);
+        $clients = $tenant->clients()->with('branch');
+        $searching = 'Y';
+
+        if ($branch = request('branch_id')) {
+            $clients = $clients->where('branch_id', $branch);
+            $searching = 'Y';
+        }
+
+        $clients = $clients->paginate(15);
 
         return view('tenant.client.index', [
             'clients' => $clients,
+            'branches' => $this->getBranches(),
         ]);
     }
 
@@ -56,9 +65,17 @@ class ClientController extends Controller
         $client = new \Logistics\DB\Tenant\Client;
 
         if ($tenant->migration_mode && $request->manual_id) {
-            $client->incrementing = false;
-            $client->id = $request->manual_id;
             $client->manual_id = $request->manual_id;
+        } else {
+            $max = $client->where('tenant_id', $tenant->id)
+                ->where('branch_id', $request->branch_id)
+                ->max('manual_id');
+
+            if (!$max) {
+                $max = 0;
+            }
+
+            $client->manual_id = $max + 1;
         }
 
         $client->tenant_id = $tenant->id;
@@ -72,6 +89,7 @@ class ClientController extends Controller
         $client->type = $request->type;
         $client->org_name = $request->org_name;
         $client->status = $request->status;
+        $client->branch_id = $request->branch_id;
 
         // optionals
         $client->country_id = $request->country_id;
@@ -84,11 +102,11 @@ class ClientController extends Controller
         $client->special_maritime = $request->has('special_maritime');
         $client->vol_price = $request->vol_price ? $request->vol_price : null;
         $client->real_price = $request->real_price ? $request->real_price : null;
-        
-        $client->save();
 
-        if ($client) {
-            $client->genBox($request->branch_id, $request->branch_code, $request->branch_initial);
+        $saved = $client->save();
+
+        if ($saved) {
+            $client->fresh()->genBox($request->branch_id, $request->branch_code, $request->branch_initial);
 
             dispatch(new \Logistics\Jobs\Tenant\SendClientWelcomeEmail($tenant, $client));
 
@@ -116,7 +134,7 @@ class ClientController extends Controller
     public function show($domain, $id)
     {
         $client = $this->getTenant()->clients()
-            ->with(['boxes', 'creator', 'editor'])
+            ->with(['branch', 'creator', 'editor'])
             ->findOrFail($id);
 
         return view('tenant.client.show', [
@@ -137,7 +155,7 @@ class ClientController extends Controller
     public function edit($tenant, $id)
     {
         $client = $this->getTenant()->clients()
-            ->with(['boxes','creator', 'editor'])
+            ->with(['branch','creator', 'editor'])
             ->findOrFail($id);
 
         return view('tenant.client.edit', [

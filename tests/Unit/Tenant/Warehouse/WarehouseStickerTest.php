@@ -35,27 +35,28 @@ class WarehouseStickerTest extends TestCase
 
         $country = factory(Country::class)->create();
         $tenant = factory(TenantModel::class)->create();
-        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
-        $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $branchFrom = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch from',  ]);
+        $branchTo = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
         $mailer = factory(Mailer::class)->create(['tenant_id' => $tenant->id, ]);
 
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $admin->branches()->sync([$branch->id]);
-        $admin->branchesForInvoice()->sync([$branch->id,]);
+        $admin->branchesForInvoice()->sync([$branchFrom->id,]);
 
-        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'pay_volume' => true, 'vol_price' => 2.00 ]);
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'pay_volume' => true, 'vol_price' => 2.00, 'branch_id' => $branchTo->id, 'manual_id' => 1, ]);
 
         $box = factory(Box::class)->create([
             'tenant_id' => $tenant->id,
             'client_id' => $client->id,
-            'branch_id' => $branchB->id,
-            'branch_code' => $branchB->code,
+            'branch_id' => $branchTo->id,
+            'branch_code' => $branchTo->code,
         ]);
 
         $warehouse = $tenant->warehouses()->create([
             'type' => 'A',
-            'branch_to' => $branchB->id,
-            'branch_from' => $branch->id,
+            'branch_from' => $branchFrom->id,
+            'branch_to' => $branchTo->id,
             'client_id' => $client->id,
             'mailer_id' => $mailer->id,
             'trackings' => '1234',
@@ -95,14 +96,12 @@ class WarehouseStickerTest extends TestCase
             'real_weight' => 14,
         ]);
 
-
         $response = $this->actingAs($admin)->get(route('tenant.warehouse.print-sticker', [$tenant->domain, $warehouse->id]), []);
-
         $sticker = $response->getContent();
 
         $this->assertContains($mailer->name, $sticker);
-        $this->assertContains($branchB->name, $sticker);
-        $this->assertContains($branchB->address, $sticker);
+        $this->assertContains($branchTo->name, $sticker);
+        $this->assertContains($branchTo->address, $sticker);
 
         // packages details
         $this->assertContains("{$detailA->vol_weight}.00LBS", $sticker);
@@ -112,7 +111,7 @@ class WarehouseStickerTest extends TestCase
         $this->assertContains("{$detailB->length}.0x{$detailB->width}.0x{$detailB->height}.0", $sticker);
         $this->assertContains("({$detailB->qty})", $sticker);
 
-        $this->assertContains("{$box->branch_code}{$client->id} / {$client->full_name}      \${$invoice->total}.0", $sticker);
+        $this->assertContains("{$box->branch_code}{$client->manual_id} / {$client->full_name}      \${$invoice->total}.0", $sticker);
 
         $this->assertContains("{$warehouse->id}", $sticker);
         $this->assertContains("{$country->iata}", $sticker);

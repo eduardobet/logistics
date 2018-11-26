@@ -55,6 +55,7 @@ class ResetPwdNotification extends Notification implements ShouldQueue
         );
 
         return (new MailMessage)
+            ->from($tenant->mail_from_address, $tenant->mail_from_name)
             ->subject(__('Password reset request', [], $lang))
             ->line(__('You are receiving this email because we received a password reset request for your account.', [], $lang))
             ->line(__('The link expires in :time', ['time' => '1 ' . __('Hour') ]))

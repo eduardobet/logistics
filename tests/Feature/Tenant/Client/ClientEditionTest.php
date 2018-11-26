@@ -75,15 +75,14 @@ class ClientEditionTest extends TestCase
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
-        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
-        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'email' => 'client@company.com', ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id]);
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'email' => 'client@company.com', 'manual_id' => 1, ]);
 
         $admin->branches()->sync([$branch->id]);
 
         \Gate::define('edit-client', function ($admin) {
             return true;
         });
-
 
         $response = $this->actingAs($admin)->get(route('tenant.client.edit', [ $tenant->domain, $client->id]));
         $response->assertStatus(200);

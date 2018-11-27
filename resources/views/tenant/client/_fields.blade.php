@@ -136,14 +136,21 @@
         <div class="row">
             <div class="col-lg-3">
                 <div class="input-group">
+                    <?php
+                        $volPrice = null; $checkit = null;
+                        if (isset($mode) && $mode==='create') {$volPrice = $branch->vol_price; $checkit = true;}
+                        //else  if (isset($mode) && $mode==='edit' && !$client->vol_price ) {$volPrice = $client->branch->vol_price; $checkit = true;}
+                        else {$volPrice = $client->vol_price; $checkit = $client->pay_volume;}
+                    ?>
+
                     <label class="ckbox">
-                        {!! Form::checkbox('pay_volume', null, null, ['id' => 'pay_volume', ]) !!} <span>{{ __('Pay by volume') }}</span>
+                        {!! Form::checkbox('pay_volume', null, $checkit, ['id' => 'pay_volume', 'data-volprice' => $volPrice  ]) !!} <span>
+                            {{ __('Pay by volume') }}
+                        </span>
                     </label>
                     
-                    @if ($user->isAdmin())
                     &nbsp;
-                    {!! Form::text('vol_price', null, ['class' => 'form-control form-control-sm', 'placeholder' => __('Vol Price'), ]) !!}
-                    @endif
+                    {!! Form::text('vol_price', $volPrice , ['id' => 'vol_price', 'class' => 'form-control form-control-sm', 'placeholder' => __('Vol Price'), ]) !!}
                 </div>
             </div>
 
@@ -152,10 +159,9 @@
                     <label class="ckbox">
                         {!! Form::checkbox('special_rate', null, null, ['id' => 'special_rate', ]) !!} <span>{{ __('Special rate') }}</span>
                     </label>
-                    @if ($user->isAdmin())
+
                     &nbsp;
                     {!! Form::text('real_price', null, ['class' => 'form-control form-control-sm', 'placeholder' => __('Real Price'), ]) !!}
-                    @endif
                 </div>
             </div>
 
@@ -199,7 +205,6 @@
     </div><!-- tab extra-contacts -->
 
 </div><!-- tab-content -->
-
 
 @if ($mode != 'show')
 <div class="row mg-t-25 justify-content-between">

@@ -17,7 +17,7 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;
             @endcan
 
-            <a href="#!" class="resend-email-box" data-url="{{ route('tenant.client.welcome.email.resend', $tenant->domain) }}"
+            <a href="#!" class="resend-email-box{{ $tenant->email_allowed_dup===$result->email ? '-nope' : null }}" data-url="{{ route('tenant.client.welcome.email.resend', $tenant->domain) }}"
             data-toggle="tooltip" data-placement="top" title="{{ __('Resend welcome email') }}" data-client-id="{{ $result->id }}"
             >
                 <i class="fa fa-envelope"></i>

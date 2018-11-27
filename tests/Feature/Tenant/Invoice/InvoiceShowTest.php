@@ -9,7 +9,6 @@ use Logistics\DB\Tenant\Branch;
 use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Logistics\Jobs\Tenant\SendInvoiceCreatedEmail;
 
 class InvoiceShowTest extends TestCase
 {

@@ -32,7 +32,7 @@ class ClientCreationTest extends TestCase
     {
         // $this->withoutExceptionHandling();
 
-        $tenant = factory(TenantModel::class)->create();
+        $tenant = factory(TenantModel::class)->create(['email_allowed_dup' => '', ]);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
 
         $response = $this->actingAs($admin)->post(route('tenant.client.store', $tenant->domain), [
@@ -42,6 +42,7 @@ class ClientCreationTest extends TestCase
             'address' => 'AA',
             'vol_price' => 'XX',
             'real_price' => 'XX',
+            'email' => 'XX',
         ]);
         $response->assertStatus(302);
         $response->assertRedirect(route('tenant.client.create', $tenant->domain));
@@ -117,6 +118,41 @@ class ClientCreationTest extends TestCase
 
         $response->assertSessionHasErrors([
             'manual_id',
+        ]);
+    }
+
+    /** @test */
+    public function email_is_unique_only_when_it_defers_from_predefined_one()
+    {
+        // $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create(['migration_mode' => true, ]);
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+
+        factory(Client::class)->create(['tenant_id' => $tenant->id, 'email' => 'client0@company.com', 'branch_id' => $branch->id, 'manual_id' => 1, ]);
+
+        $response = $this->actingAs($admin)->post(route('tenant.client.store', $tenant->domain), [
+            'first_name' => 'The',
+            'last_name' => 'Client',
+            'pid' => 'E-8-124926',
+            'email' => 'client0@company.com',
+            'telephones' => '555-5555, 565-5425',
+            'type' => 'E',
+            'org_name' => 'The Org Name',
+            'status' => 'A',
+            'branch_id' => 1,
+            'branch_code' => 'B-CODE',
+            'branch_initial' => 'B-INITIAL',
+            'manual_id' => 10,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('tenant.client.create', $tenant->domain));
+
+        $response->assertSessionHasErrors([
+            'email',
         ]);
     }
 
@@ -441,5 +477,52 @@ class ClientCreationTest extends TestCase
 
         $this->assertCount(1, $boxes->where('status', 'A'));
         $this->assertCount(1, $boxes->where('status', 'I'));
+    }
+
+    /** @test */
+    public function the_client_does_not_receive_the_welcome_email_if_its_email_is_the_same_as_the_allowed_dup_one()
+    {
+        $this->withoutExceptionHandling();
+
+        Queue::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+
+        $tenant->remoteAddresses()->createMany([
+            ['type' => 'A', 'address' => '8450 NW 70 TH ST MIAMI, FLORIDA 33166-2687', 'telephones' => '+1(786)3252841', 'status' => 'A', ],
+            ['type' => 'M', 'address' => '8454 NW 70 TH ST MIAMI, FLORIDA 33166', 'telephones' => '+1(786)3252841', 'status' => 'A', ],
+        ]);
+
+        \Gate::define('create-client', function ($admin) {
+            return true;
+        });
+
+        $response = $this->actingAs($admin)->get(route('tenant.client.create', $tenant->domain));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.client.create');
+
+        $response = $this->actingAs($admin)->post(route('tenant.client.store', $tenant->domain), [
+            'first_name' => 'The',
+            'last_name' => 'Client',
+            'pid' => 'E-8-124926',
+            'email' => 'admin@sealcargotrack.com',
+            'telephones' => '555-5555, 565-5425',
+            'type' => 'E',
+            'org_name' => 'The Org Name',
+            'status' => 'A',
+            'branch_id' => 1,
+            'branch_code' => 'B-CODE',
+            'branch_initial' => 'B-INITIAL',
+        ]);
+
+        $response->assertRedirect(route('tenant.client.list', $tenant->domain));
+        $response->assertSessionHas(['flash_success']);
+
+        $client = $tenant->clients->fresh()->first();
+
+        Queue::assertNotPushed(SendClientWelcomeEmail::class);
     }
 }

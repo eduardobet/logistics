@@ -12,7 +12,6 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Logistics\Notifications\Tenant\WarehouseActivity;
 
 class WarehouseCreationTest extends TestCase
 {
@@ -142,7 +141,7 @@ class WarehouseCreationTest extends TestCase
             'i_using' => 'V',
         ]);
 
-        tap($branchB->invoices->first()->details->first(), function ($detail) use($client) {
+        tap($branchB->invoices->first()->details->first(), function ($detail) use ($client) {
             $this->assertEquals($detail->invoice_id, 1);
             $this->assertEquals($detail->qty, 1);
             $this->assertEquals($detail->type, 1);
@@ -156,7 +155,7 @@ class WarehouseCreationTest extends TestCase
             $this->assertEquals($detail->total, $client->vol_price * $detail->vol_weight);
         });
 
-        tap($branchB->invoices->first()->details->last(), function ($detail) use($client) {
+        tap($branchB->invoices->first()->details->last(), function ($detail) use ($client) {
             $this->assertEquals($detail->invoice_id, 1);
             $this->assertEquals($detail->qty, 1);
             $this->assertEquals($detail->type, 2);

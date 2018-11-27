@@ -170,7 +170,9 @@
                     $("#p_amount_paid").attr('max', data.pending);
                     $('#modal-payment').modal('hide');
 
-                    if (!data.pending) $("#create-payment").prop('disabled', true)
+                    var p = parseFloat(data.pending || 0);
+
+                    if (!p) $("#create-payment").prop('disabled', true)
 
                 } else {
                     swal("", data.msg, "error");

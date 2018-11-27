@@ -230,8 +230,10 @@ select2ize = function($child, items) {
                     $launcher.attr('data-pending', data.pending);
                     $pAmount.val(data.pending).attr('max', data.pending);
                     $baseModal.modal('hide');
+
+                    var p = parseFloat(data.pending || 0);
                     
-                    if (!data.pending) {
+                    if (!p) {
                         $launcher.removeClass('create-payment').addClass('already-paid');
                         $("#status-text-"+$("#p_invoice_id").val()).html('<span class="badge badge-success">{{ __("Paid") }}</span>');
                         $launcher = null

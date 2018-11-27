@@ -77,12 +77,11 @@
                       <td>{{ $client->email }}</td>
                       <td>{{ $client->telephones }}</td>
                       <td class="text-center">
-
                         @can('edit-client')
                           <a href="{{ $client->branch->id != $branch->id ? '#' : route('tenant.client.edit', [$tenant->domain, $client->id]) }}"><i class="fa fa-pencil-square-o"></i></a>
                           &nbsp;&nbsp;&nbsp;&nbsp;
                         @endcan
-                        <a href="#!" class="resend-email-box" data-url="{{ route('tenant.client.welcome.email.resend', $tenant->domain) }}"
+                        <a href="#!" class="resend-email-box{{ $tenant->email_allowed_dup===$client->email ? '-nope' : null }}" data-url="{{ route('tenant.client.welcome.email.resend', $tenant->domain) }}"
                           data-toggle="tooltip" data-placement="left" title="{{ __('Resend welcome email') }}" data-client-id="{{ $client->id }}"
                           >
                           <i class="fa fa-envelope"></i>

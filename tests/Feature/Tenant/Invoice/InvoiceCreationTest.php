@@ -258,4 +258,56 @@ class InvoiceCreationTest extends TestCase
             return $job->invoice->id === $invoice->id;
         });
     }
+
+    /** @test */
+    public function the_client_does_not_receive_an_email_when_his_email_is_the_default_one()
+    {
+        $this->withoutExceptionHandling();
+
+        Queue::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
+
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+        $admin->branchesForInvoice()->sync([$branch->id, ]);
+
+        \Gate::define('create-invoice', function ($admin) {
+            return true;
+        });
+
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'pay_volume' => true, 'vol_price' => 2.00, 'email' => $tenant->email_allowed_dup]);
+
+        $box = factory(Box::class)->create([
+            'tenant_id' => $tenant->id,
+            'client_id' => $client->id,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('tenant.invoice.create', $tenant->domain));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.invoice.create');
+        $response->assertViewHas(['clients', ]);
+
+        $response = $this->actingAs($admin)->post(route('tenant.invoice.store', $tenant->domain), [
+            'branch_id' => $branch->id,
+            'client_id' => $client->id,
+            'total' => 160,
+            'invoice_detail' => [
+                ['qty' => 1, 'type' => 1, 'description' => 'Buying from amazon', 'id_remote_store' => 122452222, 'total' => 100, ],
+                ['qty' => 1, 'type' => 2, 'description' => 'Buying from ebay', 'id_remote_store' => 10448796566, 'total' => 60, ],
+            ],
+
+            //payment
+            'amount_paid' => 80,
+            'payment_method' => 1,
+            'payment_ref' => 'The client paid $80.00',
+        ]);
+
+        $invoice = $client->fresh()->clientInvoices->first();
+
+        Queue::assertNotPushed(SendInvoiceCreatedEmail::class);
+    }
 }

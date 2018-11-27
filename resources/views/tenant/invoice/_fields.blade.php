@@ -19,7 +19,7 @@
 
             &nbsp;&nbsp;
 
-            <button id="resend-invoice" type="button" class="btn btn-sm btn-outline-dark"
+            <button id="resend-invoice{{ $tenant->email_allowed_dup===$invoice->client->email ? '-nope' : null }}" type="button" class="btn btn-sm btn-outline-dark"
                 data-url="{{ route('tenant.invoice.invoice.resend', [$tenant->domain, $invoice->id, ]) }}"
                 data-toggle="tooltip" data-placement="left" title="{{ __('Resend invoice email') }}" data-invoice-id="{{ $invoice->id }}"
                 data-loading-text="<i class='fa fa-spinner fa-spin '></i>"

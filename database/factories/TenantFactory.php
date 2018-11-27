@@ -32,5 +32,7 @@ $factory->define(Tenant::class, function (Faker $faker) {
         'mail_from_name' => env('MAIL_FROM_NAME', 'Premium Rush Shop'),
         'mailgun_domain' => env('MAILGUN_DOMAIN', ''),
         'mailgun_secret' => env('MAILGUN_SECRET', ''),
+
+        'email_allowed_dup' => 'admin@sealcargotrack.com',
     ];
 });

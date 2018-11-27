@@ -10,7 +10,6 @@ use Logistics\DB\Tenant\Client;
 use Illuminate\Support\Facades\Queue;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Logistics\Jobs\Tenant\SendPaymentCreatedEmail;
 
 class PaymentShowTest extends TestCase
 {

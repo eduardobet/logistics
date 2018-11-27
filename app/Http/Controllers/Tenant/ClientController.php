@@ -108,7 +108,9 @@ class ClientController extends Controller
         if ($saved) {
             $client->fresh()->genBox($request->branch_id, $request->branch_code, $request->branch_initial);
 
-            dispatch(new \Logistics\Jobs\Tenant\SendClientWelcomeEmail($tenant, $client));
+            if ($tenant->email_allowed_dup !== $request->email) {
+                dispatch(new \Logistics\Jobs\Tenant\SendClientWelcomeEmail($tenant, $client));
+            }
 
             $client->saveExtraContacts($request, $tenant->id);
 
@@ -210,7 +212,9 @@ class ClientController extends Controller
 
         if ($updated) {
             if ($oldEmail !== $request->email) {
-                dispatch(new \Logistics\Jobs\Tenant\SendClientWelcomeEmail($tenant, $client));
+                if ($tenant->email_allowed_dup !== $request->email) {
+                    dispatch(new \Logistics\Jobs\Tenant\SendClientWelcomeEmail($tenant, $client));
+                }
             }
 
             $client->saveExtraContacts($request, $tenant->id);

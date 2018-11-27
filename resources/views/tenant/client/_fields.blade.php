@@ -61,7 +61,7 @@
             <div class="col-lg-3">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Email') }}: <span class="tx-danger">*</span></label>
-                    {!! Form::email("email", null, ['class' => 'form-control', 'required' => '', 'placeholder' => 'john.doe@server.com' ]) !!}
+                    {!! Form::email("email", isset($mode) && $mode === 'create' && $tenant->email_allowed_dup ? $tenant->email_allowed_dup : null, ['class' => 'form-control', 'required' => '', 'placeholder' => 'john.doe@server.com' ]) !!}
                 </div>
             </div>
 

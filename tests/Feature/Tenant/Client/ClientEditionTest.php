@@ -33,7 +33,7 @@ class ClientEditionTest extends TestCase
     {
         // $this->withoutExceptionHandling();
 
-        $tenant = factory(TenantModel::class)->create();
+        $tenant = factory(TenantModel::class)->create(['email_allowed_dup' => '']);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
 
         $response = $this->actingAs($admin)->patch(route('tenant.client.update', [$tenant->domain, 1]), [
@@ -43,6 +43,7 @@ class ClientEditionTest extends TestCase
             'address' => 'AA',
             'vol_price' => 'XX',
             'real_price' => 'XX',
+            'email' => 'XX',
         ]);
         $response->assertStatus(302);
         $response->assertRedirect(route('tenant.client.edit', [ $tenant->domain, 1]));
@@ -63,6 +64,39 @@ class ClientEditionTest extends TestCase
             'address',
             'vol_price',
             'real_price',
+        ]);
+    }
+
+    /** @test */
+    public function email_is_unique_only_when_it_defers_from_predefined_one()
+    {
+        // $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create(['migration_mode' => true, ]);
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+
+        factory(Client::class)->create(['tenant_id' => $tenant->id, 'email' => 'first@company.com', 'branch_id' => $branch->id, 'manual_id' => 1, ]);
+        factory(Client::class)->create(['tenant_id' => $tenant->id, 'email' => 'client0@company.com', 'branch_id' => $branch->id, 'manual_id' => 2, ]);
+
+        $response = $this->actingAs($admin)->patch(route('tenant.client.update', [$tenant->domain, 2]), [
+            'first_name' => 'The updated',
+            'last_name' => 'Client updated',
+            'pid' => 'E-8-124925',
+            'telephones' => '555-5555',
+            'email' => 'first@company.com',
+            'type' => 'C',
+            'status' => 'I',
+            'branch_id' => 1,
+            'branch_code' => 'B-CODE',
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('tenant.client.edit', [$tenant->domain, 2]));
+
+        $response->assertSessionHasErrors([
+            'email',
         ]);
     }
 
@@ -316,6 +350,48 @@ class ClientEditionTest extends TestCase
         Queue::assertPushed(SendClientWelcomeEmail::class, function ($job) use ($client) {
             return $job->client->id === $client->id;
         });
+    }
+
+    /** @test */
+    public function the_client_does_not_receive_the_welcome_email_if_its_email_is_the_same_as_the_allowed_dup_one()
+    {
+        $this->withoutExceptionHandling();
+
+        Queue::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id,  'email' => $tenant->email_allowed_dup, ]);
+        $box = factory(Box::class)->create([
+            'tenant_id' => $tenant->id,
+            'client_id' => 1,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
+        ]);
+
+        \Gate::define('edit-client', function ($admin) {
+            return true;
+        });
+
+        $admin->branches()->sync([$branch->id]);
+
+        $response = $this->actingAs($admin)->patch(route('tenant.client.update', [$tenant->domain, $client->id]), [
+            'first_name' => 'The updated',
+            'last_name' => 'Client updated',
+            'pid' => 'E-8-124925',
+            'telephones' => '555-5555',
+            'email' => $tenant->email_allowed_dup,
+            'type' => 'C',
+            'status' => 'I',
+            'branch_id' => 1,
+            'branch_code' => 'B-CODE',
+        ]);
+
+        $response->assertRedirect(route('tenant.client.list', $tenant->domain));
+        $response->assertSessionHas(['flash_success']);
+
+        Queue::assertNotPushed(SendClientWelcomeEmail::class);
     }
 
     /** @test */

@@ -116,7 +116,9 @@ class InvoiceController extends Controller
             $tenant->branches->where('id', $request->branch_id)->first()
                    ->notify(new InvoiceActivity($invoice, $payment->id, auth()->user()->full_name));
 
-            dispatch(new SendInvoiceCreatedEmail($tenant, $invoice));
+            if ($invoice->client->email !== $tenant->email_allowed_dup) {
+                dispatch(new SendInvoiceCreatedEmail($tenant, $invoice));
+            }
 
             return redirect()->route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $request->branch_id, ])
                 ->with('flash_success', __('The :what has been created.', ['what' => __('Invoice') ]));
@@ -169,7 +171,7 @@ class InvoiceController extends Controller
     public function edit($domain, $id)
     {
         $tenant = $this->getTenant();
-        $invoice = $tenant->invoices()->with(['details', 'creator', 'editor', 'payments' => function ($payment) {
+        $invoice = $tenant->invoices()->with(['details', 'creator', 'editor', 'client', 'payments' => function ($payment) {
             $payment->with(['creator']);
         }])->findOrFail($id);
 
@@ -215,8 +217,10 @@ class InvoiceController extends Controller
             $payment->payment_method = $request->payment_method;
             $payment->payment_ref = $request->payment_ref;
             $payment->save();
-
-            dispatch(new SendInvoiceCreatedEmail($tenant, $invoice));
+            
+            if ($invoice->client->email !== $tenant->email_allowed_dup) {
+                dispatch(new SendInvoiceCreatedEmail($tenant, $invoice));
+            }
 
             return redirect()->route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $request->branch_id,])
                 ->with('flash_success', __('The :what has been updated.', ['what' => __('Invoice') ]));
@@ -292,7 +296,9 @@ class InvoiceController extends Controller
             return response()->json(['error' => true, 'msg' => __('Not Found.'), ], 404);
         }
 
-        dispatch(new SendInvoiceCreatedEmail($tenant, $invoice));
+        if ($invoice->client->email !== $tenant->email_allowed_dup) {
+            dispatch(new SendInvoiceCreatedEmail($tenant, $invoice));
+        }
 
         return response()->json(['error' => false, 'msg' => __('Success'), ]);
     }

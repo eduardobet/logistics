@@ -196,7 +196,7 @@
 
                     <div class="col-md-3 mg-t-10">
                         <button id="send-to-client" class="btn btn-outline-warning btn-block terminate" data-loading-text="<i class='fa fa-spinner fa-spin '></i>"
-                        {{ $invoice->status == 'I' ? ' disabled' : null }}
+                        {{ $invoice->status == 'I' || $invoice->client->email === $tenant->email_allowed_dup ? ' disabled' : null }}
                         >
                          {{ strtoupper( __('Send to :who', ['who' => __('Client')]) ) }}
                         </button>
@@ -346,7 +346,9 @@
                     $("#p_amount_paid").attr('max', data.pending);
                     $baseModalPayment.modal('hide');
 
-                    if (!data.pending) $launcherPayment.prop('disabled', true);
+                    var p = parseFloat(data.pending || 0);
+
+                    if (!p) $launcherPayment.prop('disabled', true);
                     else $launcherPayment.prop('disabled', false);
 
                 } else {
@@ -458,7 +460,9 @@
                     $("#amount_paid-dsp").html(data.totalPaid);
                     $baseModalPenalize.modal('hide');
 
-                    if (!data.pending) $launcherPenalize.prop('disabled', true);
+                    var p = parseFloat(data.pending || 0);
+
+                    if (!p) $launcherPenalize.prop('disabled', true);
                     else $launcherPenalize.prop('disabled', false);
 
                 } else {

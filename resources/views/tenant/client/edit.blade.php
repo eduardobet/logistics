@@ -61,6 +61,16 @@
           $("input[name='email']").blur(function() {
               if ($.trim(this.value)) this.value = this.value.toLowerCase();
           });
+
+          $("#pay_volume").click(function(){
+              var $self = $(this);
+              var $tmpVP = $("#vol_price");
+              if (!this.checked) {
+                  $tmpVP.val('');
+              } else {
+                 $tmpVP.val($self.data('volprice')); 
+              }
+          });
       });
     </script> 
 @endsection

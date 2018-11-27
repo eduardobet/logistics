@@ -84,7 +84,17 @@
                 });
             }
             e.preventDefault();
-          })
+          });
+
+          $("#pay_volume").click(function(){
+              var $self = $(this);
+              var $tmpVP = $("#vol_price");
+              if (!this.checked) {
+                  $tmpVP.val('');
+              } else {
+                 $tmpVP.val($self.data('volprice')); 
+              }
+          });
       });
     </script>  
 @endsection

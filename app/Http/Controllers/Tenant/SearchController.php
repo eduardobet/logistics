@@ -14,6 +14,8 @@ class SearchController extends Controller
     {
         $tenant = $this->getTenant();
         $term = request('q', '');
+        $cBranch = auth()->user()->currentBranch();
+        $cBranchId = $cBranch->id;
 
         if ($term = strtolower($term)) {
             $branchesPrefix = implode($this->getBranches()->pluck('code')->toArray(), '|');
@@ -26,20 +28,27 @@ class SearchController extends Controller
             $reca = false;
             $tracking = false;
             
-            if ($qBranchCode && $qClientId) {
-                $results = $tenant->clients()->with('branch')->where('manual_id', $qClientId);
+            if ($qBranchCode && $qClientId && $qBranchCode === strtolower($cBranch->code)) {
+                $results = $tenant->clients()
+                    ->where('branch_id', $cBranchId)
+                    ->with('branch')->where('manual_id', $qClientId);
                 $client = true;
             } else {
-                $results = $tenant->clients()->with('branch')->where('org_name', 'like', "%$term%")
+                $results = $tenant->clients()->with('branch')
+                    ->where('branch_id', $cBranchId)
+                    ->where('org_name', 'like', "%$term%")
                     ->orWhere('full_name', 'like', "%$term%")
                     ->orWhere('email', 'like', "%$term%");
                 $client = true;
 
                 if (!$results->count()) {
-                    $data['cargo_entries'] = $tenant->cargoEntries()->with(['branch'])
+                    $data['cargo_entries'] = $tenant->cargoEntries()
+                        ->where('branch_id', $cBranchId)
+                        ->with(['branch'])
                         ->where('trackings', 'like', "%$term%")->get();
 
                     $data['warehouses'] = $tenant->warehouses()
+                        ->where('branch_to', $cBranchId)
                         ->with(['toBranch', 'invoice'])
                         ->where('trackings', 'like', "%$term%")->get();
 
@@ -61,7 +70,9 @@ class SearchController extends Controller
                         if ($qType && $qId) {
                             switch ($qType) {
                                 case 'c':
-                                    $results = $tenant->clients()->with('branch')->where('manual_id', $qId);
+                                    $results = $tenant->clients()
+                                        ->where('branch_id', $cBranchId)
+                                        ->with('branch')->where('manual_id', $qId);
                                     $client = true;
                                     break;
                                 case 'i':
@@ -71,16 +82,20 @@ class SearchController extends Controller
                                     $inv = true;
                                     break;
                                 case 'w':
-                                    $results = $tenant->warehouses()->with(['client' => function ($query) {
-                                        $query->with('branch')->select(['id', 'first_name', 'last_name', 'org_name', 'email']);
-                                    },
+                                    $results = $tenant->warehouses()
+                                        ->where('branch_id', $cBranchId)
+                                        ->with(['client' => function ($query) {
+                                            $query->with('branch')->select(['id', 'first_name', 'last_name', 'org_name', 'email']);
+                                        },
                                     'fromBranch', 'toBranch',
                                     ])->where('id', $qId);
                                     $wh = true;
                                     break;
                                 case 'r':
                                 case 'reca':
-                                    $results = $tenant->cargoEntries()->with(['branch'])->where('id', $qId);
+                                    $results = $tenant->cargoEntries()
+                                        ->where('branch_id', $cBranchId)
+                                        ->with(['branch'])->where('id', $qId);
                                     $reca = true;
                                     break;
                                 default:

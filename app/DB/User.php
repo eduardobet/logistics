@@ -104,6 +104,11 @@ class User extends Authenticatable
         return $this->type === 'A';
     }
 
+    public function isSuperAdmin()
+    {
+        return in_array($this->position, [1, 2]);
+    }
+
     /**
      * Send password reset notification
      *

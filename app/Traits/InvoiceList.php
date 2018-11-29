@@ -13,7 +13,7 @@ trait InvoiceList
     {
         $branch = auth()->user()->currentBranch();
 
-        if ($bId = request('branch_id')) {
+        if (auth()->user()->isSuperAdmin() && $bId = request('branch_id')) {
             $branch = $tenant->branches->find($bId);
         }
 
@@ -43,7 +43,7 @@ trait InvoiceList
         if (request('invoice_type')) {
             if (request('invoice_type') == '1') {
                 $invoices = $invoices->whereNotNull('warehouse_id');
-            }else if (request('invoice_type') == '2') {
+            } elseif (request('invoice_type') == '2') {
                 $invoices = $invoices->whereNull('warehouse_id');
             }
 

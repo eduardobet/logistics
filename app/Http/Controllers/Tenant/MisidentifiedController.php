@@ -20,6 +20,8 @@ class MisidentifiedController extends Controller
     {
         $tenant = $this->getTenant();
 
+        $branch = auth()->user()->currentBranch();
+
         $searching = 'N';
         $misidentified = $tenant->misidentifiedPackages()
             ->with(['toBranch', 'client', 'cargoEntry'])
@@ -30,17 +32,27 @@ class MisidentifiedController extends Controller
             $searching = 'Y';
         }
 
-        if ($branch = request('branch_to')) {
-            $misidentified = $misidentified->where('branch_to', $branch);
-            $searching = 'Y';
+        if (!auth()->user()->isSuperAdmin()) {
+            $misidentified = $misidentified->where('branch_to', $branch->id);
+        } else {
+            if ($branchId = request('branch_id')) {
+                $searching = 'Y';
+                $misidentified = $misidentified->where('branch_to', $branchId);
+            }
         }
 
         $misidentified = $misidentified->paginate(20);
 
+        $branches = $this->getBranches();
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $branches = $branches->where('id', $branch->id);
+        }
+
         return view('tenant.misidentified-package.index', [
             'misidentified_packages' => $misidentified,
             'searching' => $searching,
-            'branches' => $this->getBranches()->pluck('name', 'id'),
+            'branches' => $branches->pluck('name', 'id'),
         ]);
     }
 
@@ -108,8 +120,14 @@ class MisidentifiedController extends Controller
     {
         $tenant = $this->getTenant();
 
+        $misidentified = $tenant->misidentifiedPackages();
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $misidentified = $misidentified->where('branch_to', auth()->user()->currentBranch()->id);
+        }
+
         return view('tenant.misidentified-package.show', [
-            'misidentified_package' => $tenant->misidentifiedPackages()->with('toBranch')->findOrFail($id),
+            'misidentified_package' => $misidentified->with('toBranch')->findOrFail($id),
         ]);
     }
 

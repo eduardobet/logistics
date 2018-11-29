@@ -28,19 +28,24 @@ class InvoiceController extends Controller
     {
         [$invoices, $searching, $branch] = $this->getInvoices($this->getTenant());
 
+        $branches = $this->getBranches();
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $branches = $branches->where('id', auth()->user()->currentBranch()->id);
+        }
+
         return view('tenant.invoice.index', [
             'invoices' => $invoices ,
             'searching' => $searching,
             'branch' => $branch,
             'sign' => '$',
-            'branches' => $this->getBranches(),
+            'branches' => $branches,
         ]);
     }
 
     public function export()
     {
         [$invoices, $searching, $branch] = $this->getInvoices($this->getTenant());
-
 
         $data = [
             'invoices' => $invoices,
@@ -155,7 +160,13 @@ class InvoiceController extends Controller
             'client' => function ($client) {
                 $client->with(['branch']);
             },
-        ])->findOrFail($id);
+        ]);
+        
+        if (!auth()->user()->isSuperAdmin()) {
+            $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+        }
+        
+        $invoice = $invoice->findOrFail($id);
 
         return view('tenant.invoice.show', [
             'invoice' => $invoice,
@@ -173,7 +184,13 @@ class InvoiceController extends Controller
         $tenant = $this->getTenant();
         $invoice = $tenant->invoices()->with(['details', 'creator', 'editor', 'client', 'payments' => function ($payment) {
             $payment->with(['creator']);
-        }])->findOrFail($id);
+        }]);
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+        }
+
+        $invoice = $invoice->findOrFail($id);
 
         return view('tenant.invoice.edit', [
             'clients' => (new Client())->getClientsByBranch(request('branch_id')),
@@ -192,7 +209,13 @@ class InvoiceController extends Controller
     public function update(InvoiceRequest $request, $domain, $id)
     {
         $tenant = $this->getTenant();
-        $invoice = $tenant->invoices()->with('details')->findOrFail($id);
+        $invoice = $tenant->invoices()->with('details');
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+        }
+
+        $invoice = $invoice->findOrFail($id);
 
         $payment = $invoice->payments->where('is_first', true)->first();
 
@@ -213,10 +236,12 @@ class InvoiceController extends Controller
                 ]);
             }
 
-            $payment->amount_paid = $request->amount_paid;
-            $payment->payment_method = $request->payment_method;
-            $payment->payment_ref = $request->payment_ref;
-            $payment->save();
+            if ($request->amount_paid) {
+                $payment->amount_paid = $request->amount_paid;
+                $payment->payment_method = $request->payment_method;
+                $payment->payment_ref = $request->payment_ref;
+                $payment->save();
+            }
             
             if ($invoice->client->email !== $tenant->email_allowed_dup) {
                 dispatch(new SendInvoiceCreatedEmail($tenant, $invoice));
@@ -262,7 +287,14 @@ class InvoiceController extends Controller
     {
         $tenant = $this->getTenant();
         
-        $invoice = $tenant->invoices()->with('details')->findOrFail($id);
+        $invoice = $tenant->invoices()->with('details');
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+        }
+
+        $invoice = $invoice->findOrFail($id);
+
         $payments = $invoice->payments;
 
         $client = $invoice->client()->with('branch')->first();
@@ -290,7 +322,14 @@ class InvoiceController extends Controller
     public function resendInvoice($domain, $invoiceId)
     {
         $tenant = $this->getTenant();
-        $invoice = $tenant->invoices()->with('details')->findOrFail($invoiceId);
+
+        $invoice = $tenant->invoices()->with('details');
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+        }
+
+        $invoice = $invoice->findOrFail($invoiceId);
 
         if (!$invoice) {
             return response()->json(['error' => true, 'msg' => __('Not Found.'), ], 404);
@@ -315,7 +354,13 @@ class InvoiceController extends Controller
         }
 
         $tenant = $this->getTenant();
-        $invoice = $tenant->invoices()->where('is_paid', false)->with(['payments'])->find($request->invoice_id);
+        $invoice = $tenant->invoices()->where('is_paid', false)->with(['payments']);
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+        }
+
+        $invoice = $invoice->find($request->invoice_id);
 
         if (!$invoice) {
             return response()->json([
@@ -352,7 +397,13 @@ class InvoiceController extends Controller
     public function inactive(Request $request)
     {
         $tenant = $this->getTenant();
-        $invoice = $tenant->invoices()->where('is_paid', false)->with(['payments'])->find($request->invoice_id);
+        $invoice = $tenant->invoices()->where('is_paid', false)->with(['payments']);
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+        }
+
+        $invoice = $invoice->find($request->invoice_id);
 
         if (!$invoice) {
             return response()->json([

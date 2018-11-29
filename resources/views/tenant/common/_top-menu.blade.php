@@ -2,7 +2,7 @@
       <div class="container">
         <div class="slim-header-left">
             <?php $type = auth()->check() && auth()->user()->isAdmin() ? 'admin' : 'employee'; ?>
-          <h2 class="slim-logo"><a href="{{ route("tenant.{$type}.dashboard", $tenant->domain) }}">{{ config('app.name', '') }}</a></h2>
+          <h2 class="slim-logo"><a href="{{ route("tenant.{$type}.dashboard", $tenant->domain) }}">{{ config('app.name', '') }} {{ $branch->code }}</a></h2>
 
           <div class="search-box">
             <input type="text" id="q" class="form-control" placeholder="{{ __('Search') }}">

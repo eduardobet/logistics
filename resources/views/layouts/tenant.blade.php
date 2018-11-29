@@ -82,7 +82,7 @@
 
         function doGlobalSearch() {
             var q = $.trim($("#q").val());
-            if (q) window.location = `{{ route('tenant.get.search', $tenant->domain) }}?q=${q}`;
+            if (q) window.location = `{{ route('tenant.get.search', $tenant->domain) }}?q=${q}&cbranch_id={{ $branch->id }}`;
         }
     </script>
     @yield('xtra_scripts')

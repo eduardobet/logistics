@@ -13,7 +13,7 @@ trait WarehouseList
     {
         $branch = auth()->user()->currentBranch();
 
-        if ($bId = request('branch_id')) {
+        if (auth()->user()->isSuperAdmin() && $bId = request('branch_id')) {
             $branch = $tenant->branches->find($bId);
         }
 

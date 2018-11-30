@@ -33,7 +33,9 @@ class DashboardController extends Controller
             'tot_clients' => $this->getClients()->where('branch_id', $branch->id)->count(),
             'tot_invoices' => $this->invoices()->where('branch_id', $branch->id)->count(),
             'last_5_clients' => $this->getClients()->where('branch_id', $branch->id)->sortByDesc('created_at')->take(5),
-            'today_earnings' => $tenant->payments()->whereDate('created_at', '=', date('Y-m-d'))->get()->sum('amount_paid')
+            'today_earnings' => $tenant->payments()->whereHas('invoice', function ($query) use ($branch) {
+                $query->where('branch_id', $branch->id);
+            })->whereDate('created_at', '=', date('Y-m-d'))->get()->sum('amount_paid')
         ]);
     }
     

@@ -56,7 +56,7 @@
                     <select name="branch_id" id="branch_id" class="form-control select2" style="width: 100%">
                         <option value="">{{ __('Branch') }}</option>
                         @foreach ($branches as $aBranch)
-                        <option value="{{ $aBranch->id }}"{{ $aBranch->id == $branch->id ? " selected" : null }}>
+                        <option value="{{ $aBranch->id }}"{{ $aBranch->id == request('branch_id', $branch->id) ? " selected" : null }}>
                             {{ $aBranch->name }}
                         </option>
                         @endforeach

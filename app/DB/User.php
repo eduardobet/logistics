@@ -84,6 +84,11 @@ class User extends Authenticatable
         return $this->belongsToMany(\Logistics\DB\Tenant\Branch::class);
     }
 
+    public function branch()
+    {
+        return $this->belongsTo(\Logistics\DB\Tenant\Branch::class);
+    }
+
     public function company()
     {
         return $this->belongsTo(\Logistics\DB\Tenant\Tenant::class, 'tenant_id', 'id');

@@ -33,7 +33,7 @@ class ClientController extends Controller
 
         $searching = 'N';
 
-        if ($branch = request('branch_id') && auth()->user()->isSuperAdmin()) {
+        if (auth()->user()->isSuperAdmin() && $branch = request('branch_id')) {
             $clients = $clients->where('branch_id', $branch);
             $searching = 'Y';
         }

@@ -50,6 +50,12 @@ class CargoEntry extends Model
         return $this->belongsTo(\Logistics\DB\User::class, 'created_by_code');
     }
 
+    public function scopeWithAndWhereHas($query, $relation, $constraint)
+    {
+        return $query->whereHas($relation, $constraint)
+            ->with([$relation => $constraint]);
+    }
+
     /**
      * Get created at for display.
      *

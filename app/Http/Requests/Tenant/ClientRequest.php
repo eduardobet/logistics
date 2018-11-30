@@ -54,7 +54,7 @@ class ClientRequest extends AppFormRequest
             $rules['email'] = ['required', 'string', 'email', 'max:255', ];
 
             if ($tenant->email_allowed_dup && $this->email !== $tenant->email_allowed_dup) {
-                $rules['email'] = [Rule::unique('clients')->ignore($this->id)];
+                //$rules['email'] = [Rule::unique('clients')->ignore($this->id)];
             }
 
             $this->redirectRoute = 'tenant.client.edit';
@@ -62,7 +62,7 @@ class ClientRequest extends AppFormRequest
             $rules['email'] = ['required', 'string', 'email', 'max:255', ];
 
             if ($tenant->email_allowed_dup && $this->email !== $tenant->email_allowed_dup) {
-                $rules['email'] = [Rule::unique('clients')];
+                //$rules['email'] = [Rule::unique('clients')];
             }
         }
 

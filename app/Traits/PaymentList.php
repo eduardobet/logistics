@@ -58,8 +58,11 @@ trait PaymentList
 
         if (!auth()->user()->isSuperAdmin()) {
             $payments = $payments->whereRaw(' invoices.branch_id = ? ', [$branch->id]);
+        } else {
+            if ($bId = request('branch_id')) {
+                $payments = $payments->whereRaw(' invoices.branch_id = ? ', [$bId]);
+            }
         }
-
 
         $payments = $payments->select(
             'payments.*',

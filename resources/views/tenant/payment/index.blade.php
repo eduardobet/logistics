@@ -116,7 +116,7 @@ select2ize = function($child, items) {
         }
         
         $child.select2('destroy').html(newOptions).prop("disabled", false)
-        .select2({width: 'resolve', placeholder: '{{ __("Client") }}', language: "{{ config('locale.lang') }}"});
+        .select2({width: 'resolve', placeholder: '{{ __("Client") }}', language: "{{ config('locale.lang') }}", allowClear: true});
 }
 </script>
 
@@ -132,7 +132,7 @@ select2ize = function($child, items) {
           todayBtn: 'linked'
         });
 
-        $("#branch_id").select2({width: 'resolve', 'placeholder': "{{ __('Branch') }}"});
+        $("#branch_id").select2({width: 'resolve', 'placeholder': "{{ __('Branch') }}", allowClear: true});
         $("#branch_id").change();
 
         $("#filter").click(function() {

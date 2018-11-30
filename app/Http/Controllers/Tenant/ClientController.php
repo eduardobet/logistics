@@ -24,19 +24,31 @@ class ClientController extends Controller
     {
         $tenant = $this->getTenant();
 
-        $clients = $tenant->clients()->with('branch');
-        $searching = 'Y';
+        $clients = $tenant->clients()
+            ->with('branch');
 
-        if ($branch = request('branch_id')) {
+        if (!auth()->user()->isSuperAdmin()) {
+            $clients = $clients->where('branch_id', auth()->user()->currentBranch()->id);
+        }
+
+        $searching = 'N';
+
+        if ($branch = request('branch_id') && auth()->user()->isSuperAdmin()) {
             $clients = $clients->where('branch_id', $branch);
             $searching = 'Y';
         }
 
         $clients = $clients->paginate(15);
 
+        $branches = $this->getBranches();
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $branches = $branches->where('id', auth()->user()->currentBranch()->id);
+        }
+
         return view('tenant.client.index', [
             'clients' => $clients,
-            'branches' => $this->getBranches(),
+            'branches' => $branches,
         ]);
     }
 
@@ -135,9 +147,13 @@ class ClientController extends Controller
      */
     public function show($domain, $id)
     {
-        $client = $this->getTenant()->clients()
-            ->with(['branch', 'creator', 'editor'])
-            ->findOrFail($id);
+        $client = $this->getTenant()->clients();
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $client = $client->where('branch_id', auth()->user()->currentBranch()->id);
+        }
+
+        $client = $client->with(['branch', 'creator', 'editor'])->findOrFail($id);
 
         return view('tenant.client.show', [
             'client' => $client,
@@ -156,9 +172,13 @@ class ClientController extends Controller
      */
     public function edit($tenant, $id)
     {
-        $client = $this->getTenant()->clients()
-            ->with(['branch','creator', 'editor'])
-            ->findOrFail($id);
+        $client = $this->getTenant()->clients();
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $client = $client->where('branch_id', auth()->user()->currentBranch()->id);
+        }
+
+        $client = $client->with(['branch','creator', 'editor'])->findOrFail($id);
 
         return view('tenant.client.edit', [
             'client' => $client,
@@ -178,7 +198,14 @@ class ClientController extends Controller
     public function update(ClientRequest $request, $tenant, $id)
     {
         $tenant = $this->getTenant();
-        $client =$tenant->clients()->findOrFail($id);
+        $client = $tenant->clients();
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $client = $client->where('branch_id', auth()->user()->currentBranch()->id);
+        }
+
+        $client = $client->findOrFail($id);
+
         $oldEmail = $client->email;
 
         $client->updated_by_code = auth()->id();
@@ -257,7 +284,13 @@ class ClientController extends Controller
     public function deleteExtraContact(Request $request)
     {
         $tenant = $this->getTenant();
-        $client =$tenant->clients()->find($request->client_id);
+        $client =$tenant->clients();
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $client = $client->where('branch_id', auth()->user()->currentBranch()->id);
+        }
+
+        $client = $client->find($request->client_id);
 
         if (!$client) {
             return response()->json(['error' => true, 'msg' => __('Not Found.'), ], 404);
@@ -286,7 +319,13 @@ class ClientController extends Controller
     public function resentWelcomeEmail()
     {
         $tenant = $this->getTenant();
-        $client = $tenant->clients()->find(request()->client_id);
+        $client = $tenant->clients();
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $client = $client->where('branch_id', auth()->user()->currentBranch()->id);
+        }
+
+        $client = $client->find(request()->client_id);
 
         if (!$client) {
             return response()->json(['error' => true, 'msg' => __('Not Found.'), ], 404);

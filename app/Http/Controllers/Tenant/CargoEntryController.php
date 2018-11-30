@@ -20,25 +20,29 @@ class CargoEntryController extends Controller
     {
         $branch = auth()->user()->currentBranch();
 
-        $cargoEntries = $this->getTenant()->cargoEntries()->with([
-            'branch' => function ($branch) {
-                $branch->select(['id', 'name']);
-            },
-            'creator' => function ($creator) {
-                $creator->select(['id', 'first_name', 'last_name',]);
-            }
-        ]);
-        //->where('branch_id', $branch->id);
+        $cargoEntries = $this->getTenant()->cargoEntries()
+            ->with([
+                'branch' => function ($branch) {
+                    $branch->select(['id', 'name']);
+                },
+                'creator' => function ($creator) {
+                    $creator->select(['id', 'first_name', 'last_name',]);
+                }
+             ]);
 
         $searching = 'N';
 
-        if (($from = request('from')) && ($to = request('to'))) {
-            $cargoEntries = $cargoEntries->whereRaw(' date(cargo_entries.created_at) between ? and ? ', [$from, $to]);
-            $searching = 'Y';
+        if (!auth()->user()->isSuperAdmin()) {
+            $cargoEntries = $cargoEntries->where('branch_id', $branch->id);
+        } else {
+            if ($branchId = request('branch_id')) {
+                $searching = 'Y';
+                $cargoEntries = $cargoEntries->where('branch_id', $branchId);
+            }
         }
 
-        if ($branch = request('branch_id')) {
-            $cargoEntries = $cargoEntries->where('branch_id', $branch);
+        if (($from = request('from')) && ($to = request('to'))) {
+            $cargoEntries = $cargoEntries->whereRaw(' date(cargo_entries.created_at) between ? and ? ', [$from, $to]);
             $searching = 'Y';
         }
 
@@ -53,10 +57,16 @@ class CargoEntryController extends Controller
 
         $cargoEntries = $cargoEntries->orderBy('id', 'DESC')->paginate(15);
 
+        $branches = $this->getBranches();
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $branches = $branches->where('id', $branch->id);
+        }
+
         return view('tenant.warehouse.cargo-entry.list', [
             'cargo_entries' => $cargoEntries,
             'searching' => $searching,
-            'branches' => $this->getBranches(),
+            'branches' => $branches,
         ]);
     }
 
@@ -130,7 +140,13 @@ class CargoEntryController extends Controller
             'creator' => function ($creator) {
                 $creator->select(['id', 'first_name', 'last_name', ]);
             }
-        ])->findOrFail($id);
+        ]);
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $cargoEntry = $cargoEntry->where('branch_id', auth()->user()->currentBranch()->id);
+        }
+
+        $cargoEntry = $cargoEntry->findOrFail($id);
 
         return view('tenant.warehouse.cargo-entry.show', ['cargo_entry' => $cargoEntry]);
     }

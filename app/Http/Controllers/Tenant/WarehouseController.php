@@ -24,12 +24,18 @@ class WarehouseController extends Controller
     {
         [$warehouses, $searching, $branch] = $this->getWarehouses($this->getTenant());
 
+        $branches = $this->getBranches();
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $branches = $branches->where('id', auth()->user()->currentBranch()->id);
+        }
+
         return view('tenant.warehouse.index', [
             'warehouses' => $warehouses,
             'searching' => $searching,
             'branch' => $branch,
             'sign' => '$',
-            'branches' => $this->getBranches(),
+            'branches' => $branches,
         ]);
     }
 
@@ -132,8 +138,13 @@ class WarehouseController extends Controller
     {
         $tenant = $this->getTenant();
 
-        $warehouse = $tenant->warehouses()
-            ->with(['editor', 'creator'])
+        $warehouse = $tenant->warehouses();
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $warehouse = $warehouse->where('branch_to', auth()->user()->currentBranch()->id);
+        }
+
+        $warehouse = $warehouse->with(['editor', 'creator'])
             ->where('id', $id)->firstOrFail();
 
         $invoice = $warehouse->invoice()->with(['creator', 'payments' => function ($payment) {
@@ -164,7 +175,13 @@ class WarehouseController extends Controller
     public function update(WarehouseRequest $request, $tenant, $id)
     {
         $tenant = $this->getTenant();
-        $warehouse = $tenant->warehouses()->where('id', $id)->firstOrFail();
+        $warehouse = $tenant->warehouses();
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $warehouse = $warehouse->where('branch_to', auth()->user()->currentBranch()->id);
+        }
+
+        $warehouse = $warehouse->where('id', $id)->firstOrFail();
 
         $warehouse->branch_to = $request->branch_to;
         $warehouse->branch_from = $request->branch_from;
@@ -235,7 +252,13 @@ class WarehouseController extends Controller
     public function sticker($tenant, $id)
     {
         $tenant = $this->getTenant();
-        $warehouse = $tenant->warehouses()->where('id', $id)->firstOrFail();
+        $warehouse = $tenant->warehouses();
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $warehouse = $warehouse->where('branch_to', auth()->user()->currentBranch()->id);
+        }
+
+        $warehouse = $warehouse->where('id', $id)->firstOrFail();
 
         $data = [
             'iata' => $tenant->country->iata,

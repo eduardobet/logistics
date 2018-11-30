@@ -4,7 +4,7 @@
         $(".select2ize").each(function() {
             var $self = $(this);
             var $child = $($self.data('child'));
-            $child.select2({width: 'resolve'});
+            $child.select2({width: 'resolve', allowClear: true,});
         });
 
         $(".select2ize").change(function() {
@@ -28,7 +28,7 @@
                 }
 
                 $loader.html('<i class="fa fa-spinner fa-spin"></i>');
-                $child.prop("disabled", true).select2();
+                $child.prop("disabled", true).select2({allowClear: true});
                 apiurl = apiurl.replace(":parentId:", value)
 
                 $.getJSON(apiurl, function(items) {
@@ -49,6 +49,6 @@
         }
         
         $child.select2('destroy').html(newOptions).prop("disabled", false)
-        .select2({width: 'resolve'});
+        .select2({width: 'resolve', allowClear: true});
     }
 </script>

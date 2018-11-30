@@ -15,7 +15,7 @@ trait PaymentList
     {
         $branch = auth()->user()->currentBranch();
 
-        if ($bId = request('branch_id')) {
+        if (auth()->user()->isSuperAdmin() && $bId = request('branch_id')) {
             $branch = $tenant->branches->find($bId);
         }
 
@@ -54,6 +54,14 @@ trait PaymentList
 
         if (request('client_id')) {
             $searching = 'Y';
+        }
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $payments = $payments->whereRaw(' invoices.branch_id = ? ', [$branch->id]);
+        } else {
+            if ($bId = request('branch_id')) {
+                $payments = $payments->whereRaw(' invoices.branch_id = ? ', [$bId]);
+            }
         }
 
         $payments = $payments->select(

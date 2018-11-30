@@ -27,12 +27,18 @@ class PaymentController extends Controller
     {
         [$payments, $searching, $branch] = $this->getPayments($this->getTenant());
 
+        $branches = $this->getBranches();
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $branches = $branches->where('id', auth()->user()->currentBranch()->id);
+        }
+
         return view('tenant.payment.index', [
             'payments' => $payments ,
             'searching' => $searching,
             'branch' => $branch,
             'sign' => '$',
-            'branches' => $this->getBranches(),
+            'branches' => $branches,
         ]);
     }
 
@@ -66,7 +72,13 @@ class PaymentController extends Controller
     public function create($domain, $invoiceId)
     {
         $tenant = $this->getTenant();
-        $invoice = $tenant->invoices()->with(['details', 'payments'])->find($invoiceId);
+        $invoice = $tenant->invoices()->with(['details', 'payments']);
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+        }
+
+        $invoice = $invoice->find($invoiceId);
 
         if (!$invoice) {
             return response()->json([
@@ -99,7 +111,14 @@ class PaymentController extends Controller
         }
 
         $tenant = $this->getTenant();
-        $invoice = $tenant->invoices()->with(['payments', 'client'])->find($request->invoice_id);
+        $invoice = $tenant->invoices()->with(['payments', 'client']);
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+        }
+
+        $invoice = $invoice->find($request->invoice_id);
+
 
         if (!$invoice) {
             return response()->json([

@@ -66,14 +66,12 @@
                         </tr>
                     @else
                         <tr>
-                            <th style="border: solid 1px;">{{ __('Qty') }}</th>
                             <th style="border: solid 1px;">{{ __('Type') }}</th>
                             <th style="border: solid 1px;">{{ __('Length') }}</th>
                             <th style="border: solid 1px;">{{ __('Width') }}</th>
                             <th style="border: solid 1px;">{{ __('Height') }}</th>
-                            <th style="border: solid 1px;">{{ __('P/Vol') }}</th>
-                            <th style="border: solid 1px;">{{ __('P/Real') }}</th>
-                            <th style="border: solid 1px;">DHL?</th>
+                            <th style="border: solid 1px;">{{ __('Qty') }}</th>
+                            <th style="border: solid 1px;">{{ __('Price') }}</th>
                         </tr>
                     @endif
                     
@@ -88,28 +86,42 @@
                             </tr>
                         @else
                             <tr>
-                                <td style="border: solid 1px;">{{ $detail->qty }}</td>
                                 <td style="border: solid 1px;">{{ [1=>'Sobre',2=>'Bulto', 3=>'Paquete',4=>'Caja/Peq.', 5=>'Caja/Med.', 6=>'Caja/Grande', ][$detail->type] }}</td>
                                 <td style="border: solid 1px;">{{ $detail->length }}</td>
                                 <td style="border: solid 1px;">{{ $detail->width }}</td>
                                 <td style="border: solid 1px;">{{ $detail->height }}</td>
-                                <td style="border: solid 1px;">{{ $detail->vol_weight }}</td>
-                                <td style="border: solid 1px;">{{ $detail->real_weight }}</td>
-                                <td style="border: solid 1px;">{{ $detail->is_dhll ? 'DHL' : null }}</td>
+                                <td style="border: solid 1px;">
+                                    @if ($invoice->i_using == 'R')
+                                        {{ $detail->real_weight }}
+                                    @elseif($invoice->i_using == 'V')
+                                        {{ $detail->vol_weight }}
+                                    @else
+                                        {{ $detail->cubic_feet }}      
+                                    @endif
+                                </td>
+                                <td style="border: solid 1px;">
+                                    @if ($invoice->i_using == 'R')
+                                        {{ $detail->real_price }}
+                                    @elseif($invoice->i_using == 'V')
+                                        {{ $detail->vol_price }}
+                                    @else
+                                        {{ $detail->cubic_price }}      
+                                    @endif
+                                </td>
                             </tr>
                         @endif
                     @endforeach
 
                     <tr style="font-weight: bold">
-                        <td colspan="{{ $invoice->warehouse_id ? 7 : 4 }}" style="border: solid 1px;text-align:right;">{{ __('Total') }}:</td>
+                        <td colspan="{{ $invoice->warehouse_id ? 5 : 4 }}" style="border: solid 1px;text-align:right;">{{ __('Total') }}:</td>
                         <td style="border: solid 1px;text-align:right;">${{ number_format($invoice->total, 2)  }}</td>
                     </tr>
                     <tr style="font-weight: bold">
-                        <td colspan="{{ $invoice->warehouse_id ? 7 : 4 }}" style="border: solid 1px;text-align:right;">{{ __('Amount paid') }}:</td>
+                        <td colspan="{{ $invoice->warehouse_id ? 5 : 4 }}" style="border: solid 1px;text-align:right;">{{ __('Amount paid') }}:</td>
                         <td style="border: solid 1px;text-align:right;">${{ number_format($amountPaid, 2)  }}</td>
                     </tr>
                     <tr style="font-weight: bold">
-                        <td colspan="{{ $invoice->warehouse_id ? 7 : 4 }}" style="border: solid 1px;text-align:right;">{{ __('Pending') }}:</td>
+                        <td colspan="{{ $invoice->warehouse_id ? 5 : 4 }}" style="border: solid 1px;text-align:right;">{{ __('Pending') }}:</td>
                         <td style="border: solid 1px;text-align:right;">${{ number_format($invoice->total-$amountPaid, 2)  }}</td>
                     </tr>
                     

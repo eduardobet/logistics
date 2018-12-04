@@ -25,14 +25,12 @@
         </tr>
      @else
         <tr>
-            <th style="border: solid 1px;">{{ __('Qty', [], $lang) }}</th>
             <th style="border: solid 1px;">{{ __('Type', [], $lang) }}</th>
             <th style="border: solid 1px;">{{ __('Length', [], $lang) }}</th>
             <th style="border: solid 1px;">{{ __('Width', [], $lang) }}</th>
             <th style="border: solid 1px;">{{ __('Height', [], $lang) }}</th>
-            <th style="border: solid 1px;">{{ __('P/Vol', [], $lang) }}</th>
-            <th style="border: solid 1px;">{{ __('P/Real', [], $lang) }}</th>
-            <th style="border: solid 1px;">DHL?</th>
+            <th style="border: solid 1px;">{{ __('Qty', [], $lang) }}</th>
+            <th style="border: solid 1px;">{{ __('Price', [], $lang) }}</th>
         </tr>
      @endif
     
@@ -47,14 +45,28 @@
             </tr>
         @else
             <tr>
-                <td style="border: solid 1px;">{{ $detail->qty }}</td>
                 <td style="border: solid 1px;">{{ [1=>'Sobre',2=>'Bulto', 3=>'Paquete',4=>'Caja/Peq.', 5=>'Caja/Med.', 6=>'Caja/Grande', ][$detail->type] }}</td>
                 <td style="border: solid 1px;">{{ $detail->length }}</td>
                 <td style="border: solid 1px;">{{ $detail->width }}</td>
                 <td style="border: solid 1px;">{{ $detail->height }}</td>
-                <td style="border: solid 1px;">{{ $detail->vol_weight }}</td>
-                <td style="border: solid 1px;">{{ $detail->real_weight }}</td>
-                <td style="border: solid 1px;">{{ $detail->is_dhll ? 'DHL' : null }}</td>
+                <td style="border: solid 1px;">
+                    @if ($invoice->i_using == 'R')
+                        {{ $detail->real_weight }}
+                    @elseif($invoice->i_using == 'V')
+                        {{ $detail->vol_weight }}
+                    @else
+                        {{ $detail->cubic_feet }}      
+                    @endif
+                </td>
+                <td style="border: solid 1px;">
+                    @if ($invoice->i_using == 'R')
+                        {{ $detail->real_price }}
+                    @elseif($invoice->i_using == 'V')
+                        {{ $detail->vol_price }}
+                    @else
+                        {{ $detail->cubic_price }}      
+                    @endif
+                </td>
             </tr>
         @endif    
     

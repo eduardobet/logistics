@@ -69,6 +69,7 @@ trait PaymentList
             DB::raw("date_format(payments.created_at, '%d/%m/%Y') as created_at_dsp"),
             DB::raw("concat(clients.first_name, ' ', clients.last_name) as client_full_name"),
             'clients.id as client_id',
+            'clients.manual_id as client_manual_id',
             'branches.code as client_box',
             'invoices.branch_id as invoice_branch_id',
             'branches.name as branch_name',

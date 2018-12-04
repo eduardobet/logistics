@@ -61,7 +61,7 @@
                           <img src="{{ asset('images/200x200.png') }}" alt="">
                           <div class="media-body">
                           <a href="{{ route('tenant.client.edit', [$tenant->domain, $lclient->id]) }}">{{ $lclient->full_name }}</a>
-                          <p class="tx-12">{{ $lclient->branch ? $lclient->branch->code : null }}{{ $lclient->id }}</p>
+                          <p class="tx-12">{{ $lclient->branch ? $lclient->branch->code : null }}{{ $lclient->manual_id }}</p>
                           </div><!-- media-body -->
                           <a href="{{ route('tenant.client.edit', [$tenant->domain, $lclient->id]) }}"><i class="icon ion-ios-arrow-forward tx-20"></i></a>
                       </div><!-- media -->

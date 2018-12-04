@@ -226,13 +226,13 @@
 
             var using = "";
 
-            if (specialRate == 'true') {
-                realPrice = parseFloat($client.find(':selected').attr('data-real_price') || '0');
-                using = "Special Rate";
-            } else if (payVol == 'true') {
-                volPrice = parseFloat($client.find(':selected').attr('data-vol_price') || '0');
-                using = "Pay volume";
+            if (specialRate == 'true' || payVol == 'true') {
+                realPrice = parseFloat($client.find(':selected').attr('data-real_price') || $branchTo.find(':selected').attr('data-real_price') || '0');
+                volPrice = parseFloat($client.find(':selected').attr('data-vol_price') || $branchTo.find(':selected').attr('data-vol_price') || '0');
+                using = "Special / Volumetric Rate";
             } else {
+                realPrice = parseFloat($branchTo.find(':selected').attr('data-real_price') || '0');
+                volPrice = parseFloat($branchTo.find(':selected').attr('data-vol_price') || '0');
                 using = "Global branch";
             }
 
@@ -251,10 +251,10 @@
                 if (length && width && height) {
 
                     if ($isDHL && $isDHL.is(':checked')) {
-                        realPrice =parseFloat($isDHL.val() || '0');
+                        realPrice = parseFloat($isDHL.val() || '0');
                         using += ' via DHL';
                     } else {
-                        realPrice = parseFloat($branchTo.find(':selected').attr('data-real_price') || '0');
+                        // realPrice = parseFloat($branchTo.find(':selected').attr('data-real_price') || '0');
                     }
 
                     $trackings.prop('readonly', false)
@@ -286,10 +286,12 @@
                     $("#vol_price-"+i).val(volPrice);
                     $("#real_price-"+i).val(realPrice);
                     $("#total-"+i).val(realPrice ? parseFloat($realWeight.val() || '0') * realPrice : parseFloat($volWeight.val() || '0') * volPrice);
-
-                    console.log('-----calculating......','volPrice =', volPrice, 'realPrice = ', realPrice, 'payVol = ', payVol)
+                    
+                    @if (!app()->environment('production'))
+                    console.log('-----calculating...... using = ', using, 'volPrice =', volPrice, 'realPrice = ', realPrice, 'payVol = ', payVol)
                     console.log('realWeight = ', $realWeight.val());
                     console.log('volWeight = ', $volWeight.val());
+                    @endif
 
                 } // if
             }); // each
@@ -303,11 +305,34 @@
 
             $("#dsp-t-vol").text(totalVol);
             $("#dsp-t-real").text(totalReal);
-            $("#dsp-t-cubic").text(totalCubicFeet*maritimeRate);
+            $("#dsp-t-cubic").text(parseFloat(totalCubicFeet*maritimeRate));
+
+            setter(totalVol, totalReal);
 
             $els = null;
             $volWeight = null;
             $realWeight = null;
+
+        }
+        
+        function setter(totVolWeight, totRealWeight) {
+            var $type = $("#type");
+            
+            if ($type.val() == 'A') {
+                var $chkV = $("#chk-t-volumetric-weight", document);
+                var $chkR = $("#chk-t-real-weight", document);
+                var $total = $("#total", document);
+
+                if (totVolWeight > totRealWeight) {
+                    $chkR.attr('checked', false).change();
+                    $chkV.attr('checked', true).change();
+                    $total.val(totVolWeight)
+                } else if (totVolWeight < totRealWeight) {
+                    $chkV.attr('checked', false).change();
+                    $chkR.attr('checked', true).change();
+                    $total.val(totRealWeight)
+                }
+            }
         }
 
         $(document).on('click', "#chk-t-volumetric-weight, #chk-t-real-weight, #chk-t-cubic-feet", function(e) {

@@ -103,7 +103,7 @@
             <div class="col-5">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Maritime rate') }}: <span class="tx-danger"></span></label>
-                    {!! Form::text('maritime_rate', $invoice->cubic_feet ? $invoice->total / $invoice->cubic_feet : null, ['class' => 'form-control', 'id' => 'maritime_rate', ]) !!}
+                    {!! Form::text('maritime_rate', $invoice->cubic_feet ? number_format($invoice->total / $invoice->cubic_feet,2) : null, ['class' => 'form-control', 'id' => 'maritime_rate', ]) !!}
                 </div>
             </div>
         </div>    

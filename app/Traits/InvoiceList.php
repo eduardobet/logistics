@@ -22,7 +22,7 @@ trait InvoiceList
         $invoices = $tenant->invoices()
             ->withAndWhereHas('client', function ($query) {
                 if ($clientId = request('client_id')) {
-                    $query->where('id', $clientId)->select('id', 'first_name', 'last_name');
+                    $query->where('id', $clientId)->select('id', 'manual_id', 'first_name', 'last_name');
                 }
             })->with(['payments' => function ($query) {
                 $query->select('id', 'invoice_id', 'is_first', 'amount_paid');

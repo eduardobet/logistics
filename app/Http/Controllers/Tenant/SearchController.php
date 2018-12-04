@@ -116,7 +116,7 @@ class SearchController extends Controller
                                     }
 
                                     $results = $results->with(['client' => function ($query) {
-                                        $query->with('branch')->select(['id', 'first_name', 'last_name', 'org_name', 'email']);
+                                        $query->with('branch')->select(['id', 'manual_id', 'first_name', 'last_name', 'org_name', 'email']);
                                     }])->where('id', $qId);
                                     $inv = true;
                                     break;
@@ -132,7 +132,7 @@ class SearchController extends Controller
                                     }
 
                                     $results = $results->with(['client' => function ($query) {
-                                        $query->with('branch')->select(['id', 'first_name', 'last_name', 'org_name', 'email']);
+                                        $query->with('branch')->select(['id', 'manual_id', 'first_name', 'last_name', 'org_name', 'email']);
                                     },
                                     'fromBranch',
                                     ])->where('id', $qId);

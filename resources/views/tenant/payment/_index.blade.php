@@ -61,7 +61,7 @@
             </td>
             <td>{{ $payment->created_at_dsp }}</td>
             <td>{{ $payment->client_full_name }}</td>
-            <td>{{ $payment->client_box }}{{ $payment->client_id }}</td>
+            <td>{{ $payment->client_box }}{{ $payment->client_manual_id }}</td>
             <td class="pdf-a-right">{{ $sign }} {{ number_format($payment->amount_paid, 2) }}</td>
             @if (!isset($exporting))
                 <td class="text-center" style="font-size: 15px">

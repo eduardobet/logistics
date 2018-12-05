@@ -22,6 +22,7 @@ $factory->define(\Logistics\DB\Tenant\Branch::class, function (Faker $faker) {
         'vol_price' => 1.75,
         'dhl_price' => 2.25,
         'maritime_price' => 250,
+        'first_lbs_price' => 5,
         'color' => 'red',
         'logo' => '',
     ];

@@ -42,6 +42,7 @@ class ClientCreationTest extends TestCase
             'address' => 'AA',
             'vol_price' => 'XX',
             'real_price' => 'XX',
+            'first_lbs_price' => 'XX',
             'email' => 'XX',
         ]);
         $response->assertStatus(302);
@@ -63,6 +64,7 @@ class ClientCreationTest extends TestCase
             'address',
             'vol_price',
             'real_price',
+            'first_lbs_price',
         ]);
     }
 
@@ -207,6 +209,7 @@ class ClientCreationTest extends TestCase
             'special_maritime' => 'Y',
             'vol_price' => 2.5,
             'real_price' => 2,
+            'first_lbs_price' => 5,
         ]);
 
         $this->assertDatabaseHas('clients', [
@@ -233,6 +236,7 @@ class ClientCreationTest extends TestCase
             'special_maritime' => '1',
             'vol_price' => 2.5,
             'real_price' => 2,
+            'first_lbs_price' => 5,
 
             'manual_id' => 1,
         ]);

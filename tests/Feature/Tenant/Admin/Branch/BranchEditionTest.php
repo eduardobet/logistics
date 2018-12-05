@@ -68,6 +68,7 @@ class BranchEditionTest extends TestCase
             'vol_price' => 'XX',
             'dhl_price' => 'XX',
             'maritime_price' => 'XX',
+            'first_lbs_price' => 'XX',
             'logo' => 'invalid',
         ]);
         $response->assertStatus(302);
@@ -85,6 +86,7 @@ class BranchEditionTest extends TestCase
             'vol_price',
             'dhl_price',
             'maritime_price',
+            'first_lbs_price',
             'color',
             'logo',
         ]);
@@ -151,6 +153,7 @@ class BranchEditionTest extends TestCase
             'vol_price' => 1.75,
             'dhl_price' => 2.25,
             'maritime_price' => 250,
+            'first_lbs_price' => 10,
             'color' => 'blue',
         ]);
 
@@ -177,6 +180,7 @@ class BranchEditionTest extends TestCase
             'vol_price' => 1.75,
             'dhl_price' => 2.25,
             'maritime_price' => 250,
+            'first_lbs_price' => 10,
             'color' => 'blue',
         ]);
 

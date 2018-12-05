@@ -172,6 +172,13 @@
 
     <div class="col">
         <div class="form-group">
+            <label class="form-control-label">{{ __('First LBS Price') }}:</label>
+            {{ Form::text('first_lbs_price', null, ['class' => 'form-control']) }}
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="form-group">
             <label class="form-control-label">{{ __('DHL') }}:</label>
             {{ Form::text('dhl_price', null, ['class' => 'form-control']) }}
         </div>

@@ -117,8 +117,8 @@
                     <option value="">----</option>
                     @foreach ($clients as $client)
                         <option value='{{ $client->id }}'
-                            data-pay_volume='{{ var_export($client->pay_volume) }}' data-special_rate='{{ var_export($client->special_rate) }}' data-special_maritime='{{ var_export($client->special_maritime) }}'
-                            data-vol_price='{{ $client->vol_price }}'  data-real_price='{{ $client->real_price }}'
+                            data-pay_volume='{{ var_export($client->pay_volume) }}' data-special_rate='{{ var_export($client->special_rate) }}' data-special_maritime='{{ var_export($client->special_maritime) }}' data-pay_first_lbs_price='{{ var_export($client->pay_first_lbs_price) }}'
+                            data-vol_price='{{ $client->vol_price }}'  data-real_price='{{ $client->real_price }}' data-first_lbs_price='{{ $client->first_lbs_price }}'
                             {{ (isset($warehouse) && $warehouse->client_id == $client->id) || old('client_id') == $client->id ? " selected": null }}
                         >
                         [{{ $client->branch->code }}{{ $client->manual_id }}] {{ $client->full_name }}

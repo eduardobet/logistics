@@ -281,7 +281,7 @@
             newOptions += `
                 <option value='${obj.id}'
                     data-pay_volume='${obj.pay_volume}' data-special_rate='${obj.special_rate}' data-special_maritime='${obj.special_maritime}'
-                     data-vol_price='${obj.vol_price}'  data-real_price='${obj.real_price}'
+                     data-vol_price='${obj.vol_price}'  data-real_price='${obj.real_price}' data-pay_first_lbs_price='${obj.pay_first_lbs_price}' data-first_lbs_price='${obj.first_lbs_price}' 
                 >
                    [${box}${obj.manual_id_dsp}] ${obj.full_name}
                 </option>`;

@@ -1,7 +1,7 @@
 @extends('layouts.tenant')
 
 @section('title')
-  {{ __('Dashboard') }}  {{ config('app.name', '') }}
+  {{ __('Dashboard') }} | {{ __('Editing :what', ['what' => __('Branch') ]) }} # {{ request('id') }}
 @endsection
 
 @section('content')

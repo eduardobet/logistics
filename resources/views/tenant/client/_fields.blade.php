@@ -133,7 +133,7 @@
             </div>
         </div> <!-- row -->
 
-        <div class="row">
+        <div class="row mg-t-20">
             <div class="col-lg-3">
                 <div class="input-group">
                     <?php
@@ -165,13 +165,32 @@
                 </div>
             </div>
 
+            <?php
+                $flbsPrice = null; $checkit = null;
+                if (isset($mode) && $mode==='create') {$flbsPrice = $branch->first_lbs_price; $checkit = true;}
+                else {$flbsPrice = $client->first_lbs_price; $checkit = $client->pay_first_lbs_price;}
+            ?>
+            <div class="col-lg-4">
+                <div class="input-group">
+                    <label class="ckbox">
+                        {!! Form::checkbox('pay_first_lbs_price', null, $checkit, ['id' => 'pay_first_lbs_price', 'data-firstlbsprice' => $flbsPrice,  ]) !!} <span>{{ __('First LBS Price') }}</span>
+                    </label>
+
+                    &nbsp;
+                    {!! Form::text('first_lbs_price', $flbsPrice, ['class' => 'form-control form-control-sm', 'placeholder' => __('First LBS Price'), 'id' => 'first_lbs_price', ]) !!}
+                </div>
+            </div>
+
             <div class="col-lg-2">
                 <label class="ckbox">
                     {!! Form::checkbox('special_maritime', null, null, ['id' => 'special_maritime',]) !!} <span>{{ __('Special maritime') }}</span>
                 </label>
             </div>
 
-            <div class="col-lg-4">
+        </div> <!-- row -->
+
+        <div class="row mg-t-20">
+            <div class="col-lg-12">
                 <div class="form-group">
                     <label class="form-control-label">{{__('Status')}}: <span class="tx-danger">*</span></label>
                     {!! Form::select('status', ['A' => __('Active') , 'I' => __('Inactive')  ], null, ['class' => 'form-control form-control-sm', 'required' => '', ]) !!}

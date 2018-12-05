@@ -71,6 +71,16 @@
                  $tmpVP.val($self.data('volprice')); 
               }
           });
+
+          $("#pay_first_lbs_price").click(function(){
+              var $self = $(this);
+              var $tmpVP = $("#first_lbs_price");
+              if (!this.checked) {
+                  $tmpVP.val('');
+              } else {
+                 $tmpVP.val($self.data('firstlbsprice')); 
+              }
+          });
       });
     </script> 
 @endsection

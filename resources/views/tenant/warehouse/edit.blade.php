@@ -90,14 +90,19 @@
                     document.getElementById("chk-t-real-weight").checked = false;
                     document.getElementById("chk-t-volumetric-weight").checked = false;
                     document.getElementById("total").value = '';
+                    document.getElementById("maritime_rate").readOnly = false;
                 } else if (this.value == 'A') {
                     document.getElementById("chk-t-cubic-feet").checked = false;
                     document.getElementById("total").value = '';
+                    document.getElementById("maritime_rate").readOnly = true;
+                    document.getElementById("maritime_rate").value = '';
                 } else {
                     document.getElementById("total").value = '';
                     document.getElementById("chk-t-real-weight").checked = false;
                     document.getElementById("chk-t-volumetric-weight").checked = false;
                     document.getElementById("chk-t-cubic-feet").checked = false;
+                    document.getElementById("maritime_rate").readOnly = true;
+                    document.getElementById("maritime_rate").value = '';
                 }
             })
 
@@ -206,6 +211,7 @@
             var $trackings = $("#trackings");
             var maritimeRate = parseFloat($("#maritime_rate").val() || '0');
             var $type = $("#type");
+            var hasDet = false;
             
             var totVolWeight = 0;
             var totRealWeight = 0;
@@ -220,9 +226,11 @@
             var $mailer = $('#mailer_id');
             var specialRate = $client.find(':selected').attr('data-special_rate') || 'false';
             var payVol = $client.find(':selected').attr('data-pay_volume') || 'false';
+            var payFirstLbs = $client.find(':selected').attr('data-pay_first_lbs_price') || 'false';
 
             var volPrice = 0;
             var realPrice = 0;
+            var firstLbsPrice = parseFloat($client.find(':selected').attr('data-first_lbs_price') || $branchTo.find(':selected').attr('data-first_lbs_price') || '0');
 
             var using = "";
 
@@ -291,17 +299,27 @@
                     console.log('-----calculating...... using = ', using, 'volPrice =', volPrice, 'realPrice = ', realPrice, 'payVol = ', payVol)
                     console.log('realWeight = ', $realWeight.val());
                     console.log('volWeight = ', $volWeight.val());
+                    
                     @endif
+
+                    hasDet = true;
 
                 } // if
             }); // each
 
+            console.log('firstLbsPrice = ', firstLbsPrice, 'payFirstLbs = ', payFirstLbs, 'totVolWeight = ', totVolWeight, 'totRealWeight = ', totRealWeight);
+            console.log('realPrice = ', realPrice, 'volPrice = ', volPrice );
 
             //totalVol = parseFloat(totVolWeight) *  parseFloat(totalVolPrice);
             //totalReal = parseFloat(totRealWeight) *  parseFloat(totalRealPrice);
-            $totVolWeight.val(totVolWeight)
-            $totRealWeight.val(totRealWeight)
-            $totCubicFeet.val(totalCubicFeet)
+            $totVolWeight.val(totVolWeight);
+            $totRealWeight.val(totRealWeight);
+            $totCubicFeet.val(totalCubicFeet);
+
+            if (hasDet && payFirstLbs == 'true' && firstLbsPrice) {
+                totalVol = ((totVolWeight - 1) * volPrice) + firstLbsPrice;
+                totalReal = ((totRealWeight - 1) * realPrice) + firstLbsPrice;
+            }
 
             $("#dsp-t-vol").text(totalVol);
             $("#dsp-t-real").text(totalReal);

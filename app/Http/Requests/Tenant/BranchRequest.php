@@ -39,6 +39,7 @@ class BranchRequest extends AppFormRequest
             'vol_price' => 'sometimes|numeric',
             'dhl_price' => 'sometimes|numeric',
             'maritime_price' => 'sometimes|numeric',
+            'first_lbs_price' => 'sometimes|numeric',
             'color' => 'required',
             'logo' => 'sometimes|mimes:png,jpg,jpeg|max:1024',
         ];

@@ -49,10 +49,16 @@
                 </a>
 
                 @can('create-invoice')
-                    @if ($invoice->total)    
-                        <a target="_blank" href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $invoice->id, 'html' => '1', ]) }}" class="btn btn-outline-dark" role="button" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
-                            <i class="fa fa-file-text-o"></i>
-                        </a>
+                    @if ($invoice->total) 
+                        @if (config('app.invoice_print_version') == 2)
+                            <a target="_blank" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}" href="{{ route('tenant.invoice.show', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch_id, 'client_id' => $warehouse->client_id, '__printing' => 1, ]) }}" class="btn btn-sm btn-outline-dark" role="button">
+                                <i class="fa fa-print"></i>
+                            </a>
+                        @else 
+                            <a target="_blank" href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $invoice->id, 'html' => '1', ]) }}" class="btn btn-outline-dark" role="button" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
+                                <i class="fa fa-file-text-o"></i>
+                            </a>
+                        @endif
                     @endif
                 @endcan
             </div>

@@ -1,11 +1,17 @@
 @extends('layouts.tenant')
 
+
+@section('title')
+    {{ uniqid('invoice_', true) }}
+@stop
+
+
 @section('content')
 
 <!-- slim-mainpanel -->
 <div class="slim-mainpanel">
     <div class="container">
-      <div class="slim-pageheader">
+      <div class="slim-pageheader hidden-print d-print-none">
         <ol class="breadcrumb slim-breadcrumb">
           <li class="breadcrumb-item"><a href="{{ route('tenant.invoice.list', [$tenant->domain, 'client_id' => request('client_id'), 'branch_id' => request('branch_id'), ]) }}">{{ __('Invoices') }}</a></li>
           <li class="breadcrumb-item">{{ __('Showing :what', ['what' => __('Invoice') ]) }}</li>
@@ -185,7 +191,7 @@
                   </div><!-- table-responsive -->
 
                   <hr class="mg-b-50">
-                  <div class="row">
+                  <div class="row hidden-print d-print-none" id="btns-container">
 
                     <div class="col-md-2 mg-t-10">
                         <button type="button" id="pay" class="btn btn-outline-success btn-block terminate"{{ !$pending || $invoice->status == 'I' ? ' disabled' : null }} data-toggle="modal" data-target="#modal-payment">
@@ -233,11 +239,18 @@
 
                   </div>
 
-                  <div class="row mg-t-10">
+                  <div class="row mg-t-10 hidden-print d-print-none">
                       <div class="col">
+                      
+                      @if (config('app.invoice_print_version') == 2)
+                          <a href="#" id="btn-print-invoice" class="btn btn-outline-dark btn-block" role="button" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
+                                <i class="fa fa-print"></i> {{ strtoupper( __('Print :what', ['what' => __('Invoice') ]) ) }}
+                            </a>
+                      @else
                           <a target="_blank" href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $invoice->id, ]) }}" class="btn btn-outline-dark btn-block" role="button" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
                                 <i class="fa fa-print"></i> {{ strtoupper( __('Print :what', ['what' => __('Invoice') ]) ) }}
                             </a>
+                      @endif
                       </div>
                   </div>
 
@@ -246,8 +259,22 @@
               </div>
 
               <div class="section-wrapper mg-t-15">
+                <h3>{{ __('Terms and Conditions') }}</h3>
+                @if ($invoice->warehouse_id)
+                    @if ($condition = $tenant->conditionsInvoice()->where('type', 'W')->where('status', 'A')->first())
+                        <p>{{ $condition->content }}</p>
+                    @endif
+                @else
+                    @if ($condition = $tenant->conditionsInvoice()->where('type', 'I')->where('status', 'A')->first())
+                        <p>{{ $condition->content }}</p>
+                    @endif  
+                @endif
+                
+              </div>
 
-            <div class="mg-b-15">
+              <div class="section-wrapper mg-t-15 hidden-print d-print-none">
+
+                    <div class="mg-b-15">
                       <label class="section-title">{{ __('Activity Log') }}</label>
                     </div>
                     <div class="col-lg-12">
@@ -292,8 +319,22 @@
 
 @section('xtra_scripts')
   <script>
+
+    function printing() {
+        window.print();
+    }
   
     $(function() {
+
+        // printin ginvoice
+        @if (request('__printing'))
+            printing();
+        @endif
+
+        $("#btn-print-invoice").click(function(e){
+            e.preventDefault();
+            window.print();
+        });
 
         // payment
         var $baseModalPayment = $('#modal-payment');
@@ -554,3 +595,13 @@
   
   </script>
 @endsection
+
+
+@section('xtra_styles')
+    <style>
+        @media print {
+            @page { margin: 0; }
+            body { margin: 1.6cm; }
+        }
+    </style>
+@stop

@@ -260,7 +260,16 @@
 
               <div class="section-wrapper mg-t-15">
                 <h3>{{ __('Terms and Conditions') }}</h3>
-                <p>{{ $tenant->conditionsInvoice->first()->content }}</p>
+                @if ($invoice->warehouse_id)
+                    @if ($condition = $tenant->conditionsInvoice()->where('type', 'W')->where('status', 'A')->first())
+                        <p>{{ $condition->content }}</p>
+                    @endif
+                @else
+                    @if ($condition = $tenant->conditionsInvoice()->where('type', 'I')->where('status', 'A')->first())
+                        <p>{{ $condition->content }}</p>
+                    @endif  
+                @endif
+                
               </div>
 
               <div class="section-wrapper mg-t-15 hidden-print d-print-none">

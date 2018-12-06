@@ -121,6 +121,8 @@ return [
 
     'country' => env('TENANT_COUNTRY', 0),
 
+    'invoice_print_version' => env('INVOICE_PRINT_VERSION', 1),
+
     'providers' => [
 
         /*

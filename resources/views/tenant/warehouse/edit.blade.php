@@ -220,6 +220,7 @@
             var totalCubicFeet = 0;
             var totalVolPrice = 0;
             var totalRealPrice = 0;
+            var totalCubicPrice = 0;
             var $els = $(".inline-calc:not('.qty, .removed')", document);
             var $branchTo = $('#branch_to');
             var $client = $('#client_id');
@@ -283,6 +284,7 @@
                     }
 
                     $volWeight.val(volWeight);
+
                     totVolWeight += volWeight;
                     totalCubicFeet += cubicFeet;
                     totalVolPrice += volPrice;
@@ -291,15 +293,20 @@
                     totalReal += parseFloat($realWeight.val() || '0') * realPrice;
                     totalVol += parseFloat($volWeight.val() || '0') * volPrice;
 
-                    $("#vol_price-"+i).val(volPrice);
+                    if (totVolWeight > 20) $("#vol_price-"+i).val(volPrice);
+                    else $("#vol_price-"+i).val('');
                     $("#real_price-"+i).val(realPrice);
-                    $("#total-"+i).val(realPrice ? parseFloat($realWeight.val() || '0') * realPrice : parseFloat($volWeight.val() || '0') * volPrice);
+
+                    if (totVolWeight > 20) {
+                        $("#total-"+i).val(parseFloat($volWeight.val() || '0') * volPrice);
+                    } else {
+                        $("#total-"+i).val(parseFloat($realWeight.val() || '0') * realPrice);
+                    }
                     
                     @if (!app()->environment('production'))
                     console.log('-----calculating...... using = ', using, 'volPrice =', volPrice, 'realPrice = ', realPrice, 'payVol = ', payVol)
                     console.log('realWeight = ', $realWeight.val());
                     console.log('volWeight = ', $volWeight.val());
-                    
                     @endif
 
                     hasDet = true;
@@ -307,25 +314,48 @@
                 } // if
             }); // each
 
-            console.log('firstLbsPrice = ', firstLbsPrice, 'payFirstLbs = ', payFirstLbs, 'totVolWeight = ', totVolWeight, 'totRealWeight = ', totRealWeight);
+            @if (!app()->environment('production'))
+            console.log('firstLbsPrice = ', firstLbsPrice, 'payFirstLbs = ', payFirstLbs, 'totVolWeight = ', totVolWeight, 'totRealWeight = ', totRealWeight, 'totalCubicFeet = ', totalCubicFeet);
             console.log('realPrice = ', realPrice, 'volPrice = ', volPrice );
+            @endif
 
-            //totalVol = parseFloat(totVolWeight) *  parseFloat(totalVolPrice);
-            //totalReal = parseFloat(totRealWeight) *  parseFloat(totalRealPrice);
-            $totVolWeight.val(totVolWeight);
-            $totRealWeight.val(totRealWeight);
-            $totCubicFeet.val(totalCubicFeet);
+            if ($type.val() == 'A') {
+                if(totVolWeight > 20) {
+                    $totVolWeight.val(totVolWeight);
+                    console.log("------------------------------------------------- totVolWeight > 20 ");
+                }
+                else {
+                    $totVolWeight.val('');
+                    console.log("------------------------------------------------- totVolWeight < 20 ");
+                }
+                $totRealWeight.val(totRealWeight);
 
-            if (hasDet && payFirstLbs == 'true' && firstLbsPrice) {
-                totalVol = ((totVolWeight - 1) * volPrice) + firstLbsPrice;
-                totalReal = ((totRealWeight - 1) * realPrice) + firstLbsPrice;
+                if (hasDet && payFirstLbs == 'true' && firstLbsPrice) {
+                    
+                    if(totVolWeight > 20) {
+                        if (totVolWeight > 1) totalVol = ((totVolWeight - 1) * volPrice) + firstLbsPrice;
+                        else totalVol = firstLbsPrice * totVolWeight;
+                    }
+
+                    if (totRealWeight > 1) totalReal = ((totRealWeight - 1) * realPrice) + firstLbsPrice;
+                    else totalReal = totRealWeight * firstLbsPrice;
+                }
+
+            } else if ($type.val() == 'M') {
+                $totCubicFeet.val(totalCubicFeet);
             }
 
-            $("#dsp-t-vol").text(totalVol);
-            $("#dsp-t-real").text(totalReal);
-            $("#dsp-t-cubic").text(parseFloat(totalCubicFeet*maritimeRate));
+            totalCubicPrice = parseFloat(totalCubicFeet * maritimeRate);
 
-            setter(totalVol, totalReal);
+            if ($type.val() == 'A') {
+                if(totVolWeight > 20) $("#dsp-t-vol").text(totalVol);
+                else $("#dsp-t-vol").text('');
+                $("#dsp-t-real").text(totalReal);
+            } else if ($type.val() == 'A') {
+                $("#dsp-t-cubic").text(totalCubicPrice);
+            }
+
+            setter(totalVol, totalReal, totalCubicPrice, totVolWeight);
 
             $els = null;
             $volWeight = null;
@@ -333,23 +363,27 @@
 
         }
         
-        function setter(totVolWeight, totRealWeight) {
+        function setter(totVolPrice, totRealPrice, totalCubicPrice, totVolWeight) {
             var $type = $("#type");
+
+            console.log('<<<<<<<<<<<<<<<<<<<<<<< SETTING  totVolPrice ->',totVolPrice, ' totRealPrice -> ', totRealPrice, ' totalCubicPrice -> ', totalCubicPrice, ' totVolWeight -> ', totVolWeight )
             
             if ($type.val() == 'A') {
                 var $chkV = $("#chk-t-volumetric-weight", document);
                 var $chkR = $("#chk-t-real-weight", document);
                 var $total = $("#total", document);
 
-                if (totVolWeight > totRealWeight) {
-                    $chkR.attr('checked', false).change();
-                    $chkV.attr('checked', true).change();
-                    $total.val(totVolWeight)
-                } else if (totVolWeight < totRealWeight) {
-                    $chkV.attr('checked', false).change();
-                    $chkR.attr('checked', true).change();
-                    $total.val(totRealWeight)
+                if (totVolWeight > 20 && totVolPrice > totRealPrice) {
+                    $chkR.attr({checked: false, disabled: true}).change();
+                    $chkV.attr({checked: true, disabled: false}).change();
+                    $total.val(totVolPrice);
+                } else {
+                    $chkV.attr({checked: false, disabled: true}).change();
+                    $chkR.attr({checked: true, disabled: false}).change();
+                    $total.val(totRealPrice);
                 }
+            } else {
+
             }
         }
 

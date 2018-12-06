@@ -261,11 +261,11 @@
               <div class="section-wrapper mg-t-15">
                 <h3>{{ __('Terms and Conditions') }}</h3>
                 @if ($invoice->warehouse_id)
-                    @if ($condition = $tenant->conditionsInvoice()->where('type', 'W')->where('status', 'A')->first())
+                    @if ($condition = $tenant->conditionsWarehouse->first())
                         <p>{{ $condition->content }}</p>
                     @endif
                 @else
-                    @if ($condition = $tenant->conditionsInvoice()->where('type', 'I')->where('status', 'A')->first())
+                    @if ($condition = $tenant->conditionsInvoice->first())
                         <p>{{ $condition->content }}</p>
                     @endif  
                 @endif

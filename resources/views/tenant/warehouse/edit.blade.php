@@ -90,19 +90,16 @@
                     document.getElementById("chk-t-real-weight").checked = false;
                     document.getElementById("chk-t-volumetric-weight").checked = false;
                     document.getElementById("total").value = '';
-                    document.getElementById("maritime_rate").readOnly = false;
+                    doCal();
                 } else if (this.value == 'A') {
                     document.getElementById("chk-t-cubic-feet").checked = false;
                     document.getElementById("total").value = '';
-                    document.getElementById("maritime_rate").readOnly = true;
-                    document.getElementById("maritime_rate").value = '';
+                    doCal();
                 } else {
                     document.getElementById("total").value = '';
                     document.getElementById("chk-t-real-weight").checked = false;
                     document.getElementById("chk-t-volumetric-weight").checked = false;
                     document.getElementById("chk-t-cubic-feet").checked = false;
-                    document.getElementById("maritime_rate").readOnly = true;
-                    document.getElementById("maritime_rate").value = '';
                 }
             })
 
@@ -173,10 +170,6 @@
                 doCal();
             });
 
-            $("#maritime_rate").blur(function(){
-                doCal();
-            });
-
             // counter
             $("#trackings").keyup(function(e) {
                 if (e.keyCode == 13){
@@ -209,7 +202,6 @@
             var $totRealWeight = $("#total_real_weight");
             var $totCubicFeet = $("#total_cubic_feet");
             var $trackings = $("#trackings");
-            var maritimeRate = parseFloat($("#maritime_rate").val() || '0');
             var $type = $("#type");
             var hasDet = false;
             
@@ -228,21 +220,29 @@
             var specialRate = $client.find(':selected').attr('data-special_rate') || 'false';
             var payVol = $client.find(':selected').attr('data-pay_volume') || 'false';
             var payFirstLbs = $client.find(':selected').attr('data-pay_first_lbs_price') || 'false';
+            var payExtraMaritime = $client.find(':selected').attr('data-pay_extra_maritime_price') || 'false';
 
             var volPrice = 0;
             var realPrice = 0;
+            var martitimePrice = 0;
+            var extraMartitimePrice = 0;
             var firstLbsPrice = parseFloat($client.find(':selected').attr('data-first_lbs_price') || $branchTo.find(':selected').attr('data-first_lbs_price') || '0');
 
             var using = "";
 
-            if (specialRate == 'true' || payVol == 'true') {
-                realPrice = parseFloat($client.find(':selected').attr('data-real_price') || $branchTo.find(':selected').attr('data-real_price') || '0');
-                volPrice = parseFloat($client.find(':selected').attr('data-vol_price') || $branchTo.find(':selected').attr('data-vol_price') || '0');
-                using = "Special / Volumetric Rate";
-            } else {
-                realPrice = parseFloat($branchTo.find(':selected').attr('data-real_price') || '0');
-                volPrice = parseFloat($branchTo.find(':selected').attr('data-vol_price') || '0');
-                using = "Global branch";
+            if ($type.val() == 'A') {
+                if (specialRate == 'true' || payVol == 'true') {
+                    realPrice = parseFloat($client.find(':selected').attr('data-real_price') || $branchTo.find(':selected').attr('data-real_price') || '0');
+                    volPrice = parseFloat($client.find(':selected').attr('data-vol_price') || $branchTo.find(':selected').attr('data-vol_price') || '0');
+                    using = "Special / Volumetric Rate";
+                } else {
+                    realPrice = parseFloat($branchTo.find(':selected').attr('data-real_price') || '0');
+                    volPrice = parseFloat($branchTo.find(':selected').attr('data-vol_price') || '0');
+                    using = "Global branch";
+                }
+            } else if ($type.val() == 'M') {
+                martitimePrice = parseFloat($client.find(':selected').attr('data-maritime_price') || $branchTo.find(':selected').attr('data-maritime_price') || '0');
+                extraMartitimePrice = parseFloat($client.find(':selected').attr('data-extra_maritime_price') || $branchTo.find(':selected').attr('data-extra_maritime_price') || '0');
             }
 
             $els.each(function(i, el) {
@@ -285,6 +285,8 @@
 
                     $volWeight.val(volWeight);
 
+                    console.log('**************************************************** ', (length * width * height) / 1728)
+
                     totVolWeight += volWeight;
                     totalCubicFeet += cubicFeet;
                     totalVolPrice += volPrice;
@@ -303,7 +305,7 @@
                         $("#total-"+i).val(parseFloat($realWeight.val() || '0') * realPrice);
                     }
                     
-                    @if (!app()->environment('production'))
+                    @if (!request('debug'))
                     console.log('-----calculating...... using = ', using, 'volPrice =', volPrice, 'realPrice = ', realPrice, 'payVol = ', payVol)
                     console.log('realWeight = ', $realWeight.val());
                     console.log('volWeight = ', $volWeight.val());
@@ -314,19 +316,17 @@
                 } // if
             }); // each
 
-            @if (!app()->environment('production'))
+            @if (!request('debug'))
             console.log('firstLbsPrice = ', firstLbsPrice, 'payFirstLbs = ', payFirstLbs, 'totVolWeight = ', totVolWeight, 'totRealWeight = ', totRealWeight, 'totalCubicFeet = ', totalCubicFeet);
-            console.log('realPrice = ', realPrice, 'volPrice = ', volPrice );
+            console.log('realPrice = ', realPrice, 'volPrice = ', volPrice, 'martitimePrice = ', martitimePrice, 'extraMartitimePrice = ', extraMartitimePrice );
             @endif
 
             if ($type.val() == 'A') {
                 if(totVolWeight > 20) {
                     $totVolWeight.val(totVolWeight);
-                    console.log("------------------------------------------------- totVolWeight > 20 ");
                 }
                 else {
                     $totVolWeight.val('');
-                    console.log("------------------------------------------------- totVolWeight < 20 ");
                 }
                 $totRealWeight.val(totRealWeight);
 
@@ -344,15 +344,24 @@
             } else if ($type.val() == 'M') {
                 $totCubicFeet.val(totalCubicFeet);
             }
-
-            totalCubicPrice = parseFloat(totalCubicFeet * maritimeRate);
-
+            
             if ($type.val() == 'A') {
                 if(totVolWeight > 20) $("#dsp-t-vol").text(totalVol);
                 else $("#dsp-t-vol").text('');
                 $("#dsp-t-real").text(totalReal);
-            } else if ($type.val() == 'A') {
+
+                $("#dsp-t-cubic").text('');
+            } else if ($type.val() == 'M') {
+                if (totalCubicFeet > 30) {
+                    var extra = totalCubicFeet - 30;
+                    totalCubicPrice = 30 * martitimePrice + (extra * extraMartitimePrice);
+                } else {
+                   totalCubicPrice = totalCubicFeet * martitimePrice; 
+                }
+
                 $("#dsp-t-cubic").text(totalCubicPrice);
+                $("#dsp-t-real").text('');
+                $("#dsp-t-vol").text('');
             }
 
             setter(totalVol, totalReal, totalCubicPrice, totVolWeight);
@@ -365,25 +374,29 @@
         
         function setter(totVolPrice, totRealPrice, totalCubicPrice, totVolWeight) {
             var $type = $("#type");
+            var $total = $("#total", document);
+            var $chkV = $("#chk-t-volumetric-weight", document);
+            var $chkR = $("#chk-t-real-weight", document);
+            var $chkM = $("#chk-t-cubic-feet", document);
 
-            console.log('<<<<<<<<<<<<<<<<<<<<<<< SETTING  totVolPrice ->',totVolPrice, ' totRealPrice -> ', totRealPrice, ' totalCubicPrice -> ', totalCubicPrice, ' totVolWeight -> ', totVolWeight )
-            
             if ($type.val() == 'A') {
-                var $chkV = $("#chk-t-volumetric-weight", document);
-                var $chkR = $("#chk-t-real-weight", document);
-                var $total = $("#total", document);
 
                 if (totVolWeight > 20 && totVolPrice > totRealPrice) {
-                    $chkR.attr({checked: false, disabled: true}).change();
-                    $chkV.attr({checked: true, disabled: false}).change();
+                    $chkR.prop({checked: false, disabled: true}).change();
+                    $chkV.prop({checked: true, disabled: false}).change();
+                    $chkM.prop({checked: false, disabled: true}).change();
                     $total.val(totVolPrice);
                 } else {
-                    $chkV.attr({checked: false, disabled: true}).change();
-                    $chkR.attr({checked: true, disabled: false}).change();
+                    $chkV.prop({checked: false, disabled: true}).change();
+                    $chkR.prop({checked: true, disabled: false}).change();
+                    $chkM.prop({checked: false, disabled: true}).change();
                     $total.val(totRealPrice);
                 }
             } else {
-
+                $chkM.prop({checked: true, disabled: false}).change();
+                $chkV.prop({checked: false, disabled: true}).change();
+                $chkR.prop({checked: false, disabled: true}).change();
+                $total.val(totalCubicPrice);
             }
         }
 

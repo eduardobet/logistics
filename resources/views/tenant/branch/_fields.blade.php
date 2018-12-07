@@ -156,40 +156,61 @@
 </div>
 
 <div class="row mg-t-10">
-    <div class="col">
-        <div class="form-group">
-            <label class="form-control-label">{{ __('Vol Price') }}:</label>
-            {{ Form::text('vol_price', null, ['class' => 'form-control']) }}
+
+    <div class="col-md-6">
+        <div class="row">
+            
+            <div class="col">
+                <div class="form-group">
+                    <label class="form-control-label">{{ __('Vol Price') }}:</label>
+                    {{ Form::text('vol_price', null, ['class' => 'form-control']) }}
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="form-group">
+                    <label class="form-control-label">{{ __('Real Price') }}:</label>
+                    {{ Form::text('real_price', null, ['class' => 'form-control']) }}
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="form-group">
+                    <label class="form-control-label">{{ __('First LBS Price') }}:</label>
+                    {{ Form::text('first_lbs_price', null, ['class' => 'form-control']) }}
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <div class="col">
-        <div class="form-group">
-            <label class="form-control-label">{{ __('Real Price') }}:</label>
-            {{ Form::text('real_price', null, ['class' => 'form-control']) }}
+    <div class="col-md-6">
+        <div class="row">
+
+            <div class="col">
+                <div class="form-group">
+                    <label class="form-control-label">{{ __('DHL') }}:</label>
+                    {{ Form::text('dhl_price', null, ['class' => 'form-control']) }}
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="form-group">
+                    <label class="form-control-label">{{ __('M/Marit') }}:</label>
+                    {{ Form::text('maritime_price', null, ['class' => 'form-control']) }}
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="form-group">
+                    <label class="form-control-label">{{ __('E/Marit') }}:</label>
+                    {{ Form::text('extra_maritime_price', null, ['class' => 'form-control']) }}
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <div class="col">
-        <div class="form-group">
-            <label class="form-control-label">{{ __('First LBS Price') }}:</label>
-            {{ Form::text('first_lbs_price', null, ['class' => 'form-control']) }}
-        </div>
-    </div>
-
-    <div class="col">
-        <div class="form-group">
-            <label class="form-control-label">{{ __('DHL') }}:</label>
-            {{ Form::text('dhl_price', null, ['class' => 'form-control']) }}
-        </div>
-    </div>
-
-    <div class="col">
-        <div class="form-group">
-            <label class="form-control-label">{{ __('S/Marit') }}:</label>
-            {{ Form::text('maritime_price', null, ['class' => 'form-control']) }}
-        </div>
-    </div>
 </div>
 
 <div class="row mg-t-25 justify-content-between">

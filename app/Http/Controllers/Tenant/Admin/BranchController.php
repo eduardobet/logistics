@@ -65,6 +65,7 @@ class BranchController extends Controller
             'maritime_price' => $request->maritime_price ? $request->maritime_price : 0,
             'color' => $request->color,
             'first_lbs_price' => $request->first_lbs_price ? $request->first_lbs_price : 0,
+            'extra_maritime_price' => $request->extra_maritime_price ? $request->extra_maritime_price : 0,
         ]);
 
         if ($branch) {
@@ -118,6 +119,7 @@ class BranchController extends Controller
         $branch->maritime_price = $request->maritime_price ? $request->maritime_price : 0;
         $branch->color = $request->color;
         $branch->first_lbs_price = $request->first_lbs_price ? $request->first_lbs_price : 0;
+        $branch->extra_maritime_price = $request->extra_maritime_price ? $request->extra_maritime_price : 0;
 
         $updated = $branch->save();
 

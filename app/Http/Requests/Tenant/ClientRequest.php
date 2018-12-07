@@ -49,6 +49,8 @@ class ClientRequest extends AppFormRequest
             'vol_price' => 'sometimes|numeric',
             'real_price' => 'sometimes|numeric',
             'first_lbs_price' => 'sometimes|numeric',
+            'maritime_price' => 'sometimes|numeric',
+            'extra_maritime_price' => 'sometimes|numeric',
         ];
 
         if ($this->isEdit()) {

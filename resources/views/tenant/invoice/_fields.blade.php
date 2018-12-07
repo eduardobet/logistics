@@ -69,6 +69,9 @@
                         <option value='{{ $client->id }}'
                             data-pay_volume='{{ $client->pay_volume }}' data-special_rate='{{ $client->special_rate }}' data-special_maritime='{{ $client->special_maritime }}'
                             data-vol_price='{{ $client->vol_price }}'  data-real_price='{{ $client->real_price }}'
+                            data-pay_extra_maritime_price='{{ var_export($client->pay_extra_maritime_price) }}'
+                            data-extra_maritime_price='{{ var_export($client->extra_maritime_price) }}'
+                            data-maritime_price='{{ var_export($client->maritime_price) }}'
                             {{ (isset($invoice) && $invoice->client_id == $client->id) || old('client_id') == $client->id ? " selected": null }}
                         >
                         [{{ $client->branch ? $client->branch->code : null }}{{ $client->manual_id }}] {{ $client->full_name }}

@@ -113,9 +113,12 @@ class ClientController extends Controller
         $client->special_rate = $request->has('special_rate');
         $client->special_maritime = $request->has('special_maritime');
         $client->pay_first_lbs_price = $request->has('pay_first_lbs_price');
+        $client->pay_extra_maritime_price = $request->has('pay_extra_maritime_price');
         $client->vol_price = $request->vol_price ? $request->vol_price : null;
         $client->real_price = $request->real_price ? $request->real_price : null;
         $client->first_lbs_price = $request->first_lbs_price ? $request->first_lbs_price : null;
+        $client->maritime_price = $request->maritime_price ? $request->maritime_price : null;
+        $client->extra_maritime_price = $request->extra_maritime_price ? $request->extra_maritime_price : null;
 
         $saved = $client->save();
 
@@ -231,9 +234,12 @@ class ClientController extends Controller
         $client->special_rate  = $request->has('special_rate');
         $client->special_maritime  = $request->has('special_maritime');
         $client->pay_first_lbs_price  = $request->has('pay_first_lbs_price');
+        $client->pay_extra_maritime_price  = $request->has('pay_extra_maritime_price');
         $client->vol_price = $request->vol_price ? $request->vol_price : null;
         $client->real_price = $request->real_price ? $request->real_price : null;
         $client->first_lbs_price = $request->first_lbs_price ? $request->first_lbs_price : null;
+        $client->maritime_price = $request->maritime_price ? $request->maritime_price : null;
+        $client->extra_maritime_price = $request->extra_maritime_price ? $request->extra_maritime_price : null;
 
         if ($oldEmail !== $request->email) {
             $client->email = $request->email;

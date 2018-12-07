@@ -70,6 +70,7 @@ class BranchEditionTest extends TestCase
             'maritime_price' => 'XX',
             'first_lbs_price' => 'XX',
             'logo' => 'invalid',
+            'extra_maritime_price' => 'XX',
         ]);
         $response->assertStatus(302);
         $response->assertRedirect(route('tenant.admin.branch.edit', [$tenant->domain, 1]));
@@ -89,6 +90,7 @@ class BranchEditionTest extends TestCase
             'first_lbs_price',
             'color',
             'logo',
+            'extra_maritime_price',
         ]);
     }
 
@@ -155,6 +157,7 @@ class BranchEditionTest extends TestCase
             'maritime_price' => 250,
             'first_lbs_price' => 10,
             'color' => 'blue',
+            'extra_maritime_price' => 9,
         ]);
 
         $this->assertDatabaseHas('branches', [
@@ -182,6 +185,7 @@ class BranchEditionTest extends TestCase
             'maritime_price' => 250,
             'first_lbs_price' => 10,
             'color' => 'blue',
+            'extra_maritime_price' => 9,
         ]);
 
         $response->assertRedirect(route('tenant.admin.branch.list', $tenant->domain));

@@ -20,6 +20,7 @@ trait InvoiceList
         $searching = 'N';
 
         $invoices = $tenant->invoices()
+            ->where('status', 'A')
             ->withAndWhereHas('client', function ($query) {
                 if ($clientId = request('client_id')) {
                     $query->where('id', $clientId)->select('id', 'manual_id', 'first_name', 'last_name');

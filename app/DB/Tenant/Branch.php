@@ -15,7 +15,7 @@ class Branch extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'status', 'ruc', 'dv', 'telephones', 'emails', 'address', 'logo', 'code', 'created_by_code', 'faxes', 'lat', 'lng', 'tenant_id', 'updated_by_code', 'direct_comission', 'should_invoice', 'vol_price', 'real_price', 'dhl_price', 'maritime_price', 'color', 'initial', 'first_lbs_price',
+        'name', 'status', 'ruc', 'dv', 'telephones', 'emails', 'address', 'logo', 'code', 'created_by_code', 'faxes', 'lat', 'lng', 'tenant_id', 'updated_by_code', 'direct_comission', 'should_invoice', 'vol_price', 'real_price', 'dhl_price', 'maritime_price', 'color', 'initial', 'first_lbs_price', 'extra_maritime_price',
     ];
 
     /**

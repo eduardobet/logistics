@@ -19,7 +19,8 @@ class Client extends Model
     protected $fillable = [
         'first_name', 'last_name', 'email', 'tenant_id', 'status', 'type', 'telephones', 'created_by_code', 'updated_by_code', 'pid',
         'org_name', 'country_id', 'department_id', 'city_id', 'notes', 'pay_volume', 'special_rate', 'special_maritime', 'address',
-        'vol_price', 'real_price', 'full_name', 'manual_id', 'branch_id', 'first_lbs_price', 'pay_first_lbs_price',
+        'vol_price', 'real_price', 'full_name', 'manual_id', 'branch_id', 'first_lbs_price', 'pay_first_lbs_price', 'extra_maritime_price',
+        'pay_extra_maritime_price', 'maritime_price',
     ];
 
     /**
@@ -34,6 +35,7 @@ class Client extends Model
         'pay_first_lbs_price' => 'boolean',
         'special_rate' => 'boolean',
         'special_maritime' => 'boolean',
+        'pay_extra_maritime_price' => 'boolean',
     ];
 
     /**

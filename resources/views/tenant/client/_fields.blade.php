@@ -170,7 +170,7 @@
                 if (isset($mode) && $mode==='create') {$flbsPrice = $branch->first_lbs_price; $checkit = true;}
                 else {$flbsPrice = $client->first_lbs_price; $checkit = $client->pay_first_lbs_price;}
             ?>
-            <div class="col-lg-4">
+            <div class="col-lg-2">
                 <div class="input-group">
                     <label class="ckbox">
                         {!! Form::checkbox('pay_first_lbs_price', null, $checkit, ['id' => 'pay_first_lbs_price', 'data-firstlbsprice' => $flbsPrice,  ]) !!} <span>{{ __('First LBS Price') }}</span>
@@ -181,10 +181,36 @@
                 </div>
             </div>
 
+            <?php
+                $maritPrice = null; $checkit = null;
+                if (isset($mode) && $mode==='create') {$maritPrice = $branch->maritime_price; $checkit = true;}
+                else {$maritPrice = $client->maritime_price; $checkit = $client->special_maritime;}
+            ?>
             <div class="col-lg-2">
+                <div class="input-group">
                 <label class="ckbox">
-                    {!! Form::checkbox('special_maritime', null, null, ['id' => 'special_maritime',]) !!} <span>{{ __('Special maritime') }}</span>
+                    {!! Form::checkbox('special_maritime', null, $checkit, ['id' => 'special_maritime',]) !!} <span>{{ __('S/Marit') }}</span>
                 </label>
+
+                &nbsp;
+                    {!! Form::text('maritime_price', $maritPrice, ['class' => 'form-control form-control-sm', 'placeholder' => __('Special maritime'), 'id' => 'maritime_price', ]) !!}
+                </div>
+            </div>
+
+            <?php
+                $eMaritPrice = null; $checkit = null;
+                if (isset($mode) && $mode==='create') {$eMaritPrice = $branch->extra_maritime_price; $checkit = true;}
+                else {$eMaritPrice = $client->extra_maritime_price; $checkit = $client->pay_extra_maritime_price;}
+            ?>
+            <div class="col-lg-2">
+                <div class="input-group">
+                <label class="ckbox">
+                    {!! Form::checkbox('pay_extra_maritime_price', null, $checkit, ['id' => 'pay_extra_maritime_price',]) !!} <span>{{ __('E/Marit') }}</span>
+                </label>
+
+                &nbsp;
+                    {!! Form::text('extra_maritime_price', $eMaritPrice, ['class' => 'form-control form-control-sm', 'placeholder' => __('Extra'), 'id' => 'extra_maritime_price', ]) !!}
+                </div>
             </div>
 
         </div> <!-- row -->

@@ -39,6 +39,14 @@ class InvoiceEmailTest extends TestCase
             'branch_code' => $branchB->code,
         ]);
 
+        $branch->productTypes()->create([
+            'name' => 'Card commission', 'status' => 'A'
+        ]);
+
+        $branch->productTypes()->create([
+            'name' => 'Online shopping', 'status' => 'A'
+        ]);
+
         $invoice = $tenant->invoices()->create([
             'branch_id' => $branch->id,
             'client_id' => $client->id,

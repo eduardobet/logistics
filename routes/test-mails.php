@@ -57,7 +57,7 @@ Route::get('test-send-invoice', function () {
         'is_first' => true,
     ]);
 
-    return new InvoiceCreated($invoice, $tenant->lang);
+    return new InvoiceCreated($tenant, $invoice);
 });
 
 Route::get('test-send-payment', function () {

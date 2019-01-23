@@ -71,6 +71,10 @@ class BranchEditionTest extends TestCase
             'first_lbs_price' => 'XX',
             'logo' => 'invalid',
             'extra_maritime_price' => 'XX',
+
+            'product_types' => [
+                ['name' => 'X', 'status' => 'X', ]
+            ],
         ]);
         $response->assertStatus(302);
         $response->assertRedirect(route('tenant.admin.branch.edit', [$tenant->domain, 1]));
@@ -91,6 +95,9 @@ class BranchEditionTest extends TestCase
             'color',
             'logo',
             'extra_maritime_price',
+
+            'product_types.*.name',
+            'product_types.*.status',
         ]);
     }
 
@@ -129,6 +136,10 @@ class BranchEditionTest extends TestCase
         $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
 
         $admin->branches()->sync([$branch->id]);
+
+        $ptype = $branch->productTypes()->create([
+            'name' => 'Product type', 'status' => 'A',
+        ]);
         
         $response = $this->actingAs($admin)->get(route('tenant.admin.branch.edit', [$tenant->domain, $tenant->id]));
         $response->assertStatus(200);
@@ -158,6 +169,10 @@ class BranchEditionTest extends TestCase
             'first_lbs_price' => 10,
             'color' => 'blue',
             'extra_maritime_price' => 9,
+
+            'product_types' => [
+                ['name' => 'Product type upd', 'status' => 'I', 'rid' => $ptype->id, ]
+            ],
         ]);
 
         $this->assertDatabaseHas('branches', [
@@ -187,6 +202,12 @@ class BranchEditionTest extends TestCase
             'color' => 'blue',
             'extra_maritime_price' => 9,
         ]);
+
+        $ptype = $ptype->fresh();
+
+        $this->assertEquals('I', $ptype->status);
+        $this->assertEquals($admin->id, $ptype->updated_by_code);
+        $this->assertEquals('Product type upd', $ptype->name);
 
         $response->assertRedirect(route('tenant.admin.branch.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);

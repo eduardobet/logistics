@@ -23,6 +23,7 @@
                     'invoice' => new \Logistics\DB\Tenant\Invoice,
                     'mode' => 'create',
                     'payment' => new \Logistics\DB\Tenant\Payment,
+                    'product_types' => $product_types,
                 ])
                 <input type="hidden" id="qty" name="qty" value="">
             </form>

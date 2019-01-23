@@ -90,7 +90,7 @@ class InvoiceCreationTest extends TestCase
         $response = $this->actingAs($admin)->get(route('tenant.invoice.create', $tenant->domain));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.invoice.create');
-        $response->assertViewHas(['clients',]);
+        $response->assertViewHas(['clients', 'product_types']);
 
         $response = $this->actingAs($admin)->post(route('tenant.invoice.store', $tenant->domain), [
             'branch_id' => $branch->id,

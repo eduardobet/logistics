@@ -344,6 +344,11 @@ class InvoiceEditionTest extends TestCase
             'client_id' => $client->id,
             'total' => 160,
         ]);
+
+        $response = $this->actingAs($admin)->get(route('tenant.invoice.edit', [$tenant->domain, $invoice->id]));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.invoice.edit');
+        $response->assertViewHas(['clients', 'product_types']);
         
         $response = $this->actingAs($admin)->post(route('tenant.invoice.inactive', [$tenant->domain, $invoice->id]), [
             'invoice_id' => $invoice->id,

@@ -69,6 +69,8 @@ class BranchController extends Controller
         ]);
 
         if ($branch) {
+            $branch->saveProductTypes($request);
+
             $this->uploadLogo($request, $branch);
 
             return redirect()->route('tenant.admin.branch.list', $request->domain)
@@ -124,6 +126,8 @@ class BranchController extends Controller
         $updated = $branch->save();
 
         if ($updated) {
+            $branch->saveProductTypes($request);
+
             $this->uploadLogo($request, $branch);
             
             return redirect()->route('tenant.admin.branch.list', $request->domain)

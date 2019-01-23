@@ -22,6 +22,7 @@ Route::group(['middleware' => ['auth', 'admin'], 'prefix' => 'admin'], function 
     Route::post('dashboard/branches/store', 'Tenant\Admin\BranchController@store')->name('tenant.admin.branch.store');
     Route::get('dashboard/branch/{id}/edit', 'Tenant\Admin\BranchController@edit')->name('tenant.admin.branch.edit');
     Route::patch('dashboard/branch/update', 'Tenant\Admin\BranchController@update')->name('tenant.admin.branch.update');
+    Route::get('dashboard/branch/product-type-template', 'Tenant\Admin\ProductTypeTemplateController@get')->name('tenant.admin.branch.product-type-tmpl');
     
 
     // employees

@@ -34,11 +34,11 @@
         </tr>
      @endif
     
-    @foreach ($invoice->details as $detail)
+    @foreach ($idetails as $detail)
         @if (!$invoice->warehouse_id)
             <tr>
                 <td style="border: solid 1px;">{{ $detail->qty }}</td>
-                <td style="border: solid 1px;">{{ [1 => __('Online shopping', [], $lang), 2 => __('Card commission', [], $lang), ][$detail->type] }}</td>
+                <td style="border: solid 1px;">{{ $detail->productType ? $detail->productType->name : 'N/A' }}</td>
                 <td style="border: solid 1px;">{{ $detail->description }}</td>
                 <td style="border: solid 1px;">{{ $detail->id_remote_store }}</td>
                 <td style="border: solid 1px;text-align:right;">${{ number_format($detail->total, 2) }}</td>

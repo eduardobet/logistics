@@ -32,6 +32,7 @@
 @endsection
 
 @section('xtra_scripts')
+    @include('common._add_more')
     <script>
         $(function() {
             $(".btn-view-image").click(function() {

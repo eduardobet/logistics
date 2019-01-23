@@ -99,7 +99,7 @@
                             
                             @foreach ($invoice->details as $detail)
                                 <tr>
-                                    <td>{{ [1=> __('Online shopping'), 2=> __('Card commission'), 3 => __('Direct comission') ][$detail->type] }}</td>
+                                    <td>{{ $detail->productType ? $detail->productType->name : 'N/A' }}</td>
                                     <td class="tx-12">{{ $detail->description }}</td>
                                     <td class="tx-center">{{ $detail->qty }}</td>
                                     <td class="tx-right">${{ number_format( $detail->total, 2 ) }}</td>

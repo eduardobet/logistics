@@ -107,7 +107,8 @@
     @foreach ($invoice->details as $key => $idetail)
         
         @include('tenant.invoice.detail', [
-            'detail' => $idetail
+            'detail' => $idetail,
+            'product_types' => $product_types,
         ])
         
     @endforeach

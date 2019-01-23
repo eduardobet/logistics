@@ -28,7 +28,6 @@
                 <li class="nav-item">
                     <a class="nav-link tab-toggle" href="#remote-addresses" data-container="remote-addresses" data-toggle="tab">{{ __('Remote addresses') }}</a>
                 </li>
-                </li>
                 <li class="nav-item">
                     <a class="nav-link tab-toggle" href="#conditions" data-container="conditions" data-toggle="tab">{{ __('Conditions') }}</a>
                 </li>

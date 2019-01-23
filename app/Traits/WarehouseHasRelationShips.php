@@ -3,7 +3,6 @@
 namespace Logistics\Traits;
 
 use Illuminate\Support\Fluent;
-use Logistics\Mail\Tenant\InvoiceCreated;
 use Logistics\Jobs\Tenant\SendInvoiceCreatedEmail;
 use Logistics\Notifications\Tenant\WarehouseActivity;
 

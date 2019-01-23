@@ -74,6 +74,7 @@ class InvoiceController extends Controller
     {
         return view('tenant.invoice.create', [
             'clients' => (new Client())->getClientsByBranch(request('branch_id')),
+            'product_types' => auth()->user()->currentBranch()->productTypes()->active()->get(),
         ]);
     }
 
@@ -149,7 +150,9 @@ class InvoiceController extends Controller
         $tenant = $this->getTenant();
 
         $invoice = $tenant->invoices()->with([
-            'details',
+            'details' => function ($detail) {
+                $detail->with('productType');
+            },
             'creator',
             'editor',
             'branch',
@@ -182,7 +185,7 @@ class InvoiceController extends Controller
     public function edit($domain, $id)
     {
         $tenant = $this->getTenant();
-        $invoice = $tenant->invoices()->with(['details', 'creator', 'editor', 'client', 'payments' => function ($payment) {
+        $invoice = $tenant->invoices()->with(['details', 'creator', 'editor', 'client', 'branch', 'payments' => function ($payment) {
             $payment->with(['creator']);
         }]);
 
@@ -196,6 +199,7 @@ class InvoiceController extends Controller
             'clients' => (new Client())->getClientsByBranch(request('branch_id')),
             'invoice' => $invoice,
             'payments' => $invoice->payments,
+            'product_types' => $invoice->branch->productTypes()->active()->get(),
         ]);
     }
 
@@ -273,7 +277,9 @@ class InvoiceController extends Controller
     public function invoiceDetTpl($tenant)
     {
         return response()->json([
-            'view' => view('tenant.invoice.detail')->render(),
+            'view' => view('tenant.invoice.detail', [
+                'product_types' => auth()->user()->currentBranch()->productTypes()->active()->get(),
+            ])->render(),
         ]);
     }
 
@@ -287,7 +293,9 @@ class InvoiceController extends Controller
     {
         $tenant = $this->getTenant();
         
-        $invoice = $tenant->invoices()->with('details');
+        $invoice = $tenant->invoices()->with(['details' => function ($detail) {
+            $detail->with('productType');
+        }]);
 
         if (!auth()->user()->isSuperAdmin()) {
             $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
@@ -298,7 +306,8 @@ class InvoiceController extends Controller
         $payments = $invoice->payments;
 
         $client = $invoice->client()->with('branch')->first();
-        $box = "{$client->branch->code}{$client->manual_id}";
+        $branch = $client->branch;
+        $box = "{$branch->code}{$client->manual_id}";
 
         $data = [
             'creatorName' => $invoice->creator ? $invoice->creator->full_name : null,
@@ -307,7 +316,7 @@ class InvoiceController extends Controller
             'invoice' => $invoice,
             'tenant' => $tenant,
             'ibranch' => $invoice->branch,
-            'amountPaid' => $payments->sum('amount_paid')
+            'amountPaid' => $payments->sum('amount_paid'),
         ];
 
         if (app()->environment('testing') || request('html')) {

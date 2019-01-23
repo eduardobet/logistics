@@ -49,6 +49,7 @@ class InvoiceCreated extends Mailable
                 'ibranch' => $ibranch,
                 'client' => $client,
                 'box' => $box,
+                'idetails' => $this->invoice->details()->with('productType')->get(),
                 'payments' => $this->invoice->payments,
                 'creatorName' => $this->invoice->creator ? $this->invoice->creator->full_name : null,
                 'lang' => $lang,

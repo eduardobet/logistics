@@ -17,7 +17,7 @@ $key = isset($key) ? $key : ':index:';
             <div class="col-10">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Type') }}:<span class="tx-danger">*</span></label>
-                    {!! Form::select("invoice_detail[{$key}][type]",['' => '----', 1=> __('Online shopping'), 2=> __('Card commission'), ], $idetail->type, ['class' => 'form-control form-control-sm type', 'required' => '1', ]) !!}
+                    {!! Form::select("invoice_detail[{$key}][type]",['' => '----'] + $product_types->pluck('name', 'id')->toArray(), $idetail->type, ['class' => 'form-control form-control-sm type', 'required' => '1', ]) !!}
                 </div>
             </div>
         </div>

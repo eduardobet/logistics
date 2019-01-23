@@ -27,4 +27,9 @@ class InvoiceDetail extends Model
         'real_price',
         'is_dhll',
     ];
+
+    public function productType()
+    {
+        return $this->belongsTo(\Logistics\DB\Tenant\ProductType::class, 'type', 'id');
+    }
 }

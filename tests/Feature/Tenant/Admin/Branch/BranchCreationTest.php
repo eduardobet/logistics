@@ -70,6 +70,10 @@ class BranchCreationTest extends TestCase
             'first_lbs_price' => 'XX',
             'logo' => 'invalid',
             'extra_maritime_price' => 'XX',
+
+            'product_types' => [
+                ['name' => 'X', 'status' => 'X', ]
+            ],
         ]);
         $response->assertStatus(302);
         $response->assertRedirect(route('tenant.admin.branch.create', $tenant->domain));
@@ -90,6 +94,9 @@ class BranchCreationTest extends TestCase
             'initial',
             'logo',
             'extra_maritime_price',
+
+            'product_types.*.name',
+            'product_types.*.status',
         ]);
     }
 
@@ -152,7 +159,14 @@ class BranchCreationTest extends TestCase
             'first_lbs_price' => 5,
             'color' => 'red',
             'extra_maritime_price' => 9,
+
+            // product type
+            'product_types' => [
+                ['name' => 'Product type 1', 'status' => 'A', 'rid' => null, ]
+            ],
         ]);
+
+        $branch = Branch::all()->last();
 
         $this->assertDatabaseHas('branches', [
             "tenant_id" => $tenant->id,
@@ -178,6 +192,13 @@ class BranchCreationTest extends TestCase
             'first_lbs_price' => 5,
             'color' => 'red',
             'extra_maritime_price' => 9,
+        ]);
+
+        $this->assertDatabaseHas('product_types', [
+            "branch_id" => $branch->id,
+            "created_by_code" => $admin->id,
+            "name" => "Product type 1",
+            'status' => 'A',
         ]);
 
         $response->assertRedirect(route('tenant.admin.branch.list', $tenant->domain));

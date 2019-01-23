@@ -40,7 +40,9 @@ class Tenant
             ]);
             
             if (auth()->check()) {
-                if (auth()->user()->tenant_id != $tenant->id) {
+                if (auth()->user()->tenant_id != $tenant->id || auth()->user()->status == 'I') {
+                    auth()->logout();
+
                     return redirect()
                         ->route('app.home')
                         ->withErrors([__('You cannot access this site!')]);

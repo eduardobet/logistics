@@ -43,6 +43,10 @@ class BranchRequest extends AppFormRequest
             'extra_maritime_price' => 'sometimes|numeric',
             'color' => 'required',
             'logo' => 'sometimes|mimes:png,jpg,jpeg|max:1024',
+
+            'product_types' => 'sometimes|array',
+            'product_types.*.name' => 'sometimes|between:3,255',
+            'product_types.*.status' => 'sometimes|in:A,I',
         ];
 
         if ($this->isEdit()) {

@@ -32,6 +32,7 @@
 
 @section('xtra_scripts')
     <script>
+        @include('common._add_more')
         $(function() {
             $("#color").select2()
         })

@@ -174,6 +174,78 @@ class EmployeeCreationTest extends TestCase
     }
 
     /** @test */
+    public function employee_can_be_created_with_a_password()
+    {
+        $this->withoutExceptionHandling();
+
+        Queue::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $permission = factory(Permission::class)->create(['tenant_id' => $tenant->id, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $admin->branches()->sync([$branch->id]);
+
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store', $tenant->domain), [
+            'first_name' => 'Firstname',
+            'last_name' => 'Lastname',
+            'email' => 'employee@tenant.test',
+            'type' => 'E',
+            'status' => 'L',
+            'branches' => [$branch->id],
+            'pid' => 'PID',
+            'telephones' => '555-5555',
+            'position' => 1,
+            'address' => 'In the middle of nowhere',
+            'notes' => 'Some notes about the employee',
+            'permissions' => [$permission->slug],
+            'branches_for_invoices' => [$branch->id],
+            'password' => 'secret123',
+        ]);
+
+        $response->assertRedirect(route('tenant.admin.employee.list', $tenant->domain));
+        $response->assertSessionHas(['flash_success']);
+
+        tap($tenant->employees->where('type', 'E')->fresh()->first(), function ($employee) use ($admin, $permission) {
+            $this->assertEquals('A', $employee->status);
+            $this->assertNotNull($employee->password);
+        });
+    }
+
+    /** @test */
+    public function password_is_validated_when_provided()
+    {
+        // $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create();
+        $permission = factory(Permission::class)->create(['tenant_id' => $tenant->id, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $admin->branches()->sync([$branch->id]);
+
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store', $tenant->domain), [
+            'first_name' => 'Firstname',
+            'last_name' => 'Lastname',
+            'email' => 'employee@tenant.test',
+            'type' => 'E',
+            'status' => 'L',
+            'branches' => [$branch->id],
+            'pid' => 'PID',
+            'telephones' => '555-5555',
+            'position' => 1,
+            'address' => 'In the middle of nowhere',
+            'notes' => 'Some notes about the employee',
+            'permissions' => [$permission->slug],
+            'branches_for_invoices' => [$branch->id],
+            'password' => 'pwd',
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('tenant.admin.employee.create', $tenant->domain));
+        $response->assertSessionHasErrors('password');
+    }
+
+    /** @test */
     public function it_successfully_creates_a_main_administrator()
     {
         $this->withoutExceptionHandling();
@@ -268,5 +340,35 @@ class EmployeeCreationTest extends TestCase
             return $job->tenant->id === $tenant->id
                 && $job->employee->id === $employee->id;
         });
+    }
+
+    /** @test */
+    public function employee_was_created_queue_not_pushed_when_password_is_provided()
+    {
+        $this->withoutExceptionHandling();
+
+        Queue::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $admin->branches()->sync([$branch->id]);
+
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.store', $tenant->domain), [
+            'first_name' => 'Firstname',
+            'last_name' => 'Lastname',
+            'email' => 'employee@tenant.test',
+            'type' => 'E',
+            'status' => 'L',
+            'branches' => [$branch->id],
+            'pid' => 'PID',
+            'telephones' => '555-5555',
+            'position' => 1,
+            'password' => 'secret123',
+        ]);
+
+        $employee = $tenant->employees->where('type', 'E')->fresh()->first();
+
+        Queue::assertNotPushed(SendEmployeeWelcomeEmail::class);
     }
 }

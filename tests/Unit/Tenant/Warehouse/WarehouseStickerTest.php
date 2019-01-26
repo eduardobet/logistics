@@ -44,7 +44,7 @@ class WarehouseStickerTest extends TestCase
         $admin->branches()->sync([$branch->id]);
         $admin->branchesForInvoice()->sync([$branchFrom->id,]);
 
-        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'pay_volume' => true, 'vol_price' => 2.00, 'branch_id' => $branchTo->id, 'manual_id' => 1, ]);
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'pay_volume' => true, 'vol_price' => 2.00, 'branch_id' => $branchTo->id, 'manual_id' => 1, 'first_name' => 'First', 'last_name' => 'Last', ]);
 
         $box = factory(Box::class)->create([
             'tenant_id' => $tenant->id,

@@ -165,6 +165,48 @@ class EmployeeEditionTest extends TestCase
     }
 
     /** @test */
+    public function admin_can_update_the_employee_to_add_him_a_password()
+    {
+        $this->withoutExceptionHandling();
+
+        Queue::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $permissionA = factory(Permission::class)->create(['tenant_id' => $tenant->id, ]);
+        $permissionB = factory(Permission::class)->create(['tenant_id' => $tenant->id, 'name' => 'Perm Name B', 'slug' => 'p-b']);
+
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $branchA = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch Name B', ]);
+        $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, 'password' =>null, ]);
+        $employee->branches()->sync([$branchA->id]);
+        $admin->branches()->sync([$branchA->id]);
+
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.update', $tenant->domain), [
+            'id' => $employee->id,
+            'first_name' => 'Employee f name update',
+            'last_name' => 'Employee l name update',
+            'email' => $employee->email,
+            'type' => 'A',
+            'status' => 'A',
+            'branches' => [$branchB->id],
+            'pid' => 'PID',
+            'telephones' => '555-5555',
+            'position' => 1,
+            'address' => 'In the middle of nowhere',
+            'notes' => 'Some notes about the employee',
+            'permissions' => [$permissionA->slug, $permissionB->slug],
+            'password' => 'secret112',
+            '_method' => 'PATCH',
+        ]);
+
+        $employee = $tenant->employees->where('email', $employee->email)->fresh()->first();
+
+        $this->assertNotNull($employee->password);
+        $this->assertEquals('A', $employee->status);
+    }
+
+    /** @test */
     public function job_is_pushed_if_the_email_has_changed()
     {
         $this->withoutExceptionHandling();
@@ -212,6 +254,51 @@ class EmployeeEditionTest extends TestCase
             return $job->tenant->id === $tenant->id
                 && $job->employee->id === $employee->id;
         });
+    }
+
+    /** @test */
+    public function job_is_not_pushed_when_password_is_provided_even_if_the_email_has_changed()
+    {
+        $this->withoutExceptionHandling();
+
+        Queue::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $permissionA = factory(Permission::class)->create(['tenant_id' => $tenant->id, ]);
+        $permissionB = factory(Permission::class)->create(['tenant_id' => $tenant->id, 'name' => 'Perm Name B', 'slug' => 'p-b']);
+
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $branchA = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch Name B', ]);
+        $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, ]);
+        $employee->branches()->sync([$branchA->id]);
+        $admin->branches()->sync([$branchA->id]);
+
+        $response = $this->actingAs($admin)->get(route('tenant.admin.employee.edit', [$tenant->domain, 'id' => $employee->id]));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.employee.edit');
+        $response->assertViewHas('positions');
+        $response->assertViewHas('permissions');
+
+        $response = $this->actingAs($admin)->post(route('tenant.admin.employee.update', $tenant->domain), [
+            'id' => $employee->id,
+            'first_name' => 'Employee f name update',
+            'last_name' => 'Employee l name update',
+            'email' => 'employee.update@test.com',
+            'type' => 'A',
+            'status' => 'A',
+            'branches' => [$branchB->id],
+            'pid' => 'PID',
+            'telephones' => '555-5555',
+            'position' => 1,
+            'address' => 'In the middle of nowhere',
+            'notes' => 'Some notes about the employee',
+            'permissions' => [$permissionA->slug, $permissionB->slug],
+            'password' => 'password1244',
+            '_method' => 'PATCH',
+        ]);
+
+        Queue::assertNotPushed(SendEmployeeWelcomeEmail::class);
     }
 
     /** @test */

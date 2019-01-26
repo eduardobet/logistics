@@ -79,7 +79,6 @@ class EmployeeController extends Controller
             'type' => $request->type,
             'is_main_admin' => $request->has('is_main_admin'),
             'full_name' => $request->first_name . ' ' . $request->last_name,
-            'status' => 'L',
             'pid' => $request->pid,
             'telephones' => $request->telephones,
             'position' => $request->position,
@@ -87,12 +86,16 @@ class EmployeeController extends Controller
             'notes' => $request->notes,
             'created_by_code' => auth()->id(),
             'permissions' => $request->permissions && is_array($request->permissions) ? $request->permissions : [],
+            'password' => $request->password ? bcrypt($request->password) : null,
+            'status' => $request->password ? 'A' : 'L',
         ]);
 
         if ($employee) {
             $employee->branches()->sync($request->branches);
 
-            dispatch(new SendEmployeeWelcomeEmail($tenant, $employee));
+            if (!$request->password) {
+                dispatch(new SendEmployeeWelcomeEmail($tenant, $employee));
+            }
 
             $employee->branchesForInvoice()->sync($request->branches_for_invoices);
 
@@ -132,7 +135,7 @@ class EmployeeController extends Controller
         $employee->last_name  = $request->last_name;
         $employee->email  = $request->email;
         $employee->type  = $request->type;
-        $employee->status = $request->status;
+        $employee->status = $request->password ? 'A' : $request->status;
         $employee->is_main_admin = $request->has('is_main_admin');
         $employee->full_name = $request->first_name . ' ' . $request->last_name;
         $employee->pid = $request->pid;
@@ -142,6 +145,10 @@ class EmployeeController extends Controller
         $employee->address = $request->address;
         $employee->updated_by_code = auth()->id();
         $employee->permissions = $request->permissions && is_array($request->permissions) ? $request->permissions : [];
+        
+        if ($request->password) {
+            $employee->password = bcrypt($request->password);
+        }
 
         $updated = $employee->update();
 
@@ -149,7 +156,7 @@ class EmployeeController extends Controller
         $employee->branchesForInvoice()->sync($request->branches_for_invoices);
 
         if ($updated) {
-            if ($oldEmail !== $request->email) {
+            if ($oldEmail !== $request->email && !$request->password) {
                 dispatch(new SendEmployeeWelcomeEmail($tenant, $employee));
             }
 

@@ -48,7 +48,7 @@ class WelcomeClientEmailTest extends TestCase
         $this->assertEquals("Welcome {$client->full_name}", $email->build()->subject);
 
         $this->assertContains("Hello {$client->full_name}", $content);
-        $this->assertContains("welcome to {$tenant->name}", $content);
+        $this->assertContains("welcome to {$branch->name}", $content);
         $this->assertContains("Below, your box information:", $content);
         $this->assertContains("Box number:", $content);
         $this->assertContains("{$box->branch_code}{$client->id}", $content);

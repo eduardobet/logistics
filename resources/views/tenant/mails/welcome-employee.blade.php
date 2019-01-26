@@ -5,9 +5,9 @@
         @endcomponent
 @endslot
 
-{{ __('Hello :who welcome to :what', ['who' => $employee->full_name, 'what' => $tenant->name ] ) }}. <br><br>{{ __('Please click the following link to activate your account.') }}: <a href="{{ route('tenant.employee.get.unlock', [$tenant->domain, $employee->email, $employee->token]) }}">{{ route('tenant.employee.get.unlock', [$tenant->domain, $employee->email, $employee->token]) }}</a><br><br>
+{{ __('Hello :who welcome to :what', ['who' => $employee->full_name, 'what' => $ubranch->name ], $lang ) }}. <br><br>{{ __('Please click the following link to activate your account.', [], $lang) }}: <a href="{{ route('tenant.employee.get.unlock', [$tenant->domain, $employee->email, $employee->token]) }}">{{ route('tenant.employee.get.unlock', [$tenant->domain, $employee->email, $employee->token]) }}</a><br><br>
 
-<h3>{{ __('Some other interesting links') }}:</h3>
+<h3>{{ __('Some other interesting links', [], $lang) }}:</h3>
 * {{ route('tenant.home', $tenant->domain) }}
 * {{ route("tenant." . ($employee->isAdmin() ? "admin": "employee") . ".dashboard", $tenant->domain ) }}
 

@@ -23,9 +23,9 @@ class WelcomeEmployeeEmailTest extends TestCase
         $tenant = factory(TenantModel::class)->create(['lang' => 'en']);
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
-        $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, ]);
-        $admin->branches()->sync([$admin->id]);
-        $employee->branches()->sync([$employee->id]);
+        $employee = factory(User::class)->states('employee')->create(['tenant_id' => $tenant->id, 'id' => 5, ]);
+        
+        $branch->users()->attach([$admin->id, $employee->id]);
 
         $email = new WelcomeEmployeeEmail($tenant, $employee);
         $data = $email->buildViewData();
@@ -37,7 +37,7 @@ class WelcomeEmployeeEmailTest extends TestCase
 
         $this->assertEquals("Welcome {$employee->full_name}", $email->build()->subject);
         $this->assertContains("Hello {$employee->full_name}", $content);
-        $this->assertContains("welcome to {$tenant->name}", $content);
+        $this->assertContains("welcome to {$branch->name}", $content);
         $this->assertContains("Please click the following link to activate your account.", $content);
         $this->assertContains(route('tenant.employee.get.unlock', [$tenant->domain, $employee->email, $employee->token]), $content);
         $this->assertContains("Some other interesting links:", $content);

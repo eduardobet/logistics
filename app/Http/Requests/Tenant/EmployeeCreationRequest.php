@@ -38,6 +38,7 @@ class EmployeeCreationRequest extends AppFormRequest
             'telephones' => 'required|mass_phone',
             'permissions' => 'sometimes|array',
             'branches_for_invoices' => 'sometimes|array',
+            'password' => 'sometimes|alpha_num_pwd',
         ];
 
         if ($this->isEdit()) {

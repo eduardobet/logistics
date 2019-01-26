@@ -58,10 +58,17 @@
                 </div>
             </div>
 
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="form-group">
                     <label class="form-control-label">{{ __('Telephones') }}: <span class="tx-danger">*</span></label>
                     {{ Form::text('telephones', null, ['class' => 'form-control', 'required' => 'required']) }}
+                </div>
+            </div>
+
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ __('Password') }}: <span class="tx-danger"></span></label>
+                    {{ Form::password('password', ['class' => 'form-control', ]) }}
                 </div>
             </div>
 

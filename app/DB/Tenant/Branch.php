@@ -55,6 +55,11 @@ class Branch extends Model
         return $this->hasMany(\Logistics\DB\Tenant\ProductType::class);
     }
 
+    public function users()
+    {
+        return $this->belongsToMany(\Logistics\DB\User::class);
+    }
+
     public function saveProductTypes($request)
     {
         $ptypes = $request->product_types ?: [];

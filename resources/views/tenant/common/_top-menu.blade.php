@@ -6,7 +6,7 @@
 
           <div class="search-box">
             <input type="text" id="q" class="form-control" placeholder="{{ __('Search') }}">
-            <button id="btn-search" class="btn btn-primary bg-reef"><i class="fa fa-search"></i></button>
+            <button id="btn-search" class="btn btn-primary"><i class="fa fa-search"></i></button>
           </div><!-- search-box -->
         </div><!-- slim-header-left -->
         <div class="slim-header-right">

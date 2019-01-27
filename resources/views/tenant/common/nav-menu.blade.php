@@ -1,4 +1,4 @@
-<div class="slim-navbar">
+<div class="slim-navbar" style="background-color: #1b84e7">
       <div class="container">
         <ul class="nav">
           

@@ -115,3 +115,10 @@ Breadcrumbs::for('tenant.warehouse.cargo-entry.show', function ($trail) use ($ty
     $trail->add(__('Cargo entries'), route('tenant.warehouse.cargo-entry.list', request()->domain));
     $trail->add(__('Showing :what', ['what' => __('Cargo entry')]), route('tenant.warehouse.cargo-entry.show', [request()->domain, request('id')]));
 });
+
+
+// incomes
+Breadcrumbs::for('tenant.income.list', function ($trail) use ($type) {
+    $trail->parent("tenant.{$type}.dashboard");
+    $trail->add(__('Incomes'), '');
+});

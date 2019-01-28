@@ -60,7 +60,7 @@
             </div><!-- dropdown-menu -->
           </li>
 
-          <li class="nav-item with-sub {{ active(['tenant.payment.*']) }}">
+          <li class="nav-item with-sub {{ active(['tenant.payment.*', 'tenant.income.*']) }}">
             <a class="nav-link" href="#">
               <i class="icon ion-ios-paper-outline"></i>
               <span>{{ __('Accounting') }}</span>
@@ -68,6 +68,7 @@
             <div class="sub-item">
               <ul>
                 <li><a href="{{ route('tenant.payment.list', [$tenant->domain, 'branch_id' => $branch->id, ])  }}">{{ __('Payments') }}</a></li>
+                <li><a href="{{ route('tenant.income.list', [$tenant->domain, 'branch_id' => $branch->id, ])  }}">{{ __('Incomes') }}</a></li>
                 <!--<li><a href="#">{{ __('New expense') }}</a></li>
                 <li><a href="#">{{ __('Expense list') }}</a></li>
                 <li><a href="#">{{ __('Petty cash') }}</a></li>-->

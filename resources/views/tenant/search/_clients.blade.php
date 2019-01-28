@@ -48,3 +48,8 @@
     </div>
     
 @endforeach
+
+<div id="result-paginated" class="mg-t-25">
+    <hr>
+    {{ $results->appends(['cbranch_id' => request('cbranch_id'), 'q' => request('q') ])->links() }}
+</div>

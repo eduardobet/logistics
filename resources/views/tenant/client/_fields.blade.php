@@ -13,6 +13,29 @@
 
     <div class="tab-pane active" id="informations">
 
+        @if ($mode == 'create')
+            @if ( $user->isSuperAdmin() || $user->isAdmin() )
+                <div class="row mg-t-25">
+                    <div class="col-lg-12">
+                        <div class="form-group mg-b-10-force">
+                            <label class="form-control-label">{{ __('Branch') }}: <span class="tx-danger">*</span></label>
+                            <select name="branch_id" id="branch_id" class="form-control" required>
+                                @foreach ($branches as $tbranch)
+                                    <option value="{{ old('branch_id', $tbranch->id) }}" data-bcode="{{ $tbranch->code }}" data-binitial="{{ $tbranch->initial }}"
+                                        {{ $tbranch->id == $branch->id ? "selected" : null }}
+                                    >
+                                        {{ $tbranch->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <input type="hidden" name="branch_id" value="{{ $branch->id }}">    
+            @endif
+        @endif
+
         <div class="row mg-t-25">
 
             <div class="col-lg-2">

@@ -541,4 +541,50 @@ class ClientCreationTest extends TestCase
 
         Queue::assertNotPushed(SendClientWelcomeEmail::class);
     }
+
+    /** @test */
+    public function admin_can_create_a_client_in_any_branch()
+    {
+        $this->withoutExceptionHandling();
+
+        Queue::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $otherBranch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Other branch', ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+
+        $tenant->remoteAddresses()->createMany([
+            ['type' => 'A', 'address' => '8450 NW 70 TH ST MIAMI, FLORIDA 33166-2687', 'telephones' => '+1(786)3252841', 'status' => 'A', ],
+            ['type' => 'M', 'address' => '8454 NW 70 TH ST MIAMI, FLORIDA 33166', 'telephones' => '+1(786)3252841', 'status' => 'A', ],
+        ]);
+
+        \Gate::define('create-client', function ($admin) {
+            return true;
+        });
+
+        $response = $this->actingAs($admin)->get(route('tenant.client.create', $tenant->domain));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.client.create');
+        $response->assertViewHas('branches');
+
+        $response = $this->actingAs($admin)->post(route('tenant.client.store', $tenant->domain), [
+            'first_name' => 'The',
+            'last_name' => 'Client',
+            'pid' => 'E-8-124926',
+            'email' => 'client@company.com',
+            'telephones' => '555-5555, 565-5425',
+            'type' => 'E',
+            'org_name' => 'The Org Name',
+            'status' => 'A',
+            'branch_id' => $otherBranch->id,
+            'branch_code' => 'B-CODE',
+            'branch_initial' => 'B-INITIAL',
+        ]);
+
+        $this->assertDatabaseHas('clients', [
+            'branch_id' => $otherBranch->id,
+        ]);
+    }
 }

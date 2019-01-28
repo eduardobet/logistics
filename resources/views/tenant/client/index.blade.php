@@ -78,7 +78,7 @@
                       <td>{{ $client->telephones }}</td>
                       <td class="text-center">
                         @can('edit-client')
-                          <a href="{{ $client->branch->id != $branch->id ? '#' : route('tenant.client.edit', [$tenant->domain, $client->id]) }}"><i class="fa fa-pencil-square-o"></i></a>
+                          <a href="{{ $client->branch->id != $branch->id && !$user->isAdmin() ? '#' : route('tenant.client.edit', [$tenant->domain, $client->id]) }}"><i class="fa fa-pencil-square-o"></i></a>
                           &nbsp;&nbsp;&nbsp;&nbsp;
                         @endcan
                         <a href="#!" class="resend-email-box{{ $tenant->email_allowed_dup===$client->email ? '-nope' : null }}" data-url="{{ route('tenant.client.welcome.email.resend', $tenant->domain) }}"

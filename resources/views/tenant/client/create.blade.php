@@ -19,9 +19,9 @@
 
         <div class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
             {!! Form::open(['route' => ['tenant.client.store', $tenant->domain], 'id' => 'frm-client']) !!}
-                <input type="hidden" name="branch_id" value="{{ $branch->id }}">
-                <input type="hidden" name="branch_code" value="{{ $branch->code }}">
-                <input type="hidden" name="branch_initial" value="{{ $branch->initial }}">
+                
+                <input type="hidden" name="branch_code" id="branch_code" value="{{ $branch->code }}">
+                <input type="hidden" name="branch_initial" id="branch_initial" value="{{ $branch->initial }}">
                 {!! Form::hidden('branches[]', $branch->id) !!}
 
                 @if ($tenant->migration_mode)
@@ -105,6 +105,18 @@
                  $tmpVP.val($self.data('firstlbsprice')); 
               }
           });
+
+          //
+          @if ( $user->isSuperAdmin() || $user->isAdmin() )
+          $("#branch_id").change(function(e) {
+              var self = $(this);
+              var bcode = self.find(":selected").data('bcode');
+              var binitial = self.find(":selected").data('binitial');
+              $("#branch_code").val(bcode);
+              $("#branch_initial").val(binitial);
+              $("#basic-addon1").text(bcode);
+          })
+          @endif
       });
     </script>  
 @endsection

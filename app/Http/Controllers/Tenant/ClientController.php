@@ -59,9 +59,16 @@ class ClientController extends Controller
      */
     public function create()
     {
-        return view('tenant.client.create', [
+        $user = auth()->user();
+        $data = [
             'countries' => (new Country())->getCountryAsList($this->getTenantId()),
-        ]);
+        ];
+
+        if ($user->isSuperAdmin() || $user->isAdmin()) {
+            $data['branches'] = $this->getBranches();
+        }
+
+        return view('tenant.client.create', $data);
     }
 
     /**

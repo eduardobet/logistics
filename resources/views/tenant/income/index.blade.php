@@ -52,7 +52,7 @@
                  <select name="branch_id" id="branch_id" class="form-control select2 select2ize" style="width: 100%" data-apiurl="{{ route('tenant.api.clients', [':parentId:']) }}" data-child="#client_id">
                     <option value="">{{ __('Branch') }}</option>
                     @foreach ($branches as $aBranch)
-                        <option value="{{ $aBranch->id }}"{{ $aBranch->id == request('branch_id', $branch->id) ? " selected" : null }}>
+                        <option value="{{ $aBranch->id }}"{{ $aBranch->id == request('branch_id', $branch->id) ? " selected" : null }} data-bcode="{{ $aBranch->code }}">
                             {{ $aBranch->name }}
                         </option>
                     @endforeach
@@ -97,26 +97,26 @@
                 <label class="section-label-sm tx-gray-500">Informacion Detallada</label>
                 <p class="invoice-info-row">
                   <span>Total Facturado</span>
-                  <span>$0000,00</span>
+                  <span>${{ number_format($tot_charged, 2) }}</span>
                 </p>
                 <p class="invoice-info-row">
                   <span>Total Cobrado</span>
-                  <span>$0000.00</span>
+                  <span>${{ number_format($tot_income, 2) }}</span>
                 </p>
                 <p class="invoice-info-row">
                   <span>Total Efectivo:</span>
-                  <span>$0000,00</span>
+                  <span>${{ number_format($tot_in_cash, 2) }} </span>
                 </p>
                 <p class="invoice-info-row">
                   <span>Total Deposito/Transferencia:</span>
-                  <span>$0000,00</span>
+                  <span>${{ number_format($tot_in_wire, 2) }}</span>
                 </p>
 
               </div><div class="col-md">
                 <label class="section-label-sm tx-gray-500">Informacion Detallada</label>
                 <p class="invoice-info-row">
                   <span>Total Cheques:</span>
-                  <span>$0000,00</span>
+                  <span>${{ number_format($tot_in_check, 2) }}</span>
                 </p>
                 <p class="invoice-info-row">
                   <span>Comision Tarjeta:</span>
@@ -124,7 +124,7 @@
                 </p>
                 <p class="invoice-info-row">
                   <span>Multa Almacenaje:</span>
-                  <span>$0000.00</span>
+                  <span>${{ number_format($tot_fine, 2) }}</span>
                 </p>
                 <p class="invoice-info-row">
                   <span>Libras Ingresadas:</span>
@@ -134,125 +134,52 @@
               </div><!-- col -->
             </div><!-- row -->
 
-            <div class="table-responsive mg-t-40 table-bordered">
-              <table class="table table-invoice" >
-                <thead class="thead-colored bg-primary">
-                  <tr>
-                    <th class="wd-10p">COBRO EFECTIVO</th>
-                  </tr>
-                </thead>
-              </table>
-              <table class="table table-invoice" >
-                <thead>
-                  <tr>
-                    <th class="wd-10p">FACTURA</th>
-                    <th class="wd-10p">FECHA</th>
-                    <th class="wd-40p">TIPO DE FACTURA</th>
-                    <th class="wd-10p tx-center">TOTAL</th>
-                    <th class="wd-10p tx-right">AOBONO/PAGO</th>
-                    <th class="wd-10p tx-right">PENDIENTE</th>
-                  </tr>
-                </thead>
-                <tbody class="mg-b-0">
-                  <tr>
-                    <td>XX-000</td>
-                    <td>00/00/2019</td>
-                    <td>WH-000 / COMPRA / SERVICIO</td>
-                    <td class="tx-center">$000.00</td>
-                    <td class="tx-right">$000.00</td>
-                    <td class="tx-right">$300.00</td>
-                  </tr>
-                  <tr>
-                    <td>XX-000</td>
-                    <td>00/00/2019</td>
-                    <td>WH-000 / COMPRA / SERVICIO</td>
-                    <td class="tx-center">$000.00</td>
-                    <td class="tx-right">$000.00</td>
-                    <td class="tx-right">$300.00</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div><!-- table-responsive -->
 
-            <div class="table-responsive mg-t-40 table-bordered">
-              <table class="table table-invoice" >
-                <thead class="thead-colored bg-success">
-                  <tr>
-                    <th class="wd-10p">COBRO DEPOSITOS / TRANSFERENCIAS</th>
-                  </tr>
-                </thead>
-              </table>
-              <table class="table table-invoice" >
-                <thead>
-                  <tr>
-                    <th class="wd-10p">FACTURA</th>
-                    <th class="wd-10p">FECHA</th>
-                    <th class="wd-40p">TIPO DE FACTURA</th>
-                    <th class="wd-10p tx-center">TOTAL</th>
-                    <th class="wd-10p tx-right">AOBONO/PAGO</th>
-                    <th class="wd-10p tx-right">PENDIENTE</th>
-                  </tr>
-                </thead>
-                <tbody class="mg-b-0">
-                  <tr>
-                    <td>XX-000</td>
-                    <td>00/00/2019</td>
-                    <td>WH-000 / COMPRA / SERVICIO</td>
-                    <td class="tx-center">$000.00</td>
-                    <td class="tx-right">$000.00</td>
-                    <td class="tx-right">$300.00</td>
-                  </tr>
-                  <tr>
-                    <td>XX-000</td>
-                    <td>00/00/2019</td>
-                    <td>WH-000 / COMPRA / SERVICIO</td>
-                    <td class="tx-center">$000.00</td>
-                    <td class="tx-right">$000.00</td>
-                    <td class="tx-right">$300.00</td>
-                  </tr>
-                </tbody>
-              </table>
+                
+                @foreach ($payments_by_type->groupBy('payment_method') as $ptype => $groups)
+                <div class="table-responsive mg-t-40 table-bordered">
+                  <table class="table table-invoice" >
+                    <thead class="thead-colored {{[1 => 'bg-primary', 2 => 'bg-success', 3 => 'bg-danger'][$ptype]}}">
+                      <tr>
+                        <th class="wd-10p">{{ strtoupper( [1 => __('Cash'), 2 => __('Wire transfer'), 3 => __('Check')][$ptype] )  }}</th>
+                      </tr>
+                    </thead>
+                  </table>
+                  <table class="table table-invoice" >
+                    <thead>
+                      <tr>
+                        <th class="wd-10p">FACTURA</th>
+                        <th class="wd-15p">FECHA</th>
+                        <th class="wd-35p">TIPO DE FACTURA</th>
+                        <th class="wd-10p tx-center">TOTAL</th>
+                        <th class="wd-10p tx-right">AOBONO/PAGO</th>
+                        <th class="wd-10p tx-right">PENDIENTE</th>
+                      </tr>
+                    </thead>
+                    <tbody class="mg-b-0">
+                      @foreach ($groups as $payment)
+                      <tr>
+                        <td>{{ request('bcode', $branch->branch_code) }}-{{ $payment->invoice_id }}</td>
+                        <td>{{ $payment->created_at->format('Y-m-d') }}</td>
+                        <td>
+                        
+                        @if ($wId = $payment->invoice->warehouse_id)
+                        WH-{{ $wId }}
+                        @else
+                          {{ __('INTERNET') }}
+                        @endif
+                        
+                        </td>
+                        <td class="tx-center">${{ number_format($payment->invoice->total, 2) }}</td>
+                        <td class="tx-right">${{ number_format($payment->amount_paid, 2) }}</td>
+                        <td class="tx-right">${{ number_format($payment->invoice->total - $payment->amount_paid, 2) }}</td>
+                      </tr>
+                      @endforeach
+                    </tbody>
+                  </table>
             </div><!-- table-responsive -->
+                @endforeach
 
-            <div class="table-responsive mg-t-40 table-bordered">
-              <table class="table table-invoice" >
-                <thead class="thead-colored bg-danger">
-                  <tr>
-                    <th class="wd-10p">COBRO CHEQUES</th>
-                  </tr>
-                </thead>
-              </table>
-              <table class="table table-invoice" >
-                <thead>
-                  <tr>
-                    <th class="wd-10p">FACTURA</th>
-                    <th class="wd-10p">FECHA</th>
-                    <th class="wd-40p">TIPO DE FACTURA</th>
-                    <th class="wd-10p tx-center">TOTAL</th>
-                    <th class="wd-10p tx-right">AOBONO/PAGO</th>
-                    <th class="wd-10p tx-right">PENDIENTE</th>
-                  </tr>
-                </thead>
-                <tbody class="mg-b-0">
-                  <tr>
-                    <td>XX-000</td>
-                    <td>00/00/2019</td>
-                    <td>WH-000 / COMPRA / SERVICIO</td>
-                    <td class="tx-center">$000.00</td>
-                    <td class="tx-right">$000.00</td>
-                    <td class="tx-right">$300.00</td>
-                  </tr>
-                  <tr>
-                    <td>XX-000</td>
-                    <td>00/00/2019</td>
-                    <td>WH-000 / COMPRA / SERVICIO</td>
-                    <td class="tx-center">$000.00</td>
-                    <td class="tx-right">$000.00</td>
-                    <td class="tx-right">$300.00</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div><!-- table-responsive -->
 
             <div class="table-responsive mg-t-40 table-bordered">
               <table class="table table-invoice" >
@@ -500,22 +427,24 @@ select2ize = function($child, items) {
             var from = $.trim($("#from").val());
             var to = $.trim($("#to").val());
             var branch = $("#branch_id").val();
+            var bcode = $("#branch_id").find(":selected").attr('data-bcode') || '{{ $branch->branch_code }}';
             var client = $("#client_id").val();
             var type = $("#type").val();
             var invoice = $("#invoice_id").val() || "{{ request('invoice_id', '') }}";
-            window.location = `{{ route('tenant.payment.list', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}`;
+            window.location = `{{ route('tenant.income.list', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}&bcode=${bcode}`;
         });
 
         $("#export-xls, #export-pdf").click(function() {
             var from = $.trim($("#from").val());
             var to = $.trim($("#to").val());
             var branch = $("#branch_id").val();
+            var bcode = $("#branch_id").find(":selected").attr('data-bcode') || '{{ $branch->branch_code }}';
             var client = $("#client_id").val();
             var type = $("#type").val();
             var invoice = $("#invoice_id").val() || "{{ request('invoice_id', '') }}";
             var pdf = this.id === 'export-pdf' ? '&pdf=1' : '';
             
-            if(from && to) window.open(`{{ route('tenant.payment.export', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}${pdf}`, '_blank');
+            if(from && to) window.open(`{{ route('tenant.payment.export', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}&bcode=${bcode}${pdf}`, '_blank');
         });
     });
 </script>

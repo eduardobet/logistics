@@ -65,6 +65,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('payment/{invoice_id}/create', 'Tenant\PaymentController@create')->name('tenant.payment.create')->middleware(['can:create-payment']);
     Route::post('payment/store', 'Tenant\PaymentController@store')->name('tenant.payment.store')->middleware(['can:create-payment']);
     Route::get('payment/{id}/show', 'Tenant\PaymentController@show')->name('tenant.payment.show')->middleware(['can:show-payment']);
+
+    //incomes
+    Route::get('income/list', 'Tenant\IncomeController@index')->name('tenant.income.list')->middleware(['can:show-payment']);
     
     // searching
     Route::get('search', 'Tenant\SearchController@search')->name('tenant.get.search');

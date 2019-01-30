@@ -57,6 +57,12 @@ class Payment extends Model
             ->select('id', 'first_name', 'last_name');
     }
 
+    public function scopeWithAndWhereHas($query, $relation, $constraint)
+    {
+        return $query->whereHas($relation, $constraint)
+            ->with([$relation => $constraint]);
+    }
+
     /**
     * Get created at for display.
     *

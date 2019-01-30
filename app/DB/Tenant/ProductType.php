@@ -12,7 +12,7 @@ class ProductType extends Model
      * @var array
      */
     protected $fillable = [
-        'branch_id', 'status', 'created_by_code', 'updated_by_code', 'name',
+        'branch_id', 'status', 'created_by_code', 'updated_by_code', 'name', 'is_commission',
     ];
 
     /**
@@ -41,5 +41,10 @@ class ProductType extends Model
     public function scopeActive($query)
     {
         return $query->where('status', 'A');
+    }
+
+    public function scopeCommission($query)
+    {
+        return $query->where('is_commission', true);
     }
 }

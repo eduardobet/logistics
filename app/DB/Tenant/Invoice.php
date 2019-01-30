@@ -51,6 +51,16 @@ class Invoice extends Model
         });
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'A');
+    }
+
+    public function scopePaid($query)
+    {
+        return $query->where('is_paid', true);
+    }
+
     public function details()
     {
         return $this->hasMany(InvoiceDetail::class);

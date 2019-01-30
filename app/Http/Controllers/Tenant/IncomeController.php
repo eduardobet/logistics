@@ -74,13 +74,10 @@ class IncomeController extends Controller
         ];
 
         if (request('_print_it')) {
-            //return view('tenant.income._index', $data);
-
             // https://gist.github.com/srmds/2507aa3bcdb464085413c650fe42e31d#wkhtmltopdf-0125---ubuntu-1804-x64
 
-
             $pdf = SnappyPDF::loadView('tenant.income._index', $data);
-            return $pdf->download('invoice.pdf');
+            return $pdf->download(uniqid('invoice_', true) . '.pdf');
         }
 
         return view('tenant.income.index', $data);

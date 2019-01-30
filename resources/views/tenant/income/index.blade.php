@@ -48,11 +48,11 @@
                 </div>
             </div>
 
-            <div class="col-lg-5">
+            <div class="col-lg-4">
                  <select name="branch_id" id="branch_id" class="form-control select2 select2ize" style="width: 100%" data-apiurl="{{ route('tenant.api.clients', [':parentId:']) }}" data-child="#client_id">
                     <option value="">{{ __('Branch') }}</option>
                     @foreach ($branches as $aBranch)
-                        <option value="{{ $aBranch->id }}"{{ $aBranch->id == request('branch_id', $branch->id) ? " selected" : null }} data-bcode="{{ $aBranch->code }}">
+                        <option value="{{ $aBranch->id }}"{{ $aBranch->id == request('branch_id', $branch->id) ? " selected" : null }} data-bcode="{{ $aBranch->code }}" data-bname="{{ $aBranch->name }}">
                             {{ $aBranch->name }}
                         </option>
                     @endforeach
@@ -69,6 +69,12 @@
                         </button>
                     </div>
                 </div>
+            </div>
+
+            <div class="col-lg-1">
+                <a class="btn btn-warning" href="{{ route('tenant.income.list', ['domain' => $tenant->domain, 'branch_id' => request('branch_id'), 'from' => request('from'), 'to' => request('to'), 'type' => request('type'), 'bcode' => request('bcode'), 'bname' => request('bname'), '_print_it' => 1, ]) }}">
+                    <i class="fa fa-save"></i>
+                </a>
             </div>
 
         </div>
@@ -104,10 +110,11 @@
             var to = $.trim($("#to").val());
             var branch = $("#branch_id").val();
             var bcode = $("#branch_id").find(":selected").attr('data-bcode') || '{{ $branch->branch_code }}';
-            var client = $("#client_id").val();
+            var bname = $("#branch_id").find(":selected").attr('data-bname') || '{{ $branch->name }}';
+            var client = $("#client_id").val()  || '';
             var type = $("#type").val();
             var invoice = $("#invoice_id").val() || "{{ request('invoice_id', '') }}";
-            window.location = `{{ route('tenant.income.list', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}&bcode=${bcode}`;
+            window.location = `{{ route('tenant.income.list', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}&bcode=${bcode}&bname=${bname}`;
         });
 
         $("#export-xls, #export-pdf").click(function() {
@@ -115,7 +122,7 @@
             var to = $.trim($("#to").val());
             var branch = $("#branch_id").val();
             var bcode = $("#branch_id").find(":selected").attr('data-bcode') || '{{ $branch->branch_code }}';
-            var client = $("#client_id").val();
+            var client = $("#client_id").val() || '';
             var type = $("#type").val();
             var invoice = $("#invoice_id").val() || "{{ request('invoice_id', '') }}";
             var pdf = this.id === 'export-pdf' ? '&pdf=1' : '';

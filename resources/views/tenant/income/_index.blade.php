@@ -22,7 +22,7 @@
               <div class="col-md">
                 <label class="section-label-sm tx-gray-500">Detalles Sucursal y Fecha</label>
                 <div class="billed-to">
-                  <h6 class="tx-gray-800">PREMIUM RUSH LOS ANDES</h6>
+                  <h6 class="tx-gray-800">{{ request('bname', $branch->name) }}</h6>
                   <p><b>FECHA:</b> <br>Desde: {{ request('from', $today = date('d/m/Y')) }}<br> Hasta: {{  request('to', $today) }}<br>
                 </div>
               </div><!-- col -->

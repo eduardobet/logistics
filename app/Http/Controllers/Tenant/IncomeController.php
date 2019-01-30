@@ -54,6 +54,7 @@ class IncomeController extends Controller
 
         $recas = $tenant->cargoEntries()->whereBetween('created_at', [$from, $to])
             ->where('branch_id', request('branch_id', $cBranch->id))
+            ->where('weight', '>', 0)
             ->get();
 
 

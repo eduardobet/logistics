@@ -11,7 +11,7 @@
 
     <title>@yield('title', config('app.name', ''))</title>
 
-    <link href="{{ mix('css/tenant.css') }}" rel="stylesheet">
+    <link href="{{ asset(mix('css/tenant.css')) }}" rel="stylesheet">
     @yield('xtra_styles')
 </head>
 <body class="dasbhoard-3">

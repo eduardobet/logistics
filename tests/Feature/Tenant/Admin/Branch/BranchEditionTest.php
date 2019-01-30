@@ -171,7 +171,7 @@ class BranchEditionTest extends TestCase
             'extra_maritime_price' => 9,
 
             'product_types' => [
-                ['name' => 'Product type upd', 'status' => 'I', 'rid' => $ptype->id, ]
+                ['name' => 'Product type upd', 'is_commission' => true, 'status' => 'I', 'rid' => $ptype->id, ]
             ],
         ]);
 
@@ -208,6 +208,7 @@ class BranchEditionTest extends TestCase
         $this->assertEquals('I', $ptype->status);
         $this->assertEquals($admin->id, $ptype->updated_by_code);
         $this->assertEquals('Product type upd', $ptype->name);
+        $this->assertEquals(true, (bool)$ptype->is_commission);
 
         $response->assertRedirect(route('tenant.admin.branch.list', $tenant->domain));
         $response->assertSessionHas(['flash_success']);

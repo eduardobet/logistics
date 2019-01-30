@@ -75,7 +75,8 @@ class Branch extends Model
                     ], [
                         'name' => $ptype->name,
                         'status' => $ptype->status,
-                        'branch_id' => $this->id
+                        'branch_id' => $this->id,
+                        'is_commission' => !empty($ptype->is_commission),
                     ]);
                 }
             }

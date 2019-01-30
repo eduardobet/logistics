@@ -90,9 +90,9 @@ trait WarehouseHasRelationShips
                 'branch_id' => $request->branch_to,
                 'client_name' => $request->client_name,
                 'client_email' => $request->client_email,
-                'volumetric_weight' => $request->total_volumetric_weight,
-                'real_weight' => $request->total_real_weight,
-                'cubic_feet' => $request->total_cubic_feet,
+                'volumetric_weight' => $request->total_volumetric_weight ? $request->total_volumetric_weight : 0,
+                'real_weight' => $request->total_real_weight ? $request->total_real_weight : 0,
+                'cubic_feet' => $request->total_cubic_feet ? $request->total_real_weight : 0,
                 'total' => $request->total,
                 'notes' => $request->notes,
             ] + $using
@@ -114,8 +114,8 @@ trait WarehouseHasRelationShips
                 'height' => $input->height,
                 'vol_weight' => $input->vol_weight,
                 'real_weight' => $input->real_weight,
-                'real_price' => $input->real_price,
-                'vol_price' => $input->vol_price,
+                'real_price' => $input->real_price ? $input->real_price : 0,
+                'vol_price' => $input->vol_price ? $input->vol_price : 0,
                 'total' => $this->getTotal($request, $input),
                 'is_dhll' => isset($input->is_dhll),
             ]);

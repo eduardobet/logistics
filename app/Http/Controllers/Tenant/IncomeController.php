@@ -5,6 +5,7 @@ namespace Logistics\Http\Controllers\Tenant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
+use Barryvdh\Snappy\Facades\SnappyPdf;
 use Logistics\Http\Controllers\Controller;
 
 class IncomeController extends Controller
@@ -36,33 +37,52 @@ class IncomeController extends Controller
         
         $invoices = $tenant->invoices()->active()->whereBetween('created_at', [$from, $to])
             ->where('branch_id', request('branch_id', $cBranch->id))
-            ->with('details')
+            ->with(['details' => function ($detail) {
+                $detail->with('productType');
+            }])
             ->get();
 
-        if ($pmethod = request('payment_method')) {
+        if ($pmethod = request('type')) {
             $paymentsByType = $paymentsByType->where('payment_method', $pmethod);
         }
         
-        dump($invoices->pluck('details')->flatten()->toArray());
+        $details = $invoices->where('is_paid', true)->pluck('details')->flatten();
+
+        $commissions = $details->filter(function ($value) {
+            return $value->productType->is_commission == true;
+        });
+
+        $recas = $tenant->cargoEntries()->whereBetween('created_at', [$from, $to])
+            ->where('branch_id', request('branch_id', $cBranch->id))
+            ->get();
 
 
-        //dump($paymentsByType->get()->toArray());
+        $incomes = $paymentsByType->get();
 
-        /*$pdf = \PDF::loadView('tenant.income.index', [
-            'branches' => $branches
-        ]);
-
-        return $pdf->download(uniqid('payments_', true) . '.pdf');*/
-
-        return view('tenant.income.index', [
+        $data = [
             'branches' => $branches,
-            'payments_by_type' => $income = $paymentsByType->get(),
+            'payments_by_type' => $incomes,
             'tot_charged' => $invoices->sum('total'),
-            'tot_income' => $income->sum('amount_paid'),
-            'tot_in_cash' => $income->where('payment_method', 1)->sum('amount_paid'),
-            'tot_in_wire' => $income->where('payment_method', 2)->sum('amount_paid'),
-            'tot_in_check' => $income->where('payment_method', 3)->sum('amount_paid'),
+            'tot_income' => $incomes->sum('amount_paid'),
+            'tot_in_cash' => $incomes->where('payment_method', 1)->sum('amount_paid'),
+            'tot_in_wire' => $incomes->where('payment_method', 2)->sum('amount_paid'),
+            'tot_in_check' => $incomes->where('payment_method', 3)->sum('amount_paid'),
+            'tot_commission' => $commissions->sum('total'),
             'tot_fine' => $invoices->sum('fine_total'),
-        ]);
+            'recas' => $recas,
+            'printing' => 1,
+        ];
+
+        if (request('_print_it')) {
+            //return view('tenant.income._index', $data);
+
+            // https://gist.github.com/srmds/2507aa3bcdb464085413c650fe42e31d#wkhtmltopdf-0125---ubuntu-1804-x64
+
+
+            $pdf = SnappyPDF::loadView('tenant.income._index', $data);
+            return $pdf->download('invoice.pdf');
+        }
+
+        return view('tenant.income.index', $data);
     }
 }

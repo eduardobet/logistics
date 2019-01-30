@@ -134,9 +134,9 @@
                 <thead>
                   <tr>
                     <th class="wd-10p">FECHA</th>
-                    <th class="wd-10p">RECA</th>
+                    <th class="wd-20p">RECA</th>
                     <th class="wd-20p">Cant Paquetes</th>
-                    <th class="wd-60p tx-right">TOTAL LIBRAS</th>
+                    <th class="wd-50p tx-right">TOTAL LIBRAS</th>
                   </tr>
                 </thead>
                 <tbody class="mg-b-0">

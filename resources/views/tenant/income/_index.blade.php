@@ -19,21 +19,24 @@
             </div><!-- invoice-header -->
 
             <div class="row mg-t-20">
-              <div class="col-md">
+
+              <table style="width: 100% !important">
+              <tr>
+              <td style="width: 34% !important">
                 <label class="section-label-sm tx-gray-500">Detalles Sucursal y Fecha</label>
                 <div class="billed-to">
                   <h6 class="tx-gray-800">{{ request('bname', $branch->name) }}</h6>
                   <p><b>FECHA:</b> <br>Desde: {{ request('from', $today = date('d/m/Y')) }}<br> Hasta: {{  request('to', $today) }}<br>
                 </div>
-              </div><!-- col -->
-              <div class="col-md">
+              </td><!-- col -->
+              <td style="width: 33% !important">
                 <label class="section-label-sm tx-gray-500">Informacion Detallada</label>
                 <p class="invoice-info-row">
-                  <span>Total Facturado</span>
+                  <span>Total Facturado:</span>
                   <span>${{ number_format($tot_charged, 2) }}</span>
                 </p>
                 <p class="invoice-info-row">
-                  <span>Total Cobrado</span>
+                  <span>Total Cobrado:</span>
                   <span>${{ number_format($tot_income, 2) }}</span>
                 </p>
                 <p class="invoice-info-row">
@@ -45,7 +48,9 @@
                   <span>${{ number_format($tot_in_wire, 2) }}</span>
                 </p>
 
-              </div><div class="col-md">
+              </td>
+              
+              <td style="width: 33% !important">
                 <label class="section-label-sm tx-gray-500">Informacion Detallada</label>
                 <p class="invoice-info-row">
                   <span>Total Cheques:</span>
@@ -64,7 +69,10 @@
                   <span>{{ $recas->sum('weight') }}LBS</span>
                 </p>
 
-              </div><!-- col -->
+              </td><!-- col -->
+
+              </tr>
+              </table>
             </div><!-- row -->
 
 

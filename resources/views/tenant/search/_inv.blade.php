@@ -5,7 +5,7 @@
             <h5 class="mb-1">
              $ {{ number_format($result->total, 2) }}
             </h5>
-            <small> {{ $result->client->full_name }} / {{ $result->branch ? $result->branch->code : null }}{{ $result->id }}</small>
+            <small> {{ $result->client->full_name }} / {{ $result->branch ? $result->branch->code : null }}{{ $result->client->manual_id_dsp }}</small>
             </div>
             <p class="mb-1">
                  @if ($result->is_paid)

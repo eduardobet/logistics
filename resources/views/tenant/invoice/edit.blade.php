@@ -195,6 +195,14 @@
             e.preventDefault();
         });
 
+        $('.fc-datepicker').datepicker({
+            showOtherMonths: true,
+            selectOtherMonths: true,
+            language: '{{ config("app.locale") }}',
+            format: 'yyyy-mm-dd',
+            todayBtn: 'linked'
+        });
+
     });
 
     function doCalc() {

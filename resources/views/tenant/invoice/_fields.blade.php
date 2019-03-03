@@ -55,7 +55,7 @@
         </div>
     </div>
 
-    <div class="col-lg-10">
+    <div class="col-lg-7">
         <div class="form-group">
         
              <label class="form-control-label">{{ __('Client') }}: 
@@ -84,6 +84,19 @@
 
         </div>
      </div>
+
+     <div class="col-lg-3">
+        <div class="form-group">
+            <label class="form-control-label">
+                {{ __('Date') }}:
+                <span class="tx-danger">*</span>
+            </label>
+
+            {!! Form::text('created_at', !$invoice->created_at ? old('created_at', date('Y-m-d')) : $invoice->created_at->format('Y-m-d'), ['class' => 'form-control fc-datepicker hasDatepicker', 'readonly' => 1, ]) !!}
+            
+        </div>
+     </div>
+
 </div><!-- row -->
 
 <div class="row">

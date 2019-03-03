@@ -58,6 +58,14 @@
         $("#amount_paid").blur(function() {
             doCalc();
         });
+
+        $('.fc-datepicker').datepicker({
+            showOtherMonths: true,
+            selectOtherMonths: true,
+            language: '{{ config("app.locale") }}',
+            format: 'yyyy-mm-dd',
+            todayBtn: 'linked'
+        });
     });
 
     function doCalc() {

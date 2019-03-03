@@ -31,7 +31,7 @@
   <div class="slim-header">
     <div class="container">
       <div class="slim-header-left">
-        <h4 class="slim-logo"><a href="/">Seal<span>.</span>Log</a></h4>
+        <h4 class="slim-logo"><a href="/">{{ config('app.name') }}</a></h4>
       </div>
       <div class="slim-header-right">
         <h5 class="tx-reef">{{ strtoupper( __('Create misidentified package') ) }}</h5>

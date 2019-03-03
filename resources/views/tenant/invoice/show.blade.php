@@ -36,7 +36,7 @@
                       <label class="section-label-sm tx-gray-500">{{ __('Invoiced to') }}.</label>
                       <div class="billed-to">
                         <h6 class="tx-gray-800">{{ $invoice->client->full_name }} / {{ $invoice->client->branch->code }}
-                            {{ $invoice->client->manual_id }}
+                            {{ $invoice->client->manual_id_dsp }}
                         </h6>
                         <p> {{ __('PID') }}: {{ $invoice->client->pid }}<br>
                         Email: {{ $invoice->client->email }}</p>

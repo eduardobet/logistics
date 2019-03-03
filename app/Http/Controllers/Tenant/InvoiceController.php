@@ -310,7 +310,7 @@ class InvoiceController extends Controller
 
         $client = $invoice->client()->with('branch')->first();
         $branch = $client->branch;
-        $box = "{$branch->code}{$client->manual_id}";
+        $box = "{$branch->code}{$client->manual_id_dsp}";
 
         $data = [
             'creatorName' => $invoice->creator ? $invoice->creator->full_name : null,

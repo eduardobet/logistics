@@ -12,7 +12,7 @@
 #{{ $client->full_name }} / {{ $box }} <br>
 {{ __('Telephones', [], $lang) }}: {{ $client->telephones }}<br><br>
 
-{{ __('Invoice date', [], $lang) }}: {{ $invoice->created_at->format('d-m-Y') }}
+{{ __('Invoice date', [], $lang) }}: {{ $invoice->created_at ? $invoice->created_at->format('d-m-Y') : $invoice->created_at }}
 
 <table style="width: 100%" cellspacing="0">
     @if (!$invoice->warehouse_id)

@@ -70,10 +70,10 @@
                   @foreach ($clients as $client)
                       
                     <tr>
-                      <th scope="row">{{ $client->manual_id }}</th>
+                      <th scope="row">{{ $client->manual_id_dsp }}</th>
                       <td>{{ $client->first_name }}</td>
                       <td>{{ $client->last_name }}</td>
-                      <td>{{ $client->branch ? $client->branch->code : null }}{{ $client->manual_id }}</td>
+                      <td>{{ $client->branch ? $client->branch->code : null }}{{ $client->manual_id_dsp }}</td>
                       <td>{{ $client->email }}</td>
                       <td>{{ $client->telephones }}</td>
                       <td class="text-center">

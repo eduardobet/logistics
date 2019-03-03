@@ -74,7 +74,7 @@
                             data-maritime_price='{{ var_export($client->maritime_price) }}'
                             {{ (isset($invoice) && $invoice->client_id == $client->id) || old('client_id') == $client->id ? " selected": null }}
                         >
-                        [{{ $client->branch ? $client->branch->code : null }}{{ $client->manual_id }}] {{ $client->full_name }}
+                        [{{ $client->branch ? $client->branch->code : null }}{{ $client->manual_id_dsp }}] {{ $client->full_name }}
                         </option>
                     @endforeach
                 </select>    

@@ -111,7 +111,7 @@ class WarehouseStickerTest extends TestCase
         $this->assertContains("{$detailB->length}.0x{$detailB->width}.0x{$detailB->height}.0", $sticker);
         $this->assertContains("({$detailB->qty})", $sticker);
 
-        $this->assertContains("{$box->branch_code}{$client->manual_id} / {$client->full_name}      \${$invoice->total}.0", $sticker);
+        $this->assertContains("{$box->branch_code}{$client->manual_id_dsp} / {$client->full_name}      \${$invoice->total}.0", $sticker);
 
         $this->assertContains("{$warehouse->id}", $sticker);
         $this->assertContains("{$country->iata}", $sticker);

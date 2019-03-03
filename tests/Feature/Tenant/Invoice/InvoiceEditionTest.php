@@ -92,6 +92,7 @@ class InvoiceEditionTest extends TestCase
             'branch_id' => $branch->id,
             'client_id' => $client->id,
             'total' => 160,
+            'created_at' => '2017-01-30',
         ]);
 
         $detailA = $invoice->details()->create([
@@ -127,6 +128,7 @@ class InvoiceEditionTest extends TestCase
             'branch_id' => $branch->id,
             'client_id' => $client->id,
             'total' => 180,
+            'created_at' => '2017-02-25',
             'invoice_detail' => [
                 ['qty' => 1, 'type' => 1, 'description' => 'Buying from amazon update', 'id_remote_store' => 122452222, 'total' => 100, 'idid' => $detailA->id ],
                 ['qty' => 1, 'type' => 2, 'description' => 'Buying from ebay update', 'id_remote_store' => 10448796566, 'total' => 80, 'idid' => $detailB->id],
@@ -148,6 +150,7 @@ class InvoiceEditionTest extends TestCase
             $this->assertEquals($client->id, $invoice->client_id);
             $this->assertEquals('A', $invoice->status);
             $this->assertEquals('180.0', $invoice->total);
+            $this->assertEquals('2017-02-25', $invoice->created_at->format('Y-m-d'));
 
             $payment = $payment->fresh()->first();
             $this->assertEquals($tenant->id, $payment->tenant_id);

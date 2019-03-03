@@ -93,6 +93,7 @@ class InvoiceController extends Controller
             'client_id' => $request->client_id,
             'total' => $request->total,
             'notes' => $request->notes,
+            'created_at' => $request->created_at,
         ]);
 
         if ($invoice) {
@@ -113,6 +114,7 @@ class InvoiceController extends Controller
                     'amount_paid' => $request->amount_paid,
                     'payment_method' => $request->payment_method,
                     'payment_ref' => $request->payment_ref,
+                    'created_at' => $request->created_at,
                     'is_first' => true,
                 ]);
             } else {
@@ -226,6 +228,7 @@ class InvoiceController extends Controller
         $invoice->client_id = $request->client_id;
         $invoice->total = $request->total;
         $invoice->notes = $request->notes;
+        $invoice->created_at = $request->created_at;
         $invoice->save();
 
         if ($invoice) {

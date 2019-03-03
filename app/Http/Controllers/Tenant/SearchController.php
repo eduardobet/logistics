@@ -112,7 +112,7 @@ class SearchController extends Controller
                         break;
                  }
             } else {
-                $branchesPrefix = implode($bcodes = $this->getBranches()->pluck('code')->toArray(), '|');
+                $branchesPrefix = implode('|', $bcodes = $this->getBranches()->pluck('code')->toArray());
                 preg_match("/($branchesPrefix)(\\d+)/i", $term, $matches);
                 $qBranchCode = @$matches[1];
                 $qClientId = @$matches[2];
@@ -235,7 +235,7 @@ class SearchController extends Controller
         $superAdmin = auth()->user()->isSuperAdmin();
 
         if ($term = strtolower($term)) {
-            $branchesPrefix = implode($this->getBranches()->pluck('code')->toArray(), '|');
+            $branchesPrefix = implode('|', $this->getBranches()->pluck('code')->toArray());
             preg_match("/($branchesPrefix)(\\d+)/i", $term, $matches);
             $qBranchCode = @$matches[1];
             $qClientId = @$matches[2];

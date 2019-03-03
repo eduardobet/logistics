@@ -6,17 +6,17 @@
 @endslot
 
 {{ __('Hello :who welcome to :what', ['who' => $client->full_name, 'what' => $branch->name ], $lang) }}. {{ __('Below, your box information', [], $lang) }}: <br>
-{{ __('Box number', [], $lang) }}: <b>{{ $box_code }}{{ $client->manual_id }}</b> <br><br>
+{{ __('Box number', [], $lang) }}: <b>{{ $box_code }}{{ $client->manual_id_dsp }}</b> <br><br>
 
 {{ __('This is the address you should use when making your purchases:', [], $lang) }} <br>
 
 <h3>{{ __('For Aerial Shipments', [], $lang) }}:</h3>
-{{ $client->first_name }} {{ $box_code }}{{ $client->manual_id }} {{ $client->last_name }} <br>
+{{ $client->first_name }} {{ $box_code }}{{ $client->manual_id_dsp }} {{ $client->last_name }} <br>
 {{ $air->address }} <br>
 {{ $air->telephones }} <br> <br>
 
 <h3>{{ __('For Maritime Shipments', [], $lang) }}:</h3>
-{{ $client->first_name }} {{ $box_code }}{{ $client->manual_id }} {{ $client->last_name }} <br>
+{{ $client->first_name }} {{ $box_code }}{{ $client->manual_id_dsp }} {{ $client->last_name }} <br>
 {{ $maritime->address }} <br>
 {{ $maritime->telephones }} <br> <br>
 
@@ -27,7 +27,7 @@
 {{ route('tenant.misidentified-package.create', $tenant->domain) }}
 
 <br><br><br>
-{{ __('Remember your purchases must always contain your box', [], $lang) }}: <b>{{ $box_code }}{{ $client->manual_id }}</b>
+{{ __('Remember your purchases must always contain your box', [], $lang) }}: <b>{{ $box_code }}{{ $client->manual_id_dsp }}</b>
 
 @isset($subcopy)
     @slot('subcopy')

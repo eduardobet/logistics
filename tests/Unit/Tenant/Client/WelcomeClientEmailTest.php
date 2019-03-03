@@ -51,15 +51,15 @@ class WelcomeClientEmailTest extends TestCase
         $this->assertContains("welcome to {$branch->name}", $content);
         $this->assertContains("Below, your box information:", $content);
         $this->assertContains("Box number:", $content);
-        $this->assertContains("{$box->branch_code}{$client->id}", $content);
+        $this->assertContains("{$box->branch_code}0{$client->id}", $content);
         $this->assertContains("This is the address you should use when making your purchases:", $content);
         $this->assertContains("For Aerial Shipments:", $content);
-        $this->assertContains("{$client->first_name} {$box->branch_code}{$client->id} {$client->last_name}", $content);
+        $this->assertContains("{$client->first_name} {$box->branch_code}0{$client->id} {$client->last_name}", $content);
         $this->assertContains("{$air->address}", $content);
         $this->assertContains("{$air->telephones}", $content);
 
         $this->assertContains("For Maritime Shipments:", $content);
-        $this->assertContains("{$client->first_name} {$box->branch_code}{$client->id} {$client->last_name}", $content);
+        $this->assertContains("{$client->first_name} {$box->branch_code}0{$client->id} {$client->last_name}", $content);
         $this->assertContains("{$maritime->address}", $content);
         $this->assertContains("{$maritime->telephones}", $content);
 
@@ -70,7 +70,7 @@ class WelcomeClientEmailTest extends TestCase
         $this->assertContains(route('tenant.misidentified-package.create', $tenant->domain), $content);
 
         $this->assertContains("Remember your purchases must always contain your box:", $content);
-        $this->assertContains("{$box->branch_code}{$client->id}", $content);
+        $this->assertContains("{$box->branch_code}0{$client->id}", $content);
     }
 
     /** @test */

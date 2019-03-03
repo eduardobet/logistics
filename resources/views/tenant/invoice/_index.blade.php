@@ -30,7 +30,7 @@
         <tr>
             <th scope="row">{{ $invoice->branch->initial }}-{{ $invoice->id }}</th>
             <td>{{ $invoice->created_at->format('d-m-Y') }}</td>
-            <td>{{ $invoice->branch->code }}{{ $invoice->client->manual_id }}</td>
+            <td>{{ $invoice->branch->code }}{{ $invoice->client->manual_id_dsp }}</td>
             <td>{{ $invoice->client->full_name }}</td>
             <td>
                 @if ($invoice->warehouse_id)

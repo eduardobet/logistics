@@ -51,7 +51,7 @@ class PaymentActivity extends Notification implements ShouldQueue
     {
         $client = Client::find($this->clientId);
         $branch = $client->branch;
-        $box = $branch->code . '' . $client->manual_id;
+        $box = $branch->code . '' . $client->manual_id_dsp;
         $lang = $this->tenantLang ? : localization()->getCurrentLocale();
 
         return [

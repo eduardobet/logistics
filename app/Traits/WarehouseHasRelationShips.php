@@ -122,7 +122,7 @@ trait WarehouseHasRelationShips
         }
 
         $branch = $client->branch;
-        $this->toBranch->notify(new WarehouseActivity($this->created_at, $this->id, "{$branch->code}{$client->manual_id}", $invoice->id, auth()->user()->full_name));
+        $this->toBranch->notify(new WarehouseActivity($this->created_at, $this->id, "{$branch->code}{$client->manual_id_dsp}", $invoice->id, auth()->user()->full_name));
 
         if ($invoice) {
             if ($client->email !== $tenant->email_allowed_dup) {

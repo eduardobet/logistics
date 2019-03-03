@@ -50,7 +50,7 @@ class InvoiceActivity extends Notification implements ShouldQueue
     {
         $client = $this->invoice->client;
         $branch = $client->branch;
-        $box = $branch->code .''.$client->manual_id;
+        $box = $branch->code .''.$client->manual_id_dsp;
 
         return [
             'title' => $this->userFullname . ' ' . __('created an invoice'),

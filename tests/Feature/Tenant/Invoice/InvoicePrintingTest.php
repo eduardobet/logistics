@@ -106,7 +106,7 @@ class InvoicePrintingTest extends TestCase
 
 
         $this->assertContains("Client:", $content);
-        $this->assertContains("{$client->full_name} / {$box->branch_code}{$client->manual_id}", $content);
+        $this->assertContains("{$client->full_name} / {$box->branch_code}{$client->manual_id_dsp}", $content);
         $this->assertContains("{$client->address}", $content);
         $this->assertContains("Telephones: {$client->telephones}", $content);
         $this->assertContains("Invoice date: {$invoice->created_at->format('d-m-Y')}", $content);

@@ -33,7 +33,7 @@
             @endforeach
             
             @if ($client)
-            {{ $client->branch->code }}{{ $client->manual_id }} / {{ $client->full_name }}      ${{ number_format($invoice ? $invoice->total : 0, 2) }}
+            {{ $client->branch->code }}{{ $client->manual_id_dsp }} / {{ $client->full_name }}      ${{ number_format($invoice ? $invoice->total : 0, 2) }}
             @endif
         </td>
       </tr>

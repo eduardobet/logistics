@@ -84,7 +84,7 @@ class SearchController extends Controller
                                 $query->with('branch')->select(['id', 'manual_id', 'first_name', 'last_name', 'org_name', 'email']);
                             },
                             'fromBranch',
-                        ])->where('id', $qId);
+                        ])->where('manual_id', $qId);
                         $totResult = $results->count();
 
                         $wh = true;

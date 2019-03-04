@@ -86,26 +86,45 @@ class WarehouseController extends Controller
     {
         $tenant = $this->getTenant();
 
-        $warehouse = $tenant->warehouses()->create([
-            'branch_to' => $request->branch_to,
-            'branch_from' => $request->branch_from,
-            'client_id' => $request->client_id ?: 0,
-            'mailer_id' => $request->mailer_id ?: 0,
-            'trackings' => $request->trackings,
-            'reference' => $request->reference,
-            'type' => $request->type,
-            'qty' => $request->qty ?: 0,
-            'tot_packages' => $request->tot_packages ?: 0,
-            'tot_weight' => $request->tot_weight ?: 0,
-        ]);
+        $wh = new \Logistics\DB\Tenant\Warehouse;
 
-        if ($warehouse) {
+        if ($tenant->migration_mode && $request->manual_id) {
+            $wh->manual_id = $request->manual_id;
+        } else {
+            $max = $wh->where('tenant_id', $tenant->id)
+                ->where('branch_to', $request->branch_to)
+                ->max('manual_id');
+
+            if (!$max) {
+                $max = 0;
+            }
+
+            $wh->manual_id = $max + 1;
+        }
+
+        $wh->tenant_id = $tenant->id;
+        $wh->branch_to = $request->branch_to;
+        $wh->branch_from = $request->branch_from;
+        $wh->client_id = $request->client_id ?: 0;
+        $wh->mailer_id = $request->mailer_id ?: 0;
+        $wh->trackings = $request->trackings;
+        $wh->reference = $request->reference;
+        $wh->type = $request->type;
+        $wh->qty = $request->qty ?: 0;
+        $wh->tot_packages = $request->tot_packages ?: 0;
+        $wh->tot_weight = $request->tot_weight ?: 0;
+
+        $saved = $wh->save();
+
+        if ($saved) {
+            $wh = $wh->fresh();
             $details = $request->invoice_detail ? : [];
+            
             if (count($details)) {
-                $warehouse->genInvoice($request, $tenant);
+                $wh->genInvoice($request, $tenant);
             }
             
-            return redirect()->route('tenant.warehouse.edit', [$tenant->domain, $warehouse->id])
+            return redirect()->route('tenant.warehouse.edit', [$tenant->domain, $wh->id])
                 ->with('flash_success', __('The :what has been created.', ['what' => __('Warehouse') ]));
         }
 

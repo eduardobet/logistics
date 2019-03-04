@@ -52,7 +52,7 @@
                         <span>{{ __('Warehouse') }}</span>
                         <span>
                             @if ($invoice->warehouse_id)
-                                <a href="{{ route('tenant.warehouse.edit', [$tenant->domain, $invoice->warehouse_id]) }}">WH-{{ $invoice->warehouse_id }}</a>
+                                <a href="{{ route('tenant.warehouse.edit', [$tenant->domain, $invoice->warehouse_id]) }}">WH-{{ $invoice->warehouse->manual_id_dsp }}</a>
                             @else
                                 <a href="#">WH-0</a>   
                             @endif

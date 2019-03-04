@@ -52,7 +52,11 @@
             <td class="text-center" style="font-size: 15px">
 
             @can('edit-invoice')
-            <a title="{{ __('Edit') }}" href="{{ route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch_id,]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+            @if ($invoice->warehouse_id)
+                <a target="_blank" title="{{ __('Edit') }}" href="{{ route('tenant.warehouse.edit', [$tenant->domain, $invoice->warehouse_id]) }}"><i class="fa fa-pencil-square-o"></i></a>
+            @else
+                <a title="{{ __('Edit') }}" href="{{ route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch_id,]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+            @endif
             @endcan
             
             &nbsp;&nbsp;&nbsp;

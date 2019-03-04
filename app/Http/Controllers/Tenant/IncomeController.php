@@ -27,7 +27,9 @@ class IncomeController extends Controller
         $from =  Carbon::parse(request('from', date('Y-m-d')))->startOfDay();
         $to =  Carbon::parse(request('to', date('Y-m-d')))->endOfDay();
         $paymentsByType = $tenant->payments()
-            ->with('invoice')
+            ->with(['invoice' => function ($invoice) {
+                $invoice->with('warehouse');
+            }])
             ->whereHas('invoice', function ($invoice) use ($cBranch) {
                 $invoice->active()->paid()->where('branch_id', request('branch_id', $cBranch->id));
             });
@@ -49,7 +51,7 @@ class IncomeController extends Controller
         $details = $invoices->where('is_paid', true)->pluck('details')->flatten();
 
         $commissions = $details->filter(function ($value) {
-            return $value->productType->is_commission == true;
+            return $value->productType && $value->productType->is_commission == true;
         });
 
         $recas = $tenant->cargoEntries()->whereBetween('created_at', [$from, $to])

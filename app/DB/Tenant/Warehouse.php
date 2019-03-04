@@ -16,8 +16,17 @@ class Warehouse extends Model
      * @var array
      */
     protected $fillable = [
-        'branch_from', 'branch_to','mailer_id','trackings','reference','qty', 'created_by_code', 'tenant_id', 'updated_by_code', 'client_id', 'type',
-        'tot_weight', 'tot_packages', 'force_updated_at',
+        'branch_from', 'branch_to','mailer_id','trackings','reference','qty', 'created_by_code', 'tenant_id', 'updated_by_code', 'client_id', 'type','tot_weight', 'tot_packages', 'force_updated_at', 'manual_id',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'integer',
+        'manual_id' => 'integer',
     ];
 
     /**
@@ -25,7 +34,7 @@ class Warehouse extends Model
      *
      * @var array
      */
-    protected $appends = ['created_at_dsp'];
+    protected $appends = ['created_at_dsp', 'manual_id_dsp'];
 
     /**
      * The "booting" method of the model.

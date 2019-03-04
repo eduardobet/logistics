@@ -50,7 +50,7 @@
                 @else
                     <div class="form-group">
                         <label class="form-control-label">#{{ __('Box') }}: </label>
-                        {!! Form::text("box", $client->branch ? $client->branch->code . '' . $client->manual_id_dsp : null , ['placeholder' => 'PRXX0000', 'class' => 'form-control', 'disabled' => '' ]) !!}
+                        {!! Form::text("box", $client->branch ? $client->branch->code . '' . $client->manual_id_dsp : null , ['class' => 'form-control', 'disabled' => '' ]) !!}
                     </div>
                 @endif
             </div>

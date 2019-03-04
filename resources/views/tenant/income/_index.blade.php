@@ -104,8 +104,8 @@
                         <td>{{ $payment->created_at->format('Y-m-d') }}</td>
                         <td>
                         
-                        @if ($wId = $payment->invoice->warehouse_id)
-                        WH-{{ $wId }}
+                        @if (isset($payment->invoice->warehouse))
+                        WH-{{ $payment->invoice->warehouse->manual_id }}
                         @else
                           {{ __('INTERNET') }}
                         @endif

@@ -2,10 +2,14 @@
 
 namespace Logistics\Http\Requests\Tenant;
 
+use Logistics\Traits\Tenant;
+use Illuminate\Validation\Rule;
 use Logistics\Http\Requests\AppFormRequest;
 
 class WarehouseRequest extends AppFormRequest
 {
+    use Tenant;
+
     protected $redirectRoute = 'tenant.warehouse.create';
 
     /**
@@ -25,6 +29,8 @@ class WarehouseRequest extends AppFormRequest
      */
     public function rules()
     {
+        $tenant = $this->getTenant();
+
         $rules = [
             'branch_from' => 'required|integer',
             'branch_to' => 'required|integer',
@@ -38,6 +44,10 @@ class WarehouseRequest extends AppFormRequest
 
         if ($this->isEdit()) {
             $this->redirectRoute = 'tenant.warehouse.edit';
+        }
+
+        if ($tenant->migration_mode && $this->isPost()) {
+            $rules['manual_id'] = ['required','integer',  Rule::unique('warehouses', 'manual_id')->where('branch_to', $this->branch_to)];
         }
 
         return $rules;

@@ -40,7 +40,7 @@
 
             @foreach ($groups as $warehouse)
             <tr>
-                <th scope="row">{{ $warehouse->id }}</th>
+                <th scope="row">{{ $warehouse->manual_id_dsp }}</th>
                 <td>{{ ['A' => __('Air'), 'M' => __('Maritime')][$warehouse->type] }}</td>
                 <td>{{ $warehouse->created_at->format('d/m/Y') }}</td>
                 <td>{{ $warehouse->fromBranch->name }}</td>

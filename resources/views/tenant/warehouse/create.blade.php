@@ -18,11 +18,22 @@
          </div><!-- slim-pageheader -->
 
          <div class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
-            {!! Form::open(['route' => ['tenant.warehouse.store', $tenant->domain]]) !!}
-                @include('tenant.warehouse._fields', [
-                    'warehouse' => new \Logistics\DB\Tenant\Warehouse,
-                    'mode' => 'create',
-                ])
+            {!! Form::open(['route' => ['tenant.warehouse.store', $tenant->domain], 'id' => 'frm-wh']) !!}
+                
+            @if ($tenant->migration_mode)
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h4>
+                            <label class="badge badge-danger">{{ __('Migration mode') }}...</label>
+                        </h4>
+                    </div>
+                </div>
+            @endif
+            
+            @include('tenant.warehouse._fields', [
+                'warehouse' => new \Logistics\DB\Tenant\Warehouse,
+                'mode' => 'create',
+            ])
                 <input type="hidden" id="qty" name="qty" value="">
             </form>
          </div>
@@ -127,6 +138,29 @@
                 }
             });
             //
+
+
+            $("#frm-wh").submit(function(e) {
+            var $form = $(this).get(0);
+            if ($form.checkValidity()){
+            
+                swal({
+                    title: '{{__("Are you sure") }}?',                    
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: '{{ __("No") }}',
+                    confirmButtonText: '{{ __("Yes") }}'
+                })
+                .then((result) => {
+                    if (result.value) {
+                        $form.submit();
+                    }
+                });
+            }
+            e.preventDefault();
+          });
 
         });
 

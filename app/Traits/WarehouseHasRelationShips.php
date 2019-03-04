@@ -29,6 +29,11 @@ trait WarehouseHasRelationShips
         return $this->created_at->format('d-m-Y H:i a');
     }
 
+    public function getManualIdDspAttribute()
+    {
+        return str_pad($this->manual_id, 2, '0', STR_PAD_LEFT);
+    }
+
     public function invoice()
     {
         return $this->hasOne(\Logistics\DB\Tenant\Invoice::class);

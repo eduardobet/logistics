@@ -10,7 +10,11 @@
     <div class="col-lg-2">
         <div class="form-group">
             <label class="form-control-label">{{ __('ID') }}:</label>
-            {!! Form::text('id', null, ['class' => 'form-control', 'disabled' => 1, ]) !!}
+             @if ($tenant->migration_mode && $mode == 'create')
+                {!! Form::number("manual_id", null , ['class' => 'form-control', 'required' => 1,  ]) !!}
+             @else
+                {!! Form::text('id', isset($warehouse) ? $warehouse->manual_id_dsp : null, ['class' => 'form-control', 'disabled' => 1, ]) !!}
+            @endif
         </div>
     </div>
 
@@ -51,7 +55,7 @@
                 @can('create-invoice')
                     @if ($invoice->total) 
                         @if (config('app.invoice_print_version') == 2)
-                            <a target="_blank" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}" href="{{ route('tenant.invoice.show', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch_id, 'client_id' => $warehouse->client_id, '__printing' => 1, ]) }}" class="btn btn-sm btn-outline-dark" role="button">
+                            <a target="_blank" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}" href="{{ route('tenant.invoice.show', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch_id, 'client_id' => $warehouse->client_id, '__printing' => 1, ]) }}" class="btn btn-outline-dark" role="button">
                                 <i class="fa fa-print"></i>
                             </a>
                         @else 

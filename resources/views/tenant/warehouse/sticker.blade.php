@@ -40,7 +40,7 @@
 
       <tr>
         <td style="text-align:center;border-top: 1px solid #000; font-size: 3em; font-weight: bold; " colspan="2">
-            {{ $warehouse->id }}
+            {{ $warehouse->manual_id_dsp }}
         </td>
       </tr>
 
@@ -74,7 +74,7 @@
             <br>
         
             <?php
-                echo '<img src="data:image/png;base64,' . DNS1D::getBarcodePNG("{$warehouse->id}", "C39", 2, 90, [0,0,0], true) . '" alt="barcode"   />';
+                echo '<img src="data:image/png;base64,' . DNS1D::getBarcodePNG("{$warehouse->manual_id_dsp}", "C39", 2, 90, [0,0,0], true) . '" alt="barcode"   />';
             ?>
         </td>
       </tr>

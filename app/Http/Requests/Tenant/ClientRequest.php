@@ -69,7 +69,7 @@ class ClientRequest extends AppFormRequest
             }
         }
 
-        if ($tenant->migration_mode && $this->isPost()) {
+        if ($this->manual_id && $this->isPost()) {
             $rules['manual_id'] = ['required','integer', Rule::unique('clients', 'manual_id')->where('branch_id', $this->branch_id) ];
         }
 

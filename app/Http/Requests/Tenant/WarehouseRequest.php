@@ -46,7 +46,7 @@ class WarehouseRequest extends AppFormRequest
             $this->redirectRoute = 'tenant.warehouse.edit';
         }
 
-        if ($tenant->migration_mode && $this->isPost()) {
+        if ($this->manual_id && $this->isPost()) {
             $rules['manual_id'] = ['required','integer',  Rule::unique('warehouses', 'manual_id')->where('branch_to', $this->branch_to)];
         }
 

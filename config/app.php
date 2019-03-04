@@ -123,6 +123,13 @@ return [
 
     'invoice_print_version' => env('INVOICE_PRINT_VERSION', 1),
 
+    'migrations' => [
+        1 => [
+            'clients' => false,
+            'warehouses' => true,
+        ]
+    ],
+
     'providers' => [
 
         /*

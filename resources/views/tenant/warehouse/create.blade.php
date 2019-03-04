@@ -20,7 +20,7 @@
          <div class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
             {!! Form::open(['route' => ['tenant.warehouse.store', $tenant->domain], 'id' => 'frm-wh']) !!}
                 
-            @if ($tenant->migration_mode)
+            @if (config("app.migrations.{$tenant->id}.warehouses", false) )
                 <div class="row">
                     <div class="col-lg-12">
                         <h4>

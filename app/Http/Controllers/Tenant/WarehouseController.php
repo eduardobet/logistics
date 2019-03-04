@@ -88,7 +88,7 @@ class WarehouseController extends Controller
 
         $wh = new \Logistics\DB\Tenant\Warehouse;
 
-        if ($tenant->migration_mode && $request->manual_id) {
+        if ($request->manual_id) {
             $wh->manual_id = $request->manual_id;
         } else {
             $max = $wh->where('tenant_id', $tenant->id)

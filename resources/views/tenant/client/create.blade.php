@@ -24,7 +24,7 @@
                 <input type="hidden" name="branch_initial" id="branch_initial" value="{{ $branch->initial }}">
                 {!! Form::hidden('branches[]', $branch->id) !!}
 
-                @if ($tenant->migration_mode)
+                @if (config("app.migrations.{$tenant->id}.clients", false))
                     <div class="row">
                         <div class="col-lg-12">
                             <h4>

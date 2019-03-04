@@ -38,7 +38,7 @@ class ClientController extends Controller
             $searching = 'Y';
         }
 
-        $clients = $clients->paginate(15);
+        $clients = $clients->orderBy('manual_id')->paginate(15);
 
         $branches = $this->getBranches();
 

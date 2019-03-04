@@ -10,7 +10,7 @@
     <div class="col-lg-2">
         <div class="form-group">
             <label class="form-control-label">{{ __('ID') }}:</label>
-             @if ($tenant->migration_mode && $mode == 'create')
+             @if (config("app.migrations.{$tenant->id}.warehouses", false) && $mode == 'create')
                 {!! Form::number("manual_id", null , ['class' => 'form-control', 'required' => 1,  ]) !!}
              @else
                 {!! Form::text('id', isset($warehouse) ? $warehouse->manual_id_dsp : null, ['class' => 'form-control', 'disabled' => 1, ]) !!}

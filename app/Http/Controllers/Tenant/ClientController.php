@@ -83,7 +83,7 @@ class ClientController extends Controller
 
         $client = new \Logistics\DB\Tenant\Client;
 
-        if ($tenant->migration_mode && $request->manual_id) {
+        if ($request->manual_id) {
             $client->manual_id = $request->manual_id;
         } else {
             $max = $client->where('tenant_id', $tenant->id)

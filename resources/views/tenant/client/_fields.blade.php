@@ -39,7 +39,7 @@
         <div class="row mg-t-25">
 
             <div class="col-lg-2">
-                @if ($tenant->migration_mode && $mode == 'create')
+                @if (config("app.migrations.{$tenant->id}.clients", false) && $mode == 'create')
                     <label class="form-control-label">#{{ __('Box') }}: <span class="tx-danger">*</span></label>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">

@@ -16,18 +16,20 @@ class PaymentActivity extends Notification implements ShouldQueue
     public $clientId;
     public $tenantLang;
     public $userFullname;
+    public $invoiceManualId;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Payment $payment, $clientId, $tenantLang, $userFullname)
+    public function __construct(Payment $payment, $clientId, $tenantLang, $userFullname, $invoiceManualId)
     {
         $this->payment = $payment;
         $this->clientId = $clientId;
         $this->tenantLang = $tenantLang;
         $this->userFullname = $userFullname;
+        $this->invoiceManualId = $invoiceManualId;
     }
 
     /**
@@ -57,7 +59,7 @@ class PaymentActivity extends Notification implements ShouldQueue
         return [
             'title' => $this->userFullname . ' ' . __('created a payment', [], $lang),
             'content' => __('The payment #:pid has been created to the invoice #iid: (:box)', [
-                'pid' => $this->payment->id, 'iid' => $this->payment->invoice_id, 'box' => $box,
+                'pid' => $this->payment->id, 'iid' => $this->invoiceManualId, 'box' => $box,
             ], $lang),
             'created_at' => $this->payment->created_at,
         ];

@@ -36,6 +36,13 @@ class InvoiceTableSeeder extends Seeder
             'id_remote_store' => '10448796566',
             'total' => 60,
         ]);
+        $invoiceA->details()->create([
+            'qty' => 1,
+            'type' => 1,
+            'description' => 'Comision tarjeta',
+            'id_remote_store' => '10448796566',
+            'total' => 5,
+        ]);
         //payments
         $invoiceA->payments()->create([
             'tenant_id' => $invoiceA->tenant_id,

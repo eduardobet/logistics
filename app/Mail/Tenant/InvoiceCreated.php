@@ -39,7 +39,7 @@ class InvoiceCreated extends Mailable
         $box = "{$branch->code}{$client->manual_id_dsp}";
         $lang = $this->tenant->lang ? : localization()->getCurrentLocale();
         $ibranch = $this->invoice->branch;
-        $title = " #{$ibranch->initial}-{$this->invoice->id}";
+        $title = " #{$ibranch->initial}-{$this->invoice->manual_id_dsp}";
 
         return $this->subject(__('Invoice', [], $lang) . $title)
             ->from($this->tenant->mail_from_address, $this->tenant->mail_from_name)

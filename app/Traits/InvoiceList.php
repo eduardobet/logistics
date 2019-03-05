@@ -52,9 +52,9 @@ trait InvoiceList
         }
 
         if ($searching == 'Y') {
-            $invoices = $invoices->orderBy('invoices.id')->get();
+            $invoices = $invoices->orderBy('invoices.manual_id')->get();
         } else {
-            $invoices = $invoices->orderBy('invoices.id')->paginate(20);
+            $invoices = $invoices->orderBy('invoices.manual_id')->paginate(20);
         }
 
         return [$invoices, $searching, $branch];

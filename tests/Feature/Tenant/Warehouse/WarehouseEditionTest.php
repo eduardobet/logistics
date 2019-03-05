@@ -49,6 +49,25 @@ class WarehouseEditionTest extends TestCase
     }
 
     /** @test */
+    public function it_validates_the_id_when_manually_provided()
+    {
+        // $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create(['migration_mode' => true, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+
+        $response = $this->actingAs($admin)->patch(route('tenant.warehouse.update', [$tenant->domain, 1]), [
+            'manual_id' => 'xxx',
+        ]);
+        $response->assertStatus(302);
+        $response->assertRedirect(route('tenant.warehouse.edit', [$tenant->domain, 1]));
+
+        $response->assertSessionHasErrors([
+            'manual_id',
+        ]);
+    }
+
+    /** @test */
     public function it_updates_the_warehouse_for_direct_comission()
     {
         $this->withoutExceptionHandling();
@@ -72,7 +91,7 @@ class WarehouseEditionTest extends TestCase
 
         $client = factory(Client::class)->create(['tenant_id' => $tenant->id, ]);
 
-        $box = factory(Box::class)->create([
+        factory(Box::class)->create([
             'tenant_id' => $tenant->id,
             'client_id' => $client->id,
             'branch_id' => $branch->id,
@@ -101,6 +120,7 @@ class WarehouseEditionTest extends TestCase
             'client_email' => 'email@client.com',
             'volumetric_weight' => 8,
             'real_weight' => 9,
+            'manual_id' => 9,
             'total' => $mailer->vol_price * 8,
         ]);
 
@@ -139,6 +159,7 @@ class WarehouseEditionTest extends TestCase
             'total' => $mailer->real_price * 23,
             'notes' => 'The notes of the invoice updated',
             'invoice_id' => $invoice->id,
+            'manual_id' => 15, // invoice
             'invoice_detail' => [
                 ['qty' => 1, 'type' => 1, 'length' => 10, 'width' => 10, 'height' => 10, 'vol_weight' => 8, 'real_weight' => 9 , 'wdid' => $detail->id, ],
                 ['qty' => 1, 'type' => 2, 'length' => 12, 'width' => 12, 'height' => 12, 'vol_weight' => 13, 'real_weight' => 14, ],
@@ -172,6 +193,7 @@ class WarehouseEditionTest extends TestCase
             'real_weight' => 23,
             'total' => $mailer->real_price * 23,
             'notes' => 'The notes of the invoice updated',
+            'manual_id' => 15
         ]);
 
         tap($branchB->invoices->first()->details->first(), function ($detail) {

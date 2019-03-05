@@ -38,7 +38,7 @@
                 <div class="col-4">
                     <div class="form-group mg-b-10-force">
                         <label class="form-control-label">#:</label>
-                        <input type="text" value="{{ $payment->invoice->branch->initial }}-{{ $payment->invoice->id }}" class="form-control" readonly>
+                        <input type="text" value="{{ $payment->invoice->branch->initial }}-{{ $payment->invoice->manual_id_dsp }}" class="form-control" readonly>
                     </div>    
                 </div>
 

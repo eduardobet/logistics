@@ -17,7 +17,7 @@
 
 <strong>{{ __('Amount', [], $lang) }}</strong>: ${{ number_format($payment->amount_paid, 2) }}<br>
 <strong>{{ __('Payment method', [], $lang) }}</strong>: {{ [1 => __('Cash', [], $lang), 2 => __('Wire transfer', [], $lang), 3 => __('Check', [], $lang), ][$payment->payment_method] }}<br>
-<strong>{{ __('Concept', [], $lang) }}</strong>: {{ __('Invoice', [], $lang) }} No.: {{ $payment->invoice_id }} <br>
+<strong>{{ __('Concept', [], $lang) }}</strong>: {{ __('Invoice', [], $lang) }} No.: {{ $invoice->manual_id_dsp }} <br>
 
 
 @isset($subcopy)

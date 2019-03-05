@@ -86,6 +86,18 @@ trait WarehouseHasRelationShips
             $using = ['i_using' => 'C'];
         }
 
+        if ($request->manual_id) {
+            $using = array_merge($using, ['manual_id' => $request->manual_id]);
+        } else {
+            $max = $tenant->invoices()->where('branch_id', $request->branch_to)->max('manual_id');
+
+            if (!$max) {
+                $max = 0;
+            }
+
+            $using = array_merge($using, ['manual_id' => $max + 1]);
+        }
+
         $invoice = $this->invoice()->updateOrCreate(
             ['id' => $request->invoice_id, 'tenant_id' => $this->tenant_id, 'warehouse_id' => $this->id, ],
             [

@@ -14,7 +14,7 @@
 
         <div class="slim-pageheader">
             {{ Breadcrumbs::render() }}
-            <h6 class="slim-pagetitle"> {{ $branch->name }} / FAC-{{ $invoice->id }} </h6>
+            <h6 class="slim-pagetitle"> {{ $branch->name }} / FAC-{{ $invoice->manual_id_dsp }} </h6>
          </div><!-- slim-pageheader -->
 
          <div class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">

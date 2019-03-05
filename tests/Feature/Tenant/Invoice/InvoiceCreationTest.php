@@ -63,6 +63,25 @@ class InvoiceCreationTest extends TestCase
     }
 
     /** @test */
+    public function it_validates_the_id_when_manually_provided()
+    {
+        // $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create(['migration_mode' => true, ]);
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+
+        $response = $this->actingAs($admin)->post(route('tenant.invoice.store', $tenant->domain), [
+            'manual_id' => 'xxx',
+        ]);
+        $response->assertStatus(302);
+        $response->assertRedirect(route('tenant.invoice.create', $tenant->domain));
+
+        $response->assertSessionHasErrors([
+            'manual_id',
+        ]);
+    }
+
+    /** @test */
     public function it_successfuly_creates_the_invoice()
     {
         $this->withoutExceptionHandling();
@@ -96,6 +115,7 @@ class InvoiceCreationTest extends TestCase
             'branch_id' => $branch->id,
             'client_id' => $client->id,
             'total' => 160,
+            'manual_id' => 14,
             'created_at' => '2017-01-30',
             'invoice_detail' => [
                 ['qty' => 1, 'type' => 1, 'description' => 'Buying from amazon', 'id_remote_store' => 122452222, 'total' => 100,  ],
@@ -117,6 +137,7 @@ class InvoiceCreationTest extends TestCase
             $this->assertEquals($admin->id, $invoice->created_by_code);
             $this->assertEquals($client->id, $invoice->client_id);
             $this->assertEquals('A', $invoice->status);
+            $this->assertEquals(14, $invoice->manual_id);
             $this->assertEquals('160.0', $invoice->total);
             $this->assertEquals('2017-01-30', $invoice->created_at->format('Y-m-d'));
 

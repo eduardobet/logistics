@@ -43,12 +43,26 @@
 
 <input type="hidden" name="branch_id" id="branch_id" value="{{ $branch->id }}">
 
+@if (config("app.migrations.{$tenant->id}.internet_invoices", false))
+    <div class="row">
+        <div class="col-lg-12">
+            <h4>
+                <label class="badge badge-danger">{{ __('Migration mode') }}...</label>
+            </h4>
+        </div>
+    </div>
+@endif
+
 <div class="row">
 
     <div class="col-lg-2">
         <div class="form-group">
             <label class="form-control-label">{{ __('ID') }}:</label>
-            {!! Form::text("id_dsp", $invoice->branch ? "{$invoice->branch->initial}-{$invoice->id}" : null, ['class' => 'form-control ', 'readonly' => 1, ]) !!}
+            @if (config("app.migrations.{$tenant->id}.internet_invoices", false) && $mode == 'create')
+                {!! Form::number("manual_id", null , ['class' => 'form-control', 'required' => 1,  ]) !!}
+            @else
+                {!! Form::text("id_dsp", $invoice->branch ? "{$invoice->branch->initial}-{$invoice->manual_id_dsp}" : null, ['class' => 'form-control ', 'readonly' => 1, ]) !!}
+            @endif
             
             {!! Form::hidden('id', null) !!}
             

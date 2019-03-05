@@ -2,6 +2,7 @@
 
 namespace Logistics\Http\Requests\Tenant;
 
+use Illuminate\Validation\Rule;
 use Logistics\Http\Requests\AppFormRequest;
 
 class InvoiceRequest extends AppFormRequest
@@ -43,6 +44,10 @@ class InvoiceRequest extends AppFormRequest
 
         if ($this->isEdit()) {
             $this->redirectRoute = 'tenant.invoice.edit';
+        }
+
+        if ($this->manual_id && $this->isPost()) {
+            $rules['manual_id'] = ['required','integer',  Rule::unique('invoices', 'manual_id')->where('branch_id', $this->branch_id)];
         }
 
         return $rules;

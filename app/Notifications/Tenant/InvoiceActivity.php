@@ -54,7 +54,7 @@ class InvoiceActivity extends Notification implements ShouldQueue
 
         return [
             'title' => $this->userFullname . ' ' . __('created an invoice'),
-            'content' => __('The invoice #:id has been created for: :box', ['id' => $this->invoice->id, 'box' => $box, ]),
+            'content' => __('The invoice #:id has been created for: :box', ['id' => $this->invoice->manual_id_dsp, 'box' => $box, ]),
             'created_at' => $this->invoice->created_at,
         ];
     }

@@ -127,6 +127,8 @@ return [
         1 => [
             'clients' => false,
             'warehouses' => true,
+            'internet_invoices' => true,
+            'warehouse_invoices' => true,
         ]
     ],
 

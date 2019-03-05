@@ -235,15 +235,41 @@ class WarehouseController extends Controller
             ]));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function toggle(Request $request)
     {
-        //
+        $tenant = $this->getTenant();
+        $wh = $tenant->warehouses()->find($request->warehouse_id);
+
+        if (!$wh) {
+            return response()->json([
+                'msg' => __('Not Found.'),
+                'error' => true,
+            ], 404);
+        }
+
+        $status = $wh->update([
+            'status' => $request->status,
+        ]);
+
+        if ($status) {
+            $invoice = $wh->invoice;
+            
+            if ($invoice) {
+                $invoice->status = $request->status;
+                $invoice->notes = $invoice->notes . PHP_EOL . $request->notes;
+                $invoice->save();
+            }
+
+            return response()->json([
+                'error' => false,
+                'msg' => __('Success'),
+            ], 200);
+        }
+
+        return response()->json([
+            'error' => true,
+            'msg' => __('Error'),
+        ], 500);
     }
 
     public function invoiceTpl($tenant)

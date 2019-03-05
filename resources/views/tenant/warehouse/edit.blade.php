@@ -430,6 +430,79 @@
                     e.preventDefault();
                 } else this.submit()
             });
-        })
+
+            // toggle status
+            $("#btn-wh-status-toggle").click(function(){
+                var self = $(this);
+                var status = self.data('status');
+
+                if (status) {
+
+                    swal({
+                        title: '{{ __("Are you sure") }}?',                    
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        cancelButtonText: '{{ __("No") }}',
+                        confirmButtonText: '{{ __("Yes") }}'
+                    })
+                    .then((result) => {
+                        if (notes = result.value) {
+                            toggle(self, status);
+                        }
+                    });
+                }
+            });
+        });
+
+        function toggle($btn, status) {
+            $btn.prop('disabled', true);
+            swal({
+                title: '{{__("Please indicate why you are :doing the :what", ["doing" => ($warehouse->status == "A" ? __("inactivating") : __("activating") ), "what" => __("Warehouse"), ]) }}',
+                input: 'textarea',
+                showCancelButton: true,
+                inputValidator: (value) => {
+                    return !value && '{{ __("Error") }}!'
+                }
+            }).then((result) => {
+                if (notes = result.value) {
+
+                    var request = $.ajax({
+                        method: 'post',
+                        url: "{{ route('tenant.warehouse.toggle', $tenant->domain) }}",
+                        data: $.extend({
+                            _token	: $("meta[name='csrf-token']").attr('content'),
+                            '_method': 'POST',
+                            'warehouse_id': "{{ $warehouse->id }}",
+                            'status': status,
+                            'notes': notes,
+                        }, {})
+                    });
+
+                    request.done(function(data){
+                        if (data.error == false) {
+                            swal("", data.msg, "success").then(function() {
+                                window.location.reload(true);
+                            });
+                        } else {
+                            swal("", data.msg, "error");
+                        }
+                    })
+                    .fail(function( jqXHR, textStatus ) {
+                        
+                        var error = "{{ __('Error') }}";
+
+                        if (jqXHR.responseJSON.msg) {
+                            error = jqXHR.responseJSON.msg;
+                        }
+                        
+                        swal("", error, "error");
+                        $btn.prop('disabled', false);
+                    });
+
+                } else $btn.prop('disabled', false);
+            });
+        }
     </script>
 @stop

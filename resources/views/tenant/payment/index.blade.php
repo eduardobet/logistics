@@ -59,14 +59,15 @@
                 </select>
             </div>
 
-            <div class="col-lg-3">
+            <div class="col-lg-2">
                  {!! Form::select('client_id', ['' => '----'], null, ['class' => 'form-control select2', 'id' => 'client_id', 'width' => '100% !important', ]) !!}
             </div>
 
-            <div class="col-lg-2">
+            <div class="col-lg-3">
                 
                 <div class="input-group">
                     {!! Form::select('type', ['' => __('Payment method'), 1 => __('Cash'), 2 => __('Wire transfer'), 3 => __('Check'), ], request('type'), ['class' => 'form-control', 'id' => 'type' ]) !!}
+                    {!! Form::select('show_inactive', ['' =>  __('Status'), '1' => __('Show inactive') ], request('show_inactive'), ['class' => 'form-control', 'id' => 'show_inactive', 'style' => '',  ]) !!}
                     <div class="input-group-append">
                         <button class="btn" type="button" id="filter">
                             <i class="fa fa-search"></i>
@@ -142,7 +143,8 @@ select2ize = function($child, items) {
             var client = $("#client_id").val();
             var type = $("#type").val();
             var invoice = $("#invoice_id").val() || "{{ request('invoice_id', '') }}";
-            window.location = `{{ route('tenant.payment.list', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}`;
+            var showInactive = $("#show_inactive").val();
+            window.location = `{{ route('tenant.payment.list', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}&show_inactive=${showInactive}`;
         });
 
         $("#export-xls, #export-pdf").click(function() {
@@ -153,8 +155,9 @@ select2ize = function($child, items) {
             var type = $("#type").val();
             var invoice = $("#invoice_id").val() || "{{ request('invoice_id', '') }}";
             var pdf = this.id === 'export-pdf' ? '&pdf=1' : '';
+            var showInactive = $("#show_inactive").val();
             
-            if(from && to) window.open(`{{ route('tenant.payment.export', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}${pdf}`, '_blank');
+            if(from && to) window.open(`{{ route('tenant.payment.export', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}&show_inactive=${showInactive}${pdf}`, '_blank');
         });
     });
 </script>

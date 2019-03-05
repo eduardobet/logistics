@@ -38,6 +38,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('warehouse/store', 'Tenant\WarehouseController@store')->name('tenant.warehouse.store');
     Route::get('warehouse/{id}/edit', 'Tenant\WarehouseController@edit')->name('tenant.warehouse.edit')->middleware(['can:edit-warehouse']);
     Route::patch('warehouse/{id}/update', 'Tenant\WarehouseController@update')->name('tenant.warehouse.update');
+    Route::post('warehouse/toggle', 'Tenant\WarehouseController@toggle')->name('tenant.warehouse.toggle');
 
     //cargo entry
     Route::get('cargo-entry/list', 'Tenant\CargoEntryController@index')->name('tenant.warehouse.cargo-entry.list');

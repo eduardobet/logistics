@@ -20,6 +20,11 @@ trait PaymentList
         }
 
         $searching = 'N';
+        $statuses = ['A'];
+
+        if (auth()->user()->isSuperAdmin() && request('show_inactive') == '1') {
+            $statuses = array_merge($statuses, ['I']);
+        }
 
         $payments = DB::table('payments')
             ->where('payments.tenant_id', '=', $tenant->id)
@@ -41,6 +46,8 @@ trait PaymentList
                     }
                 }
             });
+
+        $payments = $payments->whereIn('invoices.status', $statuses);
 
         if (($from = request('from')) && ($to = request('to'))) {
             $payments = $payments->whereRaw(' date(payments.created_at) between ? and ? ', [$from, $to]);

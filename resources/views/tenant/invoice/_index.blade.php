@@ -41,7 +41,9 @@
             </td>
             <td class="pdf-a-right">{{ $sign }} {{ number_format($invoice->total, 2) }}</td>
             <td class="text-center" id="status-text-{{ $invoice->id }}">
-            @if ($invoice->is_paid)
+            @if ($invoice->status == 'I')
+                <span class="badge badge-danger">{{ __('Inactive') }}</span>
+            @elseif ($invoice->is_paid)
                 <span class="badge badge-success">{{ __('Paid') }}</span>
             @else
                 <span class="badge badge-danger">{{ __('Pending') }}</span>
@@ -59,26 +61,29 @@
             @endif
             @endcan
             
-            &nbsp;&nbsp;&nbsp;
-
+            
             <?php $pending = $invoice->total - $invoice->payments->sum('amount_paid'); ?>
-
-            <a href="#!" class="{{ $pending ? 'create-payment' : 'already-paid' }}"
+            
+            @if ($invoice->status == 'A')
+            &nbsp;&nbsp;&nbsp;
+                <a href="#!" class="{{ $pending ? 'create-payment' : 'already-paid' }}"
                 data-url="{{ route('tenant.payment.create', [$tenant->domain, $invoice->id, ]) }}"
                 title="{{ __('New payment') }}" data-invoice-id="{{ $invoice->id }}"
                 data-toggle="modal"
                 data-target="#modal-payment-{{ $invoice->id }}"
                 data-index="{{ $invoice->id }}"
                 data-pending="{{ $pending }}"
-            >
-                <i class="fa fa-money"></i></a>
-            </button>
+                >
+                    <i class="fa fa-money"></i>
+                </a>
+            @endif 
 
             @can('show-invoice')
             &nbsp;&nbsp;&nbsp;
             <a target="_blank" title="{{ __('Show') }}" href="{{ route('tenant.invoice.show', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch_id, 'client_id' => $invoice->client->id, ]) }}"><i class="fa fa-eye"></i></a>
             @endcan
-
+            
+            @if ($invoice->status == 'A')
             &nbsp;&nbsp;&nbsp;
             <a title="{{ __('Email') }}" href="#!" class="email-invoice{{ $tenant->email_allowed_dup===$invoice->client->email ? '-nope' : null }}"
                 data-toggle="tooltip" data-placement="left" title="{{ __('Resend invoice email') }}" data-invoice-id="{{ $invoice->id }}"
@@ -86,7 +91,8 @@
                 data-toggle="tooltip" data-placement="left" title="{{ __('Resend invoice email') }}" data-invoice-id="{{ $invoice->id }}"
                 data-loading-text="<i class='fa fa-spinner fa-spin '></i>"
             ><i class="fa fa-envelope"></i></a>
-
+            @endif 
+            
             </td>
             @endif
         </tr>

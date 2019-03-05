@@ -18,9 +18,14 @@ trait InvoiceList
         }
 
         $searching = 'N';
+        $statuses = ['A'];
+
+        if (auth()->user()->isSuperAdmin() && request('show_inactive') == '1') {
+            $statuses = array_merge($statuses, ['I']);
+        }
 
         $invoices = $tenant->invoices()
-            ->where('status', 'A')
+            ->whereIn('status', $statuses)
             ->withAndWhereHas('client', function ($query) {
                 if ($clientId = request('client_id')) {
                     $query->where('id', $clientId)->select('id', 'manual_id', 'first_name', 'last_name');

@@ -21,17 +21,19 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;
             @endcan
 
+            @if ($result->status == 'A')
+                
             <a title="{{ __('Email') }}" href="#!" class="email-invoice{{ $tenant->email_allowed_dup===$result->email ? '-nope' : null }}"
                 data-toggle="tooltip" data-placement="top" title="{{ __('Resend invoice email') }}" data-invoice-id="{{ $result->id }}"
                 data-url="{{ route('tenant.invoice.invoice.resend', [$tenant->domain, $result->id, ]) }}"
                 data-toggle="tooltip" data-placement="top" title="{{ __('Resend invoice email') }}" data-invoice-id="{{ $result->id }}"
                 data-loading-text="<i class='fa fa-spinner fa-spin '></i>"
-            >
-            <i class="fa fa-envelope"></i>
-            {{ __('Send') }}
+                >
+                <i class="fa fa-envelope"></i>
+                {{ __('Send') }}
             </a>
-
             &nbsp;&nbsp;&nbsp;&nbsp;
+            @endif
 
             <a target="_blank" href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $result->id ]) }}" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
                 <i class="fa fa-print"></i>

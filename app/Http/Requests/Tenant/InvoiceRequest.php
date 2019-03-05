@@ -47,7 +47,10 @@ class InvoiceRequest extends AppFormRequest
         }
 
         if ($this->manual_id && $this->isPost()) {
-            $rules['manual_id'] = ['required','integer',  Rule::unique('invoices', 'manual_id')->where('branch_id', $this->branch_id)];
+            $rules['manual_id'] = ['required','integer',  Rule::unique('invoices', 'manual_id')
+                ->where('branch_id', $this->branch_id)
+                ->where('status', 'A')
+            ];
         }
 
         return $rules;

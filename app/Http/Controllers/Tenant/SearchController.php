@@ -138,7 +138,7 @@ class SearchController extends Controller
                                 $query->where('id', $cBranchId);
                             });
                         } else {
-                            $results = $results->with('branch')->where('id', $cBranchId);
+                            $results = $results->with('branch')->where('manual_id', $qClientId);
                         }
                         
                         $client = true;

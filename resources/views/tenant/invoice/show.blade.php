@@ -46,7 +46,7 @@
                       <label class="section-label-sm tx-gray-500">{{ __('Invoice info') }}</label>
                       <p class="invoice-info-row">
                         <span>{{ __('Number') }}</span>
-                        <span>{{ $invoice->branch->initial }}-{{ $invoice->id }}</span>
+                        <span>{{ $invoice->branch->initial }}-{{ $invoice->manual_id_dsp }}</span>
                       </p>
                       <p class="invoice-info-row">
                         <span>{{ __('Warehouse') }}</span>

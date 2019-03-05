@@ -26,7 +26,7 @@ class SearchController extends Controller
             $reca = false;
             $tracking = false;
 
-            $termPrefix = 'c|f|w|r|reca';
+            $termPrefix = 'c|f|i|w|wa|a|r|reca';
             preg_match("/($termPrefix)(\\d+)/i", $term, $matches);
 
             $client = false;
@@ -34,7 +34,7 @@ class SearchController extends Controller
             $qType = @$matches[1];
             $qId = @$matches[2];
 
-            if (in_array($qType, ['c', 'f', 'w', 'r', 'reca'])) {
+            if (in_array($qType, ['c', 'f', 'i', 'w', 'wa', 'a', 'r', 'reca'])) {
                 // searching client, invoice, warehouse, reca
                 switch ($qType) {
                     case 'c':
@@ -55,6 +55,7 @@ class SearchController extends Controller
 
                         break;
                     case 'f':
+                    case 'i':
                         $results = $tenant->invoices();
 
                         if (!$superAdmin) {
@@ -63,12 +64,14 @@ class SearchController extends Controller
 
                         $results = $results->with(['client' => function ($query) {
                             $query->with('branch')->select(['id', 'manual_id', 'first_name', 'last_name', 'org_name', 'email']);
-                        }])->where('id', $qId);
+                        }])->where('manual_id', $qId);
                         $inv = true;
                         $totResult = $results->count();
 
                         break;
                     case 'w':
+                    case 'wa':
+                    case 'a':
                         $results = $tenant->warehouses();
 
                         if (!$superAdmin) {
@@ -333,7 +336,7 @@ class SearchController extends Controller
 
                                     $results = $results->with(['client' => function ($query) {
                                         $query->with('branch')->select(['id', 'manual_id', 'first_name', 'last_name', 'org_name', 'email']);
-                                    }])->where('id', $qId);
+                                    }])->where('manual_id', $qId);
                                     $inv = true;
                                     break;
                                 case 'w':

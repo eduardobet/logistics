@@ -72,6 +72,7 @@ trait PaymentList
             'clients.manual_id as client_manual_id',
             'branches.code as client_box',
             'invoices.branch_id as invoice_branch_id',
+            'invoices.manual_id as invoice_manual_id',
             'branches.name as branch_name',
             'branches.ruc',
             'branches.dv',

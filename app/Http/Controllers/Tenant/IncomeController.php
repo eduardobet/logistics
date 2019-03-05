@@ -31,7 +31,7 @@ class IncomeController extends Controller
                 $invoice->with('warehouse');
             }])
             ->whereHas('invoice', function ($invoice) use ($cBranch) {
-                $invoice->active()->paid()->where('branch_id', request('branch_id', $cBranch->id));
+                $invoice->active()->where('branch_id', request('branch_id', $cBranch->id));
             });
 
             
@@ -40,25 +40,29 @@ class IncomeController extends Controller
         $invoices = $tenant->invoices()->active()->whereBetween('created_at', [$from, $to])
             ->where('branch_id', request('branch_id', $cBranch->id))
             ->with(['details' => function ($detail) {
-                $detail->with('productType');
+                $detail->whereHas('productType', function ($pType) {
+                    $pType->where('is_commission', '=', true);
+                });
             }])
             ->get();
 
         if ($pmethod = request('type')) {
             $paymentsByType = $paymentsByType->where('payment_method', $pmethod);
         }
-        
-        $details = $invoices->where('is_paid', true)->pluck('details')->flatten();
 
-        $commissions = $details->filter(function ($value) {
+        $details = $invoices->where('warehouse_id', '=', null)->where('is_paid', true)->pluck('details')->flatten();
+        // $details = $invoices->where('warehouse_id', '=', null)->pluck('details')->flatten();
+
+        $commissions = $details;
+        
+        /*$details->filter(function ($value) {
             return $value->productType && $value->productType->is_commission == true;
-        });
+        });*/
 
         $recas = $tenant->cargoEntries()->whereBetween('created_at', [$from, $to])
             ->where('branch_id', request('branch_id', $cBranch->id))
             ->where('weight', '>', 0)
             ->get();
-
 
         $incomes = $paymentsByType->get();
 

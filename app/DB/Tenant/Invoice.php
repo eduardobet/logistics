@@ -14,8 +14,16 @@ class Invoice extends Model
      * @var array
      */
     protected $fillable = [
-        'created_by_code', 'tenant_id', 'updated_by_code', 'branch_id', 'client_name', 'client_email', 'status', 'volumetric_weight', 'real_weight', 'total','notes', 'warehouse_id', 'client_id', 'is_paid', 'i_using', 'cubic_feet', 'fine_total', 'fine_ref', 'created_at',
+        'created_by_code', 'tenant_id', 'updated_by_code', 'branch_id', 'client_name', 'client_email', 'status', 'volumetric_weight', 'real_weight', 'total','notes', 'warehouse_id', 'client_id', 'is_paid', 'i_using', 'cubic_feet', 'fine_total', 'fine_ref', 'created_at', 'manual_id',
     ];
+
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['manual_id_dsp'];
 
     /**
      * The attributes that should be cast to native types.
@@ -24,6 +32,7 @@ class Invoice extends Model
      */
     protected $casts = [
         'is_paid' => 'boolean',
+        'manual_id' => 'integer',
     ];
 
     /**
@@ -48,6 +57,11 @@ class Invoice extends Model
 
             do_forget_cache(__class__, $keys);
         });
+    }
+
+    public function getManualIdDspAttribute()
+    {
+        return str_pad($this->manual_id, 2, '0', STR_PAD_LEFT);
     }
 
     public function scopeActive($query)

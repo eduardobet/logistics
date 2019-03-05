@@ -9,6 +9,17 @@
     </div>
 </div><!-- row -->
 
+@if (config("app.migrations.{$tenant->id}.warehouse_invoices", false) && $mode == 'edit')
+    <div class="row mg-t-20">
+        <div class="col-lg-12">
+            <div class="form-group mg-b-10-force">
+                <label class="form-control-label">#{{ __('Invoice') }}: <span class="tx-danger">*</span></label>
+                <input type="number" name="manual_id" id="manual_id" value="{{ (int)$invoice->manual_id_dsp ? $invoice->manual_id_dsp : null }}" class="form-control" required>
+            </div>
+        </div>
+    </div>
+@endif
+
 @if (!$invoice->total)
     <div class="mg-t-20">
         <button class="btn btn-sm btn-outline-success btn-add-more" type="button"

@@ -88,15 +88,34 @@ class InvoiceController extends Controller
     {
         $tenant = $this->getTenant();
 
-        $invoice = $tenant->invoices()->create([
-            'branch_id' => $request->branch_id,
-            'client_id' => $request->client_id,
-            'total' => $request->total,
-            'notes' => $request->notes,
-            'created_at' => $request->created_at,
-        ]);
+        $invoice = new \Logistics\DB\Tenant\Invoice;
 
-        if ($invoice) {
+        if ($request->manual_id) {
+            $invoice->manual_id = $request->manual_id;
+        } else {
+            $max = $invoice->where('tenant_id', $tenant->id)
+                ->where('branch_id', $request->branch_id)
+                ->max('manual_id');
+
+            if (!$max) {
+                $max = 0;
+            }
+
+            $invoice->manual_id = $max + 1;
+        }
+
+        $invoice->tenant_id = $tenant->id;
+        $invoice->branch_id = $request->branch_id;
+        $invoice->client_id = $request->client_id;
+        $invoice->total = $request->total;
+        $invoice->notes = $request->notes;
+        $invoice->created_at = $request->created_at;
+
+        $saved = $invoice->save();
+
+        if ($saved) {
+            $invoice = $invoice->fresh();
+
             foreach ($request->invoice_detail as $detail) {
                 $detail = new Fluent($detail);
                 $invoice->details()->create([

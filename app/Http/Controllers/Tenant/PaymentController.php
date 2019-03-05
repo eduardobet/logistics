@@ -152,7 +152,7 @@ class PaymentController extends Controller
         ]);
 
         if ($payment) {
-            $invoice->branch->notify(new PaymentActivity($payment, $invoice->client_id, $tenant->lang, auth()->user()->full_name));
+            $invoice->branch->notify(new PaymentActivity($payment, $invoice->client_id, $tenant->lang, auth()->user()->full_name, $invoice->manual_id_dsp));
 
             $totalPaid = $invoice->fresh()->payments->fresh()->sum('amount_paid');
             $pending = $invoice->total - $totalPaid;

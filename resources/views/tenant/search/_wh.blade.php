@@ -18,6 +18,8 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;
             @endcan
 
+            @if ($result->status == 'A')
+                
             <a target="_blank" href="{{ route('tenant.warehouse.print-sticker', [$tenant->domain, $result->id ]) }}">
                 <i class="fa fa-ticket"></i>
                 {{ __('Sticker') }}
@@ -40,6 +42,8 @@
                 {{ __('Payments') }}
             </a>
             @endcan
+
+           @endif
             
             </small>
         </div>

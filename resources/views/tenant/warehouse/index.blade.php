@@ -52,7 +52,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-5">
+            <div class="col-lg-4">
                  <select name="branch_id" id="branch_id" class="form-control select2" style="width: 100%">
                     <option value="">{{ __('Branch') }}</option>
                     @foreach ($branches as $aBranch)
@@ -63,10 +63,11 @@
                 </select>
             </div>
 
-            <div class="col-lg-3">
+            <div class="col-lg-4">
                 
                 <div class="input-group">
-                    {!! Form::select('type', ['' => __('Type'), 'A' => __('Air'), 'M' => __('Maritime'), ], request('type'), ['class' => 'form-control', 'id' => 'type', ]) !!}
+                    {!! Form::select('type', ['' => '--' . __('Type') . '--', 'A' => __('Air'), 'M' => __('Maritime'), ], request('type'), ['class' => 'form-control', 'id' => 'type', ]) !!}
+                    {!! Form::select('show_inactive', ['' => '--' . __('Status') . '--', '1' => __('Show inactive') ], request('show_inactive'), ['class' => 'form-control', 'id' => 'show_inactive', ]) !!}
                     <div class="input-group-append">
                         <button class="btn" type="button" id="filter">
                             <i class="fa fa-search"></i>
@@ -115,7 +116,8 @@
             var to = $.trim($("#to").val());
             var branch = $("#branch_id").val();
             var type = $("#type").val();
-            window.location = `{{ route('tenant.warehouse.list', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&type=${type}`;
+            var showInactive = $("#show_inactive").val();
+            window.location = `{{ route('tenant.warehouse.list', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&type=${type}&show_inactive=${showInactive}`;
         });
 
         $("#export-xls, #export-pdf").click(function() {
@@ -124,8 +126,9 @@
             var branch = $("#branch_id").val();
             var type = $("#type").val();
             var pdf = this.id === 'export-pdf' ? '&pdf=1' : '';
+            var showInactive = $("#show_inactive").val();
             
-            if(from && to) window.open(`{{ route('tenant.warehouse.export', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&type=${type}${pdf}`, '_blank');
+            if(from && to) window.open(`{{ route('tenant.warehouse.export', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&type=${type}&show_inactive=${showInactive}${pdf}`, '_blank');
         });
     });
 </script>

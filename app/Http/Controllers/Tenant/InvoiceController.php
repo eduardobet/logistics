@@ -428,7 +428,7 @@ class InvoiceController extends Controller
     public function inactive(Request $request)
     {
         $tenant = $this->getTenant();
-        $invoice = $tenant->invoices()->where('is_paid', false)->with(['payments']);
+        $invoice = $tenant->invoices();
 
         if (!auth()->user()->isSuperAdmin()) {
             $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
@@ -443,9 +443,16 @@ class InvoiceController extends Controller
             ], 404);
         }
 
-        $inactive = $invoice->update([
-            'status' => 'I',
-        ]);
+        if ($request->status) {
+            $inactive = $invoice->update([
+                'status' => $request->status,
+                'notes'  => $invoice->notes . PHP_EOL . $request->notes,
+            ]);
+        } else {
+            $inactive = $invoice->update([
+                'status' => 'I',
+            ]);
+        }
         
         if ($inactive) {
             return response()->json([

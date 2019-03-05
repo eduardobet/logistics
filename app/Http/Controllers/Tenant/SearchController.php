@@ -18,6 +18,7 @@ class SearchController extends Controller
         $cBranchId = $cBranch->id;
         $superAdmin = auth()->user()->isSuperAdmin();
         $totResult = 0;
+        $statuses = ['A'];
 
         if ($term = strtolower($term)) {
             $client = false;
@@ -76,10 +77,11 @@ class SearchController extends Controller
 
                         if (!$superAdmin) {
                             $results = $results->withAndWhereHas('toBranch', function ($query) use ($cBranchId) {
-                                $query->where('id', $cBranchId);
+                                $query->where('id', $cBranchId)->where('status', 'A');
                             });
                         } else {
-                            $results = $results->with('toBranch');
+                            $statuses = array_merge($statuses, ['I']);
+                            $results = $results->whereIn('status', $statuses)->with('toBranch');
                         }
 
                         $results = $results->with([
@@ -182,10 +184,11 @@ class SearchController extends Controller
 
                     if (!$superAdmin) {
                         $warehouses = $warehouses->withAndWhereHas('toBranch', function ($query) use ($cBranchId) {
-                            $query->where('id', $cBranchId);
+                            $query->where('id', $cBranchId)->where('status', 'A');
                         });
                     } else {
-                        $warehouses = $warehouses->with('toBranch');
+                        $statuses = array_merge($statuses, ['I']);
+                        $warehouses = $warehouses->whereIn('status', $statuses)->with('toBranch');
                     }
 
                     $data['warehouses'] = $warehouses->with('invoice')->where('trackings', 'like', "%$term%")->get();
@@ -223,186 +226,6 @@ class SearchController extends Controller
             ]);
         } // if term
         else {
-            return view('tenant.search.results', [
-                'noresults' => __('Your search - ":term" - did not match any documents.', ['term' => $term]),
-            ]);
-        }
-    }
-
-    public function searchOld()
-    {
-        $tenant = $this->getTenant();
-        $term = request('q', '');
-        $cBranch = auth()->user()->currentBranch();
-        $cBranchId = $cBranch->id;
-        $superAdmin = auth()->user()->isSuperAdmin();
-
-        if ($term = strtolower($term)) {
-            $branchesPrefix = implode('|', $this->getBranches()->pluck('code')->toArray());
-            preg_match("/($branchesPrefix)(\\d+)/i", $term, $matches);
-            $qBranchCode = @$matches[1];
-            $qClientId = @$matches[2];
-            $client = false;
-            $wh = false;
-            $inv = false;
-            $reca = false;
-            $tracking = false;
-
-            if ($qBranchCode && $qClientId && $qBranchCode === strtolower($cBranch->code)) {
-                $results = $tenant->clients()
-                    ->where('branch_id', $cBranchId)
-                    ->with('branch')->where('manual_id', $qClientId);
-                $client = true;
-            } else {
-                $results = $tenant->clients();
-
-                if (!$superAdmin) {
-                    $results = $results->withAndWhereHas('branch', function ($query) use ($cBranchId) {
-                        $query->where('id', $cBranchId);
-                    });
-                } else {
-                    $results = $results->with('branch');
-                }
-
-                $results = $results->where(function ($query) use ($term) {
-                    $query->where('full_name', 'like', "%$term%")->orWhere('org_name', 'like', "%$term%")->orWhere('email', 'like', "%$term%");
-                });
-
-                $client = true;
-
-                if (!$results->count()) {
-                    $cargoEntries = $tenant->cargoEntries();
-
-                    if (!$superAdmin) {
-                        $cargoEntries = $cargoEntries->withAndWhereHas('branch', function ($query) use ($cBranchId) {
-                            $query->where('id', $cBranchId);
-                        });
-                    } else {
-                        $cargoEntries = $cargoEntries->with('branch');
-                    }
-
-                    $data['cargo_entries'] = $cargoEntries->where('trackings', 'like', "%$term%")->get();
-
-                    $warehouses = $tenant->warehouses();
-
-                    if (!$superAdmin) {
-                        $warehouses = $warehouses->withAndWhereHas('toBranch', function ($query) use ($cBranchId) {
-                            $query->where('id', $cBranchId);
-                        });
-                    } else {
-                        $warehouses = $warehouses->with('toBranch');
-                    }
-
-                    $data['warehouses'] = $warehouses->with('invoice')->where('trackings', 'like', "%$term%")->get();
-
-                    if ($data['cargo_entries']->count() || $data['warehouses']->count()) {
-                        $tracking = true;
-                        $client = false;
-                        $results = collect($data);
-                    }
-
-                    if (!$tracking) {
-                        $termPrefix = 'c|i|w|r|reca';
-                        preg_match("/($termPrefix)(\\d+)/i", $term, $matches);
-
-                        $client = false;
-    
-                        $qType = @$matches[1];
-                        $qId = @$matches[2];
-
-                        if ($qType && $qId) {
-                            switch ($qType) {
-                                case 'c':
-                                    $results = $tenant->clients();
-
-                                    if (!$superAdmin) {
-                                        $results = $results->withAndWhereHas('branch', function ($query) use ($cBranchId) {
-                                            $query->where('id', $cBranchId);
-                                        });
-                                    } else {
-                                        $results = $results->with('branch');
-                                    }
-
-                                    $results = $results->where('manual_id', $qId);
-
-                                    $client = true;
-                                    break;
-                                case 'i':
-                                    $results = $tenant->invoices();
-
-                                    if (!$superAdmin) {
-                                        $results = $results->where('branch_id', $cBranchId);
-                                    }
-
-                                    $results = $results->with(['client' => function ($query) {
-                                        $query->with('branch')->select(['id', 'manual_id', 'first_name', 'last_name', 'org_name', 'email']);
-                                    }])->where('manual_id', $qId);
-                                    $inv = true;
-                                    break;
-                                case 'w':
-                                    $results = $tenant->warehouses();
-
-                                    if (!$superAdmin) {
-                                        $results = $results->withAndWhereHas('toBranch', function ($query) use ($cBranchId) {
-                                            $query->where('id', $cBranchId);
-                                        });
-                                    } else {
-                                        $results = $results->with('toBranch');
-                                    }
-
-                                    $results = $results->with(['client' => function ($query) {
-                                        $query->with('branch')->select(['id', 'manual_id', 'first_name', 'last_name', 'org_name', 'email']);
-                                    },
-                                    'fromBranch',
-                                    ])->where('id', $qId);
-                                    $wh = true;
-                                    break;
-                                case 'r':
-                                case 'reca':
-                                    $results = $tenant->cargoEntries();
-
-                                    if (!$superAdmin) {
-                                        $results = $results->withAndWhereHas('branch', function ($query) use ($cBranchId) {
-                                            $query->where('id', $cBranchId);
-                                        });
-                                    } else {
-                                        $results = $results->with('branch');
-                                    }
-
-                                    $results = $results->where('id', $qId);
-
-                                    $reca = true;
-                                    break;
-                                default:
-                                    # code...
-                                    break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (!$tracking) {
-                $results = $results->paginate(20);
-            }
-
-            if ($results->count()) {
-                return view('tenant.search.results', [
-                    'results' => $results,
-                    'client' => $client,
-                    'wh' => $wh,
-                    'inv' => $inv,
-                    'reca' => $reca,
-                    'tracking' => $tracking,
-                ]);
-            }
-
-            return view('tenant.search.results', [
-                'noresults' => __('Your search - ":term" - did not match any documents.', ['term' => $term]),
-            ]);
-        }
-        
-        if (!$term || !$results->count()) {
             return view('tenant.search.results', [
                 'noresults' => __('Your search - ":term" - did not match any documents.', ['term' => $term]),
             ]);

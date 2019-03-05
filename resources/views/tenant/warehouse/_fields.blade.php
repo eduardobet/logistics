@@ -206,10 +206,17 @@
     </div>
 </div>
 
-@if (!$invoice->total)
 <div class="row mg-t-25 justify-content-between">
-    <div class="col-lg-12">
-        <button id="btn-wh-save" type="submit" class="btn btn-primary  bd-1 bd-gray-400">{{ __('Save') }}</button>
+    <div class="col">
+        @if (!$invoice->total && $warehouse->status == 'A')
+            <button id="btn-wh-save" type="submit" class="btn btn-primary  bd-1 bd-gray-400">{{ __('Save') }}</button>
+        @endif
+        @if (auth()->user()->isSuperAdmin())
+            @if ($warehouse->status == 'A')
+                <button id="btn-wh-status-toggle" type="button" data-status="I" class="btn btn-danger  bd-1 bd-gray-400">{{ __('Inactivate') }}</button>
+            @else 
+                <button id="btn-wh-status-toggle" type="button" data-status="A" class="btn btn-success  bd-1 bd-gray-400">{{ __('Activate') }}</button>  
+            @endif
+        @endif
     </div>
 </div>
-@endif

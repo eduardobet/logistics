@@ -18,8 +18,14 @@ trait WarehouseList
         }
 
         $searching = 'N';
+        $statuses = ['A'];
+
+        if (auth()->user()->isSuperAdmin() && request('show_inactive') == '1') {
+            $statuses = array_merge($statuses, ['I']);
+        }
 
         $warehouses = $tenant->warehouses()
+            ->whereIn('status', $statuses)
             ->with(['fromBranch' => function ($query) {
                 $query->select('id', 'code', 'name');
             }])

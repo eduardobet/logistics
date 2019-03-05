@@ -6,6 +6,7 @@
         <th>{{ __('Date') }}</th>
         <th>{{ __('Issuer branch') }}</th>
         <th>{{ __('Destination branch') }}</th>
+        <th>{{ __('Status') }}</th>
 
         @if (!isset($exporting))
             <th class="text-center">
@@ -45,6 +46,7 @@
                 <td>{{ $warehouse->created_at->format('d/m/Y') }}</td>
                 <td>{{ $warehouse->fromBranch->name }}</td>
                 <td>{{ $warehouse->toBranch->name }}</td>
+                <td>{{ $warehouse->status }}</td>
                 @if (!isset($exporting))
                 <td class="text-center">
                     @can('edit-warehouse')

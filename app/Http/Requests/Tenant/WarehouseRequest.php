@@ -47,11 +47,15 @@ class WarehouseRequest extends AppFormRequest
         }
 
         if ($this->manual_id && $this->isPost()) {
-            $rules['manual_id'] = ['required','integer',  Rule::unique('warehouses', 'manual_id')->where('branch_to', $this->branch_to)];
+            $rules['manual_id'] = ['required','integer',  Rule::unique('warehouses', 'manual_id')
+                ->where('branch_to', $this->branch_to)
+                ->where('status', 'A')
+            ];
         }
 
         if ($this->manual_id && $this->isEdit()) {
-            $rules['manual_id'] = ['required','integer',   Rule::unique('invoices', 'manual_id')->where('branch_id', $this->branch_to)];
+            $rules['manual_id'] = ['required','integer',   Rule::unique('invoices', 'manual_id')
+                ->where('branch_id', $this->branch_to)];
         }
 
         return $rules;

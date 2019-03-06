@@ -81,6 +81,9 @@
             @can('show-invoice')
             &nbsp;&nbsp;&nbsp;
             <a target="_blank" title="{{ __('Show') }}" href="{{ route('tenant.invoice.show', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch_id, 'client_id' => $invoice->client->id, ]) }}"><i class="fa fa-eye"></i></a>
+
+            &nbsp;&nbsp;&nbsp;
+            <a target="_blank" title="{{ __('Payments') }}" href="{{ route('tenant.payment.list', [$tenant->domain, 'invoice_id' => $invoice->id, 'branch_id' => $invoice->branch_id, 'client_id' => $invoice->client->id, 'no_date' => 1,  ]) }}"><i class="fa fa-usd"></i></a>
             @endcan
             
             @if ($invoice->status == 'A')

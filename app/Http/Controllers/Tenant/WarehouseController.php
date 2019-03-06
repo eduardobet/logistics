@@ -113,6 +113,7 @@ class WarehouseController extends Controller
         $wh->qty = $request->qty ?: 0;
         $wh->tot_packages = $request->tot_packages ?: 0;
         $wh->tot_weight = $request->tot_weight ?: 0;
+        $wh->created_at = new \Carbon\Carbon($request->created_at);
 
         $saved = $wh->save();
 

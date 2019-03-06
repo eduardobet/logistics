@@ -1,3 +1,5 @@
+@include('tenant.common._notifications')
+
 @if (isset($mode) && $mode == 'edit')
     <div class="row mg-b-20">
         <div class="col">

@@ -112,6 +112,7 @@ trait WarehouseHasRelationShips
                 'cubic_feet' => $request->total_cubic_feet ? $request->total_real_weight : 0,
                 'total' => $request->total,
                 'notes' => $request->notes,
+                'created_at' => $request->created_at,
             ] + $using
         );
 

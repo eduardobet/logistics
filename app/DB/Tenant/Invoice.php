@@ -55,7 +55,7 @@ class Invoice extends Model
         static::saved(function ($model) {
             $keys = ["invoices.tenant.{$model->tenant_id}"];
 
-            do_forget_cache(__class__, $keys);
+            __do_forget_cache(__class__, $keys, []);
         });
     }
 

@@ -5,7 +5,7 @@
             <h5 class="mb-1 tx-bold">
             {{ ['A' => __('Air'), 'M' => __('Maritime'), ][$result->type] }}
             </h5>
-            <h5 class="tx-bold tx-success"> {{ $result->client->full_name }} / {{ $result->toBranch ? $result->toBranch->code : null }}{{ $result->client->manual_id_dsp }}</h5>
+            <h5 class="tx-bold tx-success"> {{ optional($result->client)->full_name }} / {{ $result->toBranch ? $result->toBranch->code : null }}{{ optional($result->client)->manual_id_dsp }}</h5>
             </div>
             <p class="mb-1">[{{ $result->fromBranch->code }}] {{ $result->fromBranch->name }}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -28,7 +28,7 @@
             &nbsp;&nbsp;&nbsp;&nbsp;
 
             @can('show-invoice')
-                <a target="_blank" href="{{ route('tenant.invoice.list', [$tenant->domain, 'client_id' => $result->client->id, 'branch_id' => $branch->id, ]) }}">
+                <a target="_blank" href="{{ route('tenant.invoice.list', [$tenant->domain, 'client_id' => optional($result->client)->id, 'branch_id' => $branch->id, ]) }}">
                 <i class="fa fa-file"></i>
                 {{ __('Invoices') }}
                 </a>
@@ -37,7 +37,7 @@
             &nbsp;&nbsp;&nbsp;&nbsp;
 
             @can('show-payment')    
-            <a target="_blank" href="{{ route('tenant.payment.list', [$tenant->domain, 'client_id' => $result->client->id, 'branch_id' => $branch->id, ]) }}">
+            <a target="_blank" href="{{ route('tenant.payment.list', [$tenant->domain, 'client_id' => optional($result->client)->id, 'branch_id' => $branch->id, ]) }}">
                 <i class="fa fa-money"></i>
                 {{ __('Payments') }}
             </a>

@@ -95,7 +95,7 @@
 
             @if ($searching == 'N')
                 <div id="result-paginated" class="mg-t-25">
-                    {{ $invoices->links() }}
+                    {{ $invoices->appends(['invoice_id' => request('invoice_id'), 'branch_id' => request('branch_id'), 'client_id' => request('client_id'), 'no_date' => request('no_date'),])->links() }}
                 </div>
             @endif
 

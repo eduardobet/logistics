@@ -49,7 +49,7 @@ trait PaymentList
 
         $payments = $payments->whereIn('invoices.status', $statuses);
 
-        if (($from = request('from')) && ($to = request('to'))) {
+        if (request('no_date', ' ') != '1' && ($from = request('from', date('Y-m-d'))) && ($to = request('to', date('Y-m-d')))) {
             $payments = $payments->whereRaw(' date(payments.created_at) between ? and ? ', [$from, $to]);
             $searching = 'Y';
         }

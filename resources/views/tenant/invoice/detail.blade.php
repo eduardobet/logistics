@@ -35,7 +35,7 @@ $key = isset($key) ? $key : ':index:';
             <div class="col-5">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Purchase ID') }}:<span class="tx-danger">*</span></label>
-                    {!! Form::text("invoice_detail[{$key}][id_remote_store]", $idetail->id_remote_store, ['class' => 'form-control form-control-sm id_remote_store', 'data-i' => "{$key}", 'id' => "id_remote_store-{$key}", 'required' => '1', ]) !!}
+                    {!! Form::text("invoice_detail[{$key}][id_remote_store]", $idetail->id_remote_store ?: 0, ['class' => 'form-control form-control-sm id_remote_store', 'data-i' => "{$key}", 'id' => "id_remote_store-{$key}", 'required' => '1', ]) !!}
                 </div>
             </div>
 

@@ -131,7 +131,7 @@
         <div class="form-group">
         
              <label class="form-control-label">{{ __('Client') }}: 
-                <span class="tx-danger"></span>
+                <span class="tx-danger">*</span>
                 <strong id="loader-client_id"></strong>
              </label>
              @if (isset($clients))
@@ -145,13 +145,14 @@
                             data-extra_maritime_price='{{ var_export($client->extra_maritime_price) }}'
                             data-maritime_price='{{ var_export($client->maritime_price) }}'
                             {{ (isset($warehouse) && $warehouse->client_id == $client->id) || old('client_id') == $client->id ? " selected": null }}
+                            required
                         >
                         [{{ $client->branch->code }}{{ $client->manual_id_dsp }}] {{ $client->full_name }}
                         </option>
                     @endforeach
                 </select>    
              @else    
-                {!! Form::select('client_id', ['' => '----'], null, ['class' => 'form-control select2', 'id' => 'client_id', 'width' => '100% !important', ]) !!}
+                {!! Form::select('client_id', ['' => '----'], null, ['class' => 'form-control select2', 'id' => 'client_id', 'width' => '100% !important', 'required' => 1, ]) !!}
              @endif
 
         </div>

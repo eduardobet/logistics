@@ -178,6 +178,7 @@ class WarehouseCreationTest extends TestCase
             'gen_invoice' => 1,
             'tot_packages' => 2,
             'tot_weight' => 21,
+            'created_at' => '2017-01-30',
 
             //
             'client_name' => $client->full_name,
@@ -210,6 +211,7 @@ class WarehouseCreationTest extends TestCase
             'tot_packages' => 2,
             'tot_weight' => 21,
             'manual_id' => 1,
+            'created_at' => '2017-01-30 00:00:00',
         ]);
 
         $this->assertDatabaseHas('invoices', [
@@ -226,6 +228,7 @@ class WarehouseCreationTest extends TestCase
             'total' => $client->vol_price * 21,
             'notes' => 'The notes of the invoice',
             'i_using' => 'V',
+            'created_at' => '2017-01-30 00:00:00',
         ]);
 
         tap($branchB->invoices->first()->details->first(), function ($detail) use ($client) {

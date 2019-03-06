@@ -20,6 +20,18 @@
 
     <div class="col-lg-2">
         <div class="form-group">
+            <label class="form-control-label">
+                {{ __('Date') }}:
+                <span class="tx-danger">*</span>
+            </label>
+
+            {!! Form::text('created_at', !$warehouse->created_at ? old('created_at', date('Y-m-d')) : $warehouse->created_at->format('Y-m-d'), ['class' => 'form-control fc-datepicker hasDatepicker', 'readonly' => 1, ]) !!}
+            
+        </div>
+     </div>
+
+    <div class="col-lg-2">
+        <div class="form-group">
         
              <label class="form-control-label">{{ __('Type') }}: 
                 <span class="tx-danger">*</span>  
@@ -29,7 +41,7 @@
         </div>
     </div>
 
-    <div class="col-lg-{{ $mode=='create' ? 8 : 6 }}">
+    <div class="col-lg-{{ $mode=='create' ? 6 : 4 }}">
         <div class="form-group">
             <label class="form-control-label">{{ __('Issuer branch') }}: <span class="tx-danger">*</span></label>
 

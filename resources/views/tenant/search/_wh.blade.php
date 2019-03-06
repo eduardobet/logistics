@@ -1,11 +1,11 @@
 @foreach ($results as $result)
     <div class="list-group list-group-flush">
-        <div href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+        <div href="#" class="bd bd-y bd-success bd-1 list-group-item list-group-item-action flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1">
+            <h5 class="mb-1 tx-bold">
             {{ ['A' => __('Air'), 'M' => __('Maritime'), ][$result->type] }}
             </h5>
-            <small> {{ $result->client->full_name }} / {{ $result->toBranch ? $result->toBranch->code : null }}{{ $result->client->manual_id_dsp }}</small>
+            <h5 class="tx-bold tx-success"> {{ $result->client->full_name }} / {{ $result->toBranch ? $result->toBranch->code : null }}{{ $result->client->manual_id_dsp }}</h5>
             </div>
             <p class="mb-1">[{{ $result->fromBranch->code }}] {{ $result->fromBranch->name }}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

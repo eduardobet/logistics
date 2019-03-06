@@ -27,13 +27,10 @@ class SearchController extends Controller
             $reca = false;
             $tracking = false;
 
-            $termPrefix = 'c|f|i|w|wa|a|r|reca';
-            preg_match("/($termPrefix)(\\d+)/i", $term, $matches);
-
             $client = false;
 
-            $qType = @$matches[1];
-            $qId = @$matches[2];
+            $qType = preg_replace('/[^a-zA-Z]/', '', $term);
+            $qId =  preg_replace('/[^0-9]/', '', $term);
 
             if (in_array($qType, ['c', 'f', 'i', 'w', 'wa', 'a', 'r', 'reca'])) {
                 // searching client, invoice, warehouse, reca
@@ -49,8 +46,11 @@ class SearchController extends Controller
                             $results = $results->with('branch');
                         }
 
-                        $results = $results->where('manual_id', $qId);
-
+                        $results = $results->with(['clientInvoices' => function ($invoice) {
+                            $invoice->where('is_paid', false)->where('status', 'A')
+                            ->with('payments');
+                        }])->where('manual_id', $qId);
+         
                         $client = true;
                         $totResult = $results->count();
 
@@ -117,33 +117,24 @@ class SearchController extends Controller
                         break;
                  }
             } else {
-                $branchesPrefix = implode('|', $bcodes = $this->getBranches()->pluck('code')->toArray());
-                preg_match("/($branchesPrefix)(\\d+)/i", $term, $matches);
-                $qBranchCode = @$matches[1];
-                $qClientId = @$matches[2];
+                $bcodes = $this->getBranches()->pluck('code')->toArray();
+
+                $qBranchCode = preg_replace('/[^a-zA-Z]/', '', $term);
+                $qClientId =  preg_replace('/[^0-9]/', '', $term);
 
                 if (in_array(strtoupper($qBranchCode), $bcodes)) {
                     // searching client from branch by id
-                    if ($qBranchCode === strtolower($cBranch->code)) {
-                        $results = $tenant->clients()
+                    $results = $tenant->clients()
                             ->where('branch_id', $cBranchId)
                             ->with('branch')->where('manual_id', $qClientId);
-                        $client = true;
-                        $totResult = $results->count();
-                    } else {
-                        $results = $tenant->clients();
-
-                        if (!$superAdmin) {
-                            $results = $results->withAndWhereHas('branch', function ($query) use ($cBranchId) {
-                                $query->where('id', $cBranchId);
-                            });
-                        } else {
-                            $results = $results->with('branch')->where('manual_id', $qClientId);
-                        }
+                    $client = true;
                         
-                        $client = true;
-                        $totResult = $results->count();
-                    } // not current branch
+                    $results = $results->with(['clientInvoices' => function ($invoice) {
+                        $invoice->where('is_paid', false)->where('status', 'A')
+                                ->with('payments');
+                    }]);
+
+                    $totResult = $results->count();
                 } // searching client
                 
                 if (!$totResult) {
@@ -161,6 +152,11 @@ class SearchController extends Controller
                     $results = $results->where(function ($query) use ($term) {
                         $query->where('full_name', 'like', "%$term%")->orWhere('org_name', 'like', "%$term%")->orWhere('email', 'like', "%$term%");
                     });
+
+                    $results = $results->with(['clientInvoices' => function ($invoice) {
+                        $invoice->where('is_paid', false)->where('status', 'A')
+                            ->with('payments');
+                    }]);
 
                     $client = true;
                     $totResult = $results->count();

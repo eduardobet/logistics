@@ -16,7 +16,7 @@ class Warehouse extends Model
      * @var array
      */
     protected $fillable = [
-        'branch_from', 'branch_to','mailer_id','trackings','reference','qty', 'created_by_code', 'tenant_id', 'updated_by_code', 'client_id', 'type','tot_weight', 'tot_packages', 'force_updated_at', 'manual_id', 'status',
+        'branch_from', 'branch_to','mailer_id','trackings','reference','qty', 'created_by_code', 'tenant_id', 'updated_by_code', 'client_id', 'type','tot_weight', 'tot_packages', 'force_updated_at', 'manual_id', 'status', 'created_at',
     ];
 
     /**
@@ -56,7 +56,7 @@ class Warehouse extends Model
         static::saved(function ($model) {
             $keys = ["warehouses.tenant.{$model->tenant_id}"];
 
-            do_forget_cache(__class__, $keys);
+            __do_forget_cache(__class__, $keys, []);
         });
     }
 }

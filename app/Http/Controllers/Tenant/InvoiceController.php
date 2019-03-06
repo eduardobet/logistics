@@ -237,7 +237,7 @@ class InvoiceController extends Controller
         $invoice = $tenant->invoices()->with('details');
 
         if (!auth()->user()->isSuperAdmin()) {
-            $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+            // $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
         }
 
         $invoice = $invoice->findOrFail($id);
@@ -263,9 +263,15 @@ class InvoiceController extends Controller
             }
 
             if ($request->amount_paid) {
+                if (!$payment) {
+                    $payment = new Payment();
+                }
+                $payment->tenant_id = $tenant->id;
+                $payment->invoice_id = $invoice->id;
                 $payment->amount_paid = $request->amount_paid;
                 $payment->payment_method = $request->payment_method;
                 $payment->payment_ref = $request->payment_ref;
+                $payment->is_first = true;
                 $payment->save();
             }
             

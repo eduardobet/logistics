@@ -160,7 +160,7 @@ class WarehouseController extends Controller
         $warehouse = $tenant->warehouses();
 
         if (!auth()->user()->isSuperAdmin()) {
-            $warehouse = $warehouse->where('branch_to', auth()->user()->currentBranch()->id);
+            //$warehouse = $warehouse->where('branch_to', auth()->user()->currentBranch()->id);
         }
 
         $warehouse = $warehouse->with(['editor', 'creator'])

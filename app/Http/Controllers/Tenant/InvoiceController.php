@@ -187,7 +187,7 @@ class InvoiceController extends Controller
         ]);
         
         if (!auth()->user()->isSuperAdmin()) {
-            $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+            //$invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
         }
         
         $invoice = $invoice->findOrFail($id);

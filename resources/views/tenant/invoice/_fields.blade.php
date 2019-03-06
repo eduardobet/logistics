@@ -192,12 +192,12 @@
 
 <div class="row mg-t-25 justify-content-between">
     <div class="col">
-        @if ($invoice->status == 'A')
+        @if ($invoice->status != 'I')
             <button id="btn-wh-save" type="submit" class="btn btn-primary  bd-1 bd-gray-400"
         {{ $invoice->status == 'I' || (isset($payments) && $invoice->total == $payments->sum('amount_paid')) ? ' disabled' : null }}
         >{{ __('Save') }}</button>
         @endif
-        @if (auth()->user()->isSuperAdmin())
+        @if (auth()->user()->isSuperAdmin() && $invoice->status)
             @if ($invoice->status == 'A')
                 <button id="btn-inv-status-toggle" type="button" data-status="I" class="btn btn-danger  bd-1 bd-gray-400">{{ __('Inactivate') }}</button>
             @else 

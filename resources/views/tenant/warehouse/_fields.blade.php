@@ -208,10 +208,10 @@
 
 <div class="row mg-t-25 justify-content-between">
     <div class="col">
-        @if (!$invoice->total && $warehouse->status == 'A')
+        @if (!$invoice->total && $warehouse->status != 'I')
             <button id="btn-wh-save" type="submit" class="btn btn-primary  bd-1 bd-gray-400">{{ __('Save') }}</button>
         @endif
-        @if (auth()->user()->isSuperAdmin())
+        @if (auth()->user()->isSuperAdmin() && $warehouse->status)
             @if ($warehouse->status == 'A')
                 <button id="btn-wh-status-toggle" type="button" data-status="I" class="btn btn-danger  bd-1 bd-gray-400">{{ __('Inactivate') }}</button>
             @else 

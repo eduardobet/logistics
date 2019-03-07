@@ -66,15 +66,13 @@ $key = isset($key) ? $key : ':index:';
             </div>
             
             <div class="col-2">
-                {{--
-                    <p></p>
-                    <p></p>
-                    <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
                 <div class="form-check">
-                    {!! Form::checkbox("invoice_detail[{$key}][is_dhll]", '2.25', $idetail->is_dhll==true, ['class' => 'form-check-input is_dhll', 'data-i' => "{$key}", 'id' => "is_dhll-{$key}", 'disabled' => true, ]) !!}
+                    {!! Form::checkbox("invoice_detail[{$key}][is_dhll]", '2.25', $idetail->is_dhll==true, ['class' => 'form-check-input is_dhll', 'data-i' => "{$key}", 'id' => "is_dhll-{$key}", ]) !!}
                     <label class="form-check-label" for="is_dhll-{{ $key }}">DHL?</label>
                 </div>
-                --}}
             </div>
             
             <div class="col-2">

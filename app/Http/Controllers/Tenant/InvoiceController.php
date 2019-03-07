@@ -29,9 +29,10 @@ class InvoiceController extends Controller
         [$invoices, $searching, $branch] = $this->getInvoices($this->getTenant());
 
         $branches = $this->getBranches();
+        $user = auth()->user();
 
-        if (!auth()->user()->isSuperAdmin()) {
-            $branches = $branches->where('id', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+            $branches = $branches->where('id', $user->currentBranch()->id);
         }
 
         return view('tenant.invoice.index', [
@@ -45,7 +46,7 @@ class InvoiceController extends Controller
 
     public function export()
     {
-        [$invoices, $searching, $branch] = $this->getInvoices($this->getTenant());
+        [$invoices, $branch] = $this->getInvoices($this->getTenant());
 
         $data = [
             'invoices' => $invoices,
@@ -169,7 +170,7 @@ class InvoiceController extends Controller
     public function show($domain, $id)
     {
         $tenant = $this->getTenant();
-
+        $user = auth()->user();
         $invoice = $tenant->invoices()->with([
             'details' => function ($detail) {
                 $detail->with('productType');
@@ -186,8 +187,8 @@ class InvoiceController extends Controller
             },
         ]);
         
-        if (!auth()->user()->isSuperAdmin()) {
-            //$invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+            $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
         }
         
         $invoice = $invoice->findOrFail($id);
@@ -206,12 +207,13 @@ class InvoiceController extends Controller
     public function edit($domain, $id)
     {
         $tenant = $this->getTenant();
+        $user = auth()->user();
         $invoice = $tenant->invoices()->with(['details', 'creator', 'editor', 'client', 'branch', 'payments' => function ($payment) {
             $payment->with(['creator']);
         }]);
 
-        if (!auth()->user()->isSuperAdmin()) {
-            $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+            $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
         }
 
         $invoice = $invoice->findOrFail($id);
@@ -234,10 +236,11 @@ class InvoiceController extends Controller
     public function update(InvoiceRequest $request, $domain, $id)
     {
         $tenant = $this->getTenant();
+        $user = auth()->user();
         $invoice = $tenant->invoices()->with('details');
 
-        if (!auth()->user()->isSuperAdmin()) {
-            // $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+            $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
         }
 
         $invoice = $invoice->findOrFail($id);
@@ -321,13 +324,13 @@ class InvoiceController extends Controller
     public function print($domain, $id)
     {
         $tenant = $this->getTenant();
-        
+        $user = auth()->user();
         $invoice = $tenant->invoices()->with(['details' => function ($detail) {
             $detail->with('productType');
         }]);
 
-        if (!auth()->user()->isSuperAdmin()) {
-            $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+            $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
         }
 
         $invoice = $invoice->findOrFail($id);
@@ -360,11 +363,11 @@ class InvoiceController extends Controller
     public function resendInvoice($domain, $invoiceId)
     {
         $tenant = $this->getTenant();
-
+        $user = auth()->user();
         $invoice = $tenant->invoices()->with('details');
 
-        if (!auth()->user()->isSuperAdmin()) {
-            $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+            $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
         }
 
         $invoice = $invoice->findOrFail($invoiceId);
@@ -392,10 +395,11 @@ class InvoiceController extends Controller
         }
 
         $tenant = $this->getTenant();
+        $user = auth()->user();
         $invoice = $tenant->invoices()->where('is_paid', false)->with(['payments']);
 
-        if (!auth()->user()->isSuperAdmin()) {
-            $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+            $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
         }
 
         $invoice = $invoice->find($request->invoice_id);
@@ -435,10 +439,11 @@ class InvoiceController extends Controller
     public function inactive(Request $request)
     {
         $tenant = $this->getTenant();
+        $user = auth()->user();
         $invoice = $tenant->invoices();
 
-        if (!auth()->user()->isSuperAdmin()) {
-            $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+            $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
         }
 
         $invoice = $invoice->find($request->invoice_id);

@@ -109,9 +109,14 @@ class User extends Authenticatable
         return $this->type === 'A';
     }
 
+    public function isWarehouse()
+    {
+        return in_array($this->position, [6, 13]);
+    }
+
     public function isSuperAdmin()
     {
-        return in_array($this->position, [1, 2, 8, 9]);
+        return in_array($this->position, [1, 2, 8, 9]) || $this->isAdmin();
     }
 
     /**

@@ -11,16 +11,17 @@ trait WarehouseList
      */
     public function getWarehouses($tenant)
     {
-        $branch = auth()->user()->currentBranch();
+        $user = auth()->user();
+        $branch = $user->currentBranch();
 
-        if (auth()->user()->isSuperAdmin() && $bId = request('branch_id')) {
+        if (($user->isSuperAdmin() || !$user->isWarehouse()) && $bId = request('branch_id')) {
             $branch = $tenant->branches->find($bId);
         }
 
         $searching = 'N';
         $statuses = ['A'];
 
-        if (auth()->user()->isSuperAdmin() && request('show_inactive') == '1') {
+        if ($user->isSuperAdmin() && request('show_inactive') == '1') {
             $statuses = array_merge($statuses, ['I']);
         }
 

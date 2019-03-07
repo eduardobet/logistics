@@ -14,9 +14,11 @@ class SearchController extends Controller
     {
         $tenant = $this->getTenant();
         $term = request('q', '');
-        $cBranch = auth()->user()->currentBranch();
+        $user = auth()->user();
+        $cBranch = $user->currentBranch();
         $cBranchId = $cBranch->id;
-        $superAdmin = auth()->user()->isSuperAdmin();
+        $superAdmin = $user->isSuperAdmin();
+        $iswh = $user->isWarehouse();
         $totResult = 0;
         $statuses = ['A'];
 
@@ -38,7 +40,7 @@ class SearchController extends Controller
                     case 'c':
                         $results = $tenant->clients();
 
-                        if (!$superAdmin) {
+                        if (!$superAdmin && !$iswh) {
                             $results = $results->withAndWhereHas('branch', function ($query) use ($cBranchId) {
                                 $query->where('id', $cBranchId);
                             });
@@ -59,7 +61,7 @@ class SearchController extends Controller
                     case 'i':
                         $results = $tenant->invoices();
 
-                        if (!$superAdmin) {
+                        if (!$superAdmin && !$iswh) {
                             $results = $results->where('branch_id', $cBranchId);
                         }
 
@@ -75,7 +77,7 @@ class SearchController extends Controller
                     case 'a':
                         $results = $tenant->warehouses();
 
-                        if (!$superAdmin) {
+                        if (!$superAdmin && !$iswh) {
                             $results = $results->withAndWhereHas('toBranch', function ($query) use ($cBranchId) {
                                 $query->where('id', $cBranchId)->where('status', 'A');
                             });
@@ -141,7 +143,7 @@ class SearchController extends Controller
                     // trying to search client by name
                     $results = $tenant->clients();
 
-                    if (!$superAdmin) {
+                    if (!$superAdmin && !$iswh) {
                         $results = $results->withAndWhereHas('branch', function ($query) use ($cBranchId) {
                             $query->where('id', $cBranchId);
                         });

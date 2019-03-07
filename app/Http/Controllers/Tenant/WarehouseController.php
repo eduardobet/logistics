@@ -25,9 +25,10 @@ class WarehouseController extends Controller
         [$warehouses, $searching, $branch] = $this->getWarehouses($this->getTenant());
 
         $branches = $this->getBranches();
+        $user = auth()->user();
 
-        if (!auth()->user()->isSuperAdmin()) {
-            $branches = $branches->where('id', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+            $branches = $branches->where('id', $user->currentBranch()->id);
         }
 
         return view('tenant.warehouse.index', [
@@ -41,7 +42,7 @@ class WarehouseController extends Controller
 
     public function export()
     {
-        [$warehouses, $searching, $branch] = $this->getWarehouses($this->getTenant());
+        [$warehouses, $branch] = $this->getWarehouses($this->getTenant());
 
         $data = [
             'warehouses' => $warehouses,
@@ -157,11 +158,11 @@ class WarehouseController extends Controller
     public function edit($tenant, $id)
     {
         $tenant = $this->getTenant();
-
+        $user = auth()->user();
         $warehouse = $tenant->warehouses();
 
-        if (!auth()->user()->isSuperAdmin()) {
-            //$warehouse = $warehouse->where('branch_to', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+            $warehouse = $warehouse->where('branch_to', $user->currentBranch()->id);
         }
 
         $warehouse = $warehouse->with(['editor', 'creator'])
@@ -195,10 +196,11 @@ class WarehouseController extends Controller
     public function update(WarehouseRequest $request, $tenant, $id)
     {
         $tenant = $this->getTenant();
+        $user = auth()->user();
         $warehouse = $tenant->warehouses();
 
-        if (!auth()->user()->isSuperAdmin()) {
-            $warehouse = $warehouse->where('branch_to', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+            $warehouse = $warehouse->where('branch_to', $user->currentBranch()->id);
         }
 
         $warehouse = $warehouse->where('id', $id)->firstOrFail();
@@ -299,9 +301,10 @@ class WarehouseController extends Controller
     {
         $tenant = $this->getTenant();
         $warehouse = $tenant->warehouses();
+        $user = auth()->user();
 
-        if (!auth()->user()->isSuperAdmin()) {
-            $warehouse = $warehouse->where('branch_to', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+            $warehouse = $warehouse->where('branch_to', $user->currentBranch()->id);
         }
 
         $warehouse = $warehouse->where('id', $id)->firstOrFail();

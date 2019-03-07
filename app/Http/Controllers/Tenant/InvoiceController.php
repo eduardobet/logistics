@@ -271,6 +271,7 @@ class InvoiceController extends Controller
                 $payment->amount_paid = $request->amount_paid;
                 $payment->payment_method = $request->payment_method;
                 $payment->payment_ref = $request->payment_ref;
+                $payment->created_at = $request->created_at;
                 $payment->is_first = true;
                 $payment->save();
             }

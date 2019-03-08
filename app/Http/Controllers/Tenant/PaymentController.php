@@ -26,11 +26,11 @@ class PaymentController extends Controller
     public function index()
     {
         [$payments, $searching, $branch] = $this->getPayments($this->getTenant());
-
+        $user = auth()->user();
         $branches = $this->getBranches();
 
-        if (!auth()->user()->isSuperAdmin()) {
-            $branches = $branches->where('id', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+            $branches = $branches->where('id', $user->currentBranch()->id);
         }
 
         return view('tenant.payment.index', [
@@ -73,9 +73,10 @@ class PaymentController extends Controller
     {
         $tenant = $this->getTenant();
         $invoice = $tenant->invoices()->with(['details', 'payments']);
+        $user = auth()->user();
 
-        if (!auth()->user()->isSuperAdmin()) {
-            $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+            $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
         }
 
         $invoice = $invoice->find($invoiceId);
@@ -112,9 +113,10 @@ class PaymentController extends Controller
 
         $tenant = $this->getTenant();
         $invoice = $tenant->invoices()->with(['payments', 'client']);
+        $user = auth()->user();
 
-        if (!auth()->user()->isSuperAdmin()) {
-            $invoice = $invoice->where('branch_id', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+            $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
         }
 
         $invoice = $invoice->find($request->invoice_id);

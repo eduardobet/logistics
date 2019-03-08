@@ -45,7 +45,7 @@
             </tr>
         @else
             <tr>
-                <td style="border: solid 1px;">{{ [1=>'Sobre',2=>'Bulto', 3=>'Paquete',4=>'Caja/Peq.', 5=>'Caja/Med.', 6=>'Caja/Grande', ][$detail->type] }}</td>
+                <td style="border: solid 1px;">{{ [1=>'Sobre',2=>'Bulto', 3=>'Paquete',4=>'Caja/Peq.', 5=>'Caja/Med.', 6=>'Caja/Grande', 7=>'Servicio aéreo' ][$detail->type] }}</td>
                 <td style="border: solid 1px;">{{ $detail->length }}</td>
                 <td style="border: solid 1px;">{{ $detail->width }}</td>
                 <td style="border: solid 1px;">{{ $detail->height }}</td>

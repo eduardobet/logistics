@@ -18,7 +18,8 @@ class CargoEntryController extends Controller
      */
     public function index()
     {
-        $branch = auth()->user()->currentBranch();
+        $user = auth()->user();
+        $branch = $user->currentBranch();
 
         $cargoEntries = $this->getTenant()->cargoEntries()
             ->with([
@@ -32,7 +33,7 @@ class CargoEntryController extends Controller
 
         $searching = 'N';
 
-        if (!auth()->user()->isSuperAdmin()) {
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
             $cargoEntries = $cargoEntries->where('branch_id', $branch->id);
         } else {
             if ($branchId = request('branch_id')) {
@@ -59,7 +60,7 @@ class CargoEntryController extends Controller
 
         $branches = $this->getBranches();
 
-        if (!auth()->user()->isSuperAdmin()) {
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
             $branches = $branches->where('id', $branch->id);
         }
 
@@ -133,6 +134,7 @@ class CargoEntryController extends Controller
     public function show($domain, $id)
     {
         $tenant = $this->getTenant();
+        $user = auth()->user();
         $cargoEntry = $tenant->cargoEntries()->with([
             'branch' => function ($branch) {
                 $branch->select(['id', 'name']);
@@ -142,8 +144,8 @@ class CargoEntryController extends Controller
             }
         ]);
 
-        if (!auth()->user()->isSuperAdmin()) {
-            $cargoEntry = $cargoEntry->where('branch_id', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+            $cargoEntry = $cargoEntry->where('branch_id', $user->currentBranch()->id);
         }
 
         $cargoEntry = $cargoEntry->findOrFail($id);

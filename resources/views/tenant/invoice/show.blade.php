@@ -110,7 +110,7 @@
                             @foreach ($invoice->details as $detail)
                                 <tr>
                                     <td>{{ ['A' => __('Air'), 'M' => __('Maritime'), ][$invoice->warehouse->type] }}</td>
-                                    <td>{{ [1=>'Sobre',2=>'Bulto', 3=>'Paquete',4=>'Caja/Peq.', 5=>'Caja/Med.', 6=>'Caja/Grande', ][$detail->type] }}</td>
+                                    <td>{{ [1=>'Sobre',2=>'Bulto', 3=>'Paquete',4=>'Caja/Peq.', 5=>'Caja/Med.', 6=>'Caja/Grande', 7=>'Servicio aéreo' ][$detail->type] }}</td>
                                     <td class="tx-center">
                                         @if ($invoice->i_using == 'V')
                                            {{ $detail->vol_weight }}

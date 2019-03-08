@@ -20,6 +20,16 @@
     </div>
 @endif
 
+
+
+<div class="mg-t-25"></div>
+<div id="details-container">
+    @foreach ($invoice->details as $key => $idetail)
+    @include('tenant.warehouse.invoice-detail', ['idetail' => $idetail, 'mode' => 'edit'])
+    @endforeach
+</div>
+<div class="mg-t-25"></div>
+
 @if (!$invoice->total)
     <div class="mg-t-20">
         <button class="btn btn-sm btn-outline-success btn-add-more" type="button"
@@ -32,13 +42,7 @@
         </button>
     </div>
 @endif
-
 <div class="mg-t-25"></div>
-<div id="details-container">
-    @foreach ($invoice->details as $key => $idetail)
-        @include('tenant.warehouse.invoice-detail', ['idetail' => $idetail, 'mode' => 'edit'])
-    @endforeach
-</div>
 
 <div class="row mg-t-25">
 

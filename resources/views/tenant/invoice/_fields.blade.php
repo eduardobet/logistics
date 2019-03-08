@@ -121,16 +121,6 @@
     </div>
 </div><!-- row -->
 
-<div class="mg-t-20">
-    <button class="btn btn-sm btn-outline-success btn-add-more" type="button"
-    data-url="{{ route('tenant.invoice.invoice-detail-tmpl', $tenant->domain) }}"
-    data-loading-text="<i class='fa fa-spinner fa-spin '></i> {{ __('Loading') }}..."
-    {{ isset($mode) && $mode == 'edit' ? ' disabled' : null }}
-    >
-        <i class="fa fa-plus"></i> {{ __('Add') }}
-    </button>
-</div>
-
 <div class="mg-t-25"></div>
 <div id="details-container">
     @foreach ($invoice->details as $key => $idetail)
@@ -142,6 +132,18 @@
         
     @endforeach
 </div>
+<div class="mg-t-25"></div>
+
+<div class="mg-t-20">
+    <button class="btn btn-sm btn-outline-success btn-add-more" type="button"
+    data-url="{{ route('tenant.invoice.invoice-detail-tmpl', $tenant->domain) }}"
+    data-loading-text="<i class='fa fa-spinner fa-spin '></i> {{ __('Loading') }}..."
+    {{ isset($mode) && $mode == 'edit' ? ' disabled' : null }}
+    >
+        <i class="fa fa-plus"></i> {{ __('Add') }}
+    </button>
+</div>
+
 <div class="mg-t-25"></div>
 
 <div class="row">

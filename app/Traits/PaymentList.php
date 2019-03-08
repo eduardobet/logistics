@@ -13,16 +13,17 @@ trait PaymentList
      */
     public function getPayments($tenant)
     {
-        $branch = auth()->user()->currentBranch();
+        $user = auth()->user();
+        $branch = $user->currentBranch();
 
-        if (auth()->user()->isSuperAdmin() && $bId = request('branch_id')) {
+        if (($user->isSuperAdmin() || $user->isWarehouse()) && $bId = request('branch_id')) {
             $branch = $tenant->branches->find($bId);
         }
 
         $searching = 'N';
         $statuses = ['A'];
 
-        if (auth()->user()->isSuperAdmin() && request('show_inactive') == '1') {
+        if ($user->isSuperAdmin() && request('show_inactive') == '1') {
             $statuses = array_merge($statuses, ['I']);
         }
 
@@ -63,7 +64,7 @@ trait PaymentList
             $searching = 'Y';
         }
 
-        if (!auth()->user()->isSuperAdmin()) {
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
             $payments = $payments->whereRaw(' invoices.branch_id = ? ', [$branch->id]);
         } else {
             if ($bId = request('branch_id')) {

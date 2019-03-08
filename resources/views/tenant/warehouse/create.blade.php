@@ -143,7 +143,7 @@
             $("#frm-wh").submit(function(e) {
             var $form = $(this).get(0);
             if ($form.checkValidity()){
-                @if (!config("app.migrations.{$tenant->id}.warehouses", false))
+                @if (config("app.migrations.{$tenant->id}.warehouses", false))
 
                 swal({
                     title: '{{__("Are you sure") }}?',                    

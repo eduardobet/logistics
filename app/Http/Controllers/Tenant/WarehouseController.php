@@ -93,7 +93,7 @@ class WarehouseController extends Controller
             $wh->manual_id = $request->manual_id;
         } else {
             $max = $wh->where('tenant_id', $tenant->id)
-                ->where('branch_to', $request->branch_to)
+                //->where('branch_to', $request->branch_to)
                 ->max('manual_id');
 
             if (!$max) {

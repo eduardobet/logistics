@@ -17,10 +17,11 @@ class EmployeeController extends Controller
     {
         $employees = $this->getTenant()->employees()->with('branches');
         $searching = 'N';
+        $user = auth()->user();
 
-        if (!auth()->user()->isSuperAdmin()) {
-            $employees = $employees->whereHas('branches', function ($query) {
-                $query->where('id', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin()) {
+            $employees = $employees->whereHas('branches', function ($query) use ($user) {
+                $query->where('id', $user->currentBranch()->id);
             });
         }
 
@@ -35,7 +36,7 @@ class EmployeeController extends Controller
             $searching = 'Y';
         }
 
-        if (auth()->user()->isSuperAdmin() && $branch = request('branch_id')) {
+        if (($user->isSuperAdmin() || $user->isWarehouse()) && $branch = request('branch_id')) {
             $employees = $employees->whereHas('branches', function ($query) use ($branch) {
                 $query->where('id', $branch);
             });
@@ -47,8 +48,8 @@ class EmployeeController extends Controller
 
         $branches = $this->getBranches();
 
-        if (!auth()->user()->isSuperAdmin()) {
-            $branches = $branches->where('id', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+            $branches = $branches->where('id', $user->currentBranch()->id);
         }
 
         return view('tenant.employee.index', [

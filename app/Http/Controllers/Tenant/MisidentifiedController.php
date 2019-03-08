@@ -21,6 +21,7 @@ class MisidentifiedController extends Controller
         $tenant = $this->getTenant();
 
         $branch = auth()->user()->currentBranch();
+        $user = auth()->user();
 
         $searching = 'N';
         $misidentified = $tenant->misidentifiedPackages()
@@ -32,7 +33,7 @@ class MisidentifiedController extends Controller
             $searching = 'Y';
         }
 
-        if (!auth()->user()->isSuperAdmin()) {
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
             $misidentified = $misidentified->where('branch_to', $branch->id);
         } else {
             if ($branchId = request('branch_id')) {
@@ -45,7 +46,7 @@ class MisidentifiedController extends Controller
 
         $branches = $this->getBranches();
 
-        if (!auth()->user()->isSuperAdmin()) {
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
             $branches = $branches->where('id', $branch->id);
         }
 
@@ -119,11 +120,11 @@ class MisidentifiedController extends Controller
     public function show($domain, $id)
     {
         $tenant = $this->getTenant();
-
+        $user = auth()->user();
         $misidentified = $tenant->misidentifiedPackages();
 
-        if (!auth()->user()->isSuperAdmin()) {
-            $misidentified = $misidentified->where('branch_to', auth()->user()->currentBranch()->id);
+        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+            $misidentified = $misidentified->where('branch_to', $user->currentBranch()->id);
         }
 
         return view('tenant.misidentified-package.show', [

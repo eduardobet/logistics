@@ -95,7 +95,7 @@ class InvoiceController extends Controller
             $invoice->manual_id = $request->manual_id;
         } else {
             $max = $invoice->where('tenant_id', $tenant->id)
-                ->where('branch_id', $request->branch_id)
+                //->where('branch_id', $request->branch_id)
                 ->max('manual_id');
 
             if (!$max) {

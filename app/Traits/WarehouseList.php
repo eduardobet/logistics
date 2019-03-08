@@ -45,9 +45,9 @@ trait WarehouseList
         }
 
         if ($searching == 'Y') {
-            $warehouses = $warehouses->orderBy('warehouses.id')->get();
+            $warehouses = $warehouses->orderBy('warehouses.manual_id')->get();
         } else {
-            $warehouses = $warehouses->orderBy('warehouses.id')->paginate(20);
+            $warehouses = $warehouses->orderBy('warehouses.manual_id')->paginate(20);
         }
 
         return [$warehouses, $searching, $branch];

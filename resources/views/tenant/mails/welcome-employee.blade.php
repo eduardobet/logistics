@@ -9,7 +9,7 @@
 
 <h3>{{ __('Some other interesting links', [], $lang) }}:</h3>
 * {{ route('tenant.home', $tenant->domain) }}
-* {{ route("tenant." . ($employee->isAdmin() ? "admin": "employee") . ".dashboard", $tenant->domain ) }}
+* {{ route("tenant." . (($employee->isSuperAdmin()||$employee->isAdmin()) ? "admin": "employee") . ".dashboard", $tenant->domain ) }}
 
 
 @isset($subcopy)

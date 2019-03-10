@@ -24,7 +24,6 @@ $factory->define(Logistics\DB\User::class, function (Faker $faker) {
         'status' => 'A',
         'avatar' => null,
         'pid' => 'PID',
-        'position' => 1,
         'telephones' => '6232-5312,6345-5472',
         'avatar' => 'tenant/1/images/avatars/avatar.png',
     ];
@@ -35,6 +34,7 @@ $factory->state(Logistics\DB\User::class, 'admin', function (Faker $faker) {
         'type' => 'A',
         'is_main_admin' => true,
         'permissions' => [],
+        'position' => 1,
     ];
 });
 

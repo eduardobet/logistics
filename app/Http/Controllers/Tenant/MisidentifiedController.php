@@ -33,7 +33,7 @@ class MisidentifiedController extends Controller
             $searching = 'Y';
         }
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $misidentified = $misidentified->where('branch_to', $branch->id);
         } else {
             if ($branchId = request('branch_id')) {
@@ -46,7 +46,7 @@ class MisidentifiedController extends Controller
 
         $branches = $this->getBranches();
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $branches = $branches->where('id', $branch->id);
         }
 
@@ -123,7 +123,7 @@ class MisidentifiedController extends Controller
         $user = auth()->user();
         $misidentified = $tenant->misidentifiedPackages();
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $misidentified = $misidentified->where('branch_to', $user->currentBranch()->id);
         }
 

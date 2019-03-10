@@ -35,7 +35,7 @@ class IncomeController extends Controller
             });
 
             
-        $paymentsByType = $paymentsByType->whereBetween('created_at', [$from, $to]);
+        $paymentsByType = $paymentsByType->orderBy('created_at', 'DESC')->whereBetween('created_at', [$from, $to]);
         
         $invoices = $tenant->invoices()->active()->whereBetween('created_at', [$from, $to])
             ->where('branch_id', request('branch_id', $cBranch->id))

@@ -100,7 +100,7 @@
                     <tbody class="mg-b-0">
                       @foreach ($groups as $payment)
                       <tr>
-                        <td>{{ request('bcode', $branch->code) }}-{{ $payment->invoice->manual_id_dsp }}</td>
+                        <td>{{ request('bcode', $branch->initial) }}-{{ $payment->invoice->manual_id_dsp }}</td>
                         <td>{{ $payment->created_at->format('Y-m-d') }}</td>
                         <td>
                         @if (isset($payment->invoice->warehouse))

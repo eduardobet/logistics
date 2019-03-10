@@ -52,7 +52,7 @@
                  <select name="branch_id" id="branch_id" class="form-control select2 select2ize" style="width: 100%" data-apiurl="{{ route('tenant.api.clients', [':parentId:']) }}" data-child="#client_id">
                     <option value="">{{ __('Branch') }}</option>
                     @foreach ($branches as $aBranch)
-                        <option value="{{ $aBranch->id }}"{{ $aBranch->id == request('branch_id', $branch->id) ? " selected" : null }} data-bcode="{{ $aBranch->code }}" data-bname="{{ $aBranch->name }}">
+                        <option value="{{ $aBranch->id }}"{{ $aBranch->id == request('branch_id', $branch->id) ? " selected" : null }} data-bcode="{{ $aBranch->initial }}" data-bname="{{ $aBranch->name }}">
                             {{ $aBranch->name }}
                         </option>
                     @endforeach

@@ -38,8 +38,8 @@
 
                 <li><a href="{{ route('tenant.warehouse.cargo-entry.create', $tenant->domain) }}">{{ __('Register Cargo entry') }}</a></li>
                 <li><a href="{{ route('tenant.warehouse.cargo-entry.list', $tenant->domain) }}">{{ __('Cargo entries') }}</a></li>
-                <li><a target="_blank" href="{{ route('tenant.misidentified-package.create', $tenant->domain) }}">{{ __('Create misidentified package') }}</a></li>
-                <li><a target="_blank" href="{{ route('tenant.misidentified-package.index', $tenant->domain) }}">{{ __('Misidentified packages') }}</a></li>
+                <li><a  href="{{ route('tenant.misidentified-package.create', $tenant->domain) }}">{{ __('Create misidentified package') }}</a></li>
+                <li><a  href="{{ route('tenant.misidentified-package.index', $tenant->domain) }}">{{ __('Misidentified packages') }}</a></li>
               </ul>
             </div><!-- dropdown-menu -->
           </li>

@@ -22,7 +22,7 @@
                 @endif
             </p>
 
-            <a target="_blank" href="{{ route('tenant.warehouse.cargo-entry.show', [$tenant->domain, $result->id]) }}"><i class="fa fa-eye"></i> {{ __('Show') }} </a>
+            <a  href="{{ route('tenant.warehouse.cargo-entry.show', [$tenant->domain, $result->id]) }}"><i class="fa fa-eye"></i> {{ __('Show') }} </a>
         </div>
     </div>
 @endforeach

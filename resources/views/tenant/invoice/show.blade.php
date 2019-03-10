@@ -218,9 +218,16 @@
 
                     <div class="col-md-2 mg-t-10">
                         @can('edit-invoice')
-                        <a href="{{ route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch->id, 'client_id' => request('client_id'), ]) }}" class="btn btn-outline-primary btn-block">
-                            {{ strtoupper( __('Edit') ) }}
-                        </a>
+                        @if (!$invoice->warehouse_id)
+                            <a href="{{ route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch->id, 'client_id' => request('client_id'), ]) }}" class="btn btn-outline-primary btn-block">
+                                {{ strtoupper( __('Edit') ) }}
+                            </a>
+                        @else
+                            <a  title="{{ __('Edit') }}" href="{{ route('tenant.warehouse.edit', [$tenant->domain, $invoice->warehouse_id, 'branch_id' => $invoice->branch->id, 'client_id' => request('client_id'),]) }}" class="btn btn-outline-primary btn-block">
+                                {{ strtoupper( __('Edit') ) }}
+                            </a>
+                        @endif
+
                         @endcan
                     </div>
 
@@ -247,7 +254,7 @@
                                 <i class="fa fa-print"></i> {{ strtoupper( __('Print :what', ['what' => __('Invoice') ]) ) }}
                             </a>
                       @else
-                          <a target="_blank" href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $invoice->id, ]) }}" class="btn btn-outline-dark btn-block" role="button" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
+                          <a  href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $invoice->id, ]) }}" class="btn btn-outline-dark btn-block" role="button" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
                                 <i class="fa fa-print"></i> {{ strtoupper( __('Print :what', ['what' => __('Invoice') ]) ) }}
                             </a>
                       @endif

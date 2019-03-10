@@ -50,7 +50,7 @@
                 @if (!isset($exporting))
                 <td class="text-center">
                     @can('edit-warehouse')
-                    <a target="_blank" title="{{ __('Edit') }}" href="{{ route('tenant.warehouse.edit', [$tenant->domain, $warehouse->id]) }}"><i class="fa fa-pencil-square-o"></i></a>
+                    <a  title="{{ __('Edit') }}" href="{{ route('tenant.warehouse.edit', [$tenant->domain, $warehouse->id]) }}"><i class="fa fa-pencil-square-o"></i></a>
                     @endcan
                 </td>
                 @endif

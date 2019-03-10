@@ -2,6 +2,7 @@
 
 namespace Logistics\Http\Controllers\Tenant;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
 use Logistics\DB\Tenant\Client;
@@ -103,6 +104,8 @@ class WarehouseController extends Controller
             $wh->manual_id = $max + 1;
         }
 
+        [$year, $month, $day]  = array_map('intval', explode('-', request('created_at', date('Y-m-d'))));
+
         $wh->tenant_id = $tenant->id;
         $wh->branch_to = $request->branch_to;
         $wh->branch_from = $request->branch_from;
@@ -114,7 +117,7 @@ class WarehouseController extends Controller
         $wh->qty = $request->qty ?: 0;
         $wh->tot_packages = $request->tot_packages ?: 0;
         $wh->tot_weight = $request->tot_weight ?: 0;
-        $wh->created_at = new \Carbon\Carbon($request->created_at);
+        $wh->created_at = Carbon::create($year, $month, $day);
 
         $saved = $wh->save();
 
@@ -205,6 +208,8 @@ class WarehouseController extends Controller
 
         $warehouse = $warehouse->where('id', $id)->firstOrFail();
 
+        [$year, $month, $day]  = array_map('intval', explode('-', request('created_at', date('Y-m-d'))));
+
         $warehouse->branch_to = $request->branch_to;
         $warehouse->branch_from = $request->branch_from;
         $warehouse->mailer_id = $request->mailer_id ?: 0;
@@ -215,6 +220,7 @@ class WarehouseController extends Controller
         $warehouse->type = $request->type;
         $warehouse->tot_packages = $request->tot_packages ?: 0;
         $warehouse->tot_weight = $request->tot_weight ?: 0;
+        $warehouse->created_at = Carbon::create($year, $month, $day);
         $warehouse->force_updated_at = time();
             
         $updated = $warehouse->save();

@@ -2,6 +2,7 @@
 
 namespace Logistics\Http\Controllers\Tenant;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
 use Illuminate\Support\Fluent;
@@ -46,7 +47,7 @@ class InvoiceController extends Controller
 
     public function export()
     {
-        [$invoices, $branch] = $this->getInvoices($this->getTenant());
+        [$invoices,,$branch] = $this->getInvoices($this->getTenant());
 
         $data = [
             'invoices' => $invoices,
@@ -105,12 +106,14 @@ class InvoiceController extends Controller
             $invoice->manual_id = $max + 1;
         }
 
+        [$year, $month, $day]  = array_map('intval', explode('-', request('created_at', date('Y-m-d'))));
+
         $invoice->tenant_id = $tenant->id;
         $invoice->branch_id = $request->branch_id;
         $invoice->client_id = $request->client_id;
         $invoice->total = $request->total;
         $invoice->notes = $request->notes;
-        $invoice->created_at = $request->created_at;
+        $invoice->created_at = Carbon::create($year, $month, $day);
 
         $saved = $invoice->save();
 
@@ -134,7 +137,7 @@ class InvoiceController extends Controller
                     'amount_paid' => $request->amount_paid,
                     'payment_method' => $request->payment_method,
                     'payment_ref' => $request->payment_ref,
-                    'created_at' => $request->created_at,
+                    'created_at' => Carbon::create($year, $month, $day),
                     'is_first' => true,
                 ]);
             } else {
@@ -247,10 +250,12 @@ class InvoiceController extends Controller
 
         $payment = $invoice->payments->where('is_first', true)->first();
 
+        [$year, $month, $day]  = array_map('intval', explode('-', request('created_at', date('Y-m-d'))));
+
         $invoice->client_id = $request->client_id;
         $invoice->total = $request->total;
         $invoice->notes = $request->notes;
-        $invoice->created_at = $request->created_at;
+        $invoice->created_at = Carbon::create($year, $month, $day);
         $invoice->save();
 
         if ($invoice) {
@@ -269,12 +274,13 @@ class InvoiceController extends Controller
                 if (!$payment) {
                     $payment = new Payment();
                 }
+
                 $payment->tenant_id = $tenant->id;
                 $payment->invoice_id = $invoice->id;
                 $payment->amount_paid = $request->amount_paid;
                 $payment->payment_method = $request->payment_method;
                 $payment->payment_ref = $request->payment_ref;
-                $payment->created_at = $request->created_at;
+                $payment->created_at = Carbon::create($year, $month, $day);
                 $payment->is_first = true;
                 $payment->save();
             }

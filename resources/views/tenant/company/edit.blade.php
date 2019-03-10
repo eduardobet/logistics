@@ -145,7 +145,7 @@
 
                 <div class="tab-pane" id="remote-addresses">
                     <div class="mg-t-25">
-                        <button class="btn btn-sm btn-outline-success btn-add-more" type="button"
+                        <button class="btn btn-sm btn-success btn-add-more" type="button"
                         data-url="{{ route('tenant.compnay.remote-addr-tmpl', $tenant->domain) }}"
                         data-loading-text="<i class='fa fa-spinner fa-spin '></i> {{ __('Loading') }}..."
                         >
@@ -164,7 +164,7 @@
 
                 <div class="tab-pane" id="conditions">
                     <div class="mg-t-25">
-                        <button class="btn btn-sm btn-outline-success btn-add-more" type="button"
+                        <button class="btn btn-sm btn-success btn-add-more" type="button"
                         data-url="{{ route('tenant.compnay.condition-tmpl', $tenant->domain) }}"
                         data-loading-text="<i class='fa fa-spinner fa-spin '></i> {{ __('Loading') }}..."
                         >

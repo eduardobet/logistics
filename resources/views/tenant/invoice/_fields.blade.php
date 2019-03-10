@@ -6,12 +6,12 @@
             
             @if (config('app.invoice_print_version') == 2)
 
-                <a target="_blank" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}" href="{{ route('tenant.invoice.show', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch_id, 'client_id' => $invoice->client->id, '__printing' => 1, ]) }}" class="btn btn-sm btn-outline-dark" role="button">
+                <a  title="{{ __('Print :what', ['what' => __('Invoice') ]) }}" href="{{ route('tenant.invoice.show', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch_id, 'client_id' => $invoice->client->id, '__printing' => 1, ]) }}" class="btn btn-sm btn-outline-dark" role="button">
                     <i class="fa fa-print"></i>
                 </a>
 
             @else
-                <a target="_blank" href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $invoice->id, 'html' => 1, ]) }}" class="btn btn-sm btn-outline-dark" role="button" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
+                <a  href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $invoice->id, 'html' => 1, ]) }}" class="btn btn-sm btn-outline-dark" role="button" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
                     <i class="fa fa-print"></i>
                 </a>
             @endif
@@ -135,7 +135,7 @@
 <div class="mg-t-25"></div>
 
 <div class="mg-t-20">
-    <button class="btn btn-sm btn-outline-success btn-add-more" type="button"
+    <button class="btn btn-sm btn-success btn-add-more" type="button"
     data-url="{{ route('tenant.invoice.invoice-detail-tmpl', $tenant->domain) }}"
     data-loading-text="<i class='fa fa-spinner fa-spin '></i> {{ __('Loading') }}..."
     {{ isset($mode) && $mode == 'edit' ? ' disabled' : null }}

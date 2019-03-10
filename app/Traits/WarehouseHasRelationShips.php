@@ -2,6 +2,7 @@
 
 namespace Logistics\Traits;
 
+use Carbon\Carbon;
 use Illuminate\Support\Fluent;
 use Logistics\Jobs\Tenant\SendInvoiceCreatedEmail;
 use Logistics\Notifications\Tenant\WarehouseActivity;
@@ -89,7 +90,9 @@ trait WarehouseHasRelationShips
         if ($request->manual_id) {
             $using = array_merge($using, ['manual_id' => $request->manual_id]);
         } else {
-            $max = $tenant->invoices()->where('branch_id', $request->branch_to)->max('manual_id');
+            $max = $tenant->invoices()
+                //->where('branch_id', $request->branch_to)
+                ->max('manual_id');
 
             if (!$max) {
                 $max = 0;
@@ -98,6 +101,8 @@ trait WarehouseHasRelationShips
             $using = array_merge($using, ['manual_id' => $max + 1]);
         }
 
+        [$year, $month, $day]  = array_map('intval', explode('-', request('created_at', date('Y-m-d'))));
+        
         $invoice = $this->invoice()->updateOrCreate(
             ['id' => $request->invoice_id, 'tenant_id' => $this->tenant_id, 'warehouse_id' => $this->id, ],
             [
@@ -112,7 +117,7 @@ trait WarehouseHasRelationShips
                 'cubic_feet' => $request->total_cubic_feet ? $request->total_real_weight : 0,
                 'total' => $request->total,
                 'notes' => $request->notes,
-                'created_at' => $request->created_at,
+                'created_at' => Carbon::create($year, $month, $day),
             ] + $using
         );
 
@@ -122,7 +127,6 @@ trait WarehouseHasRelationShips
             $input = new Fluent($data);
 
             $qty = $input->qty;
-            $total = 0;
 
             $invoice->details()->updateOrCreate(['id' => $input->wdid, ], [
                 'qty' => $qty,
@@ -136,6 +140,7 @@ trait WarehouseHasRelationShips
                 'vol_price' => $input->vol_price ? $input->vol_price : 0,
                 'total' => $this->getTotal($request, $input),
                 'is_dhll' => isset($input->is_dhll),
+                'tracking' => $input->tracking,
             ]);
         }
 

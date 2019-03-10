@@ -26,6 +26,7 @@ class InvoiceDetail extends Model
         'vol_price',
         'real_price',
         'is_dhll',
+        'tracking',
     ];
 
     public function productType()

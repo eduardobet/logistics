@@ -225,7 +225,32 @@ class PaymentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $tenant = $this->getTenant();
+
+        $payment = $tenant->payments()->find($request->payment_id);
+
+        if (! $payment) {
+            return response()->json([
+                'msg' => __('Not Found.'),
+                'error' => true,
+            ], 404);
+        }
+
+        $payment->payment_method = $request->payment_method;
+        $updated = $payment->save();
+
+        if ($updated) {
+            return response()->json([
+                'error' => false,
+                'msg' => __('Success'),
+            ], 200);
+        }
+
+
+        return response()->json([
+            'error' => true,
+            'msg' => __('Error'),
+        ], 500);
     }
 
     /**

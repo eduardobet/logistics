@@ -23,7 +23,7 @@
 
             <small>
             @can('edit-client')
-                <a target="_blank" class="btn btn-primary" href="{{ route('tenant.client.edit', [$tenant->domain, $result->id]) }}"><i class="fa fa-pencil-square-o"></i> {{ __('Edit') }} </a>
+                <a  class="btn btn-primary" href="{{ route('tenant.client.edit', [$tenant->domain, $result->id]) }}"><i class="fa fa-pencil-square-o"></i> {{ __('Edit') }} </a>
                 &nbsp;&nbsp;&nbsp;&nbsp;
             @endcan
 
@@ -38,7 +38,7 @@
             &nbsp;&nbsp;&nbsp;&nbsp;
 
             @can('show-invoice')
-                <a class="btn btn-primary" target="_blank" href="{{ route('tenant.invoice.list', [$tenant->domain, 'client_id' => $result->id, 'branch_id' => $branch->id, ]) }}">
+                <a class="btn btn-primary"  href="{{ route('tenant.invoice.list', [$tenant->domain, 'client_id' => $result->id, 'branch_id' => $branch->id, ]) }}">
                 <i class="fa fa-file"></i>
                 {{ __('Invoices') }}
                 </a>
@@ -47,7 +47,7 @@
             &nbsp;&nbsp;&nbsp;&nbsp;
 
             @can('show-payment')    
-            <a class="btn btn-primary" target="_blank" href="{{ route('tenant.payment.list', [$tenant->domain, 'client_id' => $result->id, 'branch_id' => $branch->id, ]) }}">
+            <a class="btn btn-primary"  href="{{ route('tenant.payment.list', [$tenant->domain, 'client_id' => $result->id, 'branch_id' => $branch->id, ]) }}">
                 <i class="fa fa-money"></i>
                 {{ __('Payments') }}
             </a>

@@ -211,7 +211,6 @@ class WarehouseCreationTest extends TestCase
             'tot_packages' => 2,
             'tot_weight' => 21,
             'manual_id' => 1,
-            'created_at' => '2017-01-30 00:00:00',
         ]);
 
         $this->assertDatabaseHas('invoices', [
@@ -228,8 +227,13 @@ class WarehouseCreationTest extends TestCase
             'total' => $client->vol_price * 21,
             'notes' => 'The notes of the invoice',
             'i_using' => 'V',
-            'created_at' => '2017-01-30 00:00:00',
         ]);
+
+        $wh = $tenant->warehouses()->first();
+        $inv = $tenant->invoices()->first();
+
+        $this->assertEquals('2017-01-30', $wh->created_at->format('Y-m-d'));
+        $this->assertEquals('2017-01-30', $inv->created_at->format('Y-m-d'));
 
         tap($branchB->invoices->first()->details->first(), function ($detail) use ($client) {
             $this->assertEquals($detail->invoice_id, 1);

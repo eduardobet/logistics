@@ -55,7 +55,7 @@
 
             @can('edit-invoice')
             @if ($invoice->warehouse_id)
-                <a target="_blank" title="{{ __('Edit') }}" href="{{ route('tenant.warehouse.edit', [$tenant->domain, $invoice->warehouse_id]) }}"><i class="fa fa-pencil-square-o"></i></a>
+                <a  title="{{ __('Edit') }}" href="{{ route('tenant.warehouse.edit', [$tenant->domain, $invoice->warehouse_id]) }}"><i class="fa fa-pencil-square-o"></i></a>
             @else
                 <a title="{{ __('Edit') }}" href="{{ route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch_id,]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
             @endif
@@ -80,10 +80,10 @@
 
             @can('show-invoice')
             &nbsp;&nbsp;&nbsp;
-            <a target="_blank" title="{{ __('Show') }}" href="{{ route('tenant.invoice.show', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch_id, 'client_id' => $invoice->client->id, ]) }}"><i class="fa fa-eye"></i></a>
+            <a  title="{{ __('Show') }}" href="{{ route('tenant.invoice.show', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch_id, 'client_id' => $invoice->client->id, ]) }}"><i class="fa fa-eye"></i></a>
 
             &nbsp;&nbsp;&nbsp;
-            <a target="_blank" title="{{ __('Payments') }}" href="{{ route('tenant.payment.list', [$tenant->domain, 'invoice_id' => $invoice->id, 'branch_id' => $invoice->branch_id, 'client_id' => $invoice->client->id, 'no_date' => 1,  ]) }}"><i class="fa fa-usd"></i></a>
+            <a  title="{{ __('Payments') }}" href="{{ route('tenant.payment.list', [$tenant->domain, 'invoice_id' => $invoice->id, 'branch_id' => $invoice->branch_id, 'client_id' => $invoice->client->id, 'no_date' => 1,  ]) }}"><i class="fa fa-usd"></i></a>
             @endcan
             
             @if ($invoice->status == 'A')

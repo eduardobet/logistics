@@ -161,8 +161,8 @@ class WarehouseEditionTest extends TestCase
             'invoice_id' => $invoice->id,
             'manual_id' => 15, // invoice
             'invoice_detail' => [
-                ['qty' => 1, 'type' => 1, 'length' => 10, 'width' => 10, 'height' => 10, 'vol_weight' => 8, 'real_weight' => 9 , 'wdid' => $detail->id, ],
-                ['qty' => 1, 'type' => 2, 'length' => 12, 'width' => 12, 'height' => 12, 'vol_weight' => 13, 'real_weight' => 14, ],
+                ['qty' => 1, 'type' => 1, 'length' => 10, 'width' => 10, 'height' => 10, 'vol_weight' => 8, 'real_weight' => 9 , 'tracking' => '4444444', 'wdid' => $detail->id, ],
+                ['qty' => 1, 'type' => 2, 'length' => 12, 'width' => 12, 'height' => 12, 'vol_weight' => 13, 'real_weight' => 14,'tracking' => '55555555',  ],
             ]
         ]);
         $response->assertRedirect(route('tenant.warehouse.edit', [$tenant->domain, 1]));
@@ -205,17 +205,19 @@ class WarehouseEditionTest extends TestCase
             $this->assertEquals($detail->height, 10);
             $this->assertEquals($detail->vol_weight, 8);
             $this->assertEquals($detail->real_weight, 9);
+            $this->assertEquals('4444444', $detail->tracking);
         });
 
         tap($branchB->invoices->first()->details->last(), function ($detail) {
             $this->assertEquals($detail->invoice_id, 1);
             $this->assertEquals($detail->qty, 1);
+            $this->assertEquals($detail->type, 2);
             $this->assertEquals($detail->length, 12);
             $this->assertEquals($detail->width, 12);
             $this->assertEquals($detail->height, 12);
             $this->assertEquals($detail->vol_weight, 13);
             $this->assertEquals($detail->real_weight, 14);
-            $this->assertEquals($detail->type, 2);
+            $this->assertEquals('55555555', $detail->tracking);
         });
 
         $invoice = $client->fresh()->clientInvoices->first();

@@ -14,13 +14,13 @@
             <small>
 
             @can('edit-warehouse')
-                <a target="_blank" href="{{ route('tenant.warehouse.edit', [$tenant->domain, $result->id]) }}"><i class="fa fa-pencil-square-o"></i> {{ __('Edit') }} </a>
+                <a  href="{{ route('tenant.warehouse.edit', [$tenant->domain, $result->id]) }}"><i class="fa fa-pencil-square-o"></i> {{ __('Edit') }} </a>
                 &nbsp;&nbsp;&nbsp;&nbsp;
             @endcan
 
             @if ($result->status == 'A')
                 
-            <a target="_blank" href="{{ route('tenant.warehouse.print-sticker', [$tenant->domain, $result->id ]) }}">
+            <a  href="{{ route('tenant.warehouse.print-sticker', [$tenant->domain, $result->id ]) }}">
                 <i class="fa fa-ticket"></i>
                 {{ __('Sticker') }}
             </a>
@@ -28,7 +28,7 @@
             &nbsp;&nbsp;&nbsp;&nbsp;
 
             @can('show-invoice')
-                <a target="_blank" href="{{ route('tenant.invoice.list', [$tenant->domain, 'client_id' => optional($result->client)->id, 'branch_id' => $branch->id, ]) }}">
+                <a  href="{{ route('tenant.invoice.list', [$tenant->domain, 'client_id' => optional($result->client)->id, 'branch_id' => $branch->id, ]) }}">
                 <i class="fa fa-file"></i>
                 {{ __('Invoices') }}
                 </a>
@@ -37,7 +37,7 @@
             &nbsp;&nbsp;&nbsp;&nbsp;
 
             @can('show-payment')    
-            <a target="_blank" href="{{ route('tenant.payment.list', [$tenant->domain, 'client_id' => optional($result->client)->id, 'branch_id' => $branch->id, ]) }}">
+            <a  href="{{ route('tenant.payment.list', [$tenant->domain, 'client_id' => optional($result->client)->id, 'branch_id' => $branch->id, ]) }}">
                 <i class="fa fa-money"></i>
                 {{ __('Payments') }}
             </a>

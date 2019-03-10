@@ -19,7 +19,7 @@ class EmployeeController extends Controller
         $searching = 'N';
         $user = auth()->user();
 
-        if (!$user->isSuperAdmin()) {
+        if (!$user->isAdmin() && !$user->isSuperAdmin()) {
             $employees = $employees->whereHas('branches', function ($query) use ($user) {
                 $query->where('id', $user->currentBranch()->id);
             });
@@ -36,7 +36,7 @@ class EmployeeController extends Controller
             $searching = 'Y';
         }
 
-        if (($user->isSuperAdmin() || $user->isWarehouse()) && $branch = request('branch_id')) {
+        if ((($user->isSuperAdmin() || $user->isAdmin()) || $user->isWarehouse()) && $branch = request('branch_id')) {
             $employees = $employees->whereHas('branches', function ($query) use ($branch) {
                 $query->where('id', $branch);
             });
@@ -48,7 +48,7 @@ class EmployeeController extends Controller
 
         $branches = $this->getBranches();
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $branches = $branches->where('id', $user->currentBranch()->id);
         }
 

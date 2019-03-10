@@ -17,7 +17,7 @@ class SearchController extends Controller
         $user = auth()->user();
         $cBranch = $user->currentBranch();
         $cBranchId = $cBranch->id;
-        $superAdmin = $user->isSuperAdmin();
+        $superAdmin = $user->isSuperAdmin() || $user->isAdmin();
         $iswh = $user->isWarehouse();
         $totResult = 0;
         $statuses = ['A'];

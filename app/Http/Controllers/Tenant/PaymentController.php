@@ -29,7 +29,7 @@ class PaymentController extends Controller
         $user = auth()->user();
         $branches = $this->getBranches();
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $branches = $branches->where('id', $user->currentBranch()->id);
         }
 
@@ -75,7 +75,7 @@ class PaymentController extends Controller
         $invoice = $tenant->invoices()->with(['details', 'payments']);
         $user = auth()->user();
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
         }
 
@@ -115,7 +115,7 @@ class PaymentController extends Controller
         $invoice = $tenant->invoices()->with(['payments', 'client']);
         $user = auth()->user();
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
         }
 

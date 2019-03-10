@@ -1,7 +1,7 @@
 <div class="slim-header">
       <div class="container">
         <div class="slim-header-left">
-            <?php $type = auth()->check() && auth()->user()->isAdmin() ? 'admin' : 'employee'; ?>
+            <?php $type = auth()->check() && (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin()) ? 'admin' : 'employee'; ?>
           <h2 class="slim-logo"><a href="{{ route("tenant.{$type}.dashboard", $tenant->domain) }}">{{ config('app.name', '') }}</a></h2>
 
           <div class="search-box">

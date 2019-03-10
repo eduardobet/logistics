@@ -63,7 +63,7 @@ class AccountActivationController extends Controller
 
         $route = 'tenant.admin.dashboard';
 
-        if (!$employee->isAdmin()) {
+        if (!$employee->isSuperAdmin() && !$employee->isAdmin()) {
             $route = 'tenant.employee.dashboard';
         }
 

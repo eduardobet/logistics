@@ -27,13 +27,13 @@ class ClientController extends Controller
         $clients = $tenant->clients()
             ->with('branch');
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $clients = $clients->where('branch_id', $user->currentBranch()->id);
         }
 
         $searching = 'N';
 
-        if (($user->isSuperAdmin() || $user->isWarehouse()) && $branch = request('branch_id')) {
+        if (($user->isSuperAdmin() || $user->isAdmin() || $user->isWarehouse()) && $branch = request('branch_id')) {
             $clients = $clients->where('branch_id', $branch);
             $searching = 'Y';
         }
@@ -42,7 +42,7 @@ class ClientController extends Controller
 
         $branches = $this->getBranches();
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $branches = $branches->where('id', $user->currentBranch()->id);
         }
 
@@ -65,7 +65,7 @@ class ClientController extends Controller
             'countries' => (new Country())->getCountryAsList($this->getTenantId()),
         ];
 
-        if ($user->isSuperAdmin() || $user->isWarehouse()) {
+        if ($user->isSuperAdmin() || $user->isAdmin() || $user->isWarehouse()) {
             $data['branches'] = $this->getBranches();
         }
 
@@ -163,7 +163,7 @@ class ClientController extends Controller
         $client = $this->getTenant()->clients();
         $user = auth()->user();
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $client = $client->where('branch_id', $user->currentBranch()->id);
         }
 
@@ -189,7 +189,7 @@ class ClientController extends Controller
         $client = $this->getTenant()->clients();
         $user = auth()->user();
         
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $client = $client->where('branch_id', $user->currentBranch()->id);
         }
 
@@ -216,7 +216,7 @@ class ClientController extends Controller
         $client = $tenant->clients();
         $user = auth()->user();
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $client = $client->where('branch_id', $user->currentBranch()->id);
         }
 
@@ -307,7 +307,7 @@ class ClientController extends Controller
         $tenant = $this->getTenant();
         $client =$tenant->clients();
 
-        if (!auth()->user()->isSuperAdmin()) {
+        if (!auth()->user()->isSuperAdmin() && !auth()->user()->isAdmin()) {
             $client = $client->where('branch_id', auth()->user()->currentBranch()->id);
         }
 

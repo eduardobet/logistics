@@ -28,7 +28,7 @@ class WarehouseController extends Controller
         $branches = $this->getBranches();
         $user = auth()->user();
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $branches = $branches->where('id', $user->currentBranch()->id);
         }
 
@@ -164,7 +164,7 @@ class WarehouseController extends Controller
         $user = auth()->user();
         $warehouse = $tenant->warehouses();
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $warehouse = $warehouse->where('branch_to', $user->currentBranch()->id);
         }
 
@@ -202,7 +202,7 @@ class WarehouseController extends Controller
         $user = auth()->user();
         $warehouse = $tenant->warehouses();
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $warehouse = $warehouse->where('branch_to', $user->currentBranch()->id);
         }
 
@@ -309,7 +309,7 @@ class WarehouseController extends Controller
         $warehouse = $tenant->warehouses();
         $user = auth()->user();
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $warehouse = $warehouse->where('branch_to', $user->currentBranch()->id);
         }
 

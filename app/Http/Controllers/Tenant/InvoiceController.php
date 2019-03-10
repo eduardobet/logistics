@@ -32,7 +32,7 @@ class InvoiceController extends Controller
         $branches = $this->getBranches();
         $user = auth()->user();
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $branches = $branches->where('id', $user->currentBranch()->id);
         }
 
@@ -215,7 +215,7 @@ class InvoiceController extends Controller
             $payment->with(['creator']);
         }]);
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
         }
 
@@ -242,7 +242,7 @@ class InvoiceController extends Controller
         $user = auth()->user();
         $invoice = $tenant->invoices()->with('details');
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
         }
 
@@ -372,7 +372,7 @@ class InvoiceController extends Controller
         $user = auth()->user();
         $invoice = $tenant->invoices()->with('details');
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
         }
 
@@ -404,7 +404,7 @@ class InvoiceController extends Controller
         $user = auth()->user();
         $invoice = $tenant->invoices()->where('is_paid', false)->with(['payments']);
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
         }
 
@@ -448,7 +448,7 @@ class InvoiceController extends Controller
         $user = auth()->user();
         $invoice = $tenant->invoices();
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
         }
 

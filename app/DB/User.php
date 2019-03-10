@@ -116,7 +116,7 @@ class User extends Authenticatable
 
     public function isSuperAdmin()
     {
-        return in_array($this->position, [1, 2, 8, 9]) || $this->isAdmin();
+        return in_array($this->position, [1, 2, 8, 9]);
     }
 
     /**

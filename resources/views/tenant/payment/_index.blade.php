@@ -51,7 +51,7 @@
             <td class="text-center">
                 @if (!isset($exporting))
                     @can('edit-invoice')
-                        <a target="_blank" title="{{ __('Edit') }}" href="{{ route('tenant.invoice.show', [$tenant->domain, $payment->invoice_id, 'branch_id' => $payment->invoice_branch_id, 'client_id' => $payment->client_id, ]) }}"><i class="fa fa-external-link" aria-hidden="true"></i> ({{ $payment->branch_initial }}-{{ $payment->invoice_manual_id }}) </a> 
+                        <a  title="{{ __('Edit') }}" href="{{ route('tenant.invoice.show', [$tenant->domain, $payment->invoice_id, 'branch_id' => $payment->invoice_branch_id, 'client_id' => $payment->client_id, ]) }}"><i class="fa fa-external-link" aria-hidden="true"></i> ({{ $payment->branch_initial }}-{{ $payment->invoice_manual_id }}) </a> 
                     @else
                         ({{ $payment->branch_initial }}-{{ $payment->invoice_manual_id }})
                     @endcan

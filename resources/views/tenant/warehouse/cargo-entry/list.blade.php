@@ -111,7 +111,7 @@
                                 {{ $cargo_entry->weight }}
                             </td>
                             <td class="text-center">
-                                <a target="_blank" title="{{ __('View') }}" href="{{ route('tenant.warehouse.cargo-entry.show', [$tenant->domain, $cargo_entry->id]) }}"><i class="fa fa-eye"></i></a>
+                                <a  title="{{ __('View') }}" href="{{ route('tenant.warehouse.cargo-entry.show', [$tenant->domain, $cargo_entry->id]) }}"><i class="fa fa-eye"></i></a>
                             </td>
                         </tr>
                         @endforeach

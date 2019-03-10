@@ -32,7 +32,7 @@
 
 @if (!$invoice->total)
     <div class="mg-t-20">
-        <button class="btn btn-sm btn-outline-success btn-add-more" type="button"
+        <button class="btn btn-sm btn-success btn-add-more" type="button"
         data-url="{{ route('tenant.warehouse.invoice-detail-tmpl', $tenant->domain) }}"
         data-loading-text="<i class='fa fa-spinner fa-spin '></i> {{ __('Loading') }}..."
         {{ isset($warehouse) && $warehouse->client_id ? null : 'disabled' }}

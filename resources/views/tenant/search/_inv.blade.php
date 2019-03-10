@@ -17,7 +17,10 @@
             <small>
 
             @can('show-invoice')
-                <a target="_blank" href="{{ route('tenant.invoice.show', [$tenant->domain, $result->id, 'branch_id' => $result->branch->id, 'client_id' => $result->client->id, ]) }}"><i class="fa fa-eye"></i> {{ __('Show') }} </a>
+                <a  href="{{ route('tenant.invoice.show', [$tenant->domain, $result->id, 'branch_id' => $result->branch->id, 'client_id' => $result->client->id, ]) }}"><i class="fa fa-eye"></i> {{ __('Show') }} </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+
+                <a  title="{{ __('Payments') }}" href="{{ route('tenant.payment.list', [$tenant->domain, 'invoice_id' => $result->id, 'branch_id' => $result->branch->id, 'client_id' => $result->client->id, 'no_date' => 1,  ]) }}"><i class="fa fa-usd"></i> {{ __('Payments') }}</a>
                 &nbsp;&nbsp;&nbsp;&nbsp;
             @endcan
 
@@ -35,7 +38,7 @@
             &nbsp;&nbsp;&nbsp;&nbsp;
             @endif
 
-            <a target="_blank" href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $result->id ]) }}" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
+            <a  href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $result->id ]) }}" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
                 <i class="fa fa-print"></i>
                 {{ __('Print') }}
             </a>

@@ -5,16 +5,16 @@ $key = isset($key) ? $key : ':index:';
 
 <div class="row det-row">
     
-    <div class="col-lg-4">
+    <div class="col-lg-2">
         <div class="row">
-            <div class="col-2">
+            <div class="col-4">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Qty') }}:</label>
                     {!! Form::text("invoice_detail[{$key}][qty]", $idetail->qty ? $idetail->qty : 1, ['class' => 'form-control form-control-sm qty inline-calc', 'data-i' => "{$key}", 'id' => "qty-{$key}", ]) !!}
                 </div>
             </div>
     
-            <div class="col-10">
+            <div class="col-8">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Type') }}:</label>
                     {!! Form::select("invoice_detail[{$key}][type]",[1=>'Sobre',2=>'Bulto', 3=>'Paquete',4=>'Caja/Peq.', 5=>'Caja/Med.', 6=>'Caja/Grande', 7=>'Servicio aéreo' ], $idetail->type, ['class' => 'form-control form-control-sm type', ]) !!}
@@ -28,37 +28,37 @@ $key = isset($key) ? $key : ':index:';
             <div class="col-4">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Length') }}:</label>
-                    {!! Form::text("invoice_detail[{$key}][length]", $idetail->length, ['class' => 'form-control form-control-sm length inline-calc', 'data-i' => "{$key}", 'id' => "length-{$key}", ]) !!}
+                    {!! Form::text("invoice_detail[{$key}][length]", $idetail->length ?: 0, ['class' => 'form-control form-control-sm length inline-calc', 'data-i' => "{$key}", 'id' => "length-{$key}", ]) !!}
                 </div>
             </div>
 
             <div class="col-4">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Width') }}:</label>
-                    {!! Form::text("invoice_detail[{$key}][width]", $idetail->width, ['class' => 'form-control form-control-sm  inline-calc width', 'data-i' => "{$key}", 'id' => "width-{$key}", ]) !!}
+                    {!! Form::text("invoice_detail[{$key}][width]", $idetail->width ?: 0, ['class' => 'form-control form-control-sm  inline-calc width', 'data-i' => "{$key}", 'id' => "width-{$key}", ]) !!}
                 </div>
             </div>
 
             <div class="col-4">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Height') }}:</label>
-                    {!! Form::text("invoice_detail[{$key}][height]", $idetail->height, ['class' => 'form-control form-control-sm inline-calc height', 'data-i' => "{$key}", 'id' => "height-{$key}", ]) !!}
+                    {!! Form::text("invoice_detail[{$key}][height]", $idetail->height ?: 0, ['class' => 'form-control form-control-sm inline-calc height', 'data-i' => "{$key}", 'id' => "height-{$key}", ]) !!}
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-lg-5">
+    <div class="col-lg-7">
         <div class="row">
 
-            <div class="col-4">
+            <div class="col-3">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('P/Vol') }}:</label>
                     {!! Form::text("invoice_detail[{$key}][vol_weight]", $idetail->vol_weight, ['class' => 'form-control form-control-sm inline-calc volumetric_weight', 'readonly' => '', 'data-i' => "{$key}", 'id' => "volumetric_weight-{$key}", ]) !!}
                 </div>
             </div>
 
-            <div class="col-4">
+            <div class="col-3">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('P/Real') }}:</label>
                     {!! Form::text("invoice_detail[{$key}][real_weight]", $idetail->real_weight, ['class' => 'form-control form-control-sm inline-calc real_weight', 'data-i' => "{$key}", 'id' => "real_weight-{$key}", ]) !!}
@@ -72,6 +72,13 @@ $key = isset($key) ? $key : ':index:';
                 <div class="form-check">
                     {!! Form::checkbox("invoice_detail[{$key}][is_dhll]", '2.25', $idetail->is_dhll==true, ['class' => 'form-check-input is_dhll', 'data-i' => "{$key}", 'id' => "is_dhll-{$key}", ]) !!}
                     <label class="form-check-label" for="is_dhll-{{ $key }}">DHL?</label>
+                </div>
+            </div>
+
+            <div class="col-2">
+                <div class="form-group mg-b-10-force">
+                    <label class="form-control-label">{{ __('# Track.') }}:</label>
+                    {!! Form::text("invoice_detail[{$key}][tracking]", $idetail->tracking, ['class' => 'form-control form-control-sm tracking', 'data-i' => "{$key}", 'id' => "tracking-{$key}", ]) !!}
                 </div>
             </div>
             

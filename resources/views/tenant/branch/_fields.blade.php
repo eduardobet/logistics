@@ -228,7 +228,7 @@
 
     <div class="tab-pane" id="product-type">
         <div class="mg-t-25">
-            <button class="btn btn-sm btn-outline-success btn-add-more" type="button"
+            <button class="btn btn-sm btn-success btn-add-more" type="button"
             data-url="{{ route('tenant.admin.branch.product-type-tmpl', $tenant->domain) }}"
             data-loading-text="<i class='fa fa-spinner fa-spin '></i> {{ __('Loading') }}..."
             >

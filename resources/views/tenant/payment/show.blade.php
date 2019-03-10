@@ -89,7 +89,7 @@
                     <div class="form-group mg-b-10-force">
                         <label class="form-control-label">{{ __('Payment method') }}:</label>
                         
-                        {!! Form::select('payment_method', ['' => '----', 1 => __('Cash'), 2 => __('Wire transfer'), 3 => __('Check'), ], $payment->payment_method, ['class' => 'form-control', 'id' => 'payment_method', 'disabled' => '1',]) !!}
+                        {!! Form::select('payment_method', [1 => __('Cash'), 2 => __('Wire transfer'), 3 => __('Check'), ], $payment->payment_method, ['class' => 'form-control', 'id' => 'payment_method',]) !!}
                         
                     </div>    
                 </div>
@@ -111,7 +111,19 @@
                     </div>
                 </div>
             </div>
-          </div><!--section-wrapper-->
+
+            @can('create-payment')
+                <div class="row">
+                    <div class="col-lg-12 mg-t-25">
+                        <button class="btn btn-primary  bd-1 bd-gray-400" id="edit-payment" data-pm="{{ $payment->payment_method }}">
+                            {{ __('Editing :what', ['what' => __('Payment method') ]) }}
+                        </button>
+                    </div>
+                </div>
+            @endcan
+          </div>
+ 
+          <!--section-wrapper-->
 
           <div class="section-wrapper mg-t-15">
             <div class="mg-b-15">
@@ -134,4 +146,55 @@
 
 @include('tenant.common._footer')
 
+@endsection
+
+@section('xtra_scripts')
+<script>
+    @can('create-payment')
+    $(function() {
+        $("#edit-payment").click(function(e){
+            var self = $(this);
+            var savedPaymentMethod = self.data('pm');
+            var paymentMethod = $("#payment_method").val();
+
+            if (savedPaymentMethod != paymentMethod) {
+                self.prop('disabled', true);
+
+                var request = $.ajax({
+                    method: 'post',
+                    url: "{{ route('tenant.payment.update', $tenant->domain) }}",
+                    data: $.extend({
+                        _token	: $("meta[name='csrf-token']").attr('content'),
+                        '_method': 'PATCH',
+                        'payment_id': "{{ $payment->id }}",
+                        'payment_method': paymentMethod,
+                    }, {})
+                });
+
+                request.done(function(data){
+                    if (data.error == false) {
+                        swal("", data.msg, "success").then(function() {
+                            window.location.reload(true);
+                        });
+                    } else {
+                        swal("", data.msg, "error");
+                        self.prop('disabled', false);
+                    }
+                })
+                .fail(function( jqXHR, textStatus ) {
+                    
+                    var error = "{{ __('Error') }}";
+
+                    if (jqXHR.responseJSON.msg) {
+                        error = jqXHR.responseJSON.msg;
+                    }
+                    
+                    swal("", error, "error");
+                    self.prop('disabled', false);
+                });
+             }
+        });
+    });
+    @endcan
+</script>    
 @endsection

@@ -187,7 +187,24 @@
                    $("#qty-dsp").text(0) 
                 }
             });
+
+            // add row on reader enter
+            $(document).on('keypress', '.tracking', function(e) {
+                if(e.which == 13) {
+                    $(".btn-add-more", document).click();
+
+                    e.preventDefault();
+                }
+            });
+
             //
+            $('.fc-datepicker').datepicker({
+                showOtherMonths: true,
+                selectOtherMonths: true,
+                language: '{{ config("app.locale") }}',
+                format: 'yyyy-mm-dd',
+                todayBtn: 'linked'
+            });
 
         });
 

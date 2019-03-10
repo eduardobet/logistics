@@ -42,7 +42,7 @@
                     {{ __('Telephones') }}: {{ $client->telephones }} <br>
                     <h3>{{ __('Invoice') }}#: {{ $ibranch->initial }}-{{ $invoice->id }} 
                         @if ($invoice->warehouse_id)
-                        &nbsp;&nbsp; /&nbsp;&nbsp; <a href="{{ route('tenant.warehouse.edit', [$tenant->domain, $invoice->warehouse_id, ]) }}" target="_blank">{{ __('Warehouse') }}#: {{ $invoice->warehouse_id }}</a>
+                        &nbsp;&nbsp; /&nbsp;&nbsp; <a href="{{ route('tenant.warehouse.edit', [$tenant->domain, $invoice->warehouse_id, ]) }}" >{{ __('Warehouse') }}#: {{ $invoice->warehouse_id }}</a>
                         
                         @endif
                     <br>

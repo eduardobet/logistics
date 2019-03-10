@@ -96,7 +96,7 @@
                         <td>
                             @if ($misidentified->client)
                             @can('show-client')
-                                <a target="_blank" title="{{ __('View') }}" href="{{ route('tenant.client.show', [$tenant->domain, $misidentified->client_id, ]) }}">
+                                <a  title="{{ __('View') }}" href="{{ route('tenant.client.show', [$tenant->domain, $misidentified->client_id, ]) }}">
                                     {{ $misidentified->client->full_name }}
                                 </a>
                             @endcan
@@ -105,12 +105,12 @@
 
                         <td>
                              @if ($misidentified->cargoEntry)
-                             <a target="_blank" title="{{ __('View') }}" href="{{ route('tenant.warehouse.cargo-entry.show', [$tenant->domain, $misidentified->cargo_entry_id]) }}"><i class="fa fa-link"></i> {{ $misidentified->cargo_entry_id }} </a>
+                             <a  title="{{ __('View') }}" href="{{ route('tenant.warehouse.cargo-entry.show', [$tenant->domain, $misidentified->cargo_entry_id]) }}"><i class="fa fa-link"></i> {{ $misidentified->cargo_entry_id }} </a>
                              @endif   
                         </td>
 
                         <td class="text-center">
-                            <a target="_blank" title="{{ __('View') }}" href="{{ route('tenant.misidentified-package.show', [$tenant->domain, $misidentified->id]) }}"><i class="fa fa-eye"></i></a>
+                            <a  title="{{ __('View') }}" href="{{ route('tenant.misidentified-package.show', [$tenant->domain, $misidentified->id]) }}"><i class="fa fa-eye"></i></a>
                         </td>
                         </tr>
                         @endforeach

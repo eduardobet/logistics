@@ -254,7 +254,7 @@
         
         @if (!isset($hide_more))
         <div class="mg-t-25">
-            <button class="btn btn-sm btn-outline-success btn-add-more" type="button"
+            <button class="btn btn-sm btn-success btn-add-more" type="button"
             data-url="{{ route('tenant.client.contact-tmpl', $tenant->domain) }}"
             data-loading-text="<i class='fa fa-spinner fa-spin '></i> {{ __('Loading') }}..."
             >

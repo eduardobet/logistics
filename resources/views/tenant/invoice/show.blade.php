@@ -87,7 +87,8 @@
                             <tr>
                                 <th class="wd-20p">{{ __('Type') }}</th>
                                 <th class="wd-40p">{{ __('Description') }}</th>
-                                <th class="tx-center">{{ __('Qty') }}</th>
+                                <th>{{ __('#Tracking') }}</th>
+                                <th class="tx-center">{{ __('LBS') }}</th>
                                 <th class="tx-right">{{ __('Price') }}</th>
                                 <th class="tx-right">{{ __('Amount') }}</th>
                             </tr>
@@ -111,6 +112,7 @@
                                 <tr>
                                     <td>{{ ['A' => __('Air'), 'M' => __('Maritime'), ][$invoice->warehouse->type] }}</td>
                                     <td>{{ [1=>'Sobre',2=>'Bulto', 3=>'Paquete',4=>'Caja/Peq.', 5=>'Caja/Med.', 6=>'Caja/Grande', 7=>'Servicio aéreo' ][$detail->type] }}</td>
+                                    <td>{{ $detail->tracking }}</td>
                                     <td class="tx-center">
                                         @if ($invoice->i_using == 'V')
                                            {{ $detail->vol_weight }}

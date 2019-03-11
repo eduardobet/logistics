@@ -38,10 +38,12 @@
             &nbsp;&nbsp;&nbsp;&nbsp;
             @endif
 
+            @can('show-invoice')
             <a  href="{{ route('tenant.invoice.print-invoice', [$tenant->domain, $result->id ]) }}" title="{{ __('Print :what', ['what' => __('Invoice') ]) }}">
                 <i class="fa fa-print"></i>
                 {{ __('Print') }}
             </a>
+            @endcan
             
             &nbsp;&nbsp;&nbsp;&nbsp;
             {{ $result->created_at->format('d/m/Y') }}

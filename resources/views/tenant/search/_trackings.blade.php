@@ -55,14 +55,14 @@
                         @can('edit-warehouse')
                             <a  href="{{ route('tenant.warehouse.edit', [$tenant->domain, $result->id]) }}"><i class="fa fa-pencil-square-o"></i> {{ __('Edit') }} </a>
                             &nbsp;&nbsp;&nbsp;&nbsp;
+                            
+                            <a  href="{{ route('tenant.warehouse.print-sticker', [$tenant->domain, $result->id ]) }}">
+                                <i class="fa fa-ticket"></i>
+                                {{ __('Sticker') }}
+                            </a>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
                         @endcan
 
-                        <a  href="{{ route('tenant.warehouse.print-sticker', [$tenant->domain, $result->id ]) }}">
-                            <i class="fa fa-ticket"></i>
-                            {{ __('Sticker') }}
-                        </a>
-
-                        &nbsp;&nbsp;&nbsp;&nbsp;
 
                         @can('show-invoice')
                             <a  href="{{ route('tenant.invoice.list', [$tenant->domain, 'client_id' => $result->client->id, 'branch_id' => $branch->id, ]) }}">

@@ -36,10 +36,12 @@
                   <li><a href="{{ route('tenant.warehouse.list', $tenant->domain) }}">{{ __('Warehouse list') }}</a></li>
                 @endcan
 
+                @can('create-warehouse')
                 <li><a href="{{ route('tenant.warehouse.cargo-entry.create', $tenant->domain) }}">{{ __('Register Cargo entry') }}</a></li>
                 <li><a href="{{ route('tenant.warehouse.cargo-entry.list', $tenant->domain) }}">{{ __('Cargo entries') }}</a></li>
                 <li><a  href="{{ route('tenant.misidentified-package.create', $tenant->domain) }}">{{ __('Create misidentified package') }}</a></li>
                 <li><a  href="{{ route('tenant.misidentified-package.index', $tenant->domain) }}">{{ __('Misidentified packages') }}</a></li>
+                @endcan
               </ul>
             </div><!-- dropdown-menu -->
           </li>
@@ -54,8 +56,10 @@
                 @can('create-invoice')
                   <li><a href="{{ route('tenant.invoice.create', [$tenant->domain, 'branch_id' => $branch->id, ]) }}">{{ __('New invoice') }}</a></li>
                 @endcan
-
+                
+                @can('show-invoice')
                 <li><a href="{{ route('tenant.invoice.list', $tenant->domain) }}">{{ __('Invoices list') }}</a></li>
+                @endcan
               </ul>
             </div><!-- dropdown-menu -->
           </li>
@@ -67,8 +71,11 @@
             </a>
             <div class="sub-item">
               <ul>
+                
+                @can('show-payment')
                 <li><a href="{{ route('tenant.payment.list', [$tenant->domain, 'branch_id' => $branch->id, ])  }}">{{ __('Payments') }}</a></li>
                 <li><a href="{{ route('tenant.income.list', [$tenant->domain, 'branch_id' => $branch->id, ])  }}">{{ __('Incomes') }}</a></li>
+                @endcan
                 <!--<li><a href="#">{{ __('New expense') }}</a></li>
                 <li><a href="#">{{ __('Expense list') }}</a></li>
                 <li><a href="#">{{ __('Petty cash') }}</a></li>-->

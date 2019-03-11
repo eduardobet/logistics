@@ -19,11 +19,13 @@
             @endcan
 
             @if ($result->status == 'A')
-                
+            
+            @can('edit-warehouse')
             <a  href="{{ route('tenant.warehouse.print-sticker', [$tenant->domain, $result->id ]) }}">
                 <i class="fa fa-ticket"></i>
                 {{ __('Sticker') }}
             </a>
+            @endcan
 
             &nbsp;&nbsp;&nbsp;&nbsp;
 

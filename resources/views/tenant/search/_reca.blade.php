@@ -22,7 +22,9 @@
                 @endif
             </p>
 
-            <a  href="{{ route('tenant.warehouse.cargo-entry.show', [$tenant->domain, $result->id]) }}"><i class="fa fa-eye"></i> {{ __('Show') }} </a>
+            @can('edit-warehouse')
+                <a  href="{{ route('tenant.warehouse.cargo-entry.show', [$tenant->domain, $result->id]) }}"><i class="fa fa-eye"></i> {{ __('Show') }} </a>
+            @endcan
         </div>
     </div>
 @endforeach

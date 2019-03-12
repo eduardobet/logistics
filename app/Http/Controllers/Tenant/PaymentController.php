@@ -4,6 +4,7 @@ namespace Logistics\Http\Controllers\Tenant;
 
 use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
+use Illuminate\Support\Carbon;
 use Logistics\DB\Tenant\Client;
 use Logistics\Traits\PaymentList;
 use Illuminate\Support\Facades\DB;
@@ -145,12 +146,15 @@ class PaymentController extends Controller
             ], 500);
         }
 
+        [$year, $month, $day]  = array_map('intval', explode('-', request('created_at', date('Y-m-d'))));
+
         $payment = $invoice->payments()->create([
             'is_first' => false,
             'tenant_id' => $invoice->tenant_id,
             'amount_paid' => $request->amount_paid,
             'payment_method' => $request->payment_method,
             'payment_ref' => $request->payment_ref,
+            'created_at' => Carbon::create($year, $month, $day),
         ]);
 
         if ($payment) {

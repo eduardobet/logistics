@@ -38,7 +38,9 @@ trait InvoiceList
                 $query->where('id', $branch->id)->select('id', 'code', 'name', 'initial');
             });
 
-        if (($from = request('from')) && ($to = request('to'))) {
+        $now = \Carbon\Carbon::now();
+
+        if (($from = request('from', $now->subDays(15)->format('Y-m-d'))) && ($to = request('to', date('Y-m-d')))) {
             $invoices = $invoices->whereRaw(' date(invoices.created_at) between ? and ? ', [$from, $to]);
             $searching = 'Y';
         }

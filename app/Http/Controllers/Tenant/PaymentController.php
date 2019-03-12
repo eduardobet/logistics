@@ -137,7 +137,7 @@ class PaymentController extends Controller
             ], 500);
         }
 
-        $pending = $invoice->total - $invoice->payments->sum('amount_paid');
+        $pending = number_format($invoice->total - $invoice->payments->sum('amount_paid'), 2);
 
         if ($request->amount_paid > $pending) {
             return response()->json([

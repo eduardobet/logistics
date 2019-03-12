@@ -17,7 +17,8 @@
                                 <div class="form-group mg-b-10-force">
                                     <label class="form-control-label">{{ __('Amount paid') }}:<span class="tx-danger">*</span></label>
                                     <?php $pending = isset($invoice) && isset($payments) ? $invoice->total - $payments->sum('amount_paid') : 0;  ?>
-                                    {!! Form::number("p_amount_paid", $pending, ['class' => 'form-control ', 'id' => 'p_amount_paid', 'required' => '1', 'step' => "0.01", 'min' => "1", 'max' => $pending, 'onclick' => 'this.select()', ]) !!}
+
+                                    <input type="number" value="{{ $pending }}" name="p_amount_paid" id="p_amount_paid" class="form-control" required step=".01" min="0" max="{{ $pending }}" onclick="this.select()">
                                 </div>
                             </div>
                             
@@ -35,7 +36,7 @@
                                         <span class="tx-danger">*</span>
                                     </label>
 
-                                    {!! Form::text('created_at', null, ['class' => 'form-control fc-datepicker hasDatepicker', 'readonly' => 1, 'id' => 'created_at', ]) !!}
+                                    <input type="text" name="p_created_at" id="p_created_at" value="{{ date('Y-m-d') }}" class="form-control fc-datepicker hasDatepicker" readonly>
                                     
                                 </div>
                             </div>

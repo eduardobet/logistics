@@ -190,7 +190,7 @@ class InvoiceController extends Controller
             },
         ]);
         
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
         }
         
@@ -335,7 +335,7 @@ class InvoiceController extends Controller
             $detail->with('productType');
         }]);
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
         }
 

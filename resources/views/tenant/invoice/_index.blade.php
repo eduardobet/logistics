@@ -64,19 +64,21 @@
             
             <?php $pending = $invoice->total - $invoice->payments->sum('amount_paid'); ?>
             
-            @if ($invoice->status == 'A')
-            &nbsp;&nbsp;&nbsp;
-                <a href="#!" class="{{ $pending ? 'create-payment' : 'already-paid' }}"
-                data-url="{{ route('tenant.payment.create', [$tenant->domain, $invoice->id, ]) }}"
-                title="{{ __('New payment') }}" data-invoice-id="{{ $invoice->id }}"
-                data-toggle="modal"
-                data-target="#modal-payment-{{ $invoice->id }}"
-                data-index="{{ $invoice->id }}"
-                data-pending="{{ $pending }}"
-                >
-                    <i class="fa fa-money"></i>
-                </a>
-            @endif 
+            @can('create-payment')
+                @if ($invoice->status == 'A')
+                    &nbsp;&nbsp;&nbsp;
+                    <a href="#!" class="{{ $pending ? 'create-payment' : 'already-paid' }}"
+                        data-url="{{ route('tenant.payment.create', [$tenant->domain, $invoice->id, ]) }}"
+                        title="{{ __('New payment') }}" data-invoice-id="{{ $invoice->id }}"
+                        data-toggle="modal"
+                        data-target="#modal-payment-{{ $invoice->id }}"
+                        data-index="{{ $invoice->id }}"
+                        data-pending="{{ $pending }}"
+                        >
+                        <i class="fa fa-money"></i>
+                    </a>
+                @endif 
+            @endcan
 
             @can('show-invoice')
             &nbsp;&nbsp;&nbsp;

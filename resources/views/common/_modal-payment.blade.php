@@ -13,29 +13,45 @@
             <div class="modal-body pd-25">
                         <div class="row">
 
-                            <div class="col-lg-3">
+                            <div class="col-lg-4">
                                 <div class="form-group mg-b-10-force">
-                                    <label class="form-control-label">{{ __('Amount paid') }}:</label>
+                                    <label class="form-control-label">{{ __('Amount paid') }}:<span class="tx-danger">*</span></label>
                                     <?php $pending = isset($invoice) && isset($payments) ? $invoice->total - $payments->sum('amount_paid') : 0;  ?>
                                     {!! Form::number("p_amount_paid", $pending, ['class' => 'form-control ', 'id' => 'p_amount_paid', 'required' => '1', 'step' => "0.01", 'min' => "1", 'max' => $pending, 'onclick' => 'this.select()', ]) !!}
                                 </div>
                             </div>
                             
-                            <div class="col-lg-3">
+                            <div class="col-lg-4">
                                 <div class="form-group mg-b-10-force">
-                                    <label class="form-control-label">{{ __('Payment method') }}:</label>
+                                    <label class="form-control-label">{{ __('Payment method') }}:<span class="tx-danger">*</span></label>
                                     {!! Form::select('p_payment_method', ['' => '----', 1 => __('Cash'), 2 => __('Wire transfer'), 3 => __('Check'), ], null, ['class' => 'form-control', 'id' => 'p_payment_method', 'required' => '1',]) !!}
                                 </div>
                             </div>
                             
-                            <div class="col-lg-6">
-                                <div class="form-group mg-b-10-force">
-                                    <label class="form-control-label">{{ __('Reference') }}:</label>
-                                    {!! Form::text("p_payment_ref", null, ['class' => 'form-control ', 'id' => 'p_payment_ref', 'minlength' => 3, 'maxlength' => 255, 'required' => '1', ]) !!}
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label class="form-control-label">
+                                        {{ __('Date') }}:
+                                        <span class="tx-danger">*</span>
+                                    </label>
+
+                                    {!! Form::text('created_at', null, ['class' => 'form-control fc-datepicker hasDatepicker', 'readonly' => 1, 'id' => 'created_at', ]) !!}
+                                    
                                 </div>
                             </div>
                             
                         </div>
+
+                         <div class="row">
+                             <div class="col-lg-12">
+                                 <div class="form-group mg-b-10-force">
+                                    <label class="form-control-label">{{ __('Reference') }}:</label>
+                                    {!! Form::text("p_payment_ref", null, ['class' => 'form-control ', 'id' => 'p_payment_ref', 'minlength' => 3, 'maxlength' => 255, 'required' => '1', ]) !!}
+                                </div>
+                             </div>
+                        </div>
+
+
                     </div>
                     <div class="modal-footer">
                         <button type="submit" id="btn-submit-payment" class="btn btn-primary"

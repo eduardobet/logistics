@@ -37,7 +37,7 @@
                             {{ __('From') }}
                         </div>
                     </div>
-                    <input type="text" class="form-control fc-datepicker hasDatepicker" placeholder="YYYY-MM-DD" value="{{ request('from', date('Y-m-d')) }}" id="from">
+                    <input type="text" class="form-control fc-datepicker hasDatepicker" placeholder="YYYY-MM-DD" value="{{ request('from', Carbon\Carbon::now()->subDays(15)->format('Y-m-d')   ) }}" id="from">
                 </div>
 
             </div>
@@ -224,6 +224,7 @@ select2ize = function($child, items) {
                     'amount_paid': $("#p_amount_paid").val(),
                     'payment_method': $("#p_payment_method").val(),
                     'payment_ref': $("#p_payment_ref").val(),
+                    'created_at': $("#created_at").val(),
                 }, {})
             });
 

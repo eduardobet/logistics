@@ -383,6 +383,7 @@
                     'amount_paid': $("#p_amount_paid").val(),
                     'payment_method': $("#p_payment_method").val(),
                     'payment_ref': $("#p_payment_ref").val(),
+                    'created_at': $("#created_at").val(),
                 }, {})
             });
 
@@ -557,6 +558,14 @@
             });
          });
         // delete
+
+        $('.fc-datepicker').datepicker({
+          showOtherMonths: true,
+          selectOtherMonths: true,
+          language: '{{ config("app.locale") }}',
+          format: 'yyyy-mm-dd',
+          todayBtn: 'linked'
+        });
 
     }); // jquery
 

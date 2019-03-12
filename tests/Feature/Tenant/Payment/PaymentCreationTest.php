@@ -286,7 +286,7 @@ class PaymentCreationTest extends TestCase
         $admin->branchesForInvoice()->sync([$branch->id,]);
 
         $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'pay_volume' => true, 'vol_price' => 2.00 ]);
-        $box = factory(Box::class)->create([
+        factory(Box::class)->create([
             'tenant_id' => $tenant->id,
             'client_id' => $client->id,
             'branch_id' => $branch->id,
@@ -299,7 +299,7 @@ class PaymentCreationTest extends TestCase
             'total' => 100,
         ]);
 
-        $detail = $invoice->details()->create([
+        $invoice->details()->create([
             'qty' => 1,
             'type' => 1,
             'description' => 'Buying from amazon',
@@ -307,7 +307,7 @@ class PaymentCreationTest extends TestCase
             'total' => 100,
         ]);
 
-        $paymentA = $invoice->payments()->create([
+        $invoice->payments()->create([
             'tenant_id' => $invoice->tenant_id,
             'amount_paid' => 50,
             'payment_method' => 1,
@@ -333,6 +333,7 @@ class PaymentCreationTest extends TestCase
             'amount_paid' => 50,
             'payment_method' => 1,
             'payment_ref' => 'The payment reference',
+            'created_at' => '2017-01-30',
         ], $this->headers());
 
         $paymentB = $invoice->fresh()->payments->fresh()->where('is_first', false)->first();
@@ -352,6 +353,7 @@ class PaymentCreationTest extends TestCase
         $this->assertEquals('The payment reference', $paymentB->payment_ref);
         $this->assertEquals('0', $paymentB->is_first);
         $this->assertEquals($admin->id, $paymentB->created_by_code);
+        $this->assertEquals('2017-01-30', $paymentB->created_at->format('Y-m-d'));
 
         $this->assertCount(1, $branch->notifications);
     }

@@ -343,7 +343,7 @@ class ClientController extends Controller
         $client = $tenant->clients();
         $user = auth()->user();
 
-        if (!$user->isSuperAdmin() && !$user->isWarehouse()) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $client = $client->where('branch_id', $user->currentBranch()->id);
         }
 

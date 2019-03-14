@@ -21,7 +21,9 @@
         @yield('content')
 
     <!-- Scripts -->
+    @if (!isset($noJs))
     <script src="{{ mix('js/app.js') }}"></script>
+    @endif
     <script>
         
         @if ($success = session()->get('flash_success'))
@@ -69,22 +71,25 @@
         @endif
 
     </script>
+
+    @if (!isset($noSearch))
     <script>
         $("#q").on('keyup', function (e) {
             if ( e.keyCode == 13 ) {
-               doGlobalSearch()
+                doGlobalSearch()
             }
         });
-
+        
         $("#btn-search").click(function() {
             doGlobalSearch()
         });
-
+        
         function doGlobalSearch() {
             var q = $.trim($("#q").val());
             if (q) window.location = `{{ route('tenant.get.search', $tenant->domain) }}?q=${q}&cbranch_id={{ isset($branch) ? $branch->id : '' }}`;
         }
     </script>
+    @endif
     @yield('xtra_scripts')
 </body>
 </html>

@@ -51,6 +51,10 @@
                 <td class="text-center">
                     @can('edit-warehouse')
                     <a  title="{{ __('Edit') }}" href="{{ route('tenant.warehouse.edit', [$tenant->domain, $warehouse->id]) }}"><i class="fa fa-pencil-square-o"></i></a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="{{ route('tenant.warehouse.receipt', [$tenant->domain, $warehouse->id]) }}">
+                        <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                    </a>
                     @endcan
                 </td>
                 @endif

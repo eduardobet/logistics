@@ -9,7 +9,7 @@
 
   <div class="slim-mainpanel">
   <div class="container">
-     @if (!request('__print_it'))
+     @if (!request('__print_it') && !request('__send_it'))
       <div class="slim-pageheader hidden-print d-print-none">
         <ol class="breadcrumb slim-breadcrumb">
           <li class="breadcrumb-item"><a href="/">Home</a></li>
@@ -150,7 +150,7 @@
 
         <hr class="mg-b-60">
 
-        @if (!request('__print_it'))
+        @if (!request('__print_it') && !request('__send_it'))
         <div class="hidden-print d-print-none">
             <a href="{{ route('tenant.warehouse.receipt', [$tenant->domain, $warehouse->id]) }}?__print_it=1" class="btn btn-warning"><i class="fa fa-print"></i>
               {{ strtoupper( __('Print :what', ['what' => __('Receipt', [], $lang) ], [], $lang) ) }}

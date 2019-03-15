@@ -351,6 +351,7 @@ class WarehouseController extends Controller
         $tenant = $this->getTenant();
         $warehouse = $tenant->warehouses();
         $user = auth()->user();
+        $lang = $tenant->lang ?: localization()->getCurrentLocale();
 
         if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $warehouse = $warehouse->where('branch_to', $user->currentBranch()->id);
@@ -368,6 +369,7 @@ class WarehouseController extends Controller
                 ->find($warehouse->client_id),
             'invoice' => $warehouse->invoice()
                 ->with('details')->first(),
+            'lang' => $lang,
         ];
 
         if (request('__print_it') == '1') {

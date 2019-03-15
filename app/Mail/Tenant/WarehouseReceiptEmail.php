@@ -46,6 +46,7 @@ class WarehouseReceiptEmail extends Mailable
 
         $pdf = \PDF::loadView('tenant.warehouse.receipt', array_merge($this->data, [
             'tenant' => $this->tenant,
+            'lang' => $lang,
         ]));
 
         Storage::disk('whreceipts')->put($path, $pdf->output());

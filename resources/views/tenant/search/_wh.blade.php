@@ -25,6 +25,11 @@
                 <i class="fa fa-ticket"></i>
                 {{ __('Sticker') }}
             </a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="{{ route('tenant.warehouse.receipt', [$tenant->domain, $result->id]) }}">
+                <i class="fa fa-file-text-o"></i>
+                {{ __('Receipt') }}
+            </a>
             @endcan
 
             &nbsp;&nbsp;&nbsp;&nbsp;

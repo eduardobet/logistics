@@ -41,26 +41,27 @@ class WarehouseReceiptEmail extends Mailable
         $ibranch = $this->data['branchTo'];
         $title = " #{$ibranch->initial}-{$this->data['warehouse']->manual_id_dsp}";
 
-        $unique = uniqid('receipt_', true);
-        //$this->data['pdf']->save($path = public_path("tenant/{$this->tenant->id}/wh-receipts/{$unique}.pdf"));
-        $path = "tenant/{$this->tenant->id}/wh-receipts/{$unique}.pdf";
-        Storage::put($path, $this->data['pdf']->output(), 'public');
-        //$path = public_path("tenant/{$this->tenant->id}/wh-receipts/receipt_5c8a0fdd67e116.32352438.pdf");
+        $unique = "whreceipt-{$ibranch->initial}-{$this->data['warehouse']->manual_id_dsp}";
+        $path = "/tenant/{$this->tenant->id}/{$unique}.pdf";
 
+        $pdf = \PDF::loadView('tenant.warehouse.receipt', array_merge($this->data, [
+            'tenant' => $this->tenant,
+        ]));
+
+        Storage::disk('whreceipts')->put($path, $pdf->output());
 
         return $this->subject(__('Warehouse receipt', [], $lang) . $title)
             ->from($this->tenant->mail_from_address, $this->tenant->mail_from_name)
             ->view('tenant.mails.wh-receipt')
-            ->attachFromStorage($path, $unique, [
+            ->attach(public_path('whreceipts' . $path), [
                 'as' => $unique,
                 'mime' => 'application/pdf',
             ])
-            /*->attachRaw($this->data['pdf'], 'name.pdf', [
-                'mime' => 'application/pdf',
-        ])*/
             ->with(
                 array_merge($this->data, [
+                    'box' => $box,
                     'lang' => $lang,
+                    'path' => asset('whreceipts' . $path),
                 ])
             );
     }

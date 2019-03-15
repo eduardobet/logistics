@@ -360,7 +360,7 @@ class WarehouseController extends Controller
 
         $data = [
             'warehouse' => $warehouse,
-            'branchTo' => $tenant->branches()->select(['tenant_id', 'id', 'name', 'address', 'telephones'])->find($warehouse->branch_to),
+            'branchTo' => $tenant->branches()->select(['tenant_id', 'id', 'name', 'initial', 'address', 'telephones'])->find($warehouse->branch_to),
             'mailer' => $tenant->mailers()->select(['tenant_id', 'id', 'name'])->find($warehouse->mailer_id),
             'client' => $tenant->clients()
                 ->with('branch')
@@ -373,14 +373,10 @@ class WarehouseController extends Controller
         if (request('__print_it') == '1') {
             $pdf = \PDF::loadView('tenant.warehouse.receipt', $data);
 
-            return $pdf->download(uniqid('receipt_', true) . '.pdf');
+            return $pdf->download(uniqid('whreceipt_', true) . '.pdf');
         }
 
         if (request('__send_it') == '1') {
-            $pdf = \PDF::loadView('tenant.warehouse.receipt', $data);
-
-            $data['pdf'] = $pdf;
-
             dispatch(new SendWarehouseReceiptEmail($tenant, $data));
 
             return response()->json(['error' => false, 'msg' => __('Success'), ]);

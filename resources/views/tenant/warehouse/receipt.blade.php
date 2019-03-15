@@ -1,6 +1,5 @@
 @extends('layouts.tenant', ['noSearch' => true, ])
 
-
 @section('title')
     {{ uniqid('receipt_', true) }}
 @stop
@@ -157,10 +156,10 @@
               {{ strtoupper( __('Print :what', ['what' => __('Receipt') ]) ) }}
             </a>
 
-            <a href="#!" id="send-to-client" class="btn btn-primary" data-loading-text="<i class='fa fa-spinner fa-spin '></i>">
+            <button type="button" id="send-to-client" class="btn btn-primary" data-loading-text="<i class='fa fa-spinner fa-spin '></i>">
               <i class="fa fa-envelope-o"></i>
               {{ strtoupper( __('Send to :who', ['who' => __('Client')]) ) }}
-            </a>
+            </button>
             
         </div>
         @endif

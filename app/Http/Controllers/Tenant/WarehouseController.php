@@ -11,6 +11,7 @@ use Logistics\Traits\WarehouseList;
 use Logistics\Exports\WarehousesExport;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Http\Requests\Tenant\WarehouseRequest;
+use Logistics\Jobs\Tenant\SendWarehouseReceiptEmail;
 
 class WarehouseController extends Controller
 {
@@ -336,5 +337,51 @@ class WarehouseController extends Controller
                 
             return $pdf->download(uniqid('sticker_', true) . '.pdf');
         }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  string  $tenant
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function receipt($tenant, $id)
+    {
+        $tenant = $this->getTenant();
+        $warehouse = $tenant->warehouses();
+        $user = auth()->user();
+
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
+            $warehouse = $warehouse->where('branch_to', $user->currentBranch()->id);
+        }
+
+        $warehouse = $warehouse->where('id', $id)->firstOrFail();
+
+        $data = [
+            'warehouse' => $warehouse,
+            'branchTo' => $tenant->branches()->select(['tenant_id', 'id', 'name', 'initial', 'address', 'telephones'])->find($warehouse->branch_to),
+            'mailer' => $tenant->mailers()->select(['tenant_id', 'id', 'name'])->find($warehouse->mailer_id),
+            'client' => $tenant->clients()
+                ->with('branch')
+                ->select(['tenant_id', 'id', 'first_name', 'last_name', 'address', 'email', 'telephones', 'branch_id', 'manual_id'])
+                ->find($warehouse->client_id),
+            'invoice' => $warehouse->invoice()
+                ->with('details')->first(),
+        ];
+
+        if (request('__print_it') == '1') {
+            $pdf = \PDF::loadView('tenant.warehouse.receipt', $data);
+
+            return $pdf->download(uniqid('whreceipt_', true) . '.pdf');
+        }
+
+        if (request('__send_it') == '1') {
+            dispatch(new SendWarehouseReceiptEmail($tenant, $data));
+
+            return response()->json(['error' => false, 'msg' => __('Success'), ]);
+        }
+
+        return view('tenant.warehouse.receipt', $data);
     }
 }

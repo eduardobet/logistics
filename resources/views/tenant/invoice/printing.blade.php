@@ -38,7 +38,7 @@
             <td style="width:50%; padding-left:10px; vertical-align: top; border: solid 1px">
                 <h3>{{ __('Client') }}:</h3>
                 <div style="padding-left:10px;">
-                    {{ $client->full_name }} / {{ $box }} <br>
+                    {!! $client->full_name !!} / {{ $box }} <br>
                     {{ __('Telephones') }}: {{ $client->telephones }} <br>
                     <h3>{{ __('Invoice') }}#: {{ $ibranch->initial }}-{{ $invoice->id }} 
                         @if ($invoice->warehouse_id)

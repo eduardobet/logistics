@@ -260,6 +260,9 @@
             } else if ($type.val() == 'M') {
                 martitimePrice = parseFloat($client.find(':selected').attr('data-maritime_price') || $branchTo.find(':selected').attr('data-maritime_price') || '0');
                 extraMartitimePrice = parseFloat($client.find(':selected').attr('data-extra_maritime_price') || $branchTo.find(':selected').attr('data-extra_maritime_price') || '0');
+
+                if (isNaN(martitimePrice)) martitimePrice = 0;
+                if (isNaN(extraMartitimePrice)) extraMartitimePrice = 0;
             }
 
             $els.each(function(i, el) {

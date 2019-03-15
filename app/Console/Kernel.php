@@ -27,7 +27,13 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
 
-        $schedule->command('backup:clean')->daily()->at('23:45');
+        $schedule->command('backup:clean')
+            ->daily()
+            ->at('23:45')
+            ->after(function () {
+                \File::deleteDirectory('public/whreceipts');
+            });
+            
         $schedule->command('backup:run --only-db')->daily();
     }
 

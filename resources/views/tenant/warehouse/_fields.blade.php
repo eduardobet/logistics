@@ -64,6 +64,10 @@
                     <i class="fa fa-ticket"></i>
                 </a>
 
+                <a title="{{ __('Receipt') }}" href="{{ route('tenant.warehouse.receipt', [$tenant->domain, $warehouse->id]) }}" class="btn btn-outline-dark" role="button">
+                    <i class="fa fa-file-text-o"></i>
+                </a>
+
                 @can('create-invoice')
                     @if ($invoice->total) 
                         @if (config('app.invoice_print_version') == 2)

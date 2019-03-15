@@ -1,4 +1,4 @@
-@extends('layouts.tenant')
+@extends('layouts.tenant', ['noSearch' => true, ])
 
 
 @section('title')

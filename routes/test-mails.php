@@ -5,6 +5,7 @@ use Logistics\Mail\Tenant\InvoiceCreated;
 use Logistics\Mail\Tenant\PaymentCreated;
 use Logistics\Mail\Tenant\WelcomeClientEmail;
 use Logistics\Mail\Tenant\WelcomeEmployeeEmail;
+use Logistics\Mail\Tenant\WarehouseReceiptEmail;
 
 Route::get('test-welcome-employee', function () {
     $tenant = Tenant::first();
@@ -88,4 +89,32 @@ Route::get('test-send-payment', function () {
     ]);
 
     return new PaymentCreated($tenant, $client, $invoice, $payment);
+});
+
+
+Route::get('test-wh-receipt/{id}', function () {
+    $tenant = Tenant::first();
+    $warehouse = $tenant->warehouses();
+
+    $warehouse = $warehouse->where('id', request('id'))->firstOrFail();
+
+    $data = [
+        'warehouse' => $warehouse,
+        'branchTo' => $tenant->branches()->select(['tenant_id', 'id', 'name', 'address', 'telephones'])->find($warehouse->branch_to),
+        'mailer' => $tenant->mailers()->select(['tenant_id', 'id', 'name'])->find($warehouse->mailer_id),
+        'client' => $tenant->clients()
+            ->with('branch')
+            ->select(['tenant_id', 'id', 'first_name', 'last_name', 'address', 'email', 'telephones', 'branch_id', 'manual_id'])
+            ->find($warehouse->client_id),
+        'invoice' => $warehouse->invoice()
+            ->with('details')->first(),
+    ];
+
+    $pdf = \PDF::loadView('tenant.warehouse.receipt', $data);
+
+    $data['pdf'] = $pdf;
+
+    $email = new WarehouseReceiptEmail($tenant, $data);
+
+    return $email;
 });

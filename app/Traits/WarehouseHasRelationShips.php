@@ -5,6 +5,7 @@ namespace Logistics\Traits;
 use Carbon\Carbon;
 use Illuminate\Support\Fluent;
 use Logistics\Jobs\Tenant\SendInvoiceCreatedEmail;
+use Logistics\Jobs\Tenant\SendPaymentCreatedEmail;
 use Logistics\Notifications\Tenant\WarehouseActivity;
 
 trait WarehouseHasRelationShips
@@ -117,6 +118,7 @@ trait WarehouseHasRelationShips
                 'cubic_feet' => $request->total_cubic_feet ? $request->total_real_weight : 0,
                 'total' => $request->total,
                 'notes' => $request->notes,
+                'is_paid' => $request->amount_paid && $request->amount_paid == $request->total,
                 'created_at' => Carbon::create($year, $month, $day),
             ] + $using
         );
@@ -142,6 +144,21 @@ trait WarehouseHasRelationShips
                 'is_dhll' => isset($input->is_dhll),
                 'tracking' => $input->tracking,
             ]);
+        }
+
+        if ($request->amount_paid > 0) {
+            $payment = $invoice->payments()->create([
+                'tenant_id' => $invoice->tenant_id,
+                'amount_paid' => $request->amount_paid,
+                'payment_method' => $request->payment_method,
+                'payment_ref' => $request->payment_ref,
+                'created_at' => Carbon::create($year, $month, $day),
+                'is_first' => true,
+            ]);
+
+            if ($client->email !== $tenant->email_allowed_dup) {
+                dispatch(new SendPaymentCreatedEmail($tenant, $invoice, $payment));
+            }
         }
 
         $branch = $client->branch;

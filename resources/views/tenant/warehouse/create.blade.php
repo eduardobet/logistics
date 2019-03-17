@@ -32,6 +32,7 @@
             
             @include('tenant.warehouse._fields', [
                 'warehouse' => new \Logistics\DB\Tenant\Warehouse,
+                'payment' => new \Logistics\DB\Tenant\Payment,
                 'mode' => 'create',
             ])
                 <input type="hidden" id="qty" name="qty" value="">

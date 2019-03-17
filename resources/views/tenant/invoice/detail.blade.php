@@ -17,7 +17,15 @@ $key = isset($key) ? $key : ':index:';
             <div class="col-10">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Type') }}:<span class="tx-danger">*</span></label>
-                    {!! Form::select("invoice_detail[{$key}][type]",['' => '----'] + $product_types->pluck('name', 'id')->toArray(), $idetail->type, ['class' => 'form-control form-control-sm type', 'required' => '1', ]) !!}
+
+                    <select id="invoice_detail-{{$key}}" name="invoice_detail[{{$key}}][type]" class="form-control form-control-sm type" required>
+                        <option value="">---</option>
+                        @foreach ($product_types as $pt)
+                            <option value="{{ $pt->id }}" data-commission="{{ $pt->is_commission ? 5 : null }}" data-commission-desc="{{ $pt->is_commission ? __('Use of credit card') : null }}" data-i="{{$key}}" {{isset($idetail) && $idetail->type ==  $pt->id ? ' selected' : null }}>
+                                {{ $pt->name }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
         </div>

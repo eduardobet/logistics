@@ -212,6 +212,38 @@
             {!! Form::text('tot_weight', null, ['class' => 'form-control', 'required' => 1, 'id' => 'reference', ]) !!}
         </div>
     </div>
+
+</div><!-- row -->
+
+<div class="row mg-t-10">
+    <div class="col-lg-3">
+        <div class="form-group mg-b-10-force">
+            <label class="form-control-label">{{ __('Amount paid') }}:</label>
+            {!! Form::text("amount_paid", $payment ? $payment->amount_paid : 0, ['class' => 'form-control ', 'id' => 'amount_paid',  ]+($mode == 'create' || ($payment&&$payment->amount_paid)?['readonly' => 1]:[]) ) !!}
+        </div>
+    </div>
+
+    <div class="col-lg-3">
+        <div class="form-group mg-b-10-force">
+            <label class="form-control-label">{{ __('Payment method') }}:</label>
+            {!! Form::select('payment_method', ['' => '----', 1 => __('Cash'), 2 => __('Wire transfer'), 3 => __('Check'), ], $payment ? $payment->payment_method : null, ['class' => 'form-control', 'id' => 'payment_method' ] + ($mode == 'create' || ($payment&&$payment->amount_paid) ? ['disabled' => 1]:[]   )    ) !!}
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="form-group mg-b-10-force">
+            <label class="form-control-label">{{ __('Reference') }}:</label>
+            {!! Form::text("payment_ref", $payment ? $payment->payment_ref : null, ['class' => 'form-control ', 'id' => 'payment_ref', 'maxlength' => 255,  ]) !!}
+        </div>
+    </div>
+
+    <div class="col-lg-2">
+        <div class="form-group mg-b-10-force">
+            <label class="form-control-label">{{ __('Pending') }}:</label>
+            {!! Form::text("pending", $invoice->total - ($payment ? $payment->amount_paid : 0), ['class' => 'form-control ', 'id' => 'pending', 'readonly' => '1', ]) !!}
+        </div>
+    </div>
+
 </div><!-- row -->
 
 <div class="row {{ $mode=='edit' ? null : ' d-none' }}" id="invoice-notes">

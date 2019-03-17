@@ -90,6 +90,14 @@ class InvoiceController extends Controller
     {
         $tenant = $this->getTenant();
 
+        if ($request->amount_paid > 0) {
+            abort_if(
+                $request->amount_paid > $request->total,
+                500,
+                __('validation.lte.numeric', ['attribute' => __('Amount paid'), 'value' => number_format($request->total, 2)])
+            );
+        }
+
         $invoice = new \Logistics\DB\Tenant\Invoice;
 
         if ($request->manual_id) {
@@ -113,6 +121,11 @@ class InvoiceController extends Controller
         $invoice->client_id = $request->client_id;
         $invoice->total = $request->total;
         $invoice->notes = $request->notes;
+
+        if ($request->amount_paid) {
+            $invoice->is_paid = $request->amount_paid == $request->total;
+        }
+
         $invoice->created_at = Carbon::create($year, $month, $day);
 
         $saved = $invoice->save();
@@ -256,6 +269,11 @@ class InvoiceController extends Controller
         $invoice->total = $request->total;
         $invoice->notes = $request->notes;
         $invoice->created_at = Carbon::create($year, $month, $day);
+
+        if ($request->amount_paid) {
+            $invoice->is_paid = $request->amount_paid == $request->total;
+        }
+
         $invoice->save();
 
         if ($invoice) {

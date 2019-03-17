@@ -29,8 +29,6 @@ class WarehouseRequest extends AppFormRequest
      */
     public function rules()
     {
-        $tenant = $this->getTenant();
-
         $rules = [
             'branch_from' => 'required|integer',
             'branch_to' => 'required|integer',
@@ -40,6 +38,11 @@ class WarehouseRequest extends AppFormRequest
             'type' => 'required|in:A,M',
             'tot_packages' => 'required|integer',
             'tot_weight' => 'required|numeric',
+
+            // payment
+            'amount_paid' => 'sometimes|numeric',
+            'payment_method' => 'sometimes|integer',
+            'payment_ref' => 'sometimes|between:3,255',
         ];
 
         if ($this->isEdit()) {

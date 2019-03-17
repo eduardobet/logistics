@@ -66,6 +66,25 @@
             format: 'yyyy-mm-dd',
             todayBtn: 'linked'
         });
+
+        //
+        $(document).on('change', '.type', function() {
+            var self = $(this);
+            var i = self.find(':selected').attr('data-i');
+            var cValue = self.find(':selected').attr('data-commission');
+            var cDesc = self.find(':selected').attr('data-commission-desc');
+
+            if (i && cValue && cDesc) {
+                $("#total-"+i).val(cValue);
+                $("#description-"+i).val(cDesc);
+
+                doCalc();
+            } else {
+                $("#total-"+i).val(0);
+                $("#description-"+i).val(''); 
+                doCalc();   
+            }
+        });
     });
 
     function roundToTwo(num) {    

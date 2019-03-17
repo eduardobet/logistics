@@ -29,6 +29,7 @@
                 @include('tenant.warehouse._fields', [
                     'mode' => 'edit',
                     'invoice' => $invoice,
+                    'payment' => ($payments = $invoice->payments)->where('is_first', true)->first(),
                 ])
                 
                 {!! Form::hidden('qty', null, ['id' => 'qty',]) !!}
@@ -390,7 +391,7 @@
             $volWeight = null;
             $realWeight = null;
 
-        }
+        } // doCal
         
         function setter(totVolPrice, totRealPrice, totalCubicPrice, totVolWeight) {
             var $type = $("#type");
@@ -418,6 +419,16 @@
                 $chkR.prop({checked: false, disabled: true}).change();
                 $total.val(totalCubicPrice);
             }
+
+             var amountPaid = parseFloat($("#amount_paid", document).val()) || 0;
+
+             if (amountPaid) {
+                 var total = $total.val() || 0;
+                 var pending = roundToTwo(total - amountPaid);
+
+                if (pending > -1) $("#pending", document).val(pending);
+             }
+
         }
 
         $(document).on('click', "#chk-t-volumetric-weight, #chk-t-real-weight, #chk-t-cubic-feet", function(e) {
@@ -474,6 +485,11 @@
                     });
                 }
             });
+
+            // partial paymment
+            $("#amount_paid", document).blur(function() {
+              doCal();
+            });
         });
 
         function toggle($btn, status) {
@@ -523,6 +539,10 @@
 
                 } else $btn.prop('disabled', false);
             });
+        }
+
+        function roundToTwo(num) {    
+            return +(Math.round(num + "e+2")  + "e-2");
         }
     </script>
 @stop

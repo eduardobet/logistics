@@ -211,6 +211,18 @@ class WarehouseController extends Controller
 
         [$year, $month, $day]  = array_map('intval', explode('-', request('created_at', date('Y-m-d'))));
 
+        if ($request->amount_paid > 0) {
+            abort_if(
+                $request->amount_paid > $request->total,
+                500,
+                __('validation.lte.numeric', [
+                'attribute' => __('Amount paid'),
+                'value' => number_format($request->total, 2)
+                ])
+            );
+        }
+
+
         $warehouse->branch_to = $request->branch_to;
         $warehouse->branch_from = $request->branch_from;
         $warehouse->mailer_id = $request->mailer_id ?: 0;

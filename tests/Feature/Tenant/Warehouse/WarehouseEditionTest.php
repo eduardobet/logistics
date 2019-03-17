@@ -10,10 +10,10 @@ use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Mailer;
 use Logistics\DB\Tenant\Invoice;
 use Illuminate\Support\Facades\Queue;
-use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Logistics\Jobs\Tenant\SendInvoiceCreatedEmail;
+use Logistics\Jobs\Tenant\SendPaymentCreatedEmail;
 
 class WarehouseEditionTest extends TestCase
 {
@@ -328,5 +328,128 @@ class WarehouseEditionTest extends TestCase
         $invoice = $client->fresh()->clientInvoices->first();
 
         Queue::assertNotPushed(SendInvoiceCreatedEmail::class);
+    }
+
+    /** @test */
+    public function warehouse_invoice_accepts_partial_payment()
+    {
+        $this->withoutExceptionHandling();
+
+        Queue::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
+        $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $mailer = factory(Mailer::class)->create(['tenant_id' => $tenant->id, ]);
+
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+        $admin->branchesForInvoice()->sync([$branch->id,]);
+
+        $this->actingAs($admin);
+
+        \Gate::define('edit-warehouse', function ($admin) {
+            return true;
+        });
+
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, ]);
+
+        factory(Box::class)->create([
+            'tenant_id' => $tenant->id,
+            'client_id' => $client->id,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
+        ]);
+
+        $warehouse = $tenant->warehouses()->create([
+            'branch_to' => $branchB->id,
+            'branch_from' => $branch->id,
+            'client_id' => $client->id,
+            'mailer_id' => $mailer->id,
+            'trackings' => '1234',
+            'reference' => 'The reference',
+            'qty' => 1,
+            'type' => 'A',
+        ]);
+
+        $invoice = Invoice::create([
+            'tenant_id' => $tenant->id,
+            'warehouse_id' => $warehouse->id,
+            'client_id' => $client->id,
+            'branch_id' => $warehouse->branch_to,
+            'created_by_code' => $admin->id,
+            'updated_by_code' => $admin->id,
+            'client_name' => 'The Name of the client',
+            'client_email' => 'email@client.com',
+            'volumetric_weight' => 8,
+            'real_weight' => 9,
+            'manual_id' => 9,
+            'total' => $mailer->vol_price * 8,
+        ]);
+
+        $detail = $invoice->details()->create([
+            'qty' => 1,
+            'type' => 1,
+            'length' => 10,
+            'width' => 10,
+            'height' => 10,
+            'vol_weight' => 8,
+            'real_weight' => 9,
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('tenant.warehouse.edit', [$tenant->domain, $warehouse->id]));
+        $response->assertStatus(200);
+
+        $response = $this->actingAs($admin)->patch(route('tenant.warehouse.update', [$tenant->domain, $warehouse->id]), [
+            'branch_from' => $branch->id,
+            'branch_to' => $branchB->id,
+            'client_id' => $client->id,
+            'mailer_id' => $mailer->id,
+            'trackings' => '1234\n3654',
+            'reference' => 'The reference update',
+            'qty' => 2,
+            'type' => 'A',
+            'tot_packages' => 2,
+            'tot_weight' => 21,
+
+            //payment
+            'amount_paid' => 30,
+            'payment_method' => 1,
+            'payment_ref' => 'The client paid $30.00',
+
+            //
+            'client_name' => 'The client of the direct comission',
+            'client_email' => 'direct.comission@client.test',
+            'total_volumetric_weight' => 21,
+            'total_real_weight' => 23,
+            'total' => $mailer->real_price * 23,
+            'notes' => 'The notes of the invoice updated',
+            'invoice_id' => $invoice->id,
+            'manual_id' => 15, // invoice
+            'invoice_detail' => [
+                ['qty' => 1, 'type' => 1, 'length' => 10, 'width' => 10, 'height' => 10, 'vol_weight' => 8, 'real_weight' => 9, 'tracking' => '4444444', 'wdid' => $detail->id, ],
+                ['qty' => 1, 'type' => 2, 'length' => 12, 'width' => 12, 'height' => 12, 'vol_weight' => 13, 'real_weight' => 14,'trac king' => '55555555',  ],
+            ]
+        ]);
+
+        $invoice = $client->fresh()->clientInvoices->first();
+
+        $payment = $invoice->payments->first();
+
+        $this->assertNotNull($payment);
+        $this->assertEquals($tenant->id, $payment->tenant_id);
+        $this->assertEquals($invoice->id, $payment->invoice_id);
+        $this->assertEquals('30.0', $payment->amount_paid);
+        $this->assertEquals('1', $payment->payment_method);
+        $this->assertEquals(1, $payment->is_first);
+        $this->assertEquals(date('Y-m-d'), $payment->created_at->format('Y-m-d'));
+
+        Queue::assertPushed(SendInvoiceCreatedEmail::class, function ($job) use ($invoice) {
+            return $job->invoice->id === $invoice->id;
+        });
+
+        Queue::assertPushed(SendPaymentCreatedEmail::class, function ($job) use ($payment) {
+            return $job->payment->id === $payment->id;
+        });
     }
 }

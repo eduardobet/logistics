@@ -141,7 +141,7 @@ class PaymentController extends Controller
 
         $pending = $invoice->total - $totalPaid;
 
-        if ($request->amount_paid > $pending) {
+        if (bccomp($request->amount_paid, $pending, 2) == 1) {
             return response()->json([
                 'msg' => __('validation.lte.numeric', ['attribute' => __('Amount paid'), 'value' => number_format($pending, 2) ]),
                 'error' => true,

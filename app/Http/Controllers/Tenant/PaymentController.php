@@ -129,12 +129,12 @@ class PaymentController extends Controller
 
         $totalPaid  = $invoice->payments->sum('amount_paid');
 
-        if ($invoice->warehouse_id && $request->amount_paid < ($invoice->total - $totalPaid)) {
+        /*if ($invoice->warehouse_id && $request->amount_paid < ($invoice->total - $totalPaid)) {
             return response()->json([
                 'msg' => __('The invoice of a warehouse cannot be partially paid.'),
                 'error' => true,
             ], 500);
-        }
+        }*/
 
         $pending = $invoice->total - $totalPaid;
 

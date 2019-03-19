@@ -147,7 +147,7 @@ trait WarehouseHasRelationShips
         }
 
         if ($request->amount_paid > 0) {
-            $payment = $invoice->payments()->create([
+            $payment = $invoice->payments()->updateOrCreate(['tenant_id' => $this->tenant_id, 'id' => $request->payment_id], [
                 'tenant_id' => $invoice->tenant_id,
                 'amount_paid' => $request->amount_paid,
                 'payment_method' => $request->payment_method,

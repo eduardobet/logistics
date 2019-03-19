@@ -1,7 +1,7 @@
 <?php
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::group(['prefix' => 'employee'], function () {
+    Route::group(['prefix' => 'employee', 'middleware' => 'only.employee'], function () {
         Route::get('dashboard', 'Tenant\Employee\DashboardController@index')->name('tenant.employee.dashboard');
 
         Route::get('profile/me', 'Tenant\Employee\ProfileController@edit')->name('tenant.employee.profile.edit');
@@ -37,9 +37,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('warehouse/create', 'Tenant\WarehouseController@create')->name('tenant.warehouse.create')->middleware(['can:create-warehouse']);
     Route::post('warehouse/store', 'Tenant\WarehouseController@store')->name('tenant.warehouse.store');
     Route::get('warehouse/{id}/edit', 'Tenant\WarehouseController@edit')->name('tenant.warehouse.edit')->middleware(['can:edit-warehouse']);
+    Route::get('warehouse/{id}/show', 'Tenant\WarehouseController@show')->name('tenant.warehouse.show')->middleware(['can:show-warehouse']);
     Route::patch('warehouse/{id}/update', 'Tenant\WarehouseController@update')->name('tenant.warehouse.update');
     Route::post('warehouse/toggle', 'Tenant\WarehouseController@toggle')->name('tenant.warehouse.toggle');
-    Route::get('warehouse/{id}/receipt', 'Tenant\WarehouseController@receipt')->name('tenant.warehouse.receipt')->middleware(['can:edit-warehouse']);
+    Route::get('warehouse/{id}/receipt', 'Tenant\WarehouseController@receipt')->name('tenant.warehouse.receipt');
 
     //cargo entry
     Route::get('cargo-entry/list', 'Tenant\CargoEntryController@index')->name('tenant.warehouse.cargo-entry.list');
@@ -73,5 +74,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('income/list', 'Tenant\IncomeController@index')->name('tenant.income.list')->middleware(['can:show-payment']);
     
     // searching
-    Route::get('search', 'Tenant\SearchController@search')->name('tenant.get.search');
+    Route::get('search', 'Tenant\SearchController@search')->name('tenant.get.search')->middleware(['can:search']);
 });

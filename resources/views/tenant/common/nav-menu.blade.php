@@ -2,7 +2,7 @@
       <div class="container">
         <ul class="nav">
           
-          
+          @if (!$user->isClient())
           <li class="nav-item with-sub {{ active(['tenant.client.create', 'tenant.client.list','tenant.client.edit']) }}">
             <a class="nav-link" href="#">
               <i class="icon ion-ios-person-outline"></i>
@@ -20,6 +20,7 @@
               </ul>
             </div><!-- dropdown-menu -->
           </li>
+          @endif
 
           <li class="nav-item with-sub {{ active(['tenant.warehouse.create', 'tenant.warehouse.list','tenant.warehouse.edit', 'tenant.warehouse.cargo-entry.create', 'tenant.warehouse.cargo-entry.edit', 'tenant.warehouse.cargo-entry.list', 'tenant.misidentified-package.index',]) }}">
             <a class="nav-link" href="#">
@@ -64,6 +65,7 @@
             </div><!-- dropdown-menu -->
           </li>
 
+          @if (!$user->isClient())
           <li class="nav-item with-sub {{ active(['tenant.payment.*', 'tenant.income.*']) }}">
             <a class="nav-link" href="#">
               <i class="icon ion-ios-paper-outline"></i>
@@ -82,7 +84,9 @@
               </ul>
             </div><!-- dropdown-menu -->
           </li>
+          @endif
 
+          @if (!$user->isClient())
           <li class="nav-item with-sub {{ active(['tenant.admin.branch.list','tenant.admin.branch.create', 'tenant.admin.branch.edit', 'tenant.admin.employee.list','tenant.admin.employee.create', 'tenant.admin.employee.edit', 'tenant.admin.position.list','tenant.admin.position.create', 'tenant.admin.position.edit', 'tenant.admin.company.edit']) }}">
             <a class="nav-link" href="#">
               <i class="icon ion-ios-gear-outline"></i>
@@ -103,6 +107,7 @@
               </ul>
             </div><!-- dropdown-menu -->
           </li>
+          @endif
 
         </ul>
       </div><!-- container -->

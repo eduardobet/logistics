@@ -45,3 +45,12 @@ $factory->state(Logistics\DB\User::class, 'employee', function (Faker $faker) {
         'email' => $faker->unique()->safeEmail
     ];
 });
+
+$factory->state(Logistics\DB\User::class, 'clientuser', function (Faker $faker) {
+    return [
+        'type' => 'C',
+        'permissions' => [],
+        'email' => $faker->unique()->safeEmail,
+        'client_id' => 1,
+    ];
+});

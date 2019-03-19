@@ -30,7 +30,7 @@ class EmployeeCreationRequest extends AppFormRequest
             'first_name' => 'required|string|between:3,255',
             'last_name' => 'required|string|between:3,255',
             'email' => 'required|string|email|max:255|unique:users',
-            'type' => 'required|string|in:A,E',
+            'type' => 'required|string|in:A,E,C',
             'status' => 'required|string|in:L',
             'branches' => 'required',
             'pid' => 'required',

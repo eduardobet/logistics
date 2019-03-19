@@ -35,7 +35,7 @@
             &nbsp;&nbsp;&nbsp;&nbsp;
 
             @can('show-invoice')
-                <a  href="{{ route('tenant.invoice.list', [$tenant->domain, 'client_id' => optional($result->client)->id, 'branch_id' => $branch->id, ]) }}">
+                <a  href="{{ route('tenant.invoice.list', [$tenant->domain, 'client_id' => optional($result->client)->id, 'branch_id' => $branch->id, 'invoice_type' => 1, ]) }}">
                 <i class="fa fa-file"></i>
                 {{ __('Invoices') }}
                 </a>

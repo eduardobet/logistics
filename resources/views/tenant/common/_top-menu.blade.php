@@ -50,6 +50,8 @@
                     <span>{{ auth()->user()->full_name }}</span>
                     <i class="icon fa fa-angle-down"></i>
                 </a>
+                
+                @if (!$user->isClient())
                 <div class="dropdown-menu dropdown-menu-right">
                     <nav class="nav">
                         <a href="{{ route('tenant.employee.profile.edit', $tenant->domain) }}" class="nav-link"><i class="icon fa fa-user"></i> {{ __('Profile') }} </a>
@@ -57,6 +59,8 @@
                         <a href="#" onclick="document.getElementById('form-logout').submit()" class="nav-link"><i class="icon fa fa-power-off"></i> {{ __('Logout') }} </a>
                     </nav>
                 </div><!-- dropdown-menu -->
+                @endif
+
             </div><!-- dropdown -->
 
         </div><!-- header-right -->

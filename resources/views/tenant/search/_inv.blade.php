@@ -11,7 +11,11 @@
                  @if ($result->is_paid)
                     <span class="badge badge-success">{{ __('Paid') }}</span>
                 @else
-                    <span class="badge badge-danger">{{ __('Pending') }}</span>
+                    @if (7 - ($totd = (new \Carbon\Carbon($result->created_at, 'UTC'))->diffInDays()) < 0)
+                        <span class="badge badge-danger">{{ __('Expired') }} ({{ $totd }})</span>
+                    @else  
+                        <span class="badge badge-danger">{{ __('Pending') }}</span>
+                    @endif
                 @endif
             </p>
             <small>

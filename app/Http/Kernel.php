@@ -62,5 +62,6 @@ class Kernel extends HttpKernel
 
         'tenant' => \Logistics\Http\Middleware\Tenant::class,
         'admin' => \Logistics\Http\Middleware\Tenant\Admin::class,
+        'only.employee' => \Logistics\Http\Middleware\Tenant\OnlyEmployee::class,
     ];
 }

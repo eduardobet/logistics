@@ -148,9 +148,39 @@ class WarehouseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($tenant, $id)
     {
-        //
+        $tenant = $this->getTenant();
+        $user = auth()->user();
+        $warehouse = $tenant->warehouses();
+
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
+            $warehouse = $warehouse->where('branch_to', $user->currentBranch()->id);
+        }
+
+        if ($user->isClient()) {
+            $warehouse = $warehouse->where('client_id', $user->client_id);
+        }
+
+        $warehouse = $warehouse->with(['editor', 'creator'])
+            ->where('id', $id)->firstOrFail();
+
+        $invoice = $warehouse->invoice()->with(['creator', 'payments' => function ($payment) {
+            $payment->with('creator');
+        }])->first();
+
+        if (!$invoice) {
+            $invoice = new Invoice;
+        }
+
+        return view('tenant.warehouse.show', [
+            'warehouse' => $warehouse,
+            'branches' => $this->getBranches()->where('id', $warehouse->branch_to),
+            'userBranches' => $this->getBranches()->where('id', $warehouse->branch_from),
+            'mailers' => $this->mailers()->where('id', $warehouse->mailer_id),
+            'invoice' => $invoice,
+            'clients' => ((new Client)->getClientsByBranch($warehouse->branch_to))->where('id', $warehouse->client_id),
+        ]);
     }
 
     /**

@@ -72,7 +72,10 @@
                 <div class="input-group">
 
                     {!! Form::select('invoice_type', ['' =>  __('Type'), '1' => __('Warehouse'), '2' => __('Internet') ], null, ['class' => 'form-control select2', 'id' => 'invoice_type', 'style' => 'width: 60px !important', ]) !!}
+
+                    @if (!$user->isClient())
                     {!! Form::select('show_inactive', ['' =>  __('Status'), '1' => __('Show inactive') ], request('show_inactive'), ['class' => 'form-control', 'id' => 'show_inactive', 'style' => 'width: 70px !important',  ]) !!}
+                    @endif
                 </div>
             </div>
 

@@ -56,6 +56,13 @@
                         <i class="fa fa-file-text-o" aria-hidden="true"></i>
                     </a>
                     @endcan
+
+                    @if (auth()->user()->isClient())
+                    @can('show-warehouse')
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <a  title="{{ __('Show') }}" href="{{ route('tenant.warehouse.show', [$tenant->domain, $warehouse->id]) }}"><i class="fa fa-eye"></i></a>
+                    @endcan
+                    @endif
                 </td>
                 @endif
             </tr>

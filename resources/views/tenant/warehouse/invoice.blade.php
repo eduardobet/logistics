@@ -1,4 +1,5 @@
 <input type="hidden" name="invoice_id" value="{{ $invoice->id }}">
+<input type="hidden" name = "payment_id" value="{{ optional($payment)->id }}">
 
 <div class="row mg-t-10">
 </div>

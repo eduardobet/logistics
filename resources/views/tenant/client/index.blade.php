@@ -86,6 +86,23 @@
                           >
                           <i class="fa fa-envelope"></i>
                         </a>
+
+                        @if (auth()->user()->isSuperAdmin())
+                          &nbsp;&nbsp;&nbsp;&nbsp;    
+                          <button type="button" class="btn btn-link create-client-user" title="{{ __('Creating :what', ['what' => __('User') ]) }}"
+                            data-toggle="tooltip" data-placement="left"
+
+                            data-client_id = "{{ $client->id }}"
+                            data-first_name = "{{ $client->first_name }}"
+                            data-last_name = "{{ $client->last_name }}"
+                            data-email = "{{ $client->email }}"
+                            data-telephones = "{{ $client->telephones }}"
+                            data-branch_id = "{{ $client->branch_id }}"
+                            >
+                            <fa class="fa fa-user"></fa>
+                          </button>
+                        @endif
+
                       </td>
                     </tr>
 
@@ -145,7 +162,6 @@
             });
 
           }
-
         });
         
 
@@ -158,6 +174,64 @@
             window.location = `{{ route('tenant.client.list', $tenant->domain) }}?branch_id=${branch}`;
         });
 
+        @if (auth()->user()->isSuperAdmin())
+        // create user
+          $(".create-client-user").click(function() {
+            var self = $(this);
+            self.prop('disabled', true);
+
+            swal({
+                title: '{{__("Please indicate a password for the user") }}.',
+                input: 'password',
+                showCancelButton: true,
+                inputValidator: (value) => {
+                    return !value && '{{ __("Error") }}!'
+                }
+            }).then((result) => {
+              if (password = result.value) {
+                createUser(self, password);
+              } else self.prop('disabled', false);
+            });
+
+          });
+          @endif
+
       });
+
+      @if (auth()->user()->isSuperAdmin())
+      function createUser(self, password) {
+          $.ajax({
+              url: '{{ route("tenant.admin.user-client.store", $tenant->domain) }}',
+              data: {
+                client_id: self.data('client_id'),
+                first_name: self.data('first_name'),
+                last_name: self.data('last_name'),
+                email: self.data('email'),
+                telephones: self.data('telephones'),
+                branch_id: self.data('branch_id'),
+                password: password,
+                _token: "{{ csrf_token() }}",
+                _method: "POST",
+              },
+              method: 'POST',
+            })
+            .done(function(data) {
+              if (data.error == true) {
+                swal("", data.msg, "error");
+                self.prop('disabled', false);
+              } else {
+                swal("", data.msg, "success");
+              }
+            })
+            .fail(function(hxr) {
+              if (error = (hxr.responseJSON.errors || hxr.responseJSON.msg  ) ) {
+                swal("", error, "error")
+              } else {
+                swal("", "{{ __('Error') }}", "error")
+              }
+              self.prop('disabled', false);
+            });
+      }
+      @endif
     </script>
 @endsection

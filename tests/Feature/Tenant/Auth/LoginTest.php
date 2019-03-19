@@ -4,6 +4,7 @@ namespace Tests\Feature\Tenant\Auth;
 
 use Tests\TestCase;
 use Logistics\DB\User;
+use Logistics\DB\Tenant\Client;
 use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -124,5 +125,20 @@ class LoginTest extends TestCase
         $response->assertSessionHas([
             'flash_lock_error'
         ]);
+    }
+
+    /** @test */
+    public function client_user_is_redirected_to_warehouse_list_after_successfull_login()
+    {
+        $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create();
+        $client = factory(Client::class)->create();
+        $user = factory(User::class)->states('clientuser')->create(['tenant_id' =>$tenant->id, 'client_id' => $client->id, ]);
+
+        $response = $this->post(route('tenant.auth.post.login', $tenant->domain), ['email' => $user->email, 'password' => 'secret123']);
+        $response->assertRedirect('es/warehouse/list');
+
+        $this->assertTrue(auth()->check());
     }
 }

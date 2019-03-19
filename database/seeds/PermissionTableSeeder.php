@@ -57,6 +57,9 @@ class PermissionTableSeeder extends Seeder
             ["name" => "Ver historial de cobros", "slug" => "show-charges-history", "header" => "Movimientos monetarios",],
             ["name" => "Ver historial de gastos", "slug" => "show-expenses-history", "header" => "Movimientos monetarios",],
             ["name" => "Ver estatus de cuentas pendientes", "slug" => "show-pending-accounts", "header" => "Movimientos monetarios",],
+
+            // Searching
+            ["name" => "Búsqueda", "slug" => "search", "header" => "Búsqueda",],
         ]);
     }
 }

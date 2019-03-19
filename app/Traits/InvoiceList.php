@@ -38,6 +38,10 @@ trait InvoiceList
                 $query->where('id', $branch->id)->select('id', 'code', 'name', 'initial');
             });
 
+        if ($user->isClient()) {
+            $invoices  = $invoices->where('client_id', $user->client_id);
+        }
+
         $now = \Carbon\Carbon::now();
 
         if (($from = request('from', $now->subDays(15)->format('Y-m-d'))) && ($to = request('to', date('Y-m-d')))) {

@@ -56,7 +56,7 @@
         </div>
     </div>
 
-    @if ($mode=='edit')
+    @if ($mode=='edit' || $mode=='show')
     <div class="col-2">
         <div class="form-group mg-t-30-force">
             <div class="btn-group btn-group-justified">
@@ -164,7 +164,7 @@
 
 </div><!-- row -->
 
-@if ($mode == 'edit')
+@if ($mode == 'edit' || $mode == 'show')
 <div class="row hidden" id="btn-invoice-container" style="display:none">
     <div class="col-lg-12">
         <button class="btn btn-info btn-sm" type="button" id="btn-invoice" 
@@ -178,8 +178,9 @@
 @endif
 
 <div id="invoice-container" {{$mode == 'create' ? ' style=display:none': null }}>
-    @includeWhen($mode == 'edit', 'tenant.warehouse.invoice', [
+    @includeWhen(($mode == 'edit' || $mode == 'show'), 'tenant.warehouse.invoice', [
         'invoice' => $invoice,
+        'payment' => $payment,
         'mode' => $mode,
     ])
 </div><!-- row -->
@@ -219,14 +220,14 @@
     <div class="col-lg-3">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">{{ __('Amount paid') }}:</label>
-            {!! Form::text("amount_paid", $payment ? $payment->amount_paid : 0, ['class' => 'form-control ', 'id' => 'amount_paid',  ]+($mode == 'create' || ($payment&&$payment->amount_paid)?['readonly' => 1]:[]) ) !!}
+            {!! Form::text("amount_paid", $payment ? $payment->amount_paid : 0, ['class' => 'form-control ', 'id' => 'amount_paid',  ] ) !!}
         </div>
     </div>
 
     <div class="col-lg-3">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">{{ __('Payment method') }}:</label>
-            {!! Form::select('payment_method', ['' => '----', 1 => __('Cash'), 2 => __('Wire transfer'), 3 => __('Check'), ], $payment ? $payment->payment_method : null, ['class' => 'form-control', 'id' => 'payment_method' ] + ($mode == 'create' || ($payment&&$payment->amount_paid) ? ['disabled' => 1]:[]   )    ) !!}
+            {!! Form::select('payment_method', ['' => '----', 1 => __('Cash'), 2 => __('Wire transfer'), 3 => __('Check'), ], $payment ? $payment->payment_method : null, ['class' => 'form-control', 'id' => 'payment_method' ] ) !!}
         </div>
     </div>
 
@@ -249,18 +250,18 @@
 <div class="row {{ $mode=='edit' ? null : ' d-none' }}" id="invoice-notes">
     <div class="col-lg-12">
         <div class="form-group mg-b-10-force">
-            <label class="form-control-label">{{ __('Notes') }}</label>
-            {!! Form::textarea('notes', $invoice->notes, ['class' => 'form-control', 'rows' => 4, ]) !!}
+            <label class="form-control-label">{{ __('Notes') }}:  <span class="tx-danger">*</span></label>
+            {!! Form::textarea('notes', $invoice->notes, ['class' => 'form-control', 'rows' => 4, 'required' => '1', ]) !!}
         </div>
     </div>
 </div>
 
 <div class="row mg-t-25 justify-content-between">
     <div class="col">
-        @if (!$invoice->total && $warehouse->status != 'I')
+        @if (!$invoice->is_paid && $warehouse->status != 'I' && !$user->isClient())
             <button id="btn-wh-save" type="submit" class="btn btn-primary  bd-1 bd-gray-400">{{ __('Save') }}</button>
         @endif
-        @if (auth()->user()->isSuperAdmin() && $warehouse->status)
+        @if (($user->isSuperAdmin() || $user->isAdmin()) && $warehouse->status)
             @if ($warehouse->status == 'A')
                 <button id="btn-wh-status-toggle" type="button" data-status="I" class="btn btn-danger  bd-1 bd-gray-400">{{ __('Inactivate') }}</button>
             @else 

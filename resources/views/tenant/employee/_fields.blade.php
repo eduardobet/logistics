@@ -86,7 +86,7 @@
                 <div class="col-lg-3">
                     <div class="form-group mg-b-10-force">
                         <label class="form-control-label">{{__('Type')}}: <span class="tx-danger">*</span></label>
-                        {!! Form::select('type', ['' => '----']+['A' => __('Administrator'), 'E' => __('Employee'), ], null, ['class' => 'form-control']) !!}
+                        {!! Form::select('type', ['' => '----']+['A' => __('Administrator'), 'E' => __('Employee'), 'C' => __('Client') ], null, ['class' => 'form-control']) !!}
                     </div>
                 </div>
 

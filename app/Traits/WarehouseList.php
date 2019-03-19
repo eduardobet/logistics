@@ -44,6 +44,10 @@ trait WarehouseList
             $searching = 'Y';
         }
 
+        if ($user->isClient()) {
+            $warehouses  = $warehouses->where('client_id', $user->client_id);
+        }
+
         if ($searching == 'Y') {
             $warehouses = $warehouses->orderBy('warehouses.manual_id')->get();
         } else {

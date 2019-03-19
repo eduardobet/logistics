@@ -201,7 +201,7 @@
         {{ $invoice->status == 'I' || (isset($payments) && $invoice->total == $payments->sum('amount_paid')) ? ' disabled' : null }}
         >{{ __('Save') }}</button>
         @endif
-        @if (auth()->user()->isSuperAdmin() && $invoice->status)
+        @if ((auth()->user()->isSuperAdmin() || auth()->user()->isAdmin()) && $invoice->status)
             @if ($invoice->status == 'A')
                 <button id="btn-inv-status-toggle" type="button" data-status="I" class="btn btn-danger  bd-1 bd-gray-400">{{ __('Inactivate') }}</button>
             @else 

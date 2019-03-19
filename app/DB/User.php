@@ -19,7 +19,7 @@ class User extends Authenticatable
     protected $fillable = [
         'first_name', 'last_name', 'email', 'password', 'tenant_id', 'is_main_admin', 'status', 'type', 'avatar',
         'full_name', 'pid', 'telephones', 'position', 'notes', 'address', 'created_by_code', 'updated_by_code',
-        'permissions',
+        'permissions', 'client_id',
     ];
 
     /**
@@ -107,6 +107,16 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return $this->type === 'A';
+    }
+
+    public function isEmployee()
+    {
+        return $this->type === 'E';
+    }
+
+    public function isClient()
+    {
+        return $this->type === 'C';
     }
 
     public function isWarehouse()

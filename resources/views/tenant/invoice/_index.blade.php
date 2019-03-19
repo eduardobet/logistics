@@ -46,7 +46,11 @@
             @elseif ($invoice->is_paid)
                 <span class="badge badge-success">{{ __('Paid') }}</span>
             @else
-                <span class="badge badge-danger">{{ __('Pending') }}</span>
+                @if (7 - ($totd = (new \Carbon\Carbon($invoice->created_at, 'UTC'))->diffInDays()) < 0)
+                    <span class="badge badge-danger">{{ __('Expired') }} ({{ $totd }})</span>
+                @else  
+                    <span class="badge badge-danger">{{ __('Pending') }}</span>
+                @endif
             @endif
             </td>
 
@@ -84,9 +88,11 @@
             &nbsp;&nbsp;&nbsp;
             <a  title="{{ __('Show') }}" href="{{ route('tenant.invoice.show', [$tenant->domain, $invoice->id, 'branch_id' => $invoice->branch_id, 'client_id' => $invoice->client->id, ]) }}"><i class="fa fa-eye"></i></a>
 
+            @if (!$user->isClient())
             &nbsp;&nbsp;&nbsp;
             <a  title="{{ __('Payments') }}" href="{{ route('tenant.payment.list', [$tenant->domain, 'invoice_id' => $invoice->id, 'branch_id' => $invoice->branch_id, 'client_id' => $invoice->client->id, 'no_date' => 1,  ]) }}"><i class="fa fa-usd"></i></a>
             @endcan
+            @endif
             
             @if ($invoice->status == 'A')
             &nbsp;&nbsp;&nbsp;

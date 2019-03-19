@@ -112,7 +112,9 @@ class LoginController extends Controller
             }
             $url = localization()->getLocalizedURL(
                 $tenant->lang ? : localization()->getCurrentLocale(),
-                redirect()->intended(route("tenant.{$prefix}.dashboard", $request->domain))->getTargetUrl()
+                redirect()->intended(
+                    $type == 'C' ? route("tenant.warehouse.list", $request->domain) : route("tenant.{$prefix}.dashboard", $request->domain)
+                )->getTargetUrl()
             );
 
             return redirect($url);

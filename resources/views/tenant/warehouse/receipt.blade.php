@@ -121,11 +121,12 @@
               <tr>
                 <td class="tx-right">LBS</td>
                 <td   class="tx-right">
-                    @if ($invoice->i_using == 'R')
-                        {{ $lbs = number_format($invoice->real_weight, 2) }}
-                    @elseif ($invoice->i_using == 'V')
-                        {{ $lbs = number_format($invoice->volumetric_weight, 2) }} 
-                    @endif
+                  <?php
+                    $lbs = 0;
+                    if ($invoice->i_using == 'R') $lbs = $invoice->real_weight;
+                    else if ($invoice->i_using == 'V') $lbs = $invoice->volumetric_weight;
+                  ?>
+                  {{ number_format($lbs, 2) }}
                 </td>
               </tr>
               <tr>

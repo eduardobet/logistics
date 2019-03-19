@@ -14,6 +14,11 @@ trait TenantHasRelationships
         return $this->hasMany(\Logistics\DB\User::class);
     }
 
+    public function userClients()
+    {
+        return $this->hasMany(\Logistics\DB\User::class)->where('type', 'C');
+    }
+
     public function branches()
     {
         return $this->hasMany(\Logistics\DB\Tenant\Branch::class);

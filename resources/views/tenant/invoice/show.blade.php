@@ -152,7 +152,7 @@
                         --}}
 
                         <tr>
-                          <td colspan="2" rowspan="4" class="valign-middle">
+                          <td colspan="3" rowspan="4" class="valign-middle">
                             <div class="invoice-notes">
                               <label class="section-label-sm tx-gray-500">{{ __('Notes') }}.</label>
                               <p>
@@ -196,9 +196,11 @@
                   <div class="row hidden-print d-print-none" id="btns-container">
 
                     <div class="col-md-2 mg-t-10">
-                        <button type="button" id="pay" class="btn btn-outline-success btn-block terminate"{{ !$pending || $invoice->status == 'I' ? ' disabled' : null }} data-toggle="modal" data-target="#modal-payment">
-                          {{ strtoupper( __('New payment') ) }}
-                        </button>
+                        @if (!$user->isClient())
+                            <button type="button" id="pay" class="btn btn-outline-success btn-block terminate"{{ !$pending || $invoice->status == 'I' ? ' disabled' : null }} data-toggle="modal" data-target="#modal-payment">
+                                {{ strtoupper( __('New payment') ) }}
+                            </button>
+                        @endif
                     </div>
                     <!-- se abre el modal con el formulario de registro de pagos-->
 
@@ -212,9 +214,14 @@
                     <!-- se le reenvia al cliente la factura-->
 
                     <div class="col-md-3 mg-t-10">
-                        <button id="penalize-client" class="btn btn-outline-purple btn-block terminate"{{ !$pending || $invoice->status == 'I' ? ' disabled' : null }} data-toggle="modal" data-target="#modal-penalize">
-                          {{ strtoupper( __('Fine :who', ['who' => __('Client')]) ) }}
+                        @if (!$user->isClient())
+
+                        <?php $canFine = 7 - ($totd = (new \Carbon\Carbon($invoice->created_at, 'UTC'))->diffInDays()) < 0; ?>
+
+                        <button id="penalize-client" class="btn btn-outline-purple btn-block terminate"{{ !$pending || $invoice->status == 'I' || !$canFine ? ' disabled' : null }} data-toggle="modal" data-target="#modal-penalize">
+                          {{ strtoupper( __('Fine :who', ['who' => __('Client')]) ) }} ({{ $totd }})
                         </button>
+                        @endif
                     </div> 
                     <!-- SE AGREGA UNA LINEA A LA FACTURA CON TITULO DE MULTA POR DEJAR PAQUETS MAS DE 10 DIAS EN BODEGA ( ESTO SOLO APLICA A FACTURAS DE WAREHOUSE)-->
 
@@ -345,6 +352,7 @@
             window.print();
         });
 
+        @if (!$user->isClient())
         // payment
         var $baseModalPayment = $('#modal-payment');
         var $launcherPayment = null;
@@ -361,7 +369,9 @@
             $("#p_amount_paid, #p_payment_method, #p_payment_ref").val("");
             $launcherPayment.prop('disabled', false);
         });
-
+        @endif
+        
+        @if (!$user->isClient())
         $("#form-payment").submit(function(e) {
             
             var $btnSubmit = $('#btn-submit-payment');
@@ -424,6 +434,7 @@
 
             e.preventDefault();
         }); // payment
+        @endif
 
         // resend invoice
         $("#send-to-client").click(function() {
@@ -461,6 +472,7 @@
         });
         // resend invoice
 
+        @if (!$user->isClient())
         // fine
         var $baseModalPenalize = $('#modal-penalize');
         var $launcherPenalize = null;
@@ -538,7 +550,9 @@
 
             e.preventDefault();
         }); // fine
+        @endif
 
+        @if (!$user->isClient())
         // delete
         $("#btn-delete").click(function(e) {
             var self = $(this);
@@ -558,6 +572,7 @@
             });
          });
         // delete
+        @endif
 
         $('.fc-datepicker').datepicker({
           showOtherMonths: true,
@@ -569,7 +584,7 @@
 
     }); // jquery
 
-
+@if (!$user->isClient())
     function inactivate($btnSubmit) {
         $(".terminate").prop('disabled', true);
         var loadingText = $btnSubmit.data('loading-text');
@@ -610,7 +625,7 @@
             $btnSubmit.html($btnSubmit.data('original-text'));
         });
     }
-  
+  @endif
   </script>
 @endsection
 

@@ -51,15 +51,15 @@
                     <i class="icon fa fa-angle-down"></i>
                 </a>
                 
-                @if (!$user->isClient())
                 <div class="dropdown-menu dropdown-menu-right">
                     <nav class="nav">
-                        <a href="{{ route('tenant.employee.profile.edit', $tenant->domain) }}" class="nav-link"><i class="icon fa fa-user"></i> {{ __('Profile') }} </a>
-                        <a href="#" class="nav-link"><i class="icon fa fa-bolt"></i> {{ __('Actitity') }} </a>
+                        @if (!$user->isClient())
+                            <a href="{{ route('tenant.employee.profile.edit', $tenant->domain) }}" class="nav-link"><i class="icon fa fa-user"></i> {{ __('Profile') }} </a>
+                            <a href="#" class="nav-link"><i class="icon fa fa-bolt"></i> {{ __('Actitity') }} </a>
+                        @endif
                         <a href="#" onclick="document.getElementById('form-logout').submit()" class="nav-link"><i class="icon fa fa-power-off"></i> {{ __('Logout') }} </a>
                     </nav>
                 </div><!-- dropdown-menu -->
-                @endif
 
             </div><!-- dropdown -->
 

@@ -247,6 +247,8 @@
 
 </div><!-- row -->
 
+@if ($mode=='edit' || $mode=='show')
+    
 <div class="row {{ $mode=='edit' ? null : ' d-none' }}" id="invoice-notes">
     <div class="col-lg-12">
         <div class="form-group mg-b-10-force">
@@ -255,6 +257,7 @@
         </div>
     </div>
 </div>
+@endif
 
 <div class="row mg-t-25 justify-content-between">
     <div class="col">

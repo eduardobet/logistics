@@ -1,6 +1,12 @@
 <?php
 
-$type = auth()->check() && auth()->user()->isAdmin() ? 'admin' : 'employee';
+$type = '';
+
+if (auth()->check() && auth()->user()->isAdmin()) {
+    $type = 'admin';
+} elseif (auth()->check() && auth()->user()->isEmployee()) {
+    $type = 'employee';
+}
 
 Breadcrumbs::for('tenant.employee.dashboard', function ($trail) {
     $trail->add(__('Dashboard'), route('tenant.employee.dashboard', request()->domain));
@@ -35,7 +41,9 @@ Breadcrumbs::for('tenant.employee.profile.edit', function ($trail) use ($type) {
 
 // warehouses
 Breadcrumbs::for('tenant.warehouse.list', function ($trail) use ($type) {
-    $trail->parent("tenant.{$type}.dashboard");
+    if ($type) {
+        $trail->parent("tenant.{$type}.dashboard");
+    }
     $trail->add(__('Warehouses'), '');
 });
 Breadcrumbs::for('tenant.warehouse.create', function ($trail) use ($type) {
@@ -48,10 +56,20 @@ Breadcrumbs::for('tenant.warehouse.edit', function ($trail) use ($type) {
     $trail->add(__('Warehouses'), route('tenant.warehouse.list', request()->domain));
     $trail->add(__('Editing :what', ['what' => __('Warehouse')]), route('tenant.warehouse.edit', [request()->domain, request('id'), ]));
 });
+Breadcrumbs::for('tenant.warehouse.show', function ($trail) use ($type) {
+    if ($type) {
+        $trail->parent("tenant.{$type}.dashboard");
+    }
+    $trail->add(__('Warehouses'), route('tenant.warehouse.list', request()->domain));
+    $trail->add(__('Showing :what', ['what' => __('Warehouse')]), route('tenant.warehouse.show', [request()->domain, request('id'), ]));
+});
+
 
 // invoices
 Breadcrumbs::for('tenant.invoice.list', function ($trail) use ($type) {
-    $trail->parent("tenant.{$type}.dashboard");
+    if ($type) {
+        $trail->parent("tenant.{$type}.dashboard");
+    }
     $trail->add(__('Invoices'), '');
 });
 Breadcrumbs::for('tenant.invoice.create', function ($trail) use ($type) {

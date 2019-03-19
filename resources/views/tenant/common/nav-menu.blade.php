@@ -22,7 +22,7 @@
           </li>
           @endif
 
-          <li class="nav-item with-sub {{ active(['tenant.warehouse.create', 'tenant.warehouse.list','tenant.warehouse.edit', 'tenant.warehouse.cargo-entry.create', 'tenant.warehouse.cargo-entry.edit', 'tenant.warehouse.cargo-entry.list', 'tenant.misidentified-package.index',]) }}">
+          <li class="nav-item with-sub {{ active(['tenant.warehouse.create', 'tenant.warehouse.list','tenant.warehouse.edit', 'tenant.warehouse.cargo-entry.create', 'tenant.warehouse.cargo-entry.edit', 'tenant.warehouse.cargo-entry.list', 'tenant.misidentified-package.index', 'tenant.warehouse.show',]) }}">
             <a class="nav-link" href="#">
               <i class="icon ion-ios-box-outline"></i>
               <span>{{ __('Warehouse' )}}</span>

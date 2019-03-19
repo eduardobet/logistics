@@ -9,7 +9,7 @@ Route::group(['domain' => '{domain}', 'middleware' => 'tenant'], function () {
     ->name('tenant.home');
 
     Route::get('/', 'Tenant\Employee\DashboardController@index')
-    ->middleware('auth')
+    ->middleware(['auth', 'only.employee'])
     ->name("tenant.{$type}.dashboard.home");
 
     //Tracking

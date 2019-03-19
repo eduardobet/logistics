@@ -110,14 +110,19 @@ class LoginController extends Controller
             if ($type == 'A') {
                 $prefix = 'admin';
             }
-            $url = localization()->getLocalizedURL(
+
+            $rawUrl = redirect()->intended(route("tenant.{$prefix}.dashboard", $request->domain));
+
+            if ($type == 'C') {
+                $rawUrl = redirect(route("tenant.warehouse.list", $request->domain));
+            }
+
+            $locurl = localization()->getLocalizedURL(
                 $tenant->lang ? : localization()->getCurrentLocale(),
-                redirect()->intended(
-                    $type == 'C' ? route("tenant.warehouse.list", $request->domain) : route("tenant.{$prefix}.dashboard", $request->domain)
-                )->getTargetUrl()
+                $rawUrl->getTargetUrl()
             );
 
-            return redirect($url);
+            return redirect($locurl);
         } else {
             if ($request->user()->is_main_admin) {
                 // return redirect()->route('client.registration.edit', $request->client);

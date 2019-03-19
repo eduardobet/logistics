@@ -20,6 +20,8 @@
              <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.warehouse.create', $tenant->domain) }}">
                 <i class="fa fa-plus mg-r-5"></i> {{ __('Create') }}
              </a>
+            @else
+            --
             @endcan
           
         </div><!-- slim-pageheader -->

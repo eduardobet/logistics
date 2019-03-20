@@ -5,7 +5,7 @@
     <title>{{ __('Sticker') }}</title>
     <style>
         body {
-            margin: 10%;
+          width: 384px; height: 576px;
         }
     </style>
   </head>

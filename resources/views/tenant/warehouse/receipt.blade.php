@@ -60,7 +60,7 @@
               <span>{{ __('Gross weight', [], $lang) }}:</span>
               <span class="tx-bold tx-16">{{ number_format($warehouse->tot_weight, 2) }}</span>
               <span>{{ __('Cubic feet', [], $lang) }}:</span>
-            <span class="tx-bold tx-16">{{ number_format($invoice->cubic_feet, 2) }}</span>
+            <span class="tx-bold tx-16">{{ number_format(optional($invoice)->cubic_feet, 2) }}</span>
             </p>
 
             <p class="invoice-info-row">
@@ -93,6 +93,7 @@
             </thead>
             <tbody >
 
+              @if (isset($invoice->details))
                 @foreach ($invoice->details as $detail)
                     
                 <tr>
@@ -109,12 +110,13 @@
                 </tr>
 
                 @endforeach
-             
+             @endif
+
               <tr>
                 <td colspan="6" rowspan="7" class="valign-middle">
                   <div class="invoice-notes">
                     <label class="section-label-sm tx-gray-500">{{ __('Notes', [], $lang) }}</label>
-                    <p>{{ $invoice->notes }}</p>
+                    <p>{{ optional($invoice)->notes }}</p>
                   </div><!-- invoice-notes -->
                 </td>
               </tr>
@@ -123,8 +125,8 @@
                 <td   class="tx-right">
                   <?php
                     $lbs = 0;
-                    if ($invoice->i_using == 'R') $lbs = $invoice->real_weight;
-                    else if ($invoice->i_using == 'V') $lbs = $invoice->volumetric_weight;
+                    if (optional($invoice)->i_using == 'R') $lbs = optional($invoice)->real_weight;
+                    else if (optional($invoice)->i_using == 'V') $lbs = optional($invoice)->volumetric_weight;
                   ?>
                   {{ number_format($lbs, 2) }}
                 </td>
@@ -132,18 +134,18 @@
               <tr>
                 <td class="tx-right">KGS</td>
                 <td  class="tx-right">
-                    @if ($invoice->i_using == 'R' || $invoice->i_using == 'V')
+                    @if (optional($invoice)->i_using == 'R' || optional($invoice)->i_using == 'V')
                         {{ number_format($lbs / 2.2046, 2)}}
                     @endif
                 </td>
               </tr>
               <tr>
                 <td class="tx-right">{{ __('Cubic feet', [], $lang) }}</td>
-                <td  class="tx-right">{{ number_format($invoice->cubic_feet, 2) }}</td>
+                <td  class="tx-right">{{ number_format(optional($invoice)->cubic_feet, 2) }}</td>
               </tr>
               <tr>
                 <td class="tx-right">{{ __('Cubic meters', [], $lang) }}</td>
-                <td  class="tx-right">{{ number_format($invoice->cubic_feet / 35.315, 2) }}</td>
+                <td  class="tx-right">{{ number_format(optional($invoice)->cubic_feet / 35.315, 2) }}</td>
               </tr>
             </tbody>
           </table>

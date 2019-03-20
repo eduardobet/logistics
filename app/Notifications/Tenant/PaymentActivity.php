@@ -58,7 +58,7 @@ class PaymentActivity extends Notification implements ShouldQueue
 
         return [
             'title' => $this->userFullname . ' ' . __('created a payment', [], $lang),
-            'content' => __('The payment #:pid has been created to the invoice #iid: (:box)', [
+            'content' => __('The payment #:pid has been created to the invoice #:iid: (:box)', [
                 'pid' => $this->payment->id, 'iid' => $this->invoiceManualId, 'box' => $box,
             ], $lang),
             'created_at' => $this->payment->created_at,

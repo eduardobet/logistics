@@ -30,8 +30,9 @@ class IncomeController extends Controller
             ->with(['invoice' => function ($invoice) {
                 $invoice->with('warehouse');
             }])
-            ->whereHas('invoice', function ($invoice) use ($cBranch) {
-                $invoice->active()->where('branch_id', request('branch_id', $cBranch->id));
+            ->whereHas('invoice', function ($invoice) use ($cBranch, $from, $to) {
+                $invoice->active()->where('branch_id', request('branch_id', $cBranch->id))
+                    ->whereBetween('created_at', [$from, $to]);
             });
 
             

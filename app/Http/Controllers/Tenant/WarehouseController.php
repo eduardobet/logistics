@@ -371,6 +371,8 @@ class WarehouseController extends Controller
                 ->with(['details' => function ($query) {
                 }])->first(),
         ];
+        
+        return view('tenant.warehouse.sticker', $data);
 
         if (app()->environment('testing')) {
             return view('tenant.warehouse.sticker', $data);

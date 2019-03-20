@@ -31,6 +31,10 @@ class CargoEntryController extends Controller
                 }
              ]);
 
+        if ($user->isClient()) {
+            $cargoEntries = $cargoEntries->where('client_id', $user->client_id);
+        }
+
         $searching = 'N';
 
         if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
@@ -97,6 +101,7 @@ class CargoEntryController extends Controller
         ]);
 
         $tenant = $this->getTenant();
+        $user = auth()->user();
 
         if ($validation->fails()) {
             return redirect()->route('tenant.warehouse.cargo-entry.create', $tenant->domain)
@@ -109,6 +114,7 @@ class CargoEntryController extends Controller
             'trackings' => $request->trackings,
             'type' => $request->type,
             'weight' => $request->weight ?: $request->weight,
+            'client_id' => $user->isClient() ? $user->client_id : null,
         ]);
 
         if ($cargoEntry) {
@@ -146,6 +152,10 @@ class CargoEntryController extends Controller
 
         if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $cargoEntry = $cargoEntry->where('branch_id', $user->currentBranch()->id);
+        }
+
+        if ($user->isClient()) {
+            $cargoEntry = $cargoEntry->where('client_id', $user->client_id);
         }
 
         $cargoEntry = $cargoEntry->findOrFail($id);

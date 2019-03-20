@@ -43,10 +43,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('warehouse/{id}/receipt', 'Tenant\WarehouseController@receipt')->name('tenant.warehouse.receipt');
 
     //cargo entry
-    Route::get('cargo-entry/list', 'Tenant\CargoEntryController@index')->name('tenant.warehouse.cargo-entry.list');
-    Route::get('cargo-entry/create', 'Tenant\CargoEntryController@create')->name('tenant.warehouse.cargo-entry.create');
-    Route::post('cargo-entry/store', 'Tenant\CargoEntryController@store')->name('tenant.warehouse.cargo-entry.store');
-    Route::get('cargo-entry/{id}/show', 'Tenant\CargoEntryController@show')->name('tenant.warehouse.cargo-entry.show');
+    Route::get('cargo-entry/list', 'Tenant\CargoEntryController@index')->name('tenant.warehouse.cargo-entry.list')->middleware('can:show-reca');
+    Route::get('cargo-entry/create', 'Tenant\CargoEntryController@create')->name('tenant.warehouse.cargo-entry.create')->middleware('can:create-reca');
+    Route::post('cargo-entry/store', 'Tenant\CargoEntryController@store')->name('tenant.warehouse.cargo-entry.store')->middleware('can:create-reca');
+    Route::get('cargo-entry/{id}/show', 'Tenant\CargoEntryController@show')->name('tenant.warehouse.cargo-entry.show')->middleware('can:show-reca');
 
     // invoice
     Route::get('invoice/list', 'Tenant\InvoiceController@index')->name('tenant.invoice.list')->middleware(['can:show-invoice']);

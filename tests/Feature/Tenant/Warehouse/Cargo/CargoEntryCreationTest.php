@@ -80,6 +80,41 @@ class CargoEntryCreationTest extends TestCase
     }
 
     /** @test */
+    public function client_user_can_create_cargo_entry()
+    {
+        $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch Name', ]);
+
+        $user = factory(User::class)->states('clientuser')->create(['tenant_id' => $tenant->id, ]);
+        $user->branches()->sync([$branch->id]);
+        $user->branchesForInvoice()->sync([$branch->id,]);
+
+        $response = $this->actingAs($user)->get(route('tenant.warehouse.cargo-entry.create', $tenant->domain));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.warehouse.cargo-entry.create');
+
+        $response = $this->actingAs($user)->post(route('tenant.warehouse.cargo-entry.store', $tenant->domain), [
+            'branch_id' => $branch->id,
+            'trackings' => '12345,234434,55645',
+            'weight' => 200,
+        ]);
+
+        $this->assertDatabaseHas('cargo_entries', [
+            "tenant_id" => $tenant->id,
+            "created_by_code" => $user->client_id,
+            "client_id" => $user->id,
+            'branch_id' => $branch->id,
+            'trackings' => '12345,234434,55645',
+            'weight' => 200,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('tenant.warehouse.cargo-entry.show', [$tenant->domain, 1]));
+    }
+
+    /** @test */
     public function it_successfuly_creates_the_misidentified_cargo_entry()
     {
         $this->withoutExceptionHandling();

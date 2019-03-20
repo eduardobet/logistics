@@ -36,7 +36,15 @@
                         <div class="mg-t-0">
                             <p>
                                 <b>{{ __('Record details') }}:</b><br>
+
+                                @if ($cargo_entry->client_id && !$user->isClient())
+                                <b>{{ __('Created by') }}:</b> <a href="{{ route('tenant.client.show', [$tenant->domain, $cargo_entry->client_id]) }}">
+                                    <i class="fa fa-external-link"></i> {{ $cargo_entry->creator->full_name  }}
+                                </a><br>
+                                @else
                                 <b>{{ __('Created by') }}:</b> {{ $cargo_entry->creator->full_name  }} <br>
+                                @endif
+
                                 <b>{{ __('Date') }}:</b> {{ $cargo_entry->created_at->format('d/m/Y') }}<br>
                                 <b>{{ __('Hour') }}:</b> {{ $cargo_entry->created_at->format('g:i A') }}<br>
                                 <b>{{ __('Branch') }}:</b> {{ $cargo_entry->branch->name }}<br>
@@ -53,10 +61,12 @@
                                     </label>
                                 @endif
 
+                                @can('create-reca')
                                 <br>
                                 <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.warehouse.cargo-entry.create', $tenant->domain) }}">
                                     <i class="fa fa-plus mg-r-5"></i> {{ __('Create') }}
                                 </a>
+                                @endcan
                             </p>
                         </div>
                     </div><!-- card -->

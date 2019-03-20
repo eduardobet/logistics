@@ -230,6 +230,10 @@
 
     });
 
+    function roundToTwo(num) {    
+        return +(Math.round(num + "e+2")  + "e-2");
+    }
+
     function doCalc() {
         var $els = $(".inline-calc:not('.removed')", document);
         var total = 0;
@@ -243,8 +247,10 @@
             total += _total * qty;
         });
 
+        total = roundToTwo(total);
+        amountPaid = roundToTwo(parseFloat(amountPaid));
         $("#total").val(total);
-        $("#pending").val(total - amountPaid);
+        $("#pending").val(roundToTwo(total - amountPaid));
 
         $els = null;
     }

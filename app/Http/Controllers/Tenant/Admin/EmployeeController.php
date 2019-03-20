@@ -3,7 +3,6 @@
 namespace Logistics\Http\Controllers\Tenant\Admin;
 
 use Logistics\DB\User;
-use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Jobs\Tenant\SendEmployeeWelcomeEmail;

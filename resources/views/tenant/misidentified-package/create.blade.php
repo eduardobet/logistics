@@ -76,7 +76,7 @@
                             <div class="col-md-2">
                                 <div class="form-group mg-b-20-force">
                                     <label for="client_id" class="form-label">ID {{ __('Client') }}</label>
-                                {!! Form::text('client_id', null, ['class' => 'form-control', 'id' => 'client_id']) !!}
+                                {!! Form::text('client_id', $user->isClient() ? $user->client_id : null, ['class' => 'form-control', 'id' => 'client_id']) !!}
                                 </div>
                             </div>
                                 
@@ -88,9 +88,7 @@
                             </div>
 
                          </div>
-                        
-                        @captcha(config('app.locale'))
-                    
+                                            
                         <div class="form-group mg-b-0-force mg-t-10-force">
                             <button class="btn btn-primary" type="submit" id="btn-misidentified"><b>{{ __('Send') }}</b></button><br>
                         </div>
@@ -126,10 +124,10 @@
     $(function() {
 
         // TOdo: remove
-        /*$("#frm-misidentified").submit(function(e) {
-            _submitEvent()
+        $("#frm-misidentified").submit(function(e) {
+            if (this.checkValidity()) _submitEvent();
             e.preventDefault();
-        });*/
+        });
 
         // counter
         $("#trackings").keyup(function(e) {

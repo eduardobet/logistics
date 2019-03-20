@@ -28,6 +28,10 @@ class MisidentifiedController extends Controller
             ->with(['toBranch', 'client', 'cargoEntry'])
             ->orderBy('id', 'DESC');
 
+        if ($user->isClient()) {
+            $misidentified = $misidentified->where('client_id', $user->client_id);
+        }
+
         if (($from = request('from')) && ($to = request('to'))) {
             $misidentified = $misidentified->whereRaw(' date(misidentified_packages.created_at) between ? and ? ', [$from, $to]);
             $searching = 'Y';

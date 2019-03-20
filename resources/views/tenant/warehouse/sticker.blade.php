@@ -10,7 +10,9 @@
     </style>
   </head>
   <body>
-    <table style="width: 100%" cellspacing="0">
+    
+    <div id="content">
+      <table style="width: 384px; height: 576px;" cellspacing="0" id="sticker">
       <tr>
         <td style="border-top: 1px solid #000;margin-left: 10px" colspan="2">
             &nbsp;&nbsp;&nbsp;{{  __('Shipper') }} <br>
@@ -45,11 +47,11 @@
       </tr>
 
       <tr>
-        <td style="border-top: 1px solid #000; border-right: 1px solid #000;" width="20%">
+        <td style="border-top: 1px solid #000; border-right: 1px solid #000;">
             &nbsp;&nbsp;&nbsp;{{  __('Destination') }} <br>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="font-size: 2em; font-weight: bold;">{{ $iata }}</span>
         </td>
-        <td style="border-top: 1px solid #000;" width="80%">
+        <td style="border-top: 1px solid #000;">
             &nbsp;{{  __('Route') }} <br>
             <span style="font-size: 2em; font-weight: bold;">&nbsp;&nbsp;&nbsp;</span>
         </td>
@@ -88,5 +90,24 @@
 
 
     </table>
+    </div>
+
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.js"></script>
+
+    <script>
+      
+    html2canvas(document.getElementById("content"), {
+      scale: 2,
+    }).then(function(canvas){
+        var img = canvas.toDataURL("image/png");
+        var doc = new jsPDF('p', 'px', [288.18, 432]);
+        //var doc = new jsPDF();
+        doc.addImage(img,'PNG',0,0);
+        doc.autoPrint()
+       // doc.save('sticker_' + (new Date().getTime()).toString(16) +'.pdf');
+        window.open(doc.output('bloburl'), '_blank');
+     });
+    </script>
   </body>
 </html>

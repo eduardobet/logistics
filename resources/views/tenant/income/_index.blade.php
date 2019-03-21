@@ -14,8 +14,6 @@
 <div class="card card-invoice">
           <div class="card-body">
             <div class="invoice-header">
-              <h1 class="invoice-title">REPORTE, {{ date('d-m-Y') }}</h1>
-
             </div><!-- invoice-header -->
 
             <div class="row mg-t-20">

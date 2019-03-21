@@ -4,12 +4,7 @@ namespace Tests\Feature\Tenant\Warehouse;
 
 use Tests\TestCase;
 use Logistics\DB\User;
-use Logistics\DB\Tenant\Box;
 use Logistics\DB\Tenant\Branch;
-use Logistics\DB\Tenant\Client;
-use Logistics\DB\Tenant\Mailer;
-use Logistics\DB\Tenant\Invoice;
-use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -40,6 +35,11 @@ class CargoEntryViewTest extends TestCase
         $admin->branchesForInvoice()->sync([$branch->id,]);
 
         $this->actingAs($admin);
+
+        \Gate::define('show-reca', function ($user) {
+            return true;
+        });
+
 
         $cargoEntry = $tenant->cargoEntries()->create([
             'branch_id' => $branch->id,

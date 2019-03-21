@@ -31,6 +31,10 @@ class CargoEntryCreationTest extends TestCase
         $tenant = factory(TenantModel::class)->create();
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
 
+        \Gate::define('create-reca', function ($admin) {
+            return true;
+        });
+
         $response = $this->actingAs($admin)->post(route('tenant.warehouse.cargo-entry.store', $tenant->domain), [
             'type' => 'X',
             'weight' => 'X',
@@ -56,6 +60,10 @@ class CargoEntryCreationTest extends TestCase
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $admin->branches()->sync([$branch->id]);
         $admin->branchesForInvoice()->sync([$branch->id,]);
+
+        \Gate::define('create-reca', function ($admin) {
+            return true;
+        });
 
         $response = $this->actingAs($admin)->get(route('tenant.warehouse.cargo-entry.create', $tenant->domain));
         $response->assertStatus(200);
@@ -90,6 +98,10 @@ class CargoEntryCreationTest extends TestCase
         $user = factory(User::class)->states('clientuser')->create(['tenant_id' => $tenant->id, ]);
         $user->branches()->sync([$branch->id]);
         $user->branchesForInvoice()->sync([$branch->id,]);
+
+        \Gate::define('create-reca', function ($user) {
+            return true;
+        });
 
         $response = $this->actingAs($user)->get(route('tenant.warehouse.cargo-entry.create', $tenant->domain));
         $response->assertStatus(200);
@@ -127,6 +139,10 @@ class CargoEntryCreationTest extends TestCase
         $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
         $admin->branches()->sync([$branch->id]);
         $admin->branchesForInvoice()->sync([$branch->id, ]);
+
+        \Gate::define('create-reca', function ($admin) {
+            return true;
+        });
 
         $response = $this->actingAs($admin)->get(route('tenant.warehouse.cargo-entry.create', $tenant->domain));
         $response->assertStatus(200);

@@ -107,12 +107,16 @@
 
                         <td>
                              @if ($misidentified->cargoEntry)
+                             @can('show-reca')
                              <a  title="{{ __('View') }}" href="{{ route('tenant.warehouse.cargo-entry.show', [$tenant->domain, $misidentified->cargo_entry_id]) }}"><i class="fa fa-link"></i> {{ $misidentified->cargo_entry_id }} </a>
+                             @endcan
                              @endif   
                         </td>
 
                         <td class="text-center">
-                            <a  title="{{ __('View') }}" href="{{ route('tenant.misidentified-package.show', [$tenant->domain, $misidentified->id]) }}"><i class="fa fa-eye"></i></a>
+                            @can('show-misreca')
+                                <a  title="{{ __('View') }}" href="{{ route('tenant.misidentified-package.show', [$tenant->domain, $misidentified->id]) }}"><i class="fa fa-eye"></i></a>
+                            @endcan
                         </td>
                         </tr>
                         @endforeach

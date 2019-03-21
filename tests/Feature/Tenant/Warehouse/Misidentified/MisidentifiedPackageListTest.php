@@ -34,6 +34,10 @@ class MisidentifiedPackageListTest extends TestCase
         $admin->branches()->sync([$branch->id]);
         $admin->branchesForInvoice()->sync([$branch->id,]);
 
+        \Gate::define('show-misreca', function ($admin) {
+            return true;
+        });
+
         $misidentifiedA = $tenant->misidentifiedPackages()->create([
             'branch_to' => $branch->id,
             'trackings' => '12345,234434,55645',

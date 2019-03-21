@@ -31,7 +31,13 @@
   <div class="slim-header">
     <div class="container">
       <div class="slim-header-left">
-        <h4 class="slim-logo"><a href="/">{{ config('app.name') }}</a></h4>
+        <h4 class="slim-logo">
+            @if ($user->isClient())
+                <a href="{{ route('tenant.warehouse.list', [$tenant->domain]) }}">{{ config('app.name') }}</a>
+            @else
+                <a href="/">{{ config('app.name') }}</a>
+            @endif
+        </h4>
       </div>
       <div class="slim-header-right">
         <h5 class="tx-reef">{{ strtoupper( __('Create misidentified package') ) }}</h5>
@@ -76,14 +82,14 @@
                             <div class="col-md-2">
                                 <div class="form-group mg-b-20-force">
                                     <label for="client_id" class="form-label">ID {{ __('Client') }}</label>
-                                {!! Form::text('client_id', $user->isClient() ? $user->client_id : null, ['class' => 'form-control', 'id' => 'client_id']) !!}
+                                {!! Form::text('client_id', $user->isClient() ? $user->client_id : null, ['class' => 'form-control', 'id' => 'client_id'] + ( $user->isClient() ? [' readonly' => 1] : []   )   ) !!}
                                 </div>
                             </div>
                                 
                             <div class="col-md-2">
                                 <div class="form-group mg-b-20-force">
                                     <label for="cargo_entry_id" class="form-label">ID {{ __('Cargo entry') }}</label>
-                                {!! Form::text('cargo_entry_id', null, ['class' => 'form-control', 'id' => 'cargo_entry_id']) !!}
+                                {!! Form::text('cargo_entry_id', null, ['class' => 'form-control', 'id' => 'cargo_entry_id']+ ( $user->isClient() ? [' readonly' => 1] : []   )) !!}
                                 </div>
                             </div>
 
@@ -181,7 +187,6 @@
                 "branch_to": $("#branch_to").val(),
                 "client_id": $.trim($("#client_id").val()),
                 "cargo_entry_id": $.trim($("#cargo_entry_id").val()),
-                "g-recaptcha-response": $("#g-recaptcha-response").val()
             },
             dataType: "json",
             success: function(resp) {
@@ -193,7 +198,9 @@
 
                 $("#trackings").val("");
                 $("#branch_to").val("");
-                $("#client_id").val("");
+                @if (!$user->isClient())
+                    $("#client_id").val("");
+                @endif
                 $("#cargo_entry_id").val("");
             },
             error: function(error) {

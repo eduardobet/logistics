@@ -375,9 +375,10 @@
             } else if ($type.val() == 'M') {
                 if (totalCubicFeet > 30) {
                     var extra = totalCubicFeet - 30;
-                    totalCubicPrice = 30 * martitimePrice + (extra * extraMartitimePrice);
+                    //totalCubicPrice = martitimePrice + (extra * extraMartitimePrice);
+                    totalCubicPrice = extraMartitimePrice * totalCubicFeet;
                 } else {
-                   totalCubicPrice = totalCubicFeet * martitimePrice; 
+                   totalCubicPrice = martitimePrice; 
                 }
 
                 $("#dsp-t-cubic").text(totalCubicPrice);

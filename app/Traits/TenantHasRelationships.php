@@ -41,7 +41,7 @@ trait TenantHasRelationships
 
     public function permissions()
     {
-        return $this->hasMany(\Logistics\DB\Tenant\Permission::class);
+        return $this->hasMany(\Logistics\DB\Tenant\Permission::class)->orderBy('header');
     }
 
     public function mailers()

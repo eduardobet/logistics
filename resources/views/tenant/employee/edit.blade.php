@@ -39,6 +39,33 @@
         var cache = {};
         $(function() {
             $("#in_branch").select2({width: 'resolve'});
+
+            // filter permissins
+            $("#filter").keyup(delay(function() {
+                var term = $.trim(this.value);
+
+                $(".card").each(function (index) {
+                    //if (!term) return;
+                    $(this).find(".section-title").each(function () {
+                        var id = $(this).text().toLowerCase().trim();
+                        var not_found = (id.indexOf(term) == -1);
+                        $(this).closest('.card').toggle(!not_found);
+                        return not_found;
+                    });
+                });
+                
+            }, 500));
         });
+
+        function delay(callback, ms) {
+            var timer = 0;
+            return function() {
+                var context = this, args = arguments;
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                callback.apply(context, args);
+                }, ms || 0);
+            };
+        }
     </script>
 @stop

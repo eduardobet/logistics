@@ -129,10 +129,28 @@
         <div class="mg-t-25">
         </div>
 
-        @foreach ($permissions->groupBy('header') as $group => $permissions)
-            <label class="section-title">{{ $group }}</label>
+        <div class="row mg-b-10">
+            <div class="col-lg-12">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Filtrar" value="" id="filter">
+                </div>
+            </div>
+        </div>
 
-            <ul class="list-group">
+        <div id="accordion3" class="accordion-two" role="tablist">
+
+        @foreach ($permissions->groupBy('header') as $group => $permissions)
+
+            <div class="card">
+              <div class="card-header" role="tab" id="headingOne-{{str_slug($group)}}">
+                <a data-toggle="collapse" href="#{{str_slug($group)}}" aria-expanded="false" aria-controls="{{str_slug($group)}}" class="tx-gray-800 transition collapsed">
+                  <label class="section-title">{{ $group }}</label>
+                </a>
+              </div><!-- card-header -->
+
+              <div id="{{str_slug($group)}}" class="collapse" role="tabpanel" aria-labelledby="headingOne-{{str_slug($group)}}" data-parent="#accordion3">
+                <div class="card-body">
+                    <ul class="list-group">
                 @foreach ($permissions as $permission)
                     <li class="list-group-item">
                         
@@ -145,7 +163,14 @@
                     </li>
                 @endforeach
             </ul>
+                </div>
+              </div>
+            </div>
+
+            
         @endforeach
+
+        </div>
         
     </div> <!-- tab permissions -->
 

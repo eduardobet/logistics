@@ -104,7 +104,9 @@
             total += _total * qty;
         });
 
-        $("#total").val(roundToTwo(total));
+        total = roundToTwo(total);
+        amountPaid = roundToTwo(parseFloat(amountPaid));
+        $("#total").val(total);
         $("#pending").val(roundToTwo(total - amountPaid));
 
         $els = null;

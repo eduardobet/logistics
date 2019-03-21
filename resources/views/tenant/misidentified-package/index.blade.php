@@ -16,9 +16,11 @@
           
            {{ Breadcrumbs::render() }}
 
-             <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.misidentified-package.create', $tenant->domain) }}">
-                <i class="fa fa-plus mg-r-5"></i> {{ __('Create') }}
-             </a>
+           @can('create-misreca')
+           <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.misidentified-package.create', $tenant->domain) }}">
+               <i class="fa fa-plus mg-r-5"></i> {{ __('Create') }}
+            </a>
+            @endcan
           
         </div><!-- slim-pageheader -->
 

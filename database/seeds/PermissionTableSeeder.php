@@ -25,6 +25,14 @@ class PermissionTableSeeder extends Seeder
             ["name" => "Editar Warehouse", "slug" => "edit-warehouse", "header" => "Warehouse",],
             ["name" => "Ver Warehouse", "slug" => "show-warehouse", "header" => "Warehouse",],
 
+            // reca
+            ["name" => "Registrar carga", "slug" => "create-reca", "header" => "Registro de carga",],
+            ["name" => "Ver carga", "slug" => "show-reca", "header" => "Registro de carga",],
+
+            // misidentified-pa ckage
+            ["name" => "Registrar Paquetes", "slug" => "create-misreca", "header" => "Paquetes malidentificados",],
+            ["name" => "Ver Paquetes ", "slug" => "show-misreca", "header" => "Paquetes malidentificados",],
+
             // Package
             ["name" => "Registrar Paquetes", "slug" => "create-package", "header" => "Paquetes",],
             ["name" => "Editar Paquetes", "slug" => "edit-package", "header" => "Paquetes",],

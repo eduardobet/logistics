@@ -22,7 +22,7 @@
           </li>
           @endif
 
-          <li class="nav-item with-sub {{ active(['tenant.warehouse.create', 'tenant.warehouse.list','tenant.warehouse.edit', 'tenant.warehouse.cargo-entry.create', 'tenant.warehouse.cargo-entry.edit', 'tenant.warehouse.cargo-entry.list', 'tenant.misidentified-package.index', 'tenant.warehouse.show',]) }}">
+          <li class="nav-item with-sub {{ active(['tenant.warehouse.create', 'tenant.warehouse.list','tenant.warehouse.edit', 'tenant.warehouse.cargo-entry.create', 'tenant.warehouse.cargo-entry.edit', 'tenant.warehouse.cargo-entry.list', 'tenant.misidentified-package.index', 'tenant.warehouse.show', 'tenant.warehouse.cargo-entry.show']) }}">
             <a class="nav-link" href="#">
               <i class="icon ion-ios-box-outline"></i>
               <span>{{ __('Warehouse' )}}</span>
@@ -37,12 +37,22 @@
                   <li><a href="{{ route('tenant.warehouse.list', $tenant->domain) }}">{{ __('Warehouse list') }}</a></li>
                 @endcan
 
-                @can('create-warehouse')
-                <li><a href="{{ route('tenant.warehouse.cargo-entry.create', $tenant->domain) }}">{{ __('Register Cargo entry') }}</a></li>
-                <li><a href="{{ route('tenant.warehouse.cargo-entry.list', $tenant->domain) }}">{{ __('Cargo entries') }}</a></li>
-                <li><a  href="{{ route('tenant.misidentified-package.create', $tenant->domain) }}">{{ __('Create misidentified package') }}</a></li>
-                <li><a  href="{{ route('tenant.misidentified-package.index', $tenant->domain) }}">{{ __('Misidentified packages') }}</a></li>
+                @can('create-reca')
+                  <li><a href="{{ route('tenant.warehouse.cargo-entry.create', $tenant->domain) }}">{{ __('Register Cargo entry') }}</a></li>
                 @endcan
+
+                @can('show-reca')
+                  <li><a href="{{ route('tenant.warehouse.cargo-entry.list', $tenant->domain) }}">{{ __('Cargo entries') }}</a></li>
+                @endcan
+
+                @can('create-misreca')
+                  <li><a  href="{{ route('tenant.misidentified-package.create', $tenant->domain) }}">{{ __('Create misidentified package') }}</a></li>
+                @endcan
+
+                @can('show-misreca')
+                  <li><a  href="{{ route('tenant.misidentified-package.index', $tenant->domain) }}">{{ __('Misidentified packages') }}</a></li>
+                @endcan
+
               </ul>
             </div><!-- dropdown-menu -->
           </li>

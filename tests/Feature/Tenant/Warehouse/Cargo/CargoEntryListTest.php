@@ -36,6 +36,10 @@ class CargoEntryListTest extends TestCase
 
         $this->actingAs($admin);
 
+        \Gate::define('show-reca', function ($user) {
+            return true;
+        });
+
         $cargoEntryA = $tenant->cargoEntries()->create([
             'branch_id' => $branch->id,
             'trackings' => '1234',

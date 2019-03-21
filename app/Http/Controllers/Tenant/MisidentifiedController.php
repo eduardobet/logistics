@@ -68,10 +68,15 @@ class MisidentifiedController extends Controller
      */
     public function create()
     {
-        $tenant = $this->getTenant();
+        $user = auth()->user();
+        $branches = $this->getBranches();
+
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
+            $branches = $branches->where('id', $user->currentBranch()->id);
+        }
 
         return view('tenant.misidentified-package.create', [
-            'branches' => $this->getBranches()->pluck('name', 'id'),
+            'branches' => $branches->pluck('name', 'id'),
         ]);
     }
 
@@ -173,7 +178,6 @@ class MisidentifiedController extends Controller
     private function validates($request, $extraRules = [])
     {
         $rules = [
-            'g-recaptcha-response' => 'required|captcha',
             'trackings' => 'required',
             'branch_to' => 'required',
             'client_id' => 'sometimes|integer',

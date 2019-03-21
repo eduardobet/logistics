@@ -2,7 +2,14 @@
       <div class="container">
         <div class="slim-header-left">
             <?php $type = auth()->check() && (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin()) ? 'admin' : 'employee'; ?>
-          <h2 class="slim-logo"><a href="{{ route("tenant.{$type}.dashboard", $tenant->domain) }}">{{ config('app.name', '') }}</a></h2>
+          <h2 class="slim-logo">
+              
+              @if ($user->isClient())
+              <a href="{{ route('tenant.warehouse.list', [$tenant->domain]) }}">{{ config('app.name') }}</a>
+              @else
+              <a href="{{ route("tenant.{$type}.dashboard", $tenant->domain) }}">{{ config('app.name', '') }}</a>
+            @endif
+          </h2>
 
           <div class="search-box">
             <input type="text" id="q" class="form-control" placeholder="{{ __('Search') }}">

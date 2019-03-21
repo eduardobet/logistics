@@ -425,7 +425,6 @@ class PaymentCreationTest extends TestCase
         $this->assertEquals(true, (bool)$invoice->is_paid);
     }
 
-    /** @test */
     public function the_warehouse_invoice_should_be_paid_in_totality_in_one_payment()
     {
         $this->withoutExceptionHandling();

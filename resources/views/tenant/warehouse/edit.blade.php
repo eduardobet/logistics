@@ -25,7 +25,7 @@
 
          <div class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
 
-            {!! Form::model($warehouse, ['route' => ['tenant.warehouse.update', $tenant->domain, $warehouse->id], 'method' => 'PATCH', 'id' => 'frm-edit', ]) !!}
+            {!! Form::model($warehouse, ['route' => ['tenant.warehouse.update', $tenant->domain, $warehouse->id], 'method' => 'PATCH', 'name' => 'frm-edit', 'id' => 'frm-edit', ]) !!}
                 @include('tenant.warehouse._fields', [
                     'mode' => 'edit',
                     'invoice' => $invoice,
@@ -33,6 +33,7 @@
                 ])
                 
                 {!! Form::hidden('qty', null, ['id' => 'qty',]) !!}
+                {!! Form::hidden('rows', null, ['id' => 'rows',]) !!}
             </form>
             
          </div>
@@ -79,7 +80,7 @@
 
 
 @section('xtra_scripts')
-    @include('common._add_more')
+    @include('common._add_more', ['identifier' => "wh-{$warehouse->id}"])
     <script>
         var cache = {};
         $(function() {
@@ -392,6 +393,11 @@
             $volWeight = null;
             $realWeight = null;
 
+
+            $("#rows").val($(".det-row", document).length);
+
+            sisyphusy();
+
         } // doCal
         
         function setter(totVolPrice, totRealPrice, totalCubicPrice, totVolWeight) {
@@ -491,7 +497,46 @@
             $("#amount_paid", document).blur(function() {
               doCal();
             });
+
+            // preserving details
+
+            restoreView();
         });
+
+        function sisyphusy() {
+            @if (!$invoice->total)
+            $("#frm-edit").sisyphus({
+                locationBased: true,
+                excludeFields: $("input[name='_token']"),
+                autoRelease: false,
+                //onSave: function(){},
+                //onRestore: function(){},
+            });
+            @endif
+
+            @if ($invoice->total || $warehouse->status == 'I')
+            localStorage.clear();
+            @endif
+        }
+
+        function restoreView() {
+            @if (!$invoice->total)
+            var tmpRows =  JSON.parse(localStorage.getItem('wh-{{ $warehouse->id }}-tmp-row'));
+            var $detContainer = $("#details-container");
+
+            if (tmpRows) {
+                for (const key of Object.keys(tmpRows)) {
+                    var row = JSON.parse(tmpRows[key]);
+                    var i = key.split("-")[1];
+                    console.log(key, ' i = ', i);
+                    $detContainer.append(row);
+                    sisyphusy();
+                }
+            }
+
+            doCal()
+            @endif
+        }
 
         function toggle($btn, status) {
             $btn.prop('disabled', true);

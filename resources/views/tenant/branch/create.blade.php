@@ -32,7 +32,7 @@
 
 @section('xtra_scripts')
     <script>
-        @include('common._add_more')
+        @include('common._add_more', ['identifier' => "br-0"]))
         $(function() {
             $("#color").select2()
         })

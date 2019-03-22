@@ -1,5 +1,9 @@
+ <?php
+$identifier = isset($identifier) ? $identifier : '';
+?>
  <script>
     var ecCache = {};
+    var tmpRows = JSON.parse(localStorage.getItem('{{ $identifier }}-tmp-row')) || {};
     $(function() {
         var $container;
         var index = 1;
@@ -14,6 +18,8 @@
         $(document).on("click", ".btn-add-more", function() {
             if (!$container) $container = $("#details-container");
             index = $container.find(".det-row").length + 1;
+            var lIndex = parseInt(localStorage.getItem("add_more_last_index") || '0');
+
             if (!$container) console.log('Error _add_more: no container');
             var $self = $(this);
             var url = $self.data('url');
@@ -21,7 +27,7 @@
 
             if (view = ecCache.data) {
                 index++;
-                add(view, index)
+                add(view, index+lIndex)
                 doAjax = false;
             }
 
@@ -31,11 +37,11 @@
                     $self.data('original-text', $(this).html());
                     $self.prop('disabled', true).html(loadingText);
                 }
-                
+
                 $.getJSON(url, function(data) {
                     $self.prop('disabled', false).html($self.data('original-text'));
                     ecCache['data'] = data.view;
-                    add(data.view, index)
+                    add(data.view, index+lIndex)
                 });
             }
         });
@@ -45,6 +51,7 @@
         $(document).on("click", ".rem-row", function() {
             var $self = $(this);
             var id = $self.data('id');
+            var tmpRowId = $self.data('tmp-row-id');
             var delUrl = $self.data('del-url');
             var params = $self.data('params') || {};
             if (id && id !== ':id:') {
@@ -87,12 +94,25 @@
             } else {
                 //$self.closest('.det-row').find('*').addClass('removed')
                 $self.closest('.det-row').remove();
+                refreshTmp(tmpRowId);
             }
         });
 
         function add(view, index) {
             view = view.replace(/:index:/g, index);
             $container.append(view);
+
+            tmpRows['row-' + index] = JSON.stringify(view);
+
+            localStorage.setItem('{{ $identifier }}-tmp-row', JSON.stringify(tmpRows));
+            localStorage.setItem('add_more_last_index', index);
+        }
+
+        function refreshTmp(tmpRowId) {
+            var key = 'row-' + tmpRowId;
+            delete tmpRows[key];
+
+            localStorage.setItem('{{ $identifier }}-tmp-row', JSON.stringify(tmpRows));
         }
     });
 </script>

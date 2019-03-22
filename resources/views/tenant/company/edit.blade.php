@@ -211,7 +211,7 @@
 @endsection
 
 @section('xtra_scripts')
-    @include('common._add_more')
+    @include('common._add_more', ['identifier' => "cmp-{$tenant->id}"]))
     <script>
         $(function() {
             $(".btn-view-image").click(function() {

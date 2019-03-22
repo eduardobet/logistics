@@ -17,7 +17,7 @@ $key = isset($key) ? $key : ':index:';
             <div class="col-8">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Type') }}:</label>
-                    {!! Form::select("invoice_detail[{$key}][type]",[1=>'Sobre',2=>'Bulto', 3=>'Paquete',4=>'Caja/Peq.', 5=>'Caja/Med.', 6=>'Caja/Grande', 7=>'Servicio aéreo' ], $idetail->type, ['class' => 'form-control form-control-sm type', ]) !!}
+                    {!! Form::select("invoice_detail[{$key}][type]",[1=>'Sobre',2=>'Bulto', 3=>'Paquete',4=>'Caja/Peq.', 5=>'Caja/Med.', 6=>'Caja/Grande', 7=>'Servicio aéreo' ], $idetail->type, ['class' => 'form-control form-control-sm type', 'id' => "type-{$key}" ]) !!}
                 </div>
             </div>
         </div>
@@ -85,6 +85,7 @@ $key = isset($key) ? $key : ':index:';
             <div class="col-2">
                 <div class="form-group mg-t-30-force">
                     <button class="btn btn-sm btn-outline-danger rem-row" type="button" data-id="{{ $idetail->id ? $idetail->id : ':id:' }}" data-del-url="{{ route('tenant.client.extra-contact.destroy', $tenant->domain) }}" data-params='{"id" : "{{$idetail->id}}", "client_id" :"{{$idetail->client_id}}" }'
+                        data-tmp-row-id="{{ $key }}"
                        {{ isset($mode) && $mode == 'edit' ? ' disabled' : null }} 
                     >
                         <i class="fa fa-times"></i>

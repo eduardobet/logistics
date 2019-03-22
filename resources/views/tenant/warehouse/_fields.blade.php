@@ -253,7 +253,7 @@
     <div class="col-lg-12">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">{{ __('Notes') }}:  <span class="tx-danger">*</span></label>
-            {!! Form::textarea('notes', $invoice->notes, ['class' => 'form-control', 'rows' => 4, 'required' => '1', ]) !!}
+            {!! Form::textarea('notes', $invoice->notes, ['class' => 'form-control', 'rows' => 4, ]) !!}
         </div>
     </div>
 </div>

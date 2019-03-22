@@ -53,16 +53,16 @@ Breadcrumbs::for('tenant.admin.position.edit', function ($trail) {
 // Employees
 Breadcrumbs::for('tenant.admin.employee.list', function ($trail) {
     $trail->parent('tenant.admin.dashboard');
-    $trail->add(__('Employees'), route('tenant.admin.employee.list', request()->domain));
+    $trail->add(request('list') == 'U' ? __('Users') : __('Employees'), route('tenant.admin.employee.list', [ request()->domain, 'list' => request('list')]));
 });
 Breadcrumbs::for('tenant.admin.employee.create', function ($trail) {
     $trail->parent('tenant.admin.dashboard');
-    $trail->add(__('Employees'), route('tenant.admin.employee.list', request()->domain));
-    $trail->add(__('Creating :what', ['what' => __('Employee') ]), '');
+    $trail->add(request('list') == 'U' ? __('Users') : __('Employees'), route('tenant.admin.employee.list', [ request()->domain, 'list' => request('list')]));
+    $trail->add(__('Creating :what', ['what' => request('list') == 'U' ? __('User') : __('Employee') ]), '');
 });
 
 Breadcrumbs::for('tenant.admin.employee.edit', function ($trail) {
     $trail->parent('tenant.admin.dashboard');
-    $trail->add(__('Employees'), route('tenant.admin.employee.list', request()->domain));
-    $trail->add(__('Editing :what', ['what' => __('Employee') ]), '');
+    $trail->add(request('list') == 'U' ? __('Users') : __('Employees'), route('tenant.admin.employee.list', [ request()->domain, 'list' => request('list')]));
+    $trail->add(__('Editing :what', ['what' => request('list') == 'U' ? __('User') : __('Employee') ]), '');
 });

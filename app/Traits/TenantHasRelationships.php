@@ -11,7 +11,7 @@ trait TenantHasRelationships
 
     public function employees()
     {
-        return $this->hasMany(\Logistics\DB\User::class);
+        return $this->hasMany(\Logistics\DB\User::class)->whereIn('type', ['A','E']);
     }
 
     public function userClients()

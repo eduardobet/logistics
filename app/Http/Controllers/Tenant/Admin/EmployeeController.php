@@ -14,7 +14,14 @@ class EmployeeController extends Controller
 
     public function index()
     {
-        $employees = $this->getTenant()->employees()->with('branches');
+        $employees = $this->getTenant()->employees();
+
+        if (request('list') == 'U') {
+            $employees = $this->getTenant()->userClients();
+        }
+        
+        $employees = $employees->with('branches');
+        
         $searching = 'N';
         $user = auth()->user();
 
@@ -114,7 +121,14 @@ class EmployeeController extends Controller
     public function edit($domain, $id)
     {
         $tenant = $this->getTenant();
-        $employee = $tenant->employees()->with('branches')->where('id', $id)->firstOrFail();
+
+        $employee = $tenant->employees();
+
+        if (request('list') == 'U') {
+            $employee = $this->getTenant()->userClients();
+        }
+
+        $employee = $employee->with('branches')->where('id', $id)->firstOrFail();
 
         return view('tenant.employee.edit', [
             'employee' => $employee,
@@ -128,7 +142,14 @@ class EmployeeController extends Controller
     {
         $tenant = $this->getTenant();
 
-        $employee = $tenant->employees()->where('id', $request->id)->first();
+        $employee = $tenant->employees();
+
+        if (request('list') == 'U') {
+            $employee = $this->getTenant()->userClients();
+        }
+
+        $employee = $employee->where('id', $request->id)->first();
+
         $oldEmail = $employee->email;
 
         $employee->first_name = $request->first_name;
@@ -160,11 +181,11 @@ class EmployeeController extends Controller
                 dispatch(new SendEmployeeWelcomeEmail($tenant, $employee));
             }
 
-            return redirect()->route('tenant.admin.employee.list', $request->domain)
+            return redirect()->route('tenant.admin.employee.list', [$request->domain, 'list' => request('list')])
                 ->with('flash_success', __('The :what has been updated.', ['what' => __('Employee')]));
         }
 
-        return redirect()->route('tenant.admin.employee.edit', [$request->domain, $request->id])
+        return redirect()->route('tenant.admin.employee.edit', [$request->domain, $request->id, 'list' => request('list')])
             ->withInput()
             ->with('flash_error', __('Error while trying to :action :what', [
                 'action' => __('Update'),

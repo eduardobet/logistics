@@ -4,6 +4,7 @@ namespace Logistics\Http\Controllers\Tenant\Admin;
 
 use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
+use Illuminate\Validation\Rule;
 use Logistics\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -54,14 +55,20 @@ class UserClientController extends Controller
 
     private function validates($request, $extraRules = [])
     {
+        $tenant = $this->getTenant();
+
         $rules = [
             'first_name' => 'required|string|between:3,255',
             'last_name' => 'required|string|between:3,255',
-            'email' => 'required|string|email|max:255|unique:users',
             'telephones' => 'required|mass_phone',
             'password' => 'sometimes|alpha_num_pwd',
             'client_id' => 'required|integer',
             'branch_id' => 'required|integer',
+        ];
+
+        $rules['email'] = [
+            'required', 'string', 'email', 'max:255',
+            Rule::unique('users', 'email')->where('tenant_id', $tenant->id)
         ];
 
         return Validator::make($request->all(), array_merge($rules, $extraRules));

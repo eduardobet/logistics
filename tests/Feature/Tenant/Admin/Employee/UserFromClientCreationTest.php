@@ -43,6 +43,36 @@ class UserFromClientCreationTest extends TestCase
     }
 
     /** @test */
+    public function email_is_unique_by_tenant()
+    {
+        // $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create();
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' =>$tenant->id, ]);
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id]);
+        $admin->branches()->sync([$branch->id]);
+        $client = factory(User::class)->states('clientuser')->create(['tenant_id' =>$tenant->id, ]);
+        $client->branches()->sync([$branch->id]);
+
+        $response = $this->actingAs($admin)->post(route('tenant.admin.user-client.store', $tenant->domain), [
+            'first_name' => $client->first_name,
+            'last_name' => $client->last_name,
+            'email' => $client->email,
+            'branch_id' => $branch->id,
+            'telephones' => $client->telephones,
+            'password' => 'secret123',
+            'client_id' => $client->id,
+        ]);
+
+        $response->assertStatus(500);
+
+        $this->assertArraySubset([
+            'error' => true,
+            'msg' => 'The Email has already been taken.'
+        ], $response->json());
+    }
+
+    /** @test */
     public function it_successfully_creates_the_user_client()
     {
         $this->withoutExceptionHandling();

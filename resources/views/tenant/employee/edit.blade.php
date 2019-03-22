@@ -20,6 +20,7 @@
          <div class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
             {!! Form::model($employee, ['route' => ['tenant.admin.employee.update', $tenant->domain], 'method' => 'PATCH']) !!}
             {!! Form::hidden('id', $employee->id) !!}
+            {!! Form::hidden('list', request('list')) !!}
             
                 @include('tenant.employee._fields',  [
                     'status' => ['A' => __('Active'), 'I' => __('Inactive'), 'L' => __('Lock'),]

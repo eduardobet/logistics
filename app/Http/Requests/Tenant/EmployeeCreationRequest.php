@@ -2,11 +2,14 @@
 
 namespace Logistics\Http\Requests\Tenant;
 
+use Logistics\Traits\Tenant;
 use Illuminate\Validation\Rule;
 use Logistics\Http\Requests\AppFormRequest;
 
 class EmployeeCreationRequest extends AppFormRequest
 {
+    use Tenant;
+   
     protected $redirectRoute = 'tenant.admin.employee.create';
 
     /**
@@ -26,6 +29,8 @@ class EmployeeCreationRequest extends AppFormRequest
      */
     public function rules()
     {
+        $tenant = $this->getTenant();
+
         $rules = [
             'first_name' => 'required|string|between:3,255',
             'last_name' => 'required|string|between:3,255',
@@ -41,11 +46,15 @@ class EmployeeCreationRequest extends AppFormRequest
             'password' => 'sometimes|alpha_num_pwd',
         ];
 
+        $unique = Rule::unique('users', 'email')->where('tenant_id', $tenant->id);
+
         if ($this->isEdit()) {
-            $rules['email'] = ['required', 'string', 'email', 'between:6,255', Rule::unique('users')->ignore($this->id)];
+            $rules['email'] = ['required', 'string', 'email', 'between:6,255', $unique->ignore($this->id)];
             $rules['status'] = 'required|string|in:A,I,L'; //|user_status:id
 
             $this->redirectRoute = 'tenant.admin.employee.edit';
+        } else {
+            $rules['email'] = ['required', 'string', 'email', 'between:6,255', $unique];
         }
 
         return $rules;

@@ -16,10 +16,15 @@
           
             {{ Breadcrumbs::render() }}
 
-           <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.admin.employee.create', $tenant->domain) }}">
-               <i class="fa fa-plus mg-r-5"></i> {{ __('Create') }}
-            </a>
-
+            @if (request('list') == 'U')
+              <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.client.list', $tenant->domain) }}">
+                 <i class="fa fa-plus mg-r-5"></i> {{ __('Create') }}
+              </a>
+            @else
+              <a class="btn btn-sm btn-outline-primary" href="{{ route('tenant.admin.employee.create', $tenant->domain) }}">
+                 <i class="fa fa-plus mg-r-5"></i> {{ __('Create') }}
+              </a>
+            @endif
           
         </div><!-- slim-pageheader -->
 
@@ -80,7 +85,12 @@
                       <td>{{ $employee->type }}</td>
                       <td>{{ $employee->status }}</td>
                       <td>
-                        <a href="{{ route('tenant.admin.employee.edit', [$tenant->domain, $employee->id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                        <a href="{{ route('tenant.admin.employee.edit', [$tenant->domain, $employee->id, 'list' => request('list')]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+
+                        @if ($employee->client_id)
+                          &nbsp;&nbsp;&nbsp;&nbsp;
+                           <a title="{{ __('Editing :what', ['what' => __('Client') ]) }}" href="{{ route('tenant.client.edit', [$tenant->domain, $employee->client_id, ]) }}"><i class="fa fa-external-link" aria-hidden="true"></i></a> 
+                        @endif
                         
                         @if ($employee->status == 'L')
                         
@@ -102,7 +112,7 @@
 
             @if ($searching == 'N')
               <div id="result-paginated" class="mg-t-25">
-                  {{ $employees->links() }}
+                  {{ $employees->appends(['list' => request('list') ])->links() }}
               </div>
             @endif
 
@@ -163,7 +173,7 @@
         $("#btn-filter").click(function() {
             var filter = $.trim($("#filter").val());
             var branch = $("#branch_id").val();
-            window.location = `{{ route('tenant.admin.employee.list', $tenant->domain) }}?filter=${filter}&branch_id=${branch}`;
+            window.location = `{{ route('tenant.admin.employee.list', $tenant->domain) }}?filter=${filter}&branch_id=${branch}&list={{ request('list') }}`;
         });
 
       });

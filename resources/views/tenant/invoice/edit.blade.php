@@ -72,7 +72,7 @@
 
 
 @section('xtra_scripts')
-    @include('common._add_more')
+    @include('common._add_more', ['identifier' => "inv-{$invoice->id}"]))
     
     <script>
     var cache = {};

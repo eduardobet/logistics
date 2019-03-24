@@ -168,11 +168,11 @@ class InvoiceController extends Controller
                 ->with('flash_success', __('The :what has been created.', ['what' => __('Invoice') ]));
         }
 
-        return redirect()->route('tenant.warehouse.create', [$tenant->domain, 'branch_id' => $request->branch_id, ])
+        return redirect()->route('tenant.invoice.create', [$tenant->domain, 'branch_id' => $request->branch_id, ])
             ->withInput()
             ->with('flash_error', __('Error while trying to :action :what', [
                 'action' => __('Save'),
-                'what' => __('The warehouse'),
+                'what' => __('The invoice'),
             ]));
     }
 
@@ -311,7 +311,7 @@ class InvoiceController extends Controller
                 ->with('flash_success', __('The :what has been updated.', ['what' => __('Invoice') ]));
         }
 
-        return redirect()->route('tenant.warehouse.edit', [$tenant->domain, $invoice->id, 'branch_id' => $request->branch_id, ])
+        return redirect()->route('tenant.invoice.edit', [$tenant->domain, $invoice->id, 'branch_id' => $request->branch_id, ])
             ->withInput()
             ->with('flash_error', __('Error while trying to :action :what', [
                 'action' => __('Update'),

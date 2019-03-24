@@ -139,7 +139,7 @@ class EmployeeEditionTest extends TestCase
         ]);
 
         $response->assertSessionHas(['flash_success']);
-        $response->assertRedirect(route('tenant.admin.employee.list', $tenant->domain));
+        $response->assertRedirect(route('tenant.admin.employee.list', [$tenant->domain, 'list' => request('list')]));
         $employee = $tenant->employees->where('email', $employee->email)->fresh()->first();
 
         tap($employee, function ($employee) use ($tenant, $admin, $permissionA, $permissionB) {
@@ -248,7 +248,7 @@ class EmployeeEditionTest extends TestCase
         ]);
 
         $response->assertSessionHas(['flash_success']);
-        $response->assertRedirect(route('tenant.admin.employee.list', $tenant->domain));
+        $response->assertRedirect(route('tenant.admin.employee.list', [$tenant->domain, 'list' => request('list')]));
 
         Queue::assertPushed(SendEmployeeWelcomeEmail::class, function ($job) use ($tenant, $employee) {
             return $job->tenant->id === $tenant->id
@@ -374,6 +374,6 @@ class EmployeeEditionTest extends TestCase
         ]);
 
         $response->assertSessionHas(['flash_success']);
-        $response->assertRedirect(route('tenant.admin.employee.list', $tenant->domain));
+        $response->assertRedirect(route('tenant.admin.employee.list', [$tenant->domain, 'list' => request('list')]));
     }
 }

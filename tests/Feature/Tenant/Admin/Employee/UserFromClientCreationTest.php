@@ -100,7 +100,7 @@ class UserFromClientCreationTest extends TestCase
             'msg' => __("Success"),
         ]);
  
-        tap($tenant->employees->where('type', 'C')->fresh()->first(), function ($user) use ($admin, $client) {
+        tap($tenant->userClients->where('type', 'C')->fresh()->first(), function ($user) use ($admin, $client) {
             $this->assertEquals($client->id, $user->client_id);
             $this->assertEquals($client->first_name, $user->first_name);
             $this->assertEquals($client->last_name, $user->last_name);

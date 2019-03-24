@@ -18,7 +18,7 @@ $identifier = isset($identifier) ? $identifier : '';
         $(document).on("click", ".btn-add-more", function() {
             if (!$container) $container = $("#details-container");
             index = $container.find(".det-row").length + 1;
-            var lIndex = parseInt(localStorage.getItem("add_more_last_index") || '0');
+            var lIndex = parseInt(localStorage.getItem("{{ $identifier }}_add_more_last_index") || '0');
 
             if (!$container) console.log('Error _add_more: no container');
             var $self = $(this);
@@ -105,7 +105,7 @@ $identifier = isset($identifier) ? $identifier : '';
             tmpRows['row-' + index] = JSON.stringify(view);
 
             localStorage.setItem('{{ $identifier }}-tmp-row', JSON.stringify(tmpRows));
-            localStorage.setItem('add_more_last_index', index);
+            localStorage.setItem('{{ $identifier }}_add_more_last_index', index);
         }
 
         function refreshTmp(tmpRowId) {

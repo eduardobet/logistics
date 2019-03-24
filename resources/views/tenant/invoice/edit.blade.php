@@ -77,6 +77,9 @@
     <script>
     var cache = {};
     $(function() {
+        localStorage.removeItem('inv-0-tmp-row');
+        localStorage.removeItem('inv-0_add_more_last_index');
+        
         $("#client_id").select2({width: 'resolve'});
 
         // client side calculation

@@ -18,7 +18,7 @@
          </div><!-- slim-pageheader -->
 
          <div class="section-wrapper pd-l-10 pd-r-10 pd-t-10 pd-b-10">
-            {!! Form::open(['route' => ['tenant.invoice.store', $tenant->domain]]) !!}
+            {!! Form::open(['route' => ['tenant.invoice.store', $tenant->domain], 'id' => 'frm-create', 'name' => 'frm-create']) !!}
                 @include('tenant.invoice._fields', [
                     'invoice' => new \Logistics\DB\Tenant\Invoice,
                     'mode' => 'create',
@@ -75,16 +75,51 @@
             var cDesc = self.find(':selected').attr('data-commission-desc');
 
             if (i && cValue && cDesc) {
-                $("#total-"+i).val(cValue);
-                $("#description-"+i).val(cDesc);
+                $("#total-"+i).val(cValue).trigger('change');
+                $("#description-"+i).val(cDesc).trigger('change');
 
                 doCalc();
             } else {
-                $("#total-"+i).val(0);
-                $("#description-"+i).val(''); 
+                $("#total-"+i).val(0).trigger('change');
+                $("#description-"+i).val('').trigger('change'); 
                 doCalc();   
             }
         });
+
+        // preserving details
+        restoreView();
+
+        $("#frm-create").change(function(e) {
+            var $el = $(e.target)
+            var id = $el.prop('id');
+            var i = $el.data('i') || $el.find(':selected').attr('data-i') || $el.closest('.row').find('.qty').data('i');
+
+            console.log("changing......")
+
+            if (tmpRows && $el.hasClass('preserve')) {
+                var cRow = JSON.parse(tmpRows['row-'+i])
+
+                var dom = $('<vaina>').append($(cRow));
+                dom.find("#"+id).each(function() {
+                    var el = $(this);
+                    var newEl = el.attr("value", $el.val());
+
+                    if (el.get(0).tagName == 'SELECT') {
+                        newEl.find("option:eq("+$el.val()+")").attr("selected", "selected");
+                    }
+
+                    el.replaceWith(newEl)
+                })
+
+                tmpRows['row-' + i] = JSON.stringify(dom.html());
+
+                localStorage.setItem('inv-0-tmp-row', JSON.stringify(tmpRows));
+
+            }
+
+        }); 
+        //
+
     });
 
     function roundToTwo(num) {    
@@ -92,14 +127,15 @@
     }
 
     function doCalc() {
-        var $els = $(".inline-calc:not('.removed')", document);
+        
+        var $els = $(".inline-calc:not('.qty, .removed')", document);
         var total = 0;
         var amountPaid = $("#amount_paid").val() || 0;
         $els.each(function(i, el) {
             var $el = $(el);
             var index = $el.data('i');
-            var qty = $("#qty-"+i).not('.removed').val() || 0;
-            var _total = $.trim($("#total-"+i).not('.removed').val()) || 0;
+            var qty = $("#qty-"+index, document).not('.removed').val() || 0;
+            var _total = $.trim($("#total-"+index, document).not('.removed').val()) || 0;
 
             total += _total * qty;
         });
@@ -110,6 +146,22 @@
         $("#pending").val(roundToTwo(total - amountPaid));
 
         $els = null;
+    }
+
+    function restoreView() {
+        var tmpRows =  JSON.parse(localStorage.getItem('inv-0-tmp-row'));
+        var $detContainer = $("#details-container");
+
+        if (tmpRows) {
+            for (const key of Object.keys(tmpRows)) {
+                var row = JSON.parse(tmpRows[key]);
+                var i = key.split("-")[1];
+                console.log(key, ' i = ', i);
+                $detContainer.append(row);
+            }
+        }
+
+        doCalc()
     }
 </script>
 @stop

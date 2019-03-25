@@ -270,13 +270,13 @@
             $els.each(function(i, el) {
                 var $el = $(el);
                 var index = $el.data('i');
-                var qty = $("#qty-"+i).not('.removed').val();
-                var length = $("#length-"+i).not('.removed').val();
-                var width = $("#width-"+i).not('.removed').val();
-                var height = $("#height-"+i).not('.removed').val();
-                var $volWeight = $("#volumetric_weight-"+i).not('.removed');
-                var $realWeight = $("#real_weight-"+i).not('.removed');
-                var $isDHL = $("#is_dhll-"+i).not('.removed');
+                var qty = $("#qty-"+index).not('.removed').val();
+                var length = $("#length-"+index).not('.removed').val();
+                var width = $("#width-"+index).not('.removed').val();
+                var height = $("#height-"+index).not('.removed').val();
+                var $volWeight = $("#volumetric_weight-"+index).not('.removed');
+                var $realWeight = $("#real_weight-"+index).not('.removed');
+                var $isDHL = $("#is_dhll-"+index).not('.removed');
                 totRealWeight += parseFloat($realWeight.val() || '0');
 
                 if (length && width && height) {
@@ -317,14 +317,14 @@
                     totalReal += parseFloat($realWeight.val() || '0') * realPrice;
                     totalVol += parseFloat($volWeight.val() || '0') * volPrice;
 
-                    if (totVolWeight > 20) $("#vol_price-"+i).val(volPrice);
-                    else $("#vol_price-"+i).val('');
-                    $("#real_price-"+i).val(realPrice);
+                    if (totVolWeight > 20) $("#vol_price-"+index).val(volPrice);
+                    else $("#vol_price-"+index).val('');
+                    $("#real_price-"+index).val(realPrice);
 
                     if (totVolWeight > 20) {
-                        $("#total-"+i).val(parseFloat($volWeight.val() || '0') * volPrice);
+                        $("#total-"+index).val(parseFloat($volWeight.val() || '0') * volPrice);
                     } else {
-                        $("#total-"+i).val(parseFloat($realWeight.val() || '0') * realPrice);
+                        $("#total-"+index).val(parseFloat($realWeight.val() || '0') * realPrice);
                     }
                     
                     @if (!request('debug'))

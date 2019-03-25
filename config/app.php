@@ -126,9 +126,9 @@ return [
     'migrations' => [
         1 => [
             'clients' => false,
-            'warehouses' => true,
-            'internet_invoices' => true,
-            'warehouse_invoices' => true,
+            'warehouses' => false,
+            'internet_invoices' => false,
+            'warehouse_invoices' => false,
         ]
     ],
 

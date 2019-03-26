@@ -43,10 +43,10 @@ $key = isset($key) ? $key : ':index:';
                     <label class="form-control-label">&nbsp;</label>
                     <br>
                     <label>
-                        {{ __("Receive :what", ['what' => __('Invoice') ]) }} {!! Form::checkbox("econtacts[{$key}][receive_inv_mail]", $econtact->receive_inv_mail, isset($econtact->receive_inv_mail), []) !!}
+                        {{ __("Receive :what", ['what' => __('Invoice') ]) }} {!! Form::checkbox("econtacts[{$key}][receive_inv_mail]", $econtact->receive_inv_mail, $econtact->receive_inv_mail==true, []) !!}
                     </label>
                     <label>
-                        {{ __("Receive :what", ['what' => __('Warehouse') ]) }} {!! Form::checkbox("econtacts[{$key}][receive_wh_mail]", $econtact->receive_wh_mail, isset($econtact->receive_wh_mail), []) !!}
+                        {{ __("Receive :what", ['what' => __('Warehouse') ]) }} {!! Form::checkbox("econtacts[{$key}][receive_wh_mail]", $econtact->receive_wh_mail, $econtact->receive_wh_mail==true, []) !!}
                     </label>
                         
                     

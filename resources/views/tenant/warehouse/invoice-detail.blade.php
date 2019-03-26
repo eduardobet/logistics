@@ -3,7 +3,7 @@ $idetail = isset($idetail) ? $idetail : new \Logistics\DB\Tenant\InvoiceDetail;
 $key = isset($key) ? $key : ':index:';
 ?>
 
-<div class="row det-row">
+<div class="row det-row" data-i="{{$key}}">
     
     <div class="col-lg-2">
         <div class="row">
@@ -70,7 +70,7 @@ $key = isset($key) ? $key : ':index:';
                 <p></p>
                 <p></p>
                 <div class="form-check">
-                    {!! Form::checkbox("invoice_detail[{$key}][is_dhll]", '2.25', $idetail->is_dhll==true, ['class' => 'form-check-input is_dhll', 'data-i' => "{$key}", 'id' => "is_dhll-{$key}", ]) !!}
+                    {!! Form::checkbox("invoice_detail[{$key}][is_dhll]", null, $idetail->is_dhll==true, ['class' => 'form-check-input is_dhll', 'data-i' => "{$key}", 'id' => "is_dhll-{$key}", ]) !!}
                     <label class="form-check-label" for="is_dhll-{{ $key }}">DHL?</label>
                 </div>
             </div>

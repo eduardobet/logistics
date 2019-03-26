@@ -52,7 +52,7 @@
 
 @section('xtra_scripts')
     @include('common._select2ize')
-    @include('common._add_more', ['identifier' => "cl-0"]))
+    @include('common._add_more', ['identifier' => "cl-0", 'no_preserve' => true,]))
     @include('common._toogle-for-text')
 
     <script>

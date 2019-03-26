@@ -58,6 +58,8 @@ trait ClientHasRelationShips
                         'pid' => $econtact->epid,
                         'email' => $econtact->eemail,
                         'telephones' => $econtact->etelephones,
+                        'receive_inv_mail' => $econtact->receive_inv_mail != null,
+                        'receive_wh_mail' => $econtact->receive_wh_mail != null,
                         'tenant_id' => $tenantId,
                     ]);
                 }

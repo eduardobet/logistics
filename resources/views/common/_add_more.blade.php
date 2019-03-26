@@ -102,17 +102,21 @@ $identifier = isset($identifier) ? $identifier : '';
             view = view.replace(/:index:/g, index);
             $container.append(view);
 
+            @if (!isset($no_preserve))
             tmpRows['row-' + index] = JSON.stringify(view);
-
+            
             localStorage.setItem('{{ $identifier }}-tmp-row', JSON.stringify(tmpRows));
             localStorage.setItem('{{ $identifier }}_add_more_last_index', index);
+            @endif
         }
 
         function refreshTmp(tmpRowId) {
+            @if (!isset($no_preserve))
             var key = 'row-' + tmpRowId;
             delete tmpRows[key];
 
             localStorage.setItem('{{ $identifier }}-tmp-row', JSON.stringify(tmpRows));
+            @endif
         }
     });
 </script>

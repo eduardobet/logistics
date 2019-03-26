@@ -267,10 +267,12 @@
                 if (isNaN(extraMartitimePrice)) extraMartitimePrice = 0;
             }
 
-            $els.each(function(i, el) {
+            $(".det-row").each(function(i, el) {
+
                 var $el = $(el);
                 var index = $el.data('i');
-                var qty = $("#qty-"+index).not('.removed').val();
+                
+                var qty = $("qty-"+index).not('.removed').val();
                 var length = $("#length-"+index).not('.removed').val();
                 var width = $("#width-"+index).not('.removed').val();
                 var height = $("#height-"+index).not('.removed').val();
@@ -282,7 +284,7 @@
                 if (length && width && height) {
 
                     if ($isDHL && $isDHL.is(':checked')) {
-                        realPrice = parseFloat($isDHL.val() || '0');
+                        realPrice = parseFloat($branchTo.find(':selected').attr('data-dhl_price') || '0');
                         using += ' via DHL';
                     } else {
                         // realPrice = parseFloat($branchTo.find(':selected').attr('data-real_price') || '0');
@@ -308,6 +310,7 @@
                     $volWeight.val(volWeight);
 
                     console.log('**************************************************** ', (length * width * height) / 1728)
+                    console.log('**************************************************** index = ', index)
 
                     totVolWeight += volWeight;
                     totalCubicFeet += cubicFeet;
@@ -352,15 +355,19 @@
                 }
                 $totRealWeight.val(totRealWeight);
 
+                
                 if (hasDet && payFirstLbs == 'true' && firstLbsPrice) {
                     
                     if(totVolWeight > 20) {
-                        if (totVolWeight > 1) totalVol = ((totVolWeight - 1) * volPrice) + firstLbsPrice;
-                        else totalVol = firstLbsPrice * totVolWeight;
+                        //if (totVolWeight > 1) totalVol = ((totVolWeight - 1) * volPrice) + firstLbsPrice;
+                        //else totalVol = firstLbsPrice * totVolWeight;
+                        //totalVol = ((totVolWeight - 1) * volPrice) + firstLbsPrice;
+                        totalVol = totVolWeight * volPrice;
                     }
-
-                    if (totRealWeight > 1) totalReal = ((totRealWeight - 1) * realPrice) + firstLbsPrice;
-                    else totalReal = totRealWeight * firstLbsPrice;
+                    
+                    //if (totRealWeight > 1) totalReal = ((totRealWeight - 1) * realPrice) + firstLbsPrice;
+                    //else totalReal = totRealWeight * firstLbsPrice;
+                    totalReal = ((totRealWeight - 1) * realPrice) + firstLbsPrice;
                 }
 
             } else if ($type.val() == 'M') {

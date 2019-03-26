@@ -62,7 +62,7 @@ class WarehouseReceiptEmail extends Mailable
                 array_merge($this->data, [
                     'box' => $box,
                     'lang' => $lang,
-                    'path' => asset('whreceipts' . $path),
+                    'path' => $this->tenant->domain . '/whreceipts/'. $path,
                 ])
             );
     }

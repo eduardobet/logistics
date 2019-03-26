@@ -266,7 +266,7 @@
         <div id="details-container">
             <div class="mg-t-25"></div>
             @foreach ($client->extraContacts as $key => $econtact)
-                @include('tenant.client.extra-contacts', ['econtact' => $econtact, 'mode' => $mode, ])
+                @include('tenant.client.extra-contacts', ['econtact' => $econtact, 'mode' => $mode ])
             @endforeach
         </div>
 

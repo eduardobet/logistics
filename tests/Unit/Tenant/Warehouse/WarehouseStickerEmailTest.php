@@ -9,10 +9,12 @@ use Logistics\DB\Tenant\Branch;
 use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Mailer;
 use Logistics\DB\Tenant\Invoice;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Logistics\Mail\Tenant\WarehouseReceiptEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Logistics\Jobs\Tenant\SendWarehouseReceiptEmail;
 
 class WarehouseStickerEmailTest extends TestCase
 {
@@ -108,5 +110,184 @@ class WarehouseStickerEmailTest extends TestCase
         $this->assertContains("Please check your warehouse receipt in attachment.", $content);
         $this->assertContains("If you can't see the attachment, please click the following link:", $content);
         $this->assertContains($email->viewData['path'], $content);
+    }
+
+    /** @test */
+    public function it_sends_the_sticker_to_the_client()
+    {
+        $this->withoutExceptionHandling();
+
+        Mail::fake();
+
+        $tenant = factory(TenantModel::class)->create(['lang' => 'en',]);
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id,  ]);
+        $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', 'initial' => 'BR']);
+        $mailer = factory(Mailer::class)->create(['tenant_id' => $tenant->id, ]);
+
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+        $admin->branchesForInvoice()->sync([$branch->id,]);
+
+        $this->actingAs($admin);
+
+        \Gate::define('edit-warehouse', function ($admin) {
+            return true;
+        });
+
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'first_name' => 'The', 'last_name' => 'Client', ]);
+
+        factory(Box::class)->create([
+            'tenant_id' => $tenant->id,
+            'client_id' => $client->id,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
+        ]);
+
+        $warehouse = $tenant->warehouses()->create([
+            'branch_to' => $branchB->id,
+            'branch_from' => $branch->id,
+            'client_id' => $client->id,
+            'mailer_id' => $mailer->id,
+            'trackings' => '1234',
+            'reference' => 'The reference',
+            'qty' => 1,
+            'type' => 'A',
+        ]);
+
+        $invoice = Invoice::create([
+            'tenant_id' => $tenant->id,
+            'warehouse_id' => $warehouse->id,
+            'client_id' => $client->id,
+            'branch_id' => $warehouse->branch_to,
+            'created_by_code' => $admin->id,
+            'updated_by_code' => $admin->id,
+            'client_name' => 'The Name of the client',
+            'client_email' => 'email@client.com',
+            'volumetric_weight' => 8,
+            'real_weight' => 9,
+            'manual_id' => 9,
+            'total' => $mailer->vol_price * 8,
+        ]);
+
+        $invoice->details()->create([
+            'qty' => 1,
+            'type' => 1,
+            'length' => 10,
+            'width' => 10,
+            'height' => 10,
+            'vol_weight' => 8,
+            'real_weight' => 9,
+        ]);
+
+        $data = [
+            'warehouse' => $warehouse,
+            'branchTo' => $tenant->branches()->select(['tenant_id', 'id', 'name', 'initial', 'address', 'telephones'])->find($warehouse->branch_to),
+            'mailer' => $tenant->mailers()->select(['tenant_id', 'id', 'name'])->find($warehouse->mailer_id),
+            'client' => $tenant->clients()
+                ->with('branch')
+                ->select(['tenant_id', 'id', 'first_name', 'last_name', 'address', 'email', 'telephones', 'branch_id', 'manual_id'])
+                ->find($warehouse->client_id),
+            'invoice' => $warehouse->invoice()
+                ->with('details')->first(),
+        ];
+
+        dispatch(new SendWarehouseReceiptEmail($tenant, $data));
+
+        Mail::assertSent( WarehouseReceiptEmail::class, function ($mail) use ($tenant, $client) {
+            return $mail->hasTo($client->email)
+                && $mail->tenant->is($tenant);
+        });
+    }
+
+    /** @test */
+    public function it_sends_the_sticker_to_the_client_extra_contact()
+    {
+        $this->withoutExceptionHandling();
+
+        Mail::fake();
+
+        $tenant = factory(TenantModel::class)->create(['lang' => 'en',]);
+         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id,  ]);
+        $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', 'initial' => 'BR']);
+        $mailer = factory(Mailer::class)->create(['tenant_id' => $tenant->id, ]);
+
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+        $admin->branchesForInvoice()->sync([$branch->id,]);
+
+         $this->actingAs($admin);
+
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'first_name' => 'The', 'last_name' => 'Client', ]);
+
+        factory(Box::class)->create([
+            'tenant_id' => $tenant->id,
+            'client_id' => $client->id,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
+        ]);
+
+        $extraContact = $client->extraContacts()->create([
+            'full_name' => 'Extra Contact',
+            'pid' => '1253-587',
+            'email' => 'extra-contact@email.test',
+            'telephones' => '555-5555',
+            'tenant_id' => $tenant->id,
+            'receive_inv_mail' => true,
+            'receive_wh_mail' => true,
+        ]);
+
+        $warehouse = $tenant->warehouses()->create([
+            'branch_to' => $branchB->id,
+            'branch_from' => $branch->id,
+            'client_id' => $client->id,
+            'mailer_id' => $mailer->id,
+            'trackings' => '1234',
+            'reference' => 'The reference',
+            'qty' => 1,
+            'type' => 'A',
+        ]);
+
+        $invoice = Invoice::create([
+            'tenant_id' => $tenant->id,
+            'warehouse_id' => $warehouse->id,
+            'client_id' => $client->id,
+            'branch_id' => $warehouse->branch_to,
+            'created_by_code' => $admin->id,
+            'updated_by_code' => $admin->id,
+            'client_name' => 'The Name of the client',
+            'client_email' => 'email@client.com',
+            'volumetric_weight' => 8,
+            'real_weight' => 9,
+            'manual_id' => 9,
+            'total' => $mailer->vol_price * 8,
+        ]);
+
+        $invoice->details()->create([
+            'qty' => 1,
+            'type' => 1,
+            'length' => 10,
+            'width' => 10,
+            'height' => 10,
+            'vol_weight' => 8,
+            'real_weight' => 9,
+        ]);
+
+        $data = [
+            'warehouse' => $warehouse,
+            'branchTo' => $tenant->branches()->select(['tenant_id', 'id', 'name', 'initial', 'address', 'telephones'])->find($warehouse->branch_to),
+            'mailer' => $tenant->mailers()->select(['tenant_id', 'id', 'name'])->find($warehouse->mailer_id),
+            'client' => $tenant->clients()
+                ->with('branch')
+                ->select(['tenant_id', 'id', 'first_name', 'last_name', 'address', 'email', 'telephones', 'branch_id', 'manual_id'])
+                ->find($warehouse->client_id),
+            'invoice' => $warehouse->invoice()
+                ->with('details')->first(),
+        ];
+
+        dispatch(new SendWarehouseReceiptEmail($tenant, $data));
+
+        Mail::assertSent(WarehouseReceiptEmail::class, function ($mail) use ( $extraContact, $client) {
+            return $mail->hasTo($client->email) && $mail->hasTo( $extraContact->email);
+        });
     }
 }

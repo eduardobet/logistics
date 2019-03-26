@@ -53,7 +53,7 @@
 
 @section('xtra_scripts')
     @include('common._select2ize')
-    @include('common._add_more', ['identifier' => "cl-{$client->id}"]))
+    @include('common._add_more', ['identifier' => "cl-{$client->id}", 'no_preserve' => true,]))
     @include('common._toogle-for-text')
 
     <script>

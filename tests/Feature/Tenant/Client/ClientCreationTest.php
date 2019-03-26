@@ -423,7 +423,7 @@ class ClientCreationTest extends TestCase
 
             // xtra contacts
             'econtacts' => [
-                ['efull_name' => 'Extra contact', 'epid' => '145', 'eemail' => 'extra-contact@email.test', 'etelephones' => '555-5557', 'eid' => null, ]
+                ['efull_name' => 'Extra contact', 'epid' => '145', 'eemail' => 'extra-contact@email.test', 'etelephones' => '555-5557', 'eid' => null, 'receive_inv_mail' => true, 'receive_wh_mail' => false, ]
             ],
 
         ]);
@@ -440,6 +440,8 @@ class ClientCreationTest extends TestCase
             $this->assertEquals('Extra contact', $econtact->full_name);
             $this->assertEquals('145', $econtact->pid);
             $this->assertEquals('555-5557', $econtact->telephones);
+            $this->assertEquals(1, $econtact->receive_inv_mail);
+            $this->assertEquals(0, $econtact->receive_wh_mail);
         });
     }
 

@@ -217,6 +217,8 @@ class ClientEditionTest extends TestCase
             'email' => 'extra-contact@email.test',
             'telephones' => '555-5555',
             'tenant_id' => $tenant->id,
+            'receive_inv_mail' => false,
+            'receive_wh_mail' => false,
         ]);
 
         $response = $this->actingAs($admin)->get(route('tenant.client.edit', [ $tenant->domain, $client->id]));
@@ -237,8 +239,8 @@ class ClientEditionTest extends TestCase
 
             // xtra contacts
             'econtacts' => [
-                ['efull_name' => 'Extra Contact update', 'epid' => '1253-587', 'eemail' => 'extra-contact@email.test', 'etelephones' => '555-5556', 'eid' => $extraContact->id, ],
-                ['efull_name' => 'New Extra contact', 'epid' => '145', 'eemail' => 'new-extra-contact@email.test', 'etelephones' => '555-5557', 'eid' => null, ]
+                ['efull_name' => 'Extra Contact update', 'epid' => '1253-587', 'eemail' => 'extra-contact@email.test', 'etelephones' => '555-5556', 'eid' => $extraContact->id, 'receive_inv_mail' => true, 'receive_wh_mail' => true, ],
+                ['efull_name' => 'New Extra contact', 'epid' => '145', 'eemail' => 'new-extra-contact@email.test', 'etelephones' => '555-5557', 'eid' => null, 'receive_inv_mail' => true, 'receive_wh_mail' => true,]
             ],
 
         ]);
@@ -257,6 +259,8 @@ class ClientEditionTest extends TestCase
             $this->assertEquals('New Extra contact', $econtact->full_name);
             $this->assertEquals('145', $econtact->pid);
             $this->assertEquals('555-5557', $econtact->telephones);
+            $this->assertEquals(1, $econtact->receive_inv_mail);
+            $this->assertEquals(1, $econtact->receive_wh_mail);
         });
     }
 

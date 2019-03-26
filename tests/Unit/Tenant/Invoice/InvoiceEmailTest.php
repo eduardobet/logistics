@@ -7,9 +7,11 @@ use Logistics\DB\User;
 use Logistics\DB\Tenant\Box;
 use Logistics\DB\Tenant\Branch;
 use Logistics\DB\Tenant\Client;
+use Illuminate\Support\Facades\Mail;
 use Logistics\Mail\Tenant\InvoiceCreated;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Logistics\Jobs\Tenant\SendInvoiceCreatedEmail;
 
 class InvoiceEmailTest extends TestCase
 {
@@ -121,5 +123,110 @@ class InvoiceEmailTest extends TestCase
         $this->assertContains("$80.00", $content);
 
         $this->assertContains("{$admin->full_name}", $content);
+    }
+
+    /** @test */
+    public function it_sends_the_invoice_email_to_the_client()
+    {
+        $this->withoutExceptionHandling();
+
+        Mail::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, ]);
+
+        factory(Box::class)->create([
+            'tenant_id' => $tenant->id,
+            'client_id' => $client->id,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
+        ]);
+
+        $branch->productTypes()->create([
+            'name' => 'Card commission', 'status' => 'A'
+        ]);
+
+        $branch->productTypes()->create([
+            'name' => 'Online shopping', 'status' => 'A'
+        ]);
+
+        $invoice = $tenant->invoices()->create([
+            'branch_id' => $branch->id,
+            'client_id' => $client->id,
+            'total' => 160,
+        ]);
+
+        $invoice->details()->create([
+            'qty' => 1,
+            'type' => 1,
+            'description' => 'Buying from amazon',
+            'id_remote_store' => '122452222',
+            'total' => 160,
+        ]);
+
+        dispatch(new SendInvoiceCreatedEmail($tenant, $invoice));
+
+        Mail::assertSent(InvoiceCreated::class, function ($mail) use ($tenant, $client) {
+            return $mail->hasTo($client->email)
+                && $mail->tenant->is($tenant);
+        });
+    }
+
+    /** @test */
+    public function it_sends_the_invoice_email_to_the_client_extra_contact()
+    {
+        $this->withoutExceptionHandling();
+
+        Mail::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, ]);
+
+        $extraContact = $client->extraContacts()->create([
+            'full_name' => 'Extra Contact',
+            'pid' => '1253-587',
+            'email' => 'extra-contact@email.test',
+            'telephones' => '555-5555',
+            'tenant_id' => $tenant->id,
+            'receive_inv_mail' => true,
+            'receive_wh_mail' => true,
+        ]);
+
+        factory(Box::class)->create([
+            'tenant_id' => $tenant->id,
+            'client_id' => $client->id,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
+        ]);
+
+        $branch->productTypes()->create([
+            'name' => 'Card commission', 'status' => 'A'
+        ]);
+
+        $branch->productTypes()->create([
+            'name' => 'Online shopping', 'status' => 'A'
+        ]);
+
+        $invoice = $tenant->invoices()->create([
+            'branch_id' => $branch->id,
+            'client_id' => $client->id,
+            'total' => 160,
+        ]);
+
+        $invoice->details()->create([
+            'qty' => 1,
+            'type' => 1,
+            'description' => 'Buying from amazon',
+            'id_remote_store' => '122452222',
+            'total' => 160,
+        ]);
+
+        dispatch(new SendInvoiceCreatedEmail($tenant, $invoice));
+
+        Mail::assertSent(InvoiceCreated::class, function ($mail) use ($extraContact, $client) {
+            return $mail->hasTo($client->email) && $mail->hasTo( $extraContact->email);
+        });
     }
 }

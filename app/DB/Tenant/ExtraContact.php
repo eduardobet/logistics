@@ -12,7 +12,7 @@ class ExtraContact extends Model
      * @var array
      */
     protected $fillable = [
-        'full_name', 'pid', 'created_by_code', 'tenant_id', 'updated_by_code', 'client_id', 'email', 'telephones',
+        'full_name', 'pid', 'created_by_code', 'tenant_id', 'updated_by_code', 'client_id', 'email', 'telephones', 'receive_inv_mail', 'receive_wh_mail',
     ];
 
     /**

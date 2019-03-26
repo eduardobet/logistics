@@ -10,7 +10,6 @@ use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Mailer;
 use Logistics\DB\Tenant\Country;
 use Logistics\DB\Tenant\Invoice;
-use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

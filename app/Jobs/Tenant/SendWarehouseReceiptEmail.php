@@ -63,7 +63,11 @@ class SendWarehouseReceiptEmail implements ShouldQueue
             $mailer->setSwiftMailer(new \Swift_Mailer($transport));
         }
 
-        $mailer->to($this->data['client']->email)
+        $client = $this->data['client'];
+        $extra = $client->extraContacts->where('receive_wh_mail', true);
+        $emails = array_merge( [$client->email], $extra->pluck('email')->toArray());
+
+        $mailer->to($emails)
             ->send(new WarehouseReceiptEmail($this->tenant, $this->data));
     }
 }

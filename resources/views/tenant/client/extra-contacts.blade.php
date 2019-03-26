@@ -8,7 +8,7 @@ $key = isset($key) ? $key : ':index:';
 
 
 <div class="row det-row">
-    <div class="col-lg-3">
+    <div class="col-lg-2">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">{{ __('Full Name') }}</label>
             {!! Form::text("econtacts[{$key}][efull_name]", $econtact->full_name, ['class' => 'form-control form-control-sm', ]) !!}
@@ -29,12 +29,27 @@ $key = isset($key) ? $key : ':index:';
         </div>
     </div>
     
-    <div class="col-lg-5">
+    <div class="col-lg-6">
         <div class="row">
-            <div class="col-10">
+            <div class="col-5">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Email') }}:</label>
                     {!! Form::email("econtacts[{$key}][eemail]", $econtact->email, ['class' => 'form-control form-control-sm', ]) !!}
+                </div>
+            </div>
+
+            <div class="col-5">
+                <div class="form-group mg-b-10-force">
+                    <label class="form-control-label">&nbsp;</label>
+                    <br>
+                    <label>
+                        {{ __("Receive :what", ['what' => __('Invoice') ]) }} {!! Form::checkbox("econtacts[{$key}][receive_inv_mail]", $econtact->receive_inv_mail, isset($econtact->receive_inv_mail), []) !!}
+                    </label>
+                    <label>
+                        {{ __("Receive :what", ['what' => __('Warehouse') ]) }} {!! Form::checkbox("econtacts[{$key}][receive_wh_mail]", $econtact->receive_wh_mail, isset($econtact->receive_wh_mail), []) !!}
+                    </label>
+                        
+                    
                 </div>
             </div>
             

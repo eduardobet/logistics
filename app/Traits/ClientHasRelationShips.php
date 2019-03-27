@@ -97,13 +97,15 @@ trait ClientHasRelationShips
     {
         $tenant = $this->getTenant();
 
-        return $tenant->clients()
+        return cache()->rememberForever("clients.tenant.{$tenant->id}.branch.{$branchId}", function () use ($tenant, $branchId) {
+            return $tenant->clients()
                 ->whereStatus('A')
                 ->whereNotNull('email')
                 ->orderBy('first_name')
                 ->withAndWhereHas('branch', function ($query) use ($branchId) {
                     $query->where('id', '=', $branchId)->where('status', '=', 'A');
                 })->get();
+        });
     }
 
     /**

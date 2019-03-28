@@ -61,6 +61,8 @@ class WarehouseStickerTest extends TestCase
             'trackings' => '1234',
             'reference' => 'The reference',
             'qty' => 1,
+            'tot_packages' => 1,
+            'tot_weight' => 150,
         ]);
 
         $invoice = Invoice::create([
@@ -103,12 +105,9 @@ class WarehouseStickerTest extends TestCase
         $this->assertContains($branchTo->address, $sticker);
 
         // packages details
-        $this->assertContains("{$detailA->vol_weight}.00LBS", $sticker);
-        $this->assertContains("{$detailA->length}.0x{$detailA->width}.0x{$detailA->height}.0", $sticker);
-        $this->assertContains("({$detailA->qty})", $sticker);
-        $this->assertContains("{$detailB->vol_weight}.00LBS", $sticker);
-        $this->assertContains("{$detailB->length}.0x{$detailB->width}.0x{$detailB->height}.0", $sticker);
-        $this->assertContains("({$detailB->qty})", $sticker);
+        $this->assertContains("{$warehouse->tot_weight}.00 LBS", $sticker);
+        $this->assertContains("0x0x0", $sticker);
+        $this->assertContains("({$warehouse->tot_packages})", $sticker);
 
         $this->assertContains("{$box->branch_code}{$client->manual_id_dsp} / {$client->full_name}      \${$invoice->total}.0", $sticker);
 

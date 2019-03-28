@@ -127,6 +127,10 @@ trait WarehouseHasRelationShips
             $invoice->update(['created_at' => Carbon::create($year, $month, $day) ]);
         }
 
+        if ( $invoice->wasRecentlyCreated) {
+            $invoice->update(['created_at' => Carbon::create($year, $month, $day) ]);
+        }
+
         $details = $request->invoice_detail ?: [];
 
         foreach ($details as $data) {

@@ -204,13 +204,13 @@
     <div class="col-lg-6">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">{{ __('Total packages') }}: <span class="tx-danger">*</span></label>
-            {!! Form::text('tot_packages', null, ['class' => 'form-control', 'required' => 1, 'id' => 'tot_packages' , ]) !!}
+            {!! Form::number('tot_packages', null, ['class' => 'form-control', 'required' => 1, 'id' => 'tot_packages' ,'step' => ".01", 'min' => "0" ]) !!}
         </div>
     </div>
     <div class="col-lg-6">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">{{ __('Total weight') }}: <span class="tx-danger">*</span></label>
-            {!! Form::text('tot_weight', null, ['class' => 'form-control', 'required' => 1, 'id' => 'reference', ]) !!}
+            {!! Form::number('tot_weight', null, ['class' => 'form-control', 'required' => 1, 'id' => 'reference', 'step' => ".01", 'min' => "0"]) !!}
         </div>
     </div>
 
@@ -220,7 +220,7 @@
     <div class="col-lg-3">
         <div class="form-group mg-b-10-force">
             <label class="form-control-label">{{ __('Amount paid') }}:</label>
-            {!! Form::text("amount_paid", $payment ? $payment->amount_paid : 0, ['class' => 'form-control ', 'id' => 'amount_paid',  ] ) !!}
+            {!! Form::number("amount_paid", $payment ? $payment->amount_paid : 0, ['class' => 'form-control ', 'id' => 'amount_paid', 'step' => ".01", 'min' => "0"  ] ) !!}
         </div>
     </div>
 
@@ -252,8 +252,17 @@
 <div class="row {{ $mode=='edit' ? null : ' d-none' }}" id="invoice-notes">
     <div class="col-lg-12">
         <div class="form-group mg-b-10-force">
-            <label class="form-control-label">{{ __('Notes') }}:  <span class="tx-danger">*</span></label>
-            {!! Form::textarea('notes', $invoice->notes, ['class' => 'form-control', 'rows' => 4, ]) !!}
+            <label class="form-control-label">{{ __('Notes') }}:  <span class="tx-danger"></span></label>
+            {!! Form::textarea('notes', $invoice->notes, ['class' => 'form-control', 'rows' => 4, 'id' => 'notes',  ]) !!}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="form-group mg-b-10-force">
+            <label class="form-control-label">{{ __('Delivered trackings') }}:  <span class="tx-danger"></span></label>
+            {!! Form::textarea('delivered_trackings', $invoice->delivered_trackings, ['class' => 'form-control', 'rows' => 4, 'id' => 'delivered_trackings', 'readonly' => 1, ]) !!}
         </div>
     </div>
 </div>

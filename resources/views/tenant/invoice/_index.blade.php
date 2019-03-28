@@ -78,6 +78,7 @@
                         data-target="#modal-payment-{{ $invoice->id }}"
                         data-index="{{ $invoice->id }}"
                         data-pending="{{ $pending }}"
+                        data-wh="{{ $invoice->warehouse_id }}"
                         >
                         <i class="fa fa-money"></i>
                     </a>

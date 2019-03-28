@@ -187,27 +187,51 @@ select2ize = function($child, items) {
         });
 
         // payment
+        var wh,pending;
         var $baseModal = $("#modal-payment");
         var $pAmount = $("#p_amount_paid");
+        var $dtContainer = $("#dt-container");
+        var $dt = $("#delivered_trackings");
         var $launcher = null
         $(".create-payment").click(function(e) {
             var $self = $(this);
             var index = $self.data('index');
-            var pending = $self.data('pending') || 0;
+            pending = $self.data('pending') || 0;
+            var _wh = $self.data('wh') || 0;
             $launcher = $self;
             $("#p_invoice_id").val(index);
             $pAmount.val(pending).attr("max", pending);
+            wh = _wh;
+
+            if (_wh) {
+                $dtContainer.removeClass('d-none');
+                $dt.prop('readOnly', false);
+            }
+            else {
+                $dtContainer.addClass('d-none');
+                $dt.prop('readOnly', true).val('');
+            }
 
             $baseModal.attr('id', 'modal-payment-'+index);
             $baseModal.on('shown.bs.modal', function () {});
         });
 
         $('#btn-cancel-payment').click(function() {
-            $("#p_amount_paid, #p_payment_method, #p_payment_ref").val("");
+            $("#p_amount_paid, #p_payment_method, #p_payment_ref, #delivered_trackings").val("");
+        });
+
+        $pAmount.blur(function(e) {
+            var amountPaid = parseFloat(this.value) || 0;
+            var total = parseFloat(pending);
+
+            if (roundToTwo(total) != roundToTwo(amountPaid)) {
+                $dt.prop('readOnly', true).val('');
+            } else $dt.prop('readOnly', false);
         });
 
         $("#form-payment").submit(function(e) {
-            
+            e.preventDefault();
+
             var $btnSubmit = $('#btn-submit-payment');
             var url = "{{ route('tenant.payment.store', $tenant->domain) }}";
             var loadingText = $btnSubmit.data('loading-text');
@@ -215,6 +239,18 @@ select2ize = function($child, items) {
             if ($btnSubmit.html() !== loadingText) {
                 $btnSubmit.data('original-text', $btnSubmit.html());
                 $btnSubmit.prop('disabled', true).html(loadingText);
+            }
+
+            if (wh) {
+                var amountPaid = parseFloat($("#p_amount_paid").val()) || 0;
+                var total = parseFloat(pending);
+
+                if ( !$.trim($dt.val()) && roundToTwo(total) == roundToTwo(amountPaid) ) {
+                    swal('', "{{ __('validation.required', ['attribute' => __('Delivered trackings') ]) }}" , 'error');
+                    $btnSubmit.prop('disabled', false).html($btnSubmit.data('original-text'));
+
+                    return;
+                }
             }
 
             var request = $.ajax({
@@ -228,6 +264,7 @@ select2ize = function($child, items) {
                     'payment_method': $("#p_payment_method").val(),
                     'payment_ref': $("#p_payment_ref").val(),
                     'created_at': $("#created_at").val(),
+                    'delivered_trackings': $("#delivered_trackings").val(),
                 }, {})
             });
 
@@ -265,8 +302,6 @@ select2ize = function($child, items) {
                 swal("", error, "error");
                 $btnSubmit.prop('disabled', false).html($btnSubmit.data('original-text'));
             });
-
-            e.preventDefault();
         });
 
 
@@ -305,5 +340,9 @@ select2ize = function($child, items) {
 
 
     });
+
+    function roundToTwo(num) {    
+        return +(Math.round(num + "e+2")  + "e-2");
+    }
 </script>
 @stop

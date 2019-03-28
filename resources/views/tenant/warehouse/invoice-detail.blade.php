@@ -10,7 +10,7 @@ $key = isset($key) ? $key : ':index:';
             <div class="col-4">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Qty') }}:</label>
-                    {!! Form::text("invoice_detail[{$key}][qty]", $idetail->qty ? $idetail->qty : 1, ['class' => 'form-control form-control-sm qty inline-calc', 'data-i' => "{$key}", 'id' => "qty-{$key}", ]) !!}
+                    {!! Form::number("invoice_detail[{$key}][qty]", $idetail->qty ? $idetail->qty : 1, ['class' => 'form-control form-control-sm qty inline-calc', 'data-i' => "{$key}", 'id' => "qty-{$key}", ]) !!}
                 </div>
             </div>
     
@@ -28,21 +28,21 @@ $key = isset($key) ? $key : ':index:';
             <div class="col-4">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Length') }}:</label>
-                    {!! Form::text("invoice_detail[{$key}][length]", $idetail->length ?: 0, ['class' => 'form-control form-control-sm length inline-calc', 'data-i' => "{$key}", 'id' => "length-{$key}", ]) !!}
+                    {!! Form::number("invoice_detail[{$key}][length]", $idetail->length ?: 0, ['class' => 'form-control form-control-sm length inline-calc', 'data-i' => "{$key}", 'id' => "length-{$key}", 'step' => ".01", 'min' => "0", ]) !!}
                 </div>
             </div>
 
             <div class="col-4">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Width') }}:</label>
-                    {!! Form::text("invoice_detail[{$key}][width]", $idetail->width ?: 0, ['class' => 'form-control form-control-sm  inline-calc width', 'data-i' => "{$key}", 'id' => "width-{$key}", ]) !!}
+                    {!! Form::number("invoice_detail[{$key}][width]", $idetail->width ?: 0, ['class' => 'form-control form-control-sm  inline-calc width', 'data-i' => "{$key}", 'id' => "width-{$key}", 'step' => ".01", 'min' => "0", ]) !!}
                 </div>
             </div>
 
             <div class="col-4">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('Height') }}:</label>
-                    {!! Form::text("invoice_detail[{$key}][height]", $idetail->height ?: 0, ['class' => 'form-control form-control-sm inline-calc height', 'data-i' => "{$key}", 'id' => "height-{$key}", ]) !!}
+                    {!! Form::number("invoice_detail[{$key}][height]", $idetail->height ?: 0, ['class' => 'form-control form-control-sm inline-calc height', 'data-i' => "{$key}", 'id' => "height-{$key}", 'step' => ".01", 'min' => "0", ]) !!}
                 </div>
             </div>
         </div>
@@ -61,7 +61,7 @@ $key = isset($key) ? $key : ':index:';
             <div class="col-3">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('P/Real') }}:</label>
-                    {!! Form::text("invoice_detail[{$key}][real_weight]", $idetail->real_weight, ['class' => 'form-control form-control-sm inline-calc real_weight', 'data-i' => "{$key}", 'id' => "real_weight-{$key}", ]) !!}
+                    {!! Form::number("invoice_detail[{$key}][real_weight]", $idetail->real_weight, ['class' => 'form-control form-control-sm inline-calc real_weight', 'data-i' => "{$key}", 'id' => "real_weight-{$key}", 'step' => ".01", 'min' => "0", ]) !!}
                 </div>
             </div>
             

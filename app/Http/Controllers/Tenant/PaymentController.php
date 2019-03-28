@@ -163,7 +163,7 @@ class PaymentController extends Controller
             $pending = $invoice->total - $totalPaid;
 
             if (!$pending) {
-                $invoice->update(['is_paid' => true]);
+                $invoice->update(['is_paid' => true, 'delivered_trackings' => $request->delivered_trackings, ]);
             }
             if ($invoice->client->email !== $tenant->email_allowed_dup) {
                 dispatch(new SendPaymentCreatedEmail($tenant, $invoice, $payment));
@@ -274,6 +274,7 @@ class PaymentController extends Controller
             'amount_paid' => 'required|numeric',
             'payment_method' => 'required|integer',
             'payment_ref' => 'required|between:3,255',
+            'delivered_trackings' => 'nullable|string',
         ];
 
         return Validator::make($request->all(), array_merge($rules, $extraRules));

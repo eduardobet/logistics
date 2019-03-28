@@ -90,7 +90,7 @@ class SearchController extends Controller
                             'client' => function ($query) {
                                 $query->with('branch')->select(['id', 'manual_id', 'first_name', 'last_name', 'org_name', 'email']);
                             },
-                            'fromBranch',
+                            'fromBranch', 'creator',
                         ])->where('manual_id', $qId);
                         $totResult = $results->count();
 
@@ -108,7 +108,7 @@ class SearchController extends Controller
                             $results = $results->with('branch');
                         }
 
-                        $results = $results->where('id', $qId);
+                        $results = $results->with('creator')->where('id', $qId);
 
                         $reca = true;
                         $totResult = $results->count();
@@ -176,9 +176,12 @@ class SearchController extends Controller
                         $cargoEntries = $cargoEntries->with('branch');
                     }
 
-                    $data['cargo_entries'] = $cargoEntries->where('trackings', 'like', "%$term%")->get();
+                    $data['cargo_entries'] = $cargoEntries->with(['creator' => function ($creator) {
+                        $creator->select(['id', 'first_name', 'last_name', ]);
+                    }])
+                    ->where('trackings', 'like', "%$term%")->get();
 
-                    $warehouses = $tenant->warehouses();
+                    $warehouses = $tenant->warehouses()->with('creator');
 
                     if (!$superAdmin) {
                         $warehouses = $warehouses->withAndWhereHas('toBranch', function ($query) use ($cBranchId) {

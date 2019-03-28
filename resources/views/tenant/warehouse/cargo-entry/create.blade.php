@@ -56,7 +56,7 @@
                     
                     
                     <div class="form-group mg-b-0-force">
-                        <button class="btn btn-primary" type="submit"><b>{{ __('Save') }}</b></button><br>
+                        <button id="btn-submit" class="btn btn-primary" type="submit"><b>{{ __('Save') }}</b></button><br>
                     </div>
 
                     </div><!-- card -->
@@ -136,6 +136,24 @@
                 });
             }
          });
+
+         //check dups
+         $("#frm-cargo-entry").submit(function(e){
+             e.preventDefault()
+             e.stopImmediatePropagation();
+             var $btn = $("#btn-submit");
+             $btn.prop('disabled', true);
+             if (this.checkValidity()) {
+                 var $trackings = $("#trackings");
+                 var trackings = $.trim($trackings.val());
+                 var noDupes = [...new Set(trackings.split("\n"))];
+
+                 $trackings.val(noDupes.join("\n"));
+                 
+                 this.submit();
+             } else $btn.prop('disabled', false);
+
+         }); 
 
      });
     

@@ -263,7 +263,10 @@ class WarehouseController extends Controller
         $warehouse->type = $request->type;
         $warehouse->tot_packages = $request->tot_packages ?: 0;
         $warehouse->tot_weight = $request->tot_weight ?: 0;
-        $warehouse->created_at = Carbon::create($year, $month, $day);
+        
+        if ( $warehouse->created_at->format('Y-m-d') != request('created_at') ) {
+            $warehouse->created_at = Carbon::create($year, $month, $day);
+        }
         $warehouse->force_updated_at = time();
             
         $updated = $warehouse->save();

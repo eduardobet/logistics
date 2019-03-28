@@ -30,9 +30,9 @@
 
       <tr>
         <td style="text-align:center;border-top: 1px solid #000;" colspan="2">
-            @foreach ($invoice ? $invoice->details : [] as $detail)
-                {{ number_format($detail->vol_weight, 2) }}LBS &nbsp;&nbsp;&nbsp;&nbsp; {{ $detail->length }}x{{ $detail->width }}x{{ $detail->height }} &nbsp;&nbsp;&nbsp;&nbsp; ({{ $detail->qty }}) <br>
-            @endforeach
+            @if ($warehouse->tot_packages && $warehouse->tot_weight)
+                {{ number_format($warehouse->tot_weight, 2) }} LBS &nbsp;&nbsp;&nbsp;&nbsp; 0x0x0 &nbsp;&nbsp;&nbsp;&nbsp; ({{ $warehouse->tot_packages }})<br>
+            @endif
             
             @if ($client)
             {{ $client->branch->code }}{{ $client->manual_id_dsp }} / {{ $client->full_name }}      ${{ number_format($invoice ? $invoice->total : 0, 2) }}

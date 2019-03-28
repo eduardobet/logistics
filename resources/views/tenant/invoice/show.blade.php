@@ -13,7 +13,6 @@
     <div class="container">
       <div class="slim-pageheader hidden-print d-print-none">
         <ol class="breadcrumb slim-breadcrumb">
-          <li class="breadcrumb-item"><a href="{{ route('tenant.invoice.list', [$tenant->domain, 'client_id' => request('client_id'), 'branch_id' => request('branch_id'), ]) }}">{{ __('Invoices') }}</a></li>
           <li class="breadcrumb-item">{{ __('Showing :what', ['what' => __('Invoice') ]) }}</li>
         </ol>
         <h6 class="slim-pagetitle">{{ __('Invoice details') }}</h6>
@@ -52,7 +51,11 @@
                         <span>{{ __('Warehouse') }}</span>
                         <span>
                             @if ($invoice->warehouse_id)
+                                @if ($user->isClient())
+                                <a href="{{ route('tenant.warehouse.show', [$tenant->domain, $invoice->warehouse_id]) }}">WH-{{ $invoice->warehouse->manual_id_dsp }}</a>
+                                @else   
                                 <a href="{{ route('tenant.warehouse.edit', [$tenant->domain, $invoice->warehouse_id]) }}">WH-{{ $invoice->warehouse->manual_id_dsp }}</a>
+                                @endif
                             @else
                                 <a href="#">WH-0</a>   
                             @endif

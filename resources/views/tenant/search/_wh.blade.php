@@ -7,10 +7,12 @@
             </h5>
             <h5 class="tx-bold tx-success"> {{ optional($result->client)->full_name }} / {{ $result->toBranch ? $result->toBranch->code : null }}{{ optional($result->client)->manual_id_dsp }}</h5>
             </div>
-            <p class="mb-1">[{{ $result->fromBranch->code }}] {{ $result->fromBranch->name }}
+            <p class="mb-1">
+                [{{ $result->fromBranch->code }}] {{ $result->fromBranch->name }}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 [{{ $result->toBranch->code }}] {{ $result->toBranch->name }}
             </p>
+            <p class="mb-1">{{ __('By') }}: {{ $result->creator->full_name }}</p>
             <small>
 
             @can('edit-warehouse')

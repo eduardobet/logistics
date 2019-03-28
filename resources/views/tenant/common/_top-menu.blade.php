@@ -12,8 +12,8 @@
           </h2>
 
           <div class="search-box">
-            <input type="text" id="q" class="form-control" placeholder="{{ __('Search') }}">
-            <button id="btn-search" class="btn btn-primary"><i class="fa fa-search"></i></button>
+            <input type="text" id="q" class="form-control" placeholder="{{ __('Search') }}"{{ $user->isClient() ? " disabled" : null }}>
+            <button id="btn-search" class="btn btn-primary"{{ $user->isClient() ? " disabled" : null }}><i class="fa fa-search"></i></button>
           </div><!-- search-box -->
         </div><!-- slim-header-left -->
         <div class="slim-header-right">

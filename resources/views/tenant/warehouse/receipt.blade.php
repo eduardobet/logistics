@@ -12,8 +12,6 @@
      @if (!request('__print_it') && !request('__send_it'))
       <div class="slim-pageheader hidden-print d-print-none">
         <ol class="breadcrumb slim-breadcrumb">
-          <li class="breadcrumb-item"><a href="/">Home</a></li>
-          <li class="breadcrumb-item"><a href="{{ route('tenant.warehouse.edit', [$tenant->domain, $warehouse->id]) }}">{{ __('Warehouse', [], $lang) }}</a></li>
           <li class="breadcrumb-item active" aria-current="page">{{ __('Warehouse receipt', [], $lang) }}</li>
         </ol>
         <h6 class="slim-pagetitle">{{ __('Warehouse receipt', [], $lang) }}</h6>

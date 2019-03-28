@@ -39,6 +39,9 @@ class WarehouseRequest extends AppFormRequest
             'tot_packages' => 'required|integer',
             'tot_weight' => 'required|numeric',
 
+            //invoice
+            'delivered_trackings' => 'sometimes|string',
+
             // payment
             'amount_paid' => 'sometimes|numeric',
             'payment_method' => 'sometimes|integer',

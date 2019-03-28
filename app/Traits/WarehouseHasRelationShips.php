@@ -119,9 +119,13 @@ trait WarehouseHasRelationShips
                 'total' => $request->total,
                 'notes' => $request->notes,
                 'is_paid' => $request->amount_paid && $request->amount_paid == $request->total,
-                'created_at' => Carbon::create($year, $month, $day),
+                'delivered_trackings' => $request->delivered_trackings,
             ] + $using
         );
+
+        if ($invoice->wasChanged() && $invoice->created_at->format('Y-m-d') != request('created_at')) {
+            $invoice->update(['created_at' => Carbon::create($year, $month, $day) ]);
+        }
 
         $details = $request->invoice_detail ?: [];
 
@@ -152,9 +156,12 @@ trait WarehouseHasRelationShips
                 'amount_paid' => $request->amount_paid,
                 'payment_method' => $request->payment_method,
                 'payment_ref' => $request->payment_ref,
-                'created_at' => Carbon::create($year, $month, $day),
                 'is_first' => true,
             ]);
+
+            if ($payment->wasChanged() && $payment->created_at->format('Y-m-d') != request('created_at')) {
+                $payment->update(['created_at' => Carbon::create($year, $month, $day) ]);
+            }
 
             if ($client->email !== $tenant->email_allowed_dup) {
                 dispatch(new SendPaymentCreatedEmail($tenant, $invoice, $payment));

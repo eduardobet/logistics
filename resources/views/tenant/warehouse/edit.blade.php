@@ -75,7 +75,16 @@
 @endsection
 
 @section('xtra_styles')
-    <style>input[data-readonly] {pointer-events: none;}</style>
+    <style>input[data-readonly] {pointer-events: none;}
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type=number] {
+        -moz-appearance:textfield;
+    }
+    </style>
 @endsection
 
 
@@ -435,12 +444,26 @@
             }
 
              var amountPaid = parseFloat($("#amount_paid", document).val()) || 0;
+             var $deliveredPack = $("#delivered_trackings");
 
              if (amountPaid) {
                  var total = $total.val() || 0;
                  var pending = roundToTwo(total - amountPaid);
 
-                if (pending > -1) $("#pending", document).val(pending);
+                if (pending > -1) {
+                    $("#pending", document).val(pending);
+                    @if (!$invoice->is_paid)
+                    $deliveredPack.prop('required', false).prop('readOnly', true).val('');
+                    @endif
+                }
+                @if (!$invoice->is_paid)
+                if (pending == 0) $deliveredPack.prop('required', true).prop('readOnly', false);
+                @endif
+             } else {
+                 $("#pending", document).val('');
+                 @if (!$invoice->is_paid)
+                 $deliveredPack.prop('required', false).prop('readOnly', true).val('');
+                 @endif
              }
 
         }
@@ -470,10 +493,34 @@
 
         $(function() {
             $("#frm-edit").submit(function(e) {
-                if (!parseFloat($("#total").val() || '0')) {
+                var $btn = $("#btn-wh-save");
+                var proceed = true;
+                $btn.prop('disabled', true);
+
+                if ($(".det-row", document).length && !parseFloat($("#total").val() || '0')) {
                     swal('', "{{ __('validation.required', ['attribute' => __('Total to invoice') ]) }}" , 'error');
-                    e.preventDefault();
-                } else this.submit()
+                    $btn.prop('disabled', false);
+                    proceed = false;
+                } else {
+                    var total = parseFloat($("#total", document).val() || '0');
+                    var amountPaid = parseFloat($("#amount_paid").val() || '0');
+                    var $deliveredPack = $("#delivered_trackings");
+
+                    if (amountPaid && !$("#payment_method").val()) {
+                        swal('', "{{ __('validation.required', ['attribute' => __('Payment method') ]) }}" , 'error');
+                        $btn.prop('disabled', false);
+                        proceed = false;
+                    }
+
+                    else if ( !$.trim($deliveredPack.val()) && roundToTwo(total) == roundToTwo(amountPaid) ) {
+                        swal('', "{{ __('validation.required', ['attribute' => __('Delivered trackings') ]) }}" , 'error');
+                        $btn.prop('disabled', false);
+                        proceed = false;
+                    }
+                }
+                
+                if(proceed) this.submit();
+                e.preventDefault();
             });
 
             // toggle status

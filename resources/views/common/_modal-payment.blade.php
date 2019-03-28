@@ -52,6 +52,14 @@
                              </div>
                         </div>
 
+                        <div class="row d-none" id="dt-container">
+                            <div class="col-lg-12">
+                                <div class="form-group mg-b-10-force">
+                                    <label class="form-control-label">{{ __('Delivered trackings') }}:  <span class="tx-danger"></span></label>
+                                    {!! Form::textarea('delivered_trackings', null, ['class' => 'form-control', 'rows' => 4, 'id' => 'delivered_trackings', 'readonly' => 1, ]) !!}
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
                     <div class="modal-footer">

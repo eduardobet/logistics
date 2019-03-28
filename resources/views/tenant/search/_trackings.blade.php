@@ -11,6 +11,7 @@
                     </h5>
                     </div>
                     <p class="mb-1">[{{ $result->branch->code }}] {{ $result->branch->name }}</p>
+                    <p class="mb-1">{{ __('By') }}: {{ $result->creator->full_name }}</p>
                     <p class="mb-1">{{ $result->created_at->format('d/m/Y H:i a') }}</p>
 
                     <p class="mb-1">
@@ -48,6 +49,7 @@
                     </h5>
                     </div>
                     <p class="mb-1">[{{ $result->toBranch->code }}] {{ $result->toBranch->name }}</p>
+                    <p class="mb-1">{{ __('By') }}: {{ $result->creator->full_name }}</p>
                     <p class="mb-1">{{ $result->created_at->format('d/m/Y H:i a') }}</p>
 
                     <small>

@@ -335,7 +335,7 @@ class InvoiceEditionTest extends TestCase
 
         $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'pay_volume' => true, 'vol_price' => 2.00 ]);
 
-        $box = factory(Box::class)->create([
+        factory(Box::class)->create([
             'tenant_id' => $tenant->id,
             'client_id' => $client->id,
             'branch_id' => $branch->id,
@@ -348,6 +348,26 @@ class InvoiceEditionTest extends TestCase
             'total' => 160,
         ]);
 
+        $paymentA = $invoice->payments()->create([
+            'id' => 1,
+            'tenant_id' => $invoice->tenant_id,
+            'amount_paid' => 80,
+            'payment_method' => 1,
+            'payment_ref' => 'The client paid $100.00',
+            'is_first' => true,
+            'notes' => 'Payment notes',
+        ]);
+
+        $paymentB = $invoice->payments()->create([
+            'id' => 2,
+            'tenant_id' => $invoice->tenant_id,
+            'amount_paid' => 60,
+            'payment_method' => 1,
+            'payment_ref' => 'The client paid $60.00',
+            'is_first' => true,
+            'notes' => 'Payment notes',
+        ]);
+
         $response = $this->actingAs($admin)->get(route('tenant.invoice.edit', [$tenant->domain, $invoice->id]));
         $response->assertStatus(200);
         $response->assertViewIs('tenant.invoice.edit');
@@ -358,7 +378,9 @@ class InvoiceEditionTest extends TestCase
         ], $this->headers());
         
         $invoice = $invoice->fresh()->first();
-        
+        $paymentA = $invoice->payments->first();
+        $paymentB = $invoice->payments->last();
+
         $response->assertStatus(200);
         $response->assertJson([
             'error' => false,
@@ -366,6 +388,8 @@ class InvoiceEditionTest extends TestCase
         ]);
 
         $this->assertEquals('I', $invoice->status);
+        $this->assertEquals('I', $paymentA->status);
+        $this->assertEquals('I', $paymentB->status);
     }
 
     /** @test */

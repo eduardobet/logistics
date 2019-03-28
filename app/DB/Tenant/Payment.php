@@ -13,6 +13,7 @@ class Payment extends Model
      */
     protected $fillable = [
         'created_by_code', 'tenant_id', 'updated_by_code', 'invoice_id', 'amount_paid', 'payment_method', 'payment_ref', 'is_first', 'created_at',
+        'notes', 'status',
     ];
 
     /**
@@ -61,6 +62,16 @@ class Payment extends Model
     {
         return $query->whereHas($relation, $constraint)
             ->with([$relation => $constraint]);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'A');
+    }
+
+    public function scopeInactive($query)
+    {
+        return $query->where('status', 'I');
     }
 
     /**

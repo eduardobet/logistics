@@ -196,7 +196,7 @@ class InvoiceController extends Controller
             'branch',
             'warehouse',
             'payments' => function ($payment) {
-                $payment->with(['creator']);
+                $payment->active()->with(['creator']);
             },
             'client' => function ($client) {
                 $client->with(['branch']);
@@ -225,7 +225,7 @@ class InvoiceController extends Controller
         $tenant = $this->getTenant();
         $user = auth()->user();
         $invoice = $tenant->invoices()->with(['details', 'creator', 'editor', 'client', 'branch', 'payments' => function ($payment) {
-            $payment->with(['creator']);
+            $payment->active()->with(['creator']);
         }]);
 
         if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
@@ -237,7 +237,7 @@ class InvoiceController extends Controller
         return view('tenant.invoice.edit', [
             'clients' => (new Client())->getClientsByBranch(request('branch_id')),
             'invoice' => $invoice,
-            'payments' => $invoice->payments,
+            'payments' => $invoice->payments()->active()->get(),
             'product_types' => $invoice->branch->productTypes()->active()->get(),
         ]);
     }
@@ -261,7 +261,7 @@ class InvoiceController extends Controller
 
         $invoice = $invoice->findOrFail($id);
 
-        $payment = $invoice->payments->where('is_first', true)->first();
+        $payment = $invoice->payments()->active()->get()->where('is_first', true)->first();
 
         [$year, $month, $day]  = array_map('intval', explode('-', request('created_at', date('Y-m-d'))));
 
@@ -359,7 +359,7 @@ class InvoiceController extends Controller
 
         $invoice = $invoice->findOrFail($id);
 
-        $payments = $invoice->payments;
+        $payments = $invoice->payments()->active()->get();
 
         $client = $invoice->client()->with('branch')->first();
         $branch = $client->branch;
@@ -420,7 +420,10 @@ class InvoiceController extends Controller
 
         $tenant = $this->getTenant();
         $user = auth()->user();
-        $invoice = $tenant->invoices()->where('is_paid', false)->with(['payments']);
+        $invoice = $tenant->invoices()->where('is_paid', false)
+            ->with(['payments' => function ($payment) {
+                $payment->active();
+            }]);
 
         if (!$user->isSuperAdmin() && !$user->isAdmin() && !$user->isWarehouse()) {
             $invoice = $invoice->where('branch_id', $user->currentBranch()->id);
@@ -442,7 +445,7 @@ class InvoiceController extends Controller
         ]);
         
         if ($fined) {
-            $totalPaid = $invoice->fresh()->payments->fresh()->sum('amount_paid');
+            $totalPaid = $invoice->fresh()->payments()->active()->get()->fresh()->sum('amount_paid');
             $pending = $invoice->total - $totalPaid;
 
             return response()->json([
@@ -491,6 +494,8 @@ class InvoiceController extends Controller
         }
         
         if ($inactive) {
+            $invoice->payments()->update(['status' => 'I', 'updated_by_code' => $user->id, ]);
+            
             return response()->json([
                 'error' => false,
                 'msg' => __('Success'),

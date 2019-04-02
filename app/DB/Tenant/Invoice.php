@@ -5,9 +5,12 @@ namespace Logistics\DB\Tenant;
 use Logistics\DB\User;
 use Logistics\DB\Tenant\Payment;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Invoice extends Model
+class Invoice extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -57,6 +60,16 @@ class Invoice extends Model
 
             __do_forget_cache(__class__, $keys, []);
         });
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function transformAudit(array $data): array
+    {
+        $data['tenant_id'] = $this->tenant_id;
+        
+        return $data;
     }
 
     public function getManualIdDspAttribute()

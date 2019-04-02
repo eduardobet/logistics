@@ -268,13 +268,16 @@ class InvoiceController extends Controller
         $invoice->client_id = $request->client_id;
         $invoice->total = $request->total;
         $invoice->notes = $request->notes;
-        $invoice->created_at = Carbon::create($year, $month, $day);
 
         if ($request->amount_paid) {
             $invoice->is_paid = $request->amount_paid == $request->total;
         }
 
         $invoice->save();
+
+        if ($invoice->wasChanged() && $invoice->created_at->format('Y-m-d') != request('created_at')) {
+            $invoice->update(['created_at' => Carbon::create($year, $month, $day)]);
+        }
 
         if ($invoice) {
             foreach ($request->invoice_detail as $detail) {
@@ -298,9 +301,12 @@ class InvoiceController extends Controller
                 $payment->amount_paid = $request->amount_paid;
                 $payment->payment_method = $request->payment_method;
                 $payment->payment_ref = $request->payment_ref;
-                $payment->created_at = Carbon::create($year, $month, $day);
                 $payment->is_first = true;
                 $payment->save();
+
+                if ($payment->wasChanged() && $payment->created_at->format('Y-m-d') != request('created_at')) {
+                    $payment->update(['created_at' => Carbon::create($year, $month, $day)]);
+                }
             }
             
             if ($invoice->client->email !== $tenant->email_allowed_dup) {

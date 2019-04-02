@@ -97,7 +97,7 @@
           @endif
 
           @if (!$user->isClient())
-          <li class="nav-item with-sub {{ active(['tenant.admin.branch.list','tenant.admin.branch.create', 'tenant.admin.branch.edit', 'tenant.admin.employee.list','tenant.admin.employee.create', 'tenant.admin.employee.edit', 'tenant.admin.position.list','tenant.admin.position.create', 'tenant.admin.position.edit', 'tenant.admin.company.edit']) }}">
+          <li class="nav-item with-sub {{ active(['tenant.admin.branch.list','tenant.admin.branch.create', 'tenant.admin.branch.edit', 'tenant.admin.employee.list','tenant.admin.employee.create', 'tenant.admin.employee.edit', 'tenant.admin.position.list','tenant.admin.position.create', 'tenant.admin.position.edit', 'tenant.admin.company.edit', 'tenant.audit.list', 'tenant.audit.show',]) }}">
             <a class="nav-link" href="#">
               <i class="icon ion-ios-gear-outline"></i>
               <span>{{ __('System') }}</span>
@@ -115,6 +115,8 @@
                 @can('show-mailer')
                   <li><a href="{{ route('tenant.mailer.list', $tenant->domain) }}">{{ __('Mailers') }}</a></li>
                 @endcan
+
+                <li><a href="{{ route('tenant.audit.list', $tenant->domain) }}">{{ __('Audit') }}</a></li>
               </ul>
             </div><!-- dropdown-menu -->
           </li>

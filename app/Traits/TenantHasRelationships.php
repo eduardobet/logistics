@@ -89,6 +89,11 @@ trait TenantHasRelationships
         return $this->hasMany(\Logistics\DB\Tenant\MisidentifiedPackage::class);
     }
 
+    public function audits()
+    {
+        return $this->hasMany(\OwenIt\Auditing\Models\Audit::class)->orderBy('created_at', 'DESC');
+    }
+
     /**
      * Get the telephones for display.
      *

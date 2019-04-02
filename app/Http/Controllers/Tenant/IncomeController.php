@@ -26,7 +26,7 @@ class IncomeController extends Controller
 
         $from =  Carbon::parse(request('from', date('Y-m-d')))->startOfDay();
         $to =  Carbon::parse(request('to', date('Y-m-d')))->endOfDay();
-        $paymentsByType = $tenant->payments()
+        $paymentsByType = $tenant->payments()->active()
             ->with(['invoice' => function ($invoice) {
                 $invoice->with('warehouse');
             }])

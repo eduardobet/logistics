@@ -50,7 +50,9 @@ class SearchController extends Controller
 
                         $results = $results->with(['clientInvoices' => function ($invoice) {
                             $invoice->where('is_paid', false)->where('status', 'A')
-                            ->with('payments');
+                            ->with(['payments' => function ($payment) {
+                                $payment->active();
+                            }]);
                         }])->where('manual_id', $qId);
          
                         $client = true;
@@ -133,7 +135,9 @@ class SearchController extends Controller
                         
                     $results = $results->with(['clientInvoices' => function ($invoice) {
                         $invoice->where('is_paid', false)->where('status', 'A')
-                                ->with('payments');
+                                ->with(['payments' => function ($payment) {
+                                    $payment->active();
+                                }]);
                     }]);
 
                     $totResult = $results->count();
@@ -157,7 +161,9 @@ class SearchController extends Controller
 
                     $results = $results->with(['clientInvoices' => function ($invoice) {
                         $invoice->where('is_paid', false)->where('status', 'A')
-                            ->with('payments');
+                            ->with(['payments' => function ($payment) {
+                                $payment->active();
+                            }]);
                     }]);
 
                     $client = true;

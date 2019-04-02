@@ -55,7 +55,9 @@
 
                 @if ($invoice && $invoice->is_paid)
                     <?php $payments = $invoice->payments; $lPayment = $payments->last(); ?>
-                    <p>{{ __('Delivered by') }} <b>{{ $lPayment->creator->full_name }}</b> | <b>{{ $lPayment->created_at->format('d/m/Y') }}</b> | {{ $lPayment->created_at->format('g:i A') }} </p>
+                    @if ($lPayment)
+                        <p>{{ __('Delivered by') }} <b>{{ $lPayment->creator->full_name }}</b> | <b>{{ $lPayment->created_at->format('d/m/Y') }}</b> | {{ $lPayment->created_at->format('g:i A') }} </p>
+                    @endif
                 @endif
                 
             </div>

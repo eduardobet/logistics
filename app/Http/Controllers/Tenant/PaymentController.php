@@ -87,7 +87,9 @@ class PaymentController extends Controller
         }
 
         return response()->json([
-            'view' => view('tenant.payment.create', ['invoice' => $invoice, 'payments' => $invoice->payments, ])->render(),
+            'view' => view('tenant.payment.create', [
+                'invoice' => $invoice, 'payments' => $invoice->payments()->active()->get(),
+            ])->render(),
             'error' => false,
         ], 200);
     }
@@ -127,7 +129,7 @@ class PaymentController extends Controller
             ], 404);
         }
 
-        $totalPaid  = $invoice->payments->sum('amount_paid');
+        $totalPaid  = $invoice->payments()->active()->get()->sum('amount_paid');
 
         /*if ($invoice->warehouse_id && $request->amount_paid < ($invoice->total - $totalPaid)) {
             return response()->json([
@@ -194,7 +196,7 @@ class PaymentController extends Controller
     {
         $tenant = $this->getTenant();
 
-        $payment = $tenant->payments()
+        $payment = $tenant->payments()->active()
             ->with([
                 'creator',
                 'invoice' => function ($invoice) {
@@ -239,8 +241,23 @@ class PaymentController extends Controller
             ], 404);
         }
 
-        $payment->payment_method = $request->payment_method;
+        $unpayInvoice = false;
+
+        if ($request->toggling) {
+            $payment->notes =  $request->notes . PHP_EOL . $payment->notes;
+            $payment->status = $request->status;
+            $unpayInvoice = true;
+        } else {
+            $payment->payment_method = $request->payment_method;
+        }
+
         $updated = $payment->save();
+
+        if ($updated) {
+            if ($unpayInvoice) {
+                $payment->invoice->update(['is_paid' => false, 'updated_by_code' => auth()->id(), ]);
+            }
+        }
 
         if ($updated) {
             return response()->json([
@@ -248,7 +265,6 @@ class PaymentController extends Controller
                 'msg' => __('Success'),
             ], 200);
         }
-
 
         return response()->json([
             'error' => true,

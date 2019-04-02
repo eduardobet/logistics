@@ -166,7 +166,7 @@ class WarehouseController extends Controller
             ->where('id', $id)->firstOrFail();
 
         $invoice = $warehouse->invoice()->with(['creator', 'payments' => function ($payment) {
-            $payment->with('creator');
+            $payment->active()->with('creator');
         }])->first();
 
         if (!$invoice) {
@@ -203,7 +203,7 @@ class WarehouseController extends Controller
             ->where('id', $id)->firstOrFail();
 
         $invoice = $warehouse->invoice()->with(['creator', 'payments' => function ($payment) {
-            $payment->with('creator');
+            $payment->active()->with('creator');
         }])->first();
 
         if (!$invoice) {
@@ -264,7 +264,7 @@ class WarehouseController extends Controller
         $warehouse->tot_packages = $request->tot_packages ?: 0;
         $warehouse->tot_weight = $request->tot_weight ?: 0;
         
-        if ( $warehouse->created_at->format('Y-m-d') != request('created_at') ) {
+        if ($warehouse->created_at->format('Y-m-d') != request('created_at')) {
             $warehouse->created_at = Carbon::create($year, $month, $day);
         }
         $warehouse->force_updated_at = time();
@@ -311,7 +311,7 @@ class WarehouseController extends Controller
             
             if ($invoice) {
                 $invoice->status = $request->status;
-                $invoice->notes = $invoice->notes . PHP_EOL . $request->notes;
+                $invoice->notes = $request->notes . PHP_EOL . $invoice->notes;
                 $invoice->save();
             }
 

@@ -127,7 +127,7 @@ trait WarehouseHasRelationShips
             $invoice->update(['created_at' => Carbon::create($year, $month, $day) ]);
         }
 
-        if ( $invoice->wasRecentlyCreated) {
+        if ($invoice->wasRecentlyCreated) {
             $invoice->update(['created_at' => Carbon::create($year, $month, $day) ]);
         }
 
@@ -155,7 +155,7 @@ trait WarehouseHasRelationShips
         }
 
         if ($request->amount_paid > 0) {
-            $payment = $invoice->payments()->updateOrCreate(['tenant_id' => $this->tenant_id, 'id' => $request->payment_id], [
+            $payment = $invoice->payments()->active()->updateOrCreate(['tenant_id' => $this->tenant_id, 'id' => $request->payment_id], [
                 'tenant_id' => $invoice->tenant_id,
                 'amount_paid' => $request->amount_paid,
                 'payment_method' => $request->payment_method,
@@ -164,6 +164,10 @@ trait WarehouseHasRelationShips
             ]);
 
             if ($payment->wasChanged() && $payment->created_at->format('Y-m-d') != request('created_at')) {
+                $payment->update(['created_at' => Carbon::create($year, $month, $day) ]);
+            }
+
+            if ($payment->wasRecentlyCreated) {
                 $payment->update(['created_at' => Carbon::create($year, $month, $day) ]);
             }
 

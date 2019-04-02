@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 trait PaymentList
 {
     /**
-     * Gey payment list
+     * Get payment list
      *
      * @return mixed
      */
@@ -29,6 +29,7 @@ trait PaymentList
 
         $payments = DB::table('payments')
             ->where('payments.tenant_id', '=', $tenant->id)
+            ->where('payments.status', '=', 'A')
             ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
             ->join('branches', 'invoices.branch_id', '=', 'branches.id')
             ->join('clients', function ($join) {

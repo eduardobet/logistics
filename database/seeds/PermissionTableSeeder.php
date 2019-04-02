@@ -53,6 +53,7 @@ class PermissionTableSeeder extends Seeder
             ["name" => "Registrar Pagos", "slug" => "create-payment", "header" => "Pagos",],
             ["name" => "Editar Pagos", "slug" => "edit-payment", "header" => "Pagos",],
             ["name" => "Ver Pagos", "slug" => "show-payment", "header" => "Pagos",],
+            ["name" => "Eliminar Pagos", "slug" => "delete-payment", "header" => "Pagos",],
 
             // Petty cach
             ["name" => "Registrar Caja chica", "slug" => "create-petty-cash", "header" => "Caja chica",],

@@ -312,7 +312,12 @@
                         @endif
 
                         @if ($invoice && $invoice->is_paid)
-                            <p>{{ __('Delivered by') }} <b>{{ $lPayment->creator->full_name }}</b> | <b>{{ $lPayment->created_at->format('d/m/Y') }}</b> | {{ $lPayment->created_at->format('g:i A') }} </p>
+                            <p>{{ __('Delivered by') }} 
+                                <b>{{ $lPayment->creator->full_name }}</b> | <b>{{ $lPayment->created_at->format('d/m/Y') }}</b> | {{ $lPayment->created_at->format('g:i A') }} </p>
+
+                            @if ($invoice->warehouse_id)
+                            <p>{{ __('Delivered trackings') }} <b><br>{{ $invoice->delivered_trackings }} </p>
+                            @endif
                         @endif
                         
                         @if ($invoice->status == 'I')
@@ -358,10 +363,25 @@
         @if (!$user->isClient())
         // payment
         var $baseModalPayment = $('#modal-payment');
+        var $dtContainer = $("#dt-container");
+        var $dt = $("#delivered_trackings");
+        var $pAmount = $("#p_amount_paid");
         var $launcherPayment = null;
+        var wh = "{{ $invoice->warehouse_id }}";
+        var pending = "{{ $pending = $invoice->total - $invoice->payments->sum('amount_paid') }}"
 
        $("#pay").click(function(e) {
             $launcherPayment = $(this);
+
+            if (wh) {
+                $dtContainer.removeClass('d-none');
+                $dt.prop('readOnly', false);
+            }
+            else {
+                $dtContainer.addClass('d-none');
+                $dt.prop('readOnly', true).val('');
+            }
+
             $baseModalPayment.on('shown.bs.modal', function () {
                $launcherPayment.prop('disabled', true);
             });
@@ -369,14 +389,23 @@
 
 
         $('#btn-cancel-payment').click(function() {
-            $("#p_amount_paid, #p_payment_method, #p_payment_ref").val("");
+            $("#p_amount_paid, #p_payment_method, #p_payment_ref, #delivered_trackings").val("");
             $launcherPayment.prop('disabled', false);
+        });
+
+        $pAmount.blur(function(e) {
+            var amountPaid = parseFloat(this.value) || 0;
+            var total = parseFloat(pending);
+
+            if (roundToTwo(total) != roundToTwo(amountPaid)) {
+                $dt.prop('readOnly', true).val('');
+            } else $dt.prop('readOnly', false);
         });
         @endif
         
         @if (!$user->isClient())
         $("#form-payment").submit(function(e) {
-            
+            e.preventDefault();
             var $btnSubmit = $('#btn-submit-payment');
             var url = "{{ route('tenant.payment.store', $tenant->domain) }}";
             var loadingText = $btnSubmit.data('loading-text');
@@ -384,6 +413,18 @@
             if ($btnSubmit.html() !== loadingText) {
                 $btnSubmit.data('original-text', $btnSubmit.html());
                 $btnSubmit.prop('disabled', true).html(loadingText);
+            }
+
+            if (wh) {
+                var amountPaid = parseFloat($("#p_amount_paid").val()) || 0;
+                var total = parseFloat(pending);
+
+                if ( !$.trim($dt.val()) && roundToTwo(total) == roundToTwo(amountPaid) ) {
+                    swal('', "{{ __('validation.required', ['attribute' => __('Delivered trackings') ]) }}" , 'error');
+                    $btnSubmit.prop('disabled', false).html($btnSubmit.data('original-text'));
+
+                    return;
+                }
             }
 
             var request = $.ajax({
@@ -397,6 +438,7 @@
                     'payment_method': $("#p_payment_method").val(),
                     'payment_ref': $("#p_payment_ref").val(),
                     'created_at': $("#created_at").val(),
+                    'delivered_trackings': $("#delivered_trackings").val(),
                 }, {})
             });
 
@@ -410,9 +452,9 @@
                     $("#p_amount_paid").attr('max', data.pending);
                     $baseModalPayment.modal('hide');
 
-                    var p = parseFloat(data.pending || 0);
+                    pending = parseFloat(data.pending || 0);
 
-                    if (!p) $launcherPayment.prop('disabled', true);
+                    if (!pending) $launcherPayment.prop('disabled', true);
                     else $launcherPayment.prop('disabled', false);
 
                 } else {
@@ -435,7 +477,6 @@
                 $launcherPayment.prop('disabled', false);
             });
 
-            e.preventDefault();
         }); // payment
         @endif
 
@@ -629,6 +670,10 @@
         });
     }
   @endif
+
+  function roundToTwo(num) {    
+    return +(Math.round(num + "e+2")  + "e-2");
+  }
   </script>
 @endsection
 

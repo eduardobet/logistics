@@ -29,11 +29,11 @@ class DashboardController extends Controller
         $branch = auth()->user()->currentBranch();
 
         return view("tenant.employee.dashboard", [
-            'tot_warehouses' => $this->getWarehouses()->where('branch_to', $branch->id)->count(),
-            'tot_clients' => $this->getClients()->where('branch_id', $branch->id)->count(),
-            'tot_invoices' => $this->getInvoices()->where('branch_id', $branch->id)->count(),
-            'last_5_clients' => $this->getClients()->where('branch_id', $branch->id)->sortByDesc('created_at')->take(5),
-            'today_earnings' => $tenant->payments()->whereHas('invoice', function ($query) use ($branch) {
+            'tot_warehouses' => $tenant->warehouses()->where('status', 'A')->where('branch_to', $branch->id)->get()->count(),
+            'tot_clients' => ($clients = $tenant->clients()->where('status', 'A')->where('branch_id', $branch->id)->get())->count(),
+            'tot_invoices' => $tenant->invoices()->where('status', 'A')->where('branch_id', $branch->id)->get()->count(),
+            'last_5_clients' => $clients->sortByDesc('created_at')->take(5),
+            'today_earnings' => $tenant->payments()->where('status', 'A')->whereHas('invoice', function ($query) use ($branch) {
                 $query->where('branch_id', $branch->id);
             })->whereDate('created_at', '=', date('Y-m-d'))->get()->sum('amount_paid')
         ]);

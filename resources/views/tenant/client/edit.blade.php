@@ -42,6 +42,26 @@
                 @endif
                 
             </div>
+
+            <div class="col-lg-12">
+                <ul>
+                    @forelse ($client->audits as $audit)
+                    <li>
+                        @lang('client.updated.metadata',array_except( $audit->getMetadata(), ['user_permissions']))
+
+                        @foreach ($audit->getModified() as $attribute => $modified)
+                        <ul>
+                            <li>
+                                {!! __('client.'.$audit->event.'.modified.'.$attribute, $modified) !!} 
+                            </li>
+                        </ul>
+                        @endforeach
+                    </li>
+                    @empty
+                    <p>@lang('client.unavailable_audits')</p>
+                    @endforelse
+                </ul>
+            </div>
           </div>
 
      </div> <!-- container -->     

@@ -29,9 +29,9 @@ class DashboardController extends Controller
         $branch = auth()->user()->currentBranch();
 
         return view("tenant.employee.dashboard", [
-            'tot_warehouses' => $this->warehouses()->where('branch_to', $branch->id)->count(),
+            'tot_warehouses' => $this->getWarehouses()->where('branch_to', $branch->id)->count(),
             'tot_clients' => $this->getClients()->where('branch_id', $branch->id)->count(),
-            'tot_invoices' => $this->invoices()->where('branch_id', $branch->id)->count(),
+            'tot_invoices' => $this->getInvoices()->where('branch_id', $branch->id)->count(),
             'last_5_clients' => $this->getClients()->where('branch_id', $branch->id)->sortByDesc('created_at')->take(5),
             'today_earnings' => $tenant->payments()->whereHas('invoice', function ($query) use ($branch) {
                 $query->where('branch_id', $branch->id);

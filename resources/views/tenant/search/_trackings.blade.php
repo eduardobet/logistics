@@ -27,7 +27,7 @@
                         @endif
                     </p>
 
-                    @can('edit-warehouse')
+                    @can('show-reca')
                         <a  href="{{ route('tenant.warehouse.cargo-entry.show', [$tenant->domain, $result->id]) }}"><i class="fa fa-eye"></i> {{ __('Show') }} </a>
                         &nbsp;&nbsp;&nbsp;&nbsp;
                     @endcan
@@ -62,6 +62,11 @@
                                 <i class="fa fa-ticket"></i>
                                 {{ __('Sticker') }}
                             </a>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                        @endcan
+
+                        @can('show-warehouse')
+                            <a  href="{{ route('tenant.warehouse.show', [$tenant->domain, $result->id]) }}"><i class="fa fa-eye"></i> {{ __('Show') }} </a>
                             &nbsp;&nbsp;&nbsp;&nbsp;
                         @endcan
 

@@ -245,11 +245,20 @@
 
                     <div class="col-md-2 mg-t-10">
                         @can('delete-invoice')
-                            <button id="btn-delete" class="btn btn-outline-danger btn-block terminate"{{ $invoice->is_paid || $invoice->status == 'I' ? ' disabled' : null }}
-                            data-loading-text="<i class='fa fa-spinner fa-spin '></i> ..."
-                            >
-                            {{ strtoupper( __('Delete') ) }}
-                            </button>
+                            @if ($invoice->status == 'I')
+                                <button id="btn-delete" class="btn btn-outline-success btn-block terminate" data-loading-text="<i class='fa fa-spinner fa-spin '></i> ..."
+                                    data-status='A'
+                                >
+                                {{ strtoupper( __('Activate') ) }}
+                                </button>
+                            @else
+                                <button id="btn-delete" class="btn btn-outline-danger btn-block terminate" data-loading-text="<i class='fa fa-spinner fa-spin '></i> ..."
+                                    data-status='I'
+                                >
+                                {{ strtoupper( __('Inactivate') ) }}
+                                </button>
+                            @endif
+                            
                         @endcan
                     </div> 
                     
@@ -324,6 +333,26 @@
                             <p>{{ __('Deleted by') }} <b>{{ $invoice->editor->full_name }}</b> | <b>{{ $invoice->updated_at->format('d/m/Y') }}</b> | {{ $invoice->updated_at->format('g:i A') }} </p>
                         @endif
 
+                      </div>
+
+                      <div class="col-lg-12">
+                          <ul>
+                            @forelse ($invoice->audits as $audit)
+                            <li>
+                                @lang('invoice.updated.metadata',array_except( $audit->getMetadata(), ['user_permissions']))
+
+                                @foreach ($audit->getModified() as $attribute => $modified)
+                                <ul>
+                                    <li>
+                                        {!! __('invoice.'.$audit->event.'.modified.'.$attribute, $modified) !!} 
+                                    </li>
+                                </ul>
+                                @endforeach
+                            </li>
+                            @empty
+                            <p>@lang('invoice.unavailable_audits')</p>
+                            @endforelse
+                        </ul>
                       </div>
                   </div>
 
@@ -600,6 +629,7 @@
         // delete
         $("#btn-delete").click(function(e) {
             var self = $(this);
+            var status = self.data('status');
             swal({
                 title: '{{__("Are you sure") }}?',                    
                 type: 'warning',
@@ -611,7 +641,7 @@
             })
             .then((result) => {
                 if (result.value) {
-                    inactivate(self);
+                    inactivate(self, status);
                 }
             });
          });
@@ -629,45 +659,60 @@
     }); // jquery
 
 @if (!$user->isClient())
-    function inactivate($btnSubmit) {
+    function inactivate($btnSubmit, status) {
         $(".terminate").prop('disabled', true);
-        var loadingText = $btnSubmit.data('loading-text');
 
-            if ($btnSubmit.html() !== loadingText) {
-                $btnSubmit.data('original-text', $btnSubmit.html());
-                $btnSubmit.html(loadingText);
+        swal({
+            title: '{{__("Please indicate why you are :doing the :what", ["doing" => ($invoice->status == "A" ? __("inactivating") : __("activating") ), "what" => __("Invoice"), ]) }}',
+            input: 'textarea',
+            showCancelButton: true,
+            inputValidator: (value) => {
+                return !value && '{{ __("Error") }}!'
             }
+         }).then((result) => {
+            if (notes = result.value) {
 
-        var request = $.ajax({
-            method: 'post',
-            url: "{{ route('tenant.invoice.inactive', $tenant->domain) }}",
-            data: $.extend({
-                _token	: $("meta[name='csrf-token']").attr('content'),
-                '_method': 'POST',
-                'invoice_id': "{{ $invoice->id }}",
-            }, {})
-        });
+                var loadingText = $btnSubmit.data('loading-text');
 
-        request.done(function(data){
-            if (data.error == false) {
-                swal("", data.msg, "success");
-            } else {
-                swal("", data.msg, "error");
-            }
-            $btnSubmit.html($btnSubmit.data('original-text'));
-        })
-        .fail(function( jqXHR, textStatus ) {
-            
-            var error = "{{ __('Error') }}";
+                if ($btnSubmit.html() !== loadingText) {
+                    $btnSubmit.data('original-text', $btnSubmit.html());
+                    $btnSubmit.html(loadingText);
+                }
 
-            if (jqXHR.responseJSON.msg) {
-                error = jqXHR.responseJSON.msg;
-            }
-            
-            swal("", error, "error");
-            $(".terminate").prop('disabled', false);
-            $btnSubmit.html($btnSubmit.data('original-text'));
-        });
+                var request = $.ajax({
+                    method: 'post',
+                    url: "{{ route('tenant.invoice.inactive', $tenant->domain) }}",
+                    data: $.extend({
+                        _token	: $("meta[name='csrf-token']").attr('content'),
+                        '_method': 'POST',
+                        'invoice_id': "{{ $invoice->id }}",
+                        'status': status,
+                        'notes': notes,
+                    }, {})
+                });
+
+                request.done(function(data){
+                    if (data.error == false) {
+                        swal("", data.msg, "success");
+                    } else {
+                        swal("", data.msg, "error");
+                    }
+                    $btnSubmit.html($btnSubmit.data('original-text'));
+                })
+                .fail(function( jqXHR, textStatus ) {
+                    
+                    var error = "{{ __('Error') }}";
+
+                    if (jqXHR.responseJSON.msg) {
+                        error = jqXHR.responseJSON.msg;
+                    }
+                    
+                    swal("", error, "error");
+                    $(".terminate").prop('disabled', false);
+                    $btnSubmit.html($btnSubmit.data('original-text'));
+                });
+             }
+         });
     }
   @endif
 

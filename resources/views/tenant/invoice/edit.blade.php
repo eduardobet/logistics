@@ -57,6 +57,27 @@
                 @endif
                 
             </div>
+
+            <div class="col-lg-12">
+                <ul>
+                    @forelse ($invoice->audits as $audit)
+                    <li>
+                        @lang('invoice.updated.metadata',array_except( $audit->getMetadata(), ['user_permissions']))
+
+                        @foreach ($audit->getModified() as $attribute => $modified)
+                        <ul>
+                            <li>
+                                {!! __('invoice.'.$audit->event.'.modified.'.$attribute, $modified) !!} 
+                            </li>
+                        </ul>
+                        @endforeach
+                    </li>
+                    @empty
+                    <p>@lang('invoice.unavailable_audits')</p>
+                    @endforelse
+                </ul>
+            </div>
+
          </div>
     
     </div> <!-- container -->     

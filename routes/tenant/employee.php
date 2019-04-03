@@ -75,4 +75,7 @@ Route::group(['middleware' => 'auth'], function () {
     
     // searching
     Route::get('search', 'Tenant\SearchController@search')->name('tenant.get.search')->middleware(['can:search']);
+
+    // client searching
+    Route::get('client-search', 'Tenant\SearchController@clientSearch')->name('tenant.get.client-search')->middleware(['can:client-search']);
 });

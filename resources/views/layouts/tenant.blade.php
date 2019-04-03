@@ -86,7 +86,13 @@
         
         function doGlobalSearch() {
             var q = $.trim($("#q").val());
-            if (q) window.location = `{{ route('tenant.get.search', $tenant->domain) }}?q=${q}&cbranch_id={{ isset($branch) ? $branch->id : '' }}`;
+            @if (auth()->check() && !auth()->user()->isClient())
+                if (q) 
+                    window.location = `{{ route('tenant.get.search', $tenant->domain) }}?q=${q}&cbranch_id={{ isset($branch) ? $branch->id : '' }}`;
+            @else
+                if (q) 
+                    window.location = `{{ route('tenant.get.client-search', $tenant->domain) }}?q=${q}&cbranch_id={{ isset($branch) ? $branch->id : '' }}`;
+            @endif
         }
     </script>
     @endif

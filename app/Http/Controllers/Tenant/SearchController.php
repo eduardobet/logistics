@@ -238,4 +238,67 @@ class SearchController extends Controller
             ]);
         }
     }
+
+    public function clientSearch()
+    {
+        $tenant = $this->getTenant();
+        $term = request('q', '');
+        $user = auth()->user();
+        $cBranch = $user->currentBranch();
+        $cBranchId = $cBranch->id;
+        $totResult = 0;
+
+        if ($term = strtolower($term)) {
+            $tracking = false;
+
+            $cargoEntries = $tenant->cargoEntries()
+                ->withAndWhereHas('branch', function ($query) use ($cBranchId) {
+                    $query->where('id', $cBranchId);
+                });
+
+            $data['cargo_entries'] = $cargoEntries->with(['creator' => function ($creator) {
+                $creator->select(['id', 'first_name', 'last_name', ]);
+            }])
+                ->where('trackings', 'like', "%$term%")->get();
+
+            $warehouses = $tenant->warehouses()
+                ->where('client_id', $user->client_id)
+                ->with('creator')
+                ->withAndWhereHas('toBranch', function ($query) use ($cBranchId) {
+                    $query->where('id', $cBranchId)->where('status', 'A');
+                });
+
+            $data['warehouses'] = $warehouses->with('invoice')->where('trackings', 'like', "%$term%")->get();
+            $totC = $data['cargo_entries']->count();
+            $totW = $data['warehouses']->count();
+
+
+            if ($totC || $totW) {
+                $tracking = true;
+                $results = collect($data);
+            }
+
+            $totResult = max($totC, $totW);
+
+            if (!$totResult) {
+                return view('tenant.search.results', [
+                    'noresults' => __('Your search - ":term" - did not match any documents.', ['term' => $term]),
+                ]);
+            }
+
+            if (!$tracking) {
+                $results = $results->paginate(10);
+            }
+
+            return view('tenant.search.results', [
+                'results' => $results,
+                'tracking' => $tracking,
+            ]);
+        } // if term
+        else {
+            return view('tenant.search.results', [
+                'noresults' => __('Your search - ":term" - did not match any documents.', ['term' => $term]),
+            ]);
+        }
+    }
 }

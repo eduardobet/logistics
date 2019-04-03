@@ -10,7 +10,7 @@ trait Tenant
 
     /**
      * Get the actual tenant based on the url
-     * @return Eloquent
+     * @return \Logistics\DB\Tenant\Tenant
      */
     protected function getTenant($domain = null)
     {

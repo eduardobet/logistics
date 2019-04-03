@@ -3,9 +3,12 @@
 namespace Logistics\DB\Tenant;
 
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Payment extends Model
+class Payment extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -24,6 +27,20 @@ class Payment extends Model
     protected $appends = ['created_at_dsp'];
 
     /**
+     * Attributes to include in the Audit.
+     *
+     * @var array
+     */
+    protected $auditInclude = [
+        'amount_paid',
+        'payment_method',
+        'payment_ref',
+        'is_first',
+        'notes',
+        'status',
+    ];
+
+    /**
      * The "booting" method of the model.
      *
      * @return void
@@ -39,6 +56,16 @@ class Payment extends Model
         static::updating(function ($query) {
             $query->updated_by_code = auth()->id();
         });
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function transformAudit(array $data): array
+    {
+        $data['tenant_id'] = $this->tenant_id;
+
+        return $data;
     }
 
     public function invoice()

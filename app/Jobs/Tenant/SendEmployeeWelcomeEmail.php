@@ -19,14 +19,14 @@ class SendEmployeeWelcomeEmail implements ShouldQueue
     /**
      * Current tenant
      *
-     *@var Logistics\DB\Tenant\Tenant
+     *@var \Logistics\DB\Tenant\Tenant
      */
     public $tenant;
 
     /**
      * Current employee
      *
-     *@var Logistics\DB\User
+     *@var \Logistics\DB\User
      */
     public $employee;
 

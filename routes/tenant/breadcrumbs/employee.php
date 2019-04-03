@@ -146,15 +146,3 @@ Breadcrumbs::for('tenant.income.list', function ($trail) use ($type) {
     $trail->parent("tenant.{$type}.dashboard");
     $trail->add(__('Incomes'), '');
 });
-
-
-// audit
-Breadcrumbs::for('tenant.audit.list', function ($trail) use ($type) {
-    $trail->parent("tenant.{$type}.dashboard");
-    $trail->add(__('Audits'), '');
-});
-
-Breadcrumbs::for('tenant.audit.show', function ($trail) use ($type) {
-    $trail->parent("tenant.{$type}.dashboard");
-    $trail->add(__('Audits'), '');
-});

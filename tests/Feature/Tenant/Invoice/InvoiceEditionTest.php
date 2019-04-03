@@ -375,6 +375,8 @@ class InvoiceEditionTest extends TestCase
         
         $response = $this->actingAs($admin)->post(route('tenant.invoice.inactive', [$tenant->domain, $invoice->id]), [
             'invoice_id' => $invoice->id,
+            'status' => 'I',
+            'notes' => 'Notes'
         ], $this->headers());
         
         $invoice = $invoice->fresh()->first();

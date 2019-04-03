@@ -6,7 +6,7 @@ trait Clients
 {
     public function getClient($id)
     {
-        return $this->client()->where('id', $id);
+        return $this->getClients()->where('id', $id);
     }
 
     public function getClients()

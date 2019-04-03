@@ -27,7 +27,7 @@ class WarehouseListTest extends TestCase
     /** @test */
     public function it_successfully_lists_the_warehouses()
     {
-        //$this->withoutExceptionHandling();
+        $this->withoutExceptionHandling();
 
         $tenant = factory(TenantModel::class)->create();
         $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);

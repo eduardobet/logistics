@@ -4,12 +4,12 @@ namespace Logistics\Traits;
 
 trait Warehouses
 {
-    public function warehouse($id)
+    public function getWarehouse($id)
     {
-        return $this->warehouse()->where('id', $id);
+        return $this->getWarehouses()->where('id', $id);
     }
 
-    public function warehouses()
+    public function getWarehouses()
     {
         $tenant = $this->getTenant();
 

@@ -20,7 +20,7 @@ class SendWarehouseReceiptEmail implements ShouldQueue
     /**
      * Current tenant
      *
-     *@var Logistics\DB\Tenant\Tenant
+     *@var \Logistics\DB\Tenant\Tenant
      */
     public $tenant;
 

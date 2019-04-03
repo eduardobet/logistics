@@ -5,11 +5,12 @@ namespace Logistics\DB\Tenant;
 use Logistics\Traits\Tenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use OwenIt\Auditing\Contracts\Auditable;
 use Logistics\Traits\ClientHasRelationShips;
 
-class Client extends Model
+class Client extends Model implements Auditable
 {
-    use Tenant, ClientHasRelationShips, Notifiable;
+    use \OwenIt\Auditing\Auditable, Tenant, ClientHasRelationShips, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +22,15 @@ class Client extends Model
         'org_name', 'country_id', 'department_id', 'city_id', 'notes', 'pay_volume', 'special_rate', 'special_maritime', 'address',
         'vol_price', 'real_price', 'full_name', 'manual_id', 'branch_id', 'first_lbs_price', 'pay_first_lbs_price', 'extra_maritime_price',
         'pay_extra_maritime_price', 'maritime_price',
+    ];
+
+    /**
+     * Attributes to include in the Audit.
+     *
+     * @var array
+     */
+    protected $auditInclude = [
+        'status', 'type', 'telephones','pay_volu me', 'special_rate', 'special_maritime', 'vol_price', 'real_price', 'full_name', 'branch_id', 'first_lbs_price', 'pay_first_lbs_price', 'extra_maritime_price', 'pay_extra_maritime_price', 'maritime_price',
     ];
 
     /**

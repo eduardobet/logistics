@@ -8,9 +8,10 @@ use Logistics\DB\Tenant\Box;
 use Logistics\DB\Tenant\Branch;
 use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Mailer;
-use Logistics\DB\Tenant\Warehouse;
+use Illuminate\Support\Facades\Queue;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Logistics\Jobs\Tenant\SendWarehouseCreatedEmail;
 
 class WarehouseCreationTest extends TestCase
 {
@@ -682,5 +683,62 @@ class WarehouseCreationTest extends TestCase
             'total' => $branchB->dhl_price * 23,
             'notes' => 'The notes of the invoice',
         ]);
+    }
+
+    /** @test */
+    public function client_get_an_email_notification_when_warehouse_is_created()
+    {
+        $this->withoutExceptionHandling();
+
+        Queue::fake();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id, 'name' => 'Branch to', ]);
+        $branchB = factory(Branch::class)->create(['tenant_id' => $tenant->id, ]);
+        $mailer = factory(Mailer::class)->create(['tenant_id' => $tenant->id, ]);
+
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id, ]);
+        $admin->branches()->sync([$branch->id]);
+        $admin->branchesForInvoice()->sync([$branch->id, ]);
+
+        \Gate::define('create-warehouse', function ($admin) {
+            return true;
+        });
+
+        $client = factory(Client::class)
+            ->create(['tenant_id' => $tenant->id, 'pay_volume' => false, 'special_rate' => false, 'vol_price' => 2.00, 'real_price' => 1.50, ]);
+        factory(Box::class)->create([
+            'tenant_id' => $tenant->id,
+            'client_id' => $client->id,
+            'branch_id' => $branchB->id,
+            'branch_code' => $branchB->code,
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('tenant.warehouse.create', $tenant->domain));
+        $response->assertStatus(200);
+        $response->assertViewIs('tenant.warehouse.create');
+        $response->assertViewHas(['userBranches', 'branches', 'mailers', ]);
+
+        $response = $this->actingAs($admin)->post(route('tenant.warehouse.store', $tenant->domain), [
+            'branch_from' => $branch->id,
+            'branch_to' => $branchB->id,
+            'client_id' => $client->id,
+            'reference' => 'The reference',
+            'type' => 'A',
+            'trackings' => '12345,234434,55645',
+            'mailer_id' => $mailer->id,
+            'qty' => 2,
+            'tot_packages' => 2,
+            'tot_weight' => 2,
+        ]);
+        $response->assertStatus(302);
+        $response->assertRedirect(route('tenant.warehouse.edit', [$tenant->domain, 1]));
+
+        $warehouse = $tenant->warehouses->fresh()->first();
+
+        Queue::assertPushed(SendWarehouseCreatedEmail::class, function ($job) use ($warehouse) {
+            return $job->warehouse->id === $warehouse->id;
+        });
+
     }
 }

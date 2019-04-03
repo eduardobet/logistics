@@ -20,14 +20,6 @@ class Invoice extends Model implements Auditable
         'created_by_code', 'tenant_id', 'updated_by_code', 'branch_id', 'client_name', 'client_email', 'status', 'volumetric_weight', 'real_weight', 'total','notes', 'warehouse_id', 'client_id', 'is_paid', 'i_using', 'cubic_feet', 'fine_total', 'fine_ref', 'created_at', 'manual_id', 'delivered_trackings',
     ];
 
-
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
-    protected $appends = ['manual_id_dsp'];
-
     /**
      * The attributes that should be cast to native types.
      *
@@ -36,6 +28,23 @@ class Invoice extends Model implements Auditable
     protected $casts = [
         'is_paid' => 'boolean',
         'manual_id' => 'integer',
+    ];
+
+    /**
+     * Attributes to include in the Audit.
+     *
+     * @var array
+     */
+    protected $auditInclude = [
+        'volumetric_weight',
+        'real_weight',
+        'total',
+        'notes',
+        'is_paid',
+        'i_using',
+        'fine_total',
+        'fine_ref',
+        'delivered_trackings',
     ];
 
     /**

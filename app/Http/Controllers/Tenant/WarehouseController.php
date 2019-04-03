@@ -11,6 +11,7 @@ use Logistics\Traits\WarehouseList;
 use Logistics\Exports\WarehousesExport;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Http\Requests\Tenant\WarehouseRequest;
+use Logistics\Jobs\Tenant\SendWarehouseCreatedEmail;
 use Logistics\Jobs\Tenant\SendWarehouseReceiptEmail;
 
 class WarehouseController extends Controller
@@ -24,7 +25,7 @@ class WarehouseController extends Controller
      */
     public function index()
     {
-        [$warehouses, $searching, $branch] = $this->getWarehouses($this->getTenant());
+        [$warehouses, $searching, $branch] = $this->listWarehouses($this->getTenant());
 
         $branches = $this->getBranches();
         $user = auth()->user();
@@ -44,7 +45,7 @@ class WarehouseController extends Controller
 
     public function export()
     {
-        [$warehouses, $branch] = $this->getWarehouses($this->getTenant());
+        [$warehouses, $branch] = $this->listWarehouses($this->getTenant());
 
         $data = [
             'warehouses' => $warehouses,
@@ -128,6 +129,8 @@ class WarehouseController extends Controller
             
             if (count($details)) {
                 $wh->genInvoice($request, $tenant);
+            } else {
+                dispatch(new SendWarehouseCreatedEmail($tenant, $wh));
             }
             
             return redirect()->route('tenant.warehouse.edit', [$tenant->domain, $wh->id])
@@ -276,6 +279,8 @@ class WarehouseController extends Controller
 
             if (count($details)) {
                 $warehouse->genInvoice($request, $tenant);
+            } else {
+                dispatch(new SendWarehouseCreatedEmail($tenant, $warehouse));
             }
 
             return redirect()->route('tenant.warehouse.edit', [$tenant->domain, $warehouse->id])
@@ -313,6 +318,8 @@ class WarehouseController extends Controller
                 $invoice->status = $request->status;
                 $invoice->notes = $request->notes . PHP_EOL . $invoice->notes;
                 $invoice->save();
+
+                $invoice->payments()->update(['status' => $request->status, 'updated_by_code' => auth()->user()->id, ]);
             }
 
             return response()->json([

@@ -23,7 +23,7 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        [$payments, $searching, $branch] = $this->getPayments($this->getTenant());
+        [$payments, $searching, $branch] = $this->listPayments($this->getTenant());
         $user = auth()->user();
         $branches = $this->getBranches();
 
@@ -42,7 +42,7 @@ class PaymentController extends Controller
 
     public function export()
     {
-        [$payments, $searching, $branch] = $this->getPayments($this->getTenant());
+        [$payments, $searching, $branch] = $this->listPayments($this->getTenant());
 
         $data = [
             'payments' => $payments,
@@ -196,7 +196,7 @@ class PaymentController extends Controller
     {
         $tenant = $this->getTenant();
 
-        $payment = $tenant->payments()->active()
+        $payment = $tenant->payments()
             ->with([
                 'creator',
                 'invoice' => function ($invoice) {

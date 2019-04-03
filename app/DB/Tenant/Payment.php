@@ -27,6 +27,20 @@ class Payment extends Model implements Auditable
     protected $appends = ['created_at_dsp'];
 
     /**
+     * Attributes to include in the Audit.
+     *
+     * @var array
+     */
+    protected $auditInclude = [
+        'amount_paid',
+        'payment_method',
+        'payment_ref',
+        'is_first',
+        'notes',
+        'status',
+    ];
+
+    /**
      * The "booting" method of the model.
      *
      * @return void

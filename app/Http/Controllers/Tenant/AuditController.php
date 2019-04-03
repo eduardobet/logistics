@@ -13,9 +13,16 @@ class AuditController extends Controller
     {
         $tenant = $this->getTenant();
 
-        dd(\Logistics\DB\Tenant\Payment::find(35)->audits);
-
         return view('tenant.audit.index', [
+            'audits' => $tenant->audits->load(['user'])
+        ]);
+    }
+
+    public function show()
+    {
+        $tenant = $this->getTenant();
+
+        return view('tenant.audit.show', [
             'audits' => $tenant->audits->load(['user'])
         ]);
     }

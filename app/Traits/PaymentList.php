@@ -11,7 +11,7 @@ trait PaymentList
      *
      * @return mixed
      */
-    public function getPayments($tenant)
+    public function listPayments($tenant)
     {
         $user = auth()->user();
         $branch = $user->currentBranch();
@@ -29,7 +29,6 @@ trait PaymentList
 
         $payments = DB::table('payments')
             ->where('payments.tenant_id', '=', $tenant->id)
-            ->where('payments.status', '=', 'A')
             ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
             ->join('branches', 'invoices.branch_id', '=', 'branches.id')
             ->join('clients', function ($join) {

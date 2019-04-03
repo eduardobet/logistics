@@ -9,7 +9,7 @@ trait WarehouseList
      *
      * @return mixed
      */
-    public function getWarehouses($tenant)
+    public function listWarehouses($tenant)
     {
         $user = auth()->user();
         $branch = $user->currentBranch();

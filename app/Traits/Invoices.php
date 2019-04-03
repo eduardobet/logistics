@@ -4,12 +4,12 @@ namespace Logistics\Traits;
 
 trait Invoices
 {
-    public function invoice($id)
+    public function getInvoice($id)
     {
-        return $this->invoice()->where('id', $id);
+        return $this->getInvoices()->where('id', $id);
     }
 
-    public function invoices()
+    public function getInvoices()
     {
         $tenant = $this->getTenant();
 

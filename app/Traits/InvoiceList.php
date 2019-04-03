@@ -9,7 +9,7 @@ trait InvoiceList
      *
      * @return mixed
      */
-    public function getInvoices($tenant)
+    public function listInvoices($tenant)
     {
         $user = auth()->user();
         $branch = $user->currentBranch();

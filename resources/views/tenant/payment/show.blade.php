@@ -115,9 +115,11 @@
             @can('create-payment')
                 <div class="row">
                     <div class="col-lg-12 mg-t-25">
+                        @if ($payment->status == 'A')
                         <button class="btn btn-primary  bd-1 bd-gray-400 terminate" id="edit-payment" data-pm="{{ $payment->payment_method }}">
                             {{ __('Editing :what', ['what' => __('Payment method') ]) }}
                         </button>
+                         @endif
 
                         @can('delete-payment')
                             
@@ -161,6 +163,28 @@
                 @endif
                 
             </div>
+
+            <div class="col-lg-12">
+                <ul>
+                    @forelse ($payment->audits as $audit)
+                    <li>
+                        @lang('payment.updated.metadata',array_except( $audit->getMetadata(), ['user_permissions']))
+
+                        @foreach ($audit->getModified() as $attribute => $modified)
+                        <ul>
+                            <li>
+                                {!! __('payment.'.$audit->event.'.modified.'.$attribute, $modified) !!} 
+                            </li>
+                        </ul>
+                        @endforeach
+                    </li>
+                    @empty
+                    <p>@lang('payment.unavailable_audits')</p>
+                    @endforelse
+                </ul>
+            </div>
+
+
           </div>
     
     </div> <!-- container -->     

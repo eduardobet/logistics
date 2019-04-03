@@ -19,14 +19,14 @@ class SendInvoiceCreatedEmail implements ShouldQueue
     /**
      * Current tenant
      *
-     *@var Logistics\DB\Tenant\Tenant
+     *@var \Logistics\DB\Tenant\Tenant
      */
     public $tenant;
 
     /**
      * Current invoice
      *
-     *@var Logistics\DB\Tenant\Invoice
+     *@var \Logistics\DB\Tenant\Invoice
      */
     public $invoice;
 

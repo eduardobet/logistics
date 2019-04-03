@@ -27,7 +27,7 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        [$invoices, $searching, $branch] = $this->getInvoices($this->getTenant());
+        [$invoices, $searching, $branch] = $this->listInvoices($this->getTenant());
 
         $branches = $this->getBranches();
         $user = auth()->user();
@@ -47,7 +47,7 @@ class InvoiceController extends Controller
 
     public function export()
     {
-        [$invoices,,$branch] = $this->getInvoices($this->getTenant());
+        [$invoices,,$branch] = $this->listInvoices($this->getTenant());
 
         $data = [
             'invoices' => $invoices,
@@ -480,6 +480,7 @@ class InvoiceController extends Controller
         }
 
         $invoice = $invoice->find($request->invoice_id);
+        $inactive = false;
 
         if (!$invoice) {
             return response()->json([
@@ -493,14 +494,12 @@ class InvoiceController extends Controller
                 'status' => $request->status,
                 'notes'  => $invoice->notes . PHP_EOL . $request->notes,
             ]);
-        } else {
-            $inactive = $invoice->update([
-                'status' => 'I',
-            ]);
+
+            $invoice->payments()->update(['status' => $request->status, 'updated_by_code' => $user->id, ]);
         }
         
         if ($inactive) {
-            $invoice->payments()->update(['status' => 'I', 'updated_by_code' => $user->id, ]);
+            // $invoice->payments()->update(['status' => 'I', 'updated_by_code' => $user->id, ]);
             
             return response()->json([
                 'error' => false,

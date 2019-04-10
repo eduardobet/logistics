@@ -1,6 +1,6 @@
 <?php
 
-namespace Logistics\Http\Controllers\Tenant;
+namespace Logistics\Http\Controllers\Tenant\Invoice;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -9,7 +9,6 @@ use Illuminate\Support\Fluent;
 use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Payment;
 use Logistics\Traits\InvoiceList;
-use Logistics\Exports\InvoicesExport;
 use Illuminate\Support\Facades\Validator;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Http\Requests\Tenant\InvoiceRequest;
@@ -44,31 +43,6 @@ class InvoiceController extends Controller
             'branches' => $branches,
             'show_total' => true,
         ]);
-    }
-
-    public function export()
-    {
-        [$invoices,,$branch] = $this->listInvoices($this->getTenant());
-
-        $data = [
-            'invoices' => $invoices,
-            'branch' => $branch,
-            'exporting' => true,
-            'sign' => '',
-            'show_total' => true,
-        ];
-
-        if (request('pdf')) {
-            // return view('tenant.export.invoices-pdf', $data);
-
-            $pdf = app('dompdf.wrapper');
-            $pdf->getDomPDF()->set_option("enable_php", true);
-            $pdf->loadView( 'tenant.export.invoices-pdf', $data);
-
-            return $pdf->download(uniqid('invoices_', true) . '.pdf');
-        }
-        
-        return (new InvoicesExport)->download(uniqid('invoices_', true) . '.xlsx');
     }
 
     /**

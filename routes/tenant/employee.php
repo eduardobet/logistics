@@ -49,18 +49,20 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('cargo-entry/{id}/show', 'Tenant\CargoEntryController@show')->name('tenant.warehouse.cargo-entry.show')->middleware('can:show-reca');
 
     // invoice
-    Route::get('invoice/list', 'Tenant\InvoiceController@index')->name('tenant.invoice.list')->middleware(['can:show-invoice']);
-    Route::get('invoices/export', 'Tenant\InvoiceController@export')->name('tenant.invoice.export')->middleware(['can:show-invoice']);
-    Route::get('invoice/create', 'Tenant\InvoiceController@create')->name('tenant.invoice.create')->middleware(['can:create-invoice']);
-    Route::post('invoice/store', 'Tenant\InvoiceController@store')->name('tenant.invoice.store');
-    Route::get('invoice/{id}/edit', 'Tenant\InvoiceController@edit')->name('tenant.invoice.edit')->middleware(['can:edit-invoice']);
-    Route::patch('invoice/{id}/update', 'Tenant\InvoiceController@update')->name('tenant.invoice.update');
-    Route::get('invoice/{id}/show', 'Tenant\InvoiceController@show')->name('tenant.invoice.show');
-    Route::get('invoice/invoice-detail-tmpl', 'Tenant\InvoiceController@invoiceDetTpl')->name('tenant.invoice.invoice-detail-tmpl');
-    Route::get('invoice/{id}/print-invoice', 'Tenant\InvoiceController@print')->name('tenant.invoice.print-invoice');
-    Route::post('invoice/{id}/resend-invoice-email', 'Tenant\InvoiceController@resendInvoice')->name('tenant.invoice.invoice.resend');
-    Route::post('invoice/penalize', 'Tenant\InvoiceController@penalize')->name('tenant.invoice.penalize');
-    Route::post('invoice/inactive', 'Tenant\InvoiceController@inactive')->name('tenant.invoice.inactive');
+    Route::get('invoice/list', 'Tenant\Invoice\InvoiceController@index')->name('tenant.invoice.list')->middleware(['can:show-invoice']);
+    Route::get('invoice/create', 'Tenant\Invoice\InvoiceController@create')->name('tenant.invoice.create')->middleware(['can:create-invoice']);
+    Route::post('invoice/store', 'Tenant\Invoice\InvoiceController@store')->name('tenant.invoice.store');
+    Route::get('invoice/{id}/edit', 'Tenant\Invoice\InvoiceController@edit')->name('tenant.invoice.edit')->middleware(['can:edit-invoice']);
+    Route::patch('invoice/{id}/update', 'Tenant\Invoice\InvoiceController@update')->name('tenant.invoice.update');
+    Route::get('invoice/{id}/show', 'Tenant\Invoice\InvoiceController@show')->name('tenant.invoice.show');
+    Route::get('invoice/invoice-detail-tmpl', 'Tenant\Invoice\InvoiceController@invoiceDetTpl')->name('tenant.invoice.invoice-detail-tmpl');
+    Route::get('invoice/{id}/print-invoice', 'Tenant\Invoice\InvoiceController@print')->name('tenant.invoice.print-invoice');
+    Route::post('invoice/{id}/resend-invoice-email', 'Tenant\Invoice\InvoiceController@resendInvoice')->name('tenant.invoice.invoice.resend');
+    Route::post('invoice/penalize', 'Tenant\Invoice\InvoiceController@penalize')->name('tenant.invoice.penalize');
+    Route::post('invoice/inactive', 'Tenant\Invoice\InvoiceController@inactive')->name('tenant.invoice.inactive');
+
+    Route::get('invoices/export/pdf', 'Tenant\Invoice\PdfExportController@export')->name('tenant.invoice.export-pdf')->middleware(['can:show-invoice']);
+    Route::get('invoices/export/excel', 'Tenant\Invoice\ExcelExportController@export')->name('tenant.invoice.export-excel')->middleware(['can:show-invoice']);
 
     // payment
     Route::get('payment/list', 'Tenant\PaymentController@index')->name('tenant.payment.list')->middleware(['can:show-payment']);

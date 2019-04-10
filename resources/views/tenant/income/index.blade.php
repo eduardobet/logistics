@@ -48,7 +48,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-4">
+            <div class="col-lg-2">
                  <select name="branch_id" id="branch_id" class="form-control select2 select2ize" style="width: 100%" data-apiurl="{{ route('tenant.api.clients', [':parentId:']) }}" data-child="#client_id">
                     <option value="">{{ __('Branch') }}</option>
                     @foreach ($branches as $aBranch)
@@ -57,6 +57,17 @@
                         </option>
                     @endforeach
                 </select>
+            </div>
+
+            <div class="col-lg-2">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            #{{ __('Invoice') }}
+                        </div>
+                    </div>
+                     <input type="text" class="form-control" value="{{ request('manual_id') }}" id="manual_id">
+                </div>
             </div>
 
             <div class="col-lg-2">
@@ -120,8 +131,9 @@
             var bname = $("#branch_id").find(":selected").attr('data-bname') || '{{ $branch->name }}';
             var client = $("#client_id").val()  || '';
             var type = $("#type").val();
+            var manualId = $("#manual_id").val();
             var invoice = $("#invoice_id").val() || "{{ request('invoice_id', '') }}";
-            window.location = `{{ route('tenant.income.list', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}&bcode=${bcode}&bname=${bname}`;
+            window.location = `{{ route('tenant.income.list', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}&bcode=${bcode}&bname=${bname}&manual_id=${manualId}`;
         });
 
         $("#export-xls, #export-pdf").click(function() {
@@ -131,10 +143,11 @@
             var bcode = $("#branch_id").find(":selected").attr('data-bcode') || '{{ $branch->branch_code }}';
             var client = $("#client_id").val() || '';
             var type = $("#type").val();
+            var manualId = $("#manual_id").val();
             var invoice = $("#invoice_id").val() || "{{ request('invoice_id', '') }}";
             var pdf = this.id === 'export-pdf' ? '&pdf=1' : '';
             
-            if(from && to) window.open(`{{ route('tenant.payment.export', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}&bcode=${bcode}${pdf}`, '_blank');
+            if(from && to) window.open(`{{ route('tenant.payment.export', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}&bcode=${bcode}&manual_id=${manualId}${pdf}`, '_blank');
         });
     });
 </script>

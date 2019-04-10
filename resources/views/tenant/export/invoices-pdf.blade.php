@@ -35,10 +35,6 @@
   </head>
   <body>
 
-    <div id="footer">
-        <div class="page-number"></div>
-    </div>
-
   <table style="width: 100%" cellspacing="0">
 
         <tr>

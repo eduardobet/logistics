@@ -333,9 +333,10 @@ select2ize = function($child, items) {
             var client = $("#client_id").val();
             var invoiceType = $("#invoice_type").val();
             var pdf = this.id === 'export-pdf' ? '&pdf=1' : '';
+            var baseUrl = this.id === 'export-pdf' ? "{{ route('tenant.invoice.export-pdf', $tenant->domain) }}" : "{{ route('tenant.invoice.export-excel', $tenant->domain) }}";
             var showInactive = $("#show_inactive").val();
             
-            if(from && to) window.open(`{{ route('tenant.invoice.export', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&invoice_type=${invoiceType}&show_inactive=${showInactive}${pdf}`, '_blank');
+            if(from && to) window.open(`${baseUrl}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&invoice_type=${invoiceType}&show_inactive=${showInactive}${pdf}`, '_blank');
         });
 
 

@@ -44,12 +44,14 @@ class WarehouseReceiptEmail extends Mailable
         $unique = "whreceipt-{$ibranch->initial}-{$this->data['warehouse']->manual_id_dsp}";
         $path = "/tenant/{$this->tenant->id}/{$unique}.pdf";
 
-        $pdf = \PDF::loadView('tenant.warehouse.receipt', array_merge($this->data, [
-            'tenant' => $this->tenant,
-            'lang' => $lang,
-        ]));
-
-        Storage::disk('whreceipts')->put($path, $pdf->output());
+        if (!app()->environment('testing')) {
+            $pdf = \PDF::loadView('tenant.warehouse.receipt', array_merge($this->data, [
+                'tenant' => $this->tenant,
+                'lang' => $lang,
+                ]));
+                
+            Storage::disk('whreceipts')->put($path, $pdf->output());
+        }
 
         return $this->subject(__('Warehouse receipt', [], $lang) . $title)
             ->from($this->tenant->mail_from_address, $this->tenant->mail_from_name)

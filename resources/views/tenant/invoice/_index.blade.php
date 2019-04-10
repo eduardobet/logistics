@@ -39,7 +39,13 @@
                     <b>{{ __('Internet') }}</b>   
                 @endif
             </td>
-            <td class="pdf-a-right">{{ $sign }} {{ number_format($invoice->total, 2) }}</td>
+            <td class="pdf-a-right">{{ $sign }} 
+                @if (!empty($show_total))
+                {{ number_format($invoice->total, 2) }}
+                @else
+                {{ number_format($invoice->total, 2, ".", "") }}
+                @endif
+            </td>
             <td class="text-center" id="status-text-{{ $invoice->id }}">
             @if ($invoice->status == 'I')
                 <span class="badge badge-danger">{{ __('Inactive') }}</span>

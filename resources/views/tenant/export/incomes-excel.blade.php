@@ -1,0 +1,1 @@
+@include('tenant.income._index', array_except(get_defined_vars()['__data'], ['__env', 'app', 'errors']))

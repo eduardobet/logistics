@@ -14,12 +14,13 @@ class PaymentsExport implements FromView
 
     public function view() : View
     {
-        [$payments, $searching] = $this->getPayments($this->getTenant());
+        [$payments, $searching] = $this->listPayments($this->getTenant());
 
         return view('tenant.export.payments-excel', [
             'payments' => $payments,
             'exporting' => true,
             'sign' => '',
+            'show_total' => false,
         ]);
     }
 }

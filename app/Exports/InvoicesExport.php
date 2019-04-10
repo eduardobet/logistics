@@ -14,12 +14,13 @@ class InvoicesExport implements FromView
 
     public function view() : View
     {
-        [$invoices, $searching] = $this->getInvoices($this->getTenant());
+        [$invoices, $searching] = $this->listInvoices($this->getTenant());
 
         return view('tenant.export.invoices-excel', [
             'invoices' => $invoices,
             'exporting' => true,
             'sign' => '',
+            'show_total' => false,
         ]);
     }
 }

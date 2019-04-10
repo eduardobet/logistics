@@ -14,7 +14,7 @@ class WarehousesExport implements FromView
 
     public function view() : View
     {
-        [$warehouses, $searching] = $this->getWarehouses($this->getTenant());
+        [$warehouses, $searching] = $this->listWarehouses($this->getTenant());
 
         return view('tenant.export.warehouses-excel', [
             'warehouses' => $warehouses,

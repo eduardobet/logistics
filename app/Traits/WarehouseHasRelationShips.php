@@ -91,15 +91,17 @@ trait WarehouseHasRelationShips
         if ($request->manual_id) {
             $using = array_merge($using, ['manual_id' => $request->manual_id]);
         } else {
-            $max = $tenant->invoices()
+            if (! $request->invoice_id) {
+                $max = $tenant->invoices()
                 //->where('branch_id', $request->branch_to)
                 ->max('manual_id');
-
-            if (!$max) {
-                $max = 0;
+                
+                if (!$max) {
+                    $max = 0;
+                }
+                
+                $using = array_merge($using, ['manual_id' => $max + 1]);
             }
-
-            $using = array_merge($using, ['manual_id' => $max + 1]);
         }
 
         [$year, $month, $day]  = array_map('intval', explode('-', request('created_at', date('Y-m-d'))));

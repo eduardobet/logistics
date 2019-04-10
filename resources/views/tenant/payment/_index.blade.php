@@ -62,7 +62,13 @@
             <td>{{ $payment->created_at_dsp }}</td>
             <td>{{ $payment->client_full_name }}</td>
             <td>{{ $payment->client_box }}{{ str_pad($payment->client_manual_id, 2, '0', STR_PAD_LEFT) }}</td>
-            <td class="pdf-a-right">{{ $sign }} {{ number_format($payment->amount_paid, 2) }}</td>
+            <td class="pdf-a-right">{{ $sign }} 
+                @if (!empty($show_total))
+                {{ number_format($payment->amount_paid, 2) }}
+                @else
+                {{ number_format($payment->amount_paid, 2, ".", "") }}
+                @endif
+            </td>
             @if (!isset($exporting))
                 <td class="text-center" style="font-size: 15px">
                     @can('show-payment')
@@ -74,6 +80,26 @@
 
         @endforeach
         @endforeach
+
+        <tr>
+            <td colspan="5" class="pdf-mt-5 tx-right pdf-a-right">
+                Total:
+            </td>
+            <td class="pdf-a-right">
+                <b>{{ $sign }} 
+
+                @if (!empty($show_total))
+                {{ number_format($payments->sum('amount_paid'), 2) }}
+                @else
+                {{ number_format($payments->sum('amount_paid'), 2, ".", "") }}
+                @endif
+                </b>
+            </td>
+
+            @if (!isset($exporting))
+                <td></td>
+            @endif
+        </tr>
 
     </tbody>
 </table>

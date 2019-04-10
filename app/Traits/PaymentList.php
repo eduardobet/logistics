@@ -50,7 +50,9 @@ trait PaymentList
 
         $payments = $payments->whereIn('invoices.status', $statuses);
 
-        if (request('no_date', ' ') != '1' && ($from = request('from', date('Y-m-d'))) && ($to = request('to', date('Y-m-d')))) {
+        $now = \Carbon\Carbon::now();
+
+        if (request('no_date', ' ') != '1' && ($from = request('from', $now->subDays(15)->format('Y-m-d'))) && ($to = request('to', date('Y-m-d')))) {
             $payments = $payments->whereRaw(' date(payments.created_at) between ? and ? ', [$from, $to]);
             $searching = 'Y';
         }

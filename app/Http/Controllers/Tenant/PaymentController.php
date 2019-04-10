@@ -37,24 +37,28 @@ class PaymentController extends Controller
             'branch' => $branch,
             'sign' => '$',
             'branches' => $branches,
+            'show_total' => true,
         ]);
     }
 
     public function export()
     {
-        [$payments, $searching, $branch] = $this->listPayments($this->getTenant());
+        [$payments,,$branch] = $this->listPayments($this->getTenant());
 
         $data = [
             'payments' => $payments,
             'branch' => $branch,
             'exporting' => true,
             'sign' => '',
+            'show_total' => true,
         ];
 
         if (request('pdf')) {
             // return view('tenant.export.payments-pdf', $data);
 
-            $pdf = \PDF::loadView('tenant.export.payments-pdf', $data);
+            $pdf = app('dompdf.wrapper');
+            $pdf->getDomPDF()->set_option("enable_php", true);
+            $pdf->loadView( 'tenant.export.payments-pdf', $data);
 
             return $pdf->download(uniqid('payments_', true) . '.pdf');
         }

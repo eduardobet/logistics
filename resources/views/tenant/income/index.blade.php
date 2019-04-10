@@ -59,7 +59,7 @@
                 </select>
             </div>
 
-            <div class="col-lg-3">
+            <div class="col-lg-2">
                 
                 <div class="input-group">
                     {!! Form::select('type', ['' => '---'. __('Payment method') . '---', 1 => __('Cash'), 2 => __('Wire transfer'), 3 => __('Check'), ], request('type'), ['class' => 'form-control', 'id' => 'type' ]) !!}
@@ -71,16 +71,23 @@
                 </div>
             </div>
 
-            <div class="col-lg-1">
-                <a class="btn btn-warning" href="{{ route('tenant.income.list', ['domain' => $tenant->domain, 'branch_id' => request('branch_id'), 'from' => request('from'), 'to' => request('to'), 'type' => request('type'), 'bcode' => request('bcode'), 'bname' => request('bname'), '_print_it' => 1, ]) }}">
-                    <i class="fa fa-save"></i>
+            <div class="col-lg-2">
+                <a class="btn btn-outline-primary" title="PDF" href="{{ route('tenant.income.list', ['domain' => $tenant->domain, 'branch_id' => request('branch_id'), 'from' => request('from'), 'to' => request('to'), 'type' => request('type'), 'bcode' => request('bcode'), 'bname' => request('bname'), '_print_it' => 1, ]) }}">
+                    <i class="fa fa-file-pdf-o"></i>
                 </a>
+
+                <a class="btn btn-outline-primary" title="Excel" href="{{ route('tenant.income.list', ['domain' => $tenant->domain, 'branch_id' => request('branch_id'), 'from' => request('from'), 'to' => request('to'), 'type' => request('type'), 'bcode' => request('bcode'), 'bname' => request('bname'), '_excel_it' => 1, ]) }}">
+                    <i class="fa fa-file-excel-o"></i>
+                </a>
+
             </div>
 
         </div>
         <!--/row-->
 
-        @include('tenant.income._index', ['printing'])
+        <div class="table-responsive-sm">
+            @include('tenant.income._index', ['printing'])
+        </div>
 
       </div><!-- container -->
 </div><!-- slim-mainpanel -->

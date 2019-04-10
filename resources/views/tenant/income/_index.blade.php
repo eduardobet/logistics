@@ -1,157 +1,140 @@
-@if (isset($printing))
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Document</title>
-        <link href="{{ asset(mix('css/tenant.css')) }}" rel="stylesheet">
-    </head>
-    <body>
- @endif
+<table class="table mg-b-0 pdf-table">
 
-<div class="card card-invoice">
-          <div class="card-body">
-            <div class="invoice-header">
-            </div><!-- invoice-header -->
+  <tr>
+    <td colspan="2" style="width:34%;"><h5>DETALLES SUCURSAL Y FECHA</h5></td>
+    <td colspan="2" style="width:33%;"><h5>INFORMACION DETALLADA</h5></td>
+    <td colspan="2" style="width:33%;"><h5>INFORMACION DETALLADA</h5></td>
+  </tr>
 
-            <div class="row mg-t-20">
+  <tr>
+    <td colspan="2"><h3>{{ request('bname', $branch->name) }}</h3></td>
+    <td>Total Facturado:</td>
+    <td>{{ $sign }}{{ number_format($tot_charged, 2) }}</td>
+    <td>Total Cheques:</td>
+    <td>{{ $sign }}{{ number_format($tot_in_check, 2) }}</td>
+  </tr>
+  
+  <tr>
+    <td colspan="2"><b>FECHA:</b></td>
+    <td>Total Cobrado:</td>
+    <td>{{ $sign }}{{ number_format($tot_income, 2) }}</td>
+    <td>Comision Tarjeta:</td>
+    <td>{{ $sign }}{{ number_format($tot_commission, 2) }}</td>
+  </tr>
+  
+  <tr>
+    <td>Desde:</td>
+    <td>{{ request('from', $today = date('d/m/Y')) }}</td>
+    <td>Total Efectivo:</td>
+    <td>{{ $sign }}{{ number_format($tot_in_cash, 2) }} </td>
+    <td>Multa Almacenaje:</td>
+    <td>{{ $sign }}{{ number_format($tot_fine, 2) }}</td>
+  </tr>
 
-              <table style="width: 100% !important">
-              <tr>
-              <td style="width: 34% !important">
-                <label class="section-label-sm tx-gray-500">Detalles Sucursal y Fecha</label>
-                <div class="billed-to">
-                  <h6 class="tx-gray-800">{{ request('bname', $branch->name) }}</h6>
-                  <p><b>FECHA:</b> <br>Desde: {{ request('from', $today = date('d/m/Y')) }}<br> Hasta: {{  request('to', $today) }}<br>
-                </div>
-              </td><!-- col -->
-              <td style="width: 33% !important">
-                <label class="section-label-sm tx-gray-500">Informacion Detallada</label>
-                <p class="invoice-info-row">
-                  <span>Total Facturado:</span>
-                  <span>${{ number_format($tot_charged, 2) }}</span>
-                </p>
-                <p class="invoice-info-row">
-                  <span>Total Cobrado:</span>
-                  <span>${{ number_format($tot_income, 2) }}</span>
-                </p>
-                <p class="invoice-info-row">
-                  <span>Total Efectivo:</span>
-                  <span>${{ number_format($tot_in_cash, 2) }} </span>
-                </p>
-                <p class="invoice-info-row">
-                  <span>Total Deposito/Transferencia:</span>
-                  <span>${{ number_format($tot_in_wire, 2) }}</span>
-                </p>
+  <tr>
+    <td>Hasta:</td>
+    <td>{{ request('to', $today) }}</td>
+    <td>Total Deposito/Transferencia:</td>
+    <td>{{ $sign }}{{ number_format($tot_in_wire, 2) }}</td>
+   <td>Libras Ingresadas:</td>
+   <td>{{ $recas->sum('weight') }}LBS</td>
+  </tr>
+  
+  
+    
 
-              </td>
-              
-              <td style="width: 33% !important">
-                <label class="section-label-sm tx-gray-500">Informacion Detallada</label>
-                <p class="invoice-info-row">
-                  <span>Total Cheques:</span>
-                  <span>${{ number_format($tot_in_check, 2) }}</span>
-                </p>
-                <p class="invoice-info-row">
-                  <span>Comision Tarjeta:</span>
-                  <span>${{ number_format($tot_commission, 2) }}</span>
-                </p>
-                <p class="invoice-info-row">
-                  <span>Multa Almacenaje:</span>
-                  <span>${{ number_format($tot_fine, 2) }}</span>
-                </p>
-                <p class="invoice-info-row">
-                  <span>Libras Ingresadas:</span>
-                  <span>{{ $recas->sum('weight') }}LBS</span>
-                </p>
+    <tr>
+      <td colspan="6">
+        <h4>DETALLES</h4>
+      </td>
+    </tr>
 
-              </td><!-- col -->
-
-              </tr>
-              </table>
-            </div><!-- row -->
-
-
-                
-                @foreach ($payments_by_type->groupBy('payment_method') as $ptype => $groups)
-                <div class="table-responsive mg-t-40 table-bordered">
-                  <table class="table table-invoice" >
-                    <thead class="thead-colored {{[1 => 'bg-primary', 2 => 'bg-success', 3 => 'bg-danger'][$ptype]}}">
-                      <tr>
-                        <th class="wd-10p">{{ strtoupper( [1 => __('Cash'), 2 => __('Wire transfer'), 3 => __('Check')][$ptype] )  }}</th>
-                      </tr>
-                    </thead>
-                  </table>
-                  <table class="table table-invoice" >
-                    <thead>
-                      <tr>
-                        <th class="wd-10p">FACTURA</th>
-                        <th class="wd-15p">FECHA</th>
-                        <th class="wd-35p">TIPO DE FACTURA</th>
-                        <th class="wd-10p tx-center">TOTAL</th>
-                        <th class="wd-10p tx-right">AOBONO/PAGO</th>
-                        <th class="wd-10p tx-right">PENDIENTE</th>
-                      </tr>
-                    </thead>
-                    <tbody class="mg-b-0">
-                      @foreach ($groups as $payment)
-                      <tr>
-                        <td>{{ request('bcode', $branch->initial) }}-{{ $payment->invoice->manual_id_dsp }}</td>
-                        <td>{{ $payment->created_at->format('Y-m-d') }}</td>
-                        <td>
-                        @if (isset($payment->invoice->warehouse))
-                        WH-{{ $payment->invoice->warehouse->manual_id }}
-                        @else
-                          {{ __('INTERNET') }}
-                        @endif
-                        
-                        </td>
-                        <td class="tx-center">${{ number_format($payment->invoice->total, 2) }}</td>
-                        <td class="tx-right">${{ number_format($payment->amount_paid, 2) }}</td>
-                        <td class="tx-right">${{ number_format($payment->invoice->total - $payment->amount_paid, 2) }}</td>
-                      </tr>
-                      @endforeach
-                    </tbody>
-                  </table>
-            </div><!-- table-responsive -->
-                @endforeach
+    <?php $earningG = 0; $i = 0;?>
             
+    @foreach ($payments_by_type->groupBy('invoice_id') as $ptype => $groups)
+      <?php
+        $total = 0;
+        $pending = 0;
+        $earning = 0;
+      ?>
 
-            <div class="table-responsive mg-t-40 table-bordered">
-              <table class="table table-invoice" >
-                <thead class="thead-colored bg-info">
-                  <tr>
-                    <th class="wd-10p ">LIBRAS INGRESADAS</th>
-                  </tr>
-                </thead>
-              </table>
-              <table class="table table-invoice" >
-                <thead>
-                  <tr>
-                    <th class="wd-10p">FECHA</th>
-                    <th class="wd-20p">RECA</th>
-                    <th class="wd-20p">Cant Paquetes</th>
-                    <th class="wd-50p tx-right">TOTAL LIBRAS</th>
-                  </tr>
-                </thead>
-                <tbody class="mg-b-0">
-                  @foreach ($recas as $reca)
-                    <tr>
-                      <td>{{ $reca->created_at->format('d/m/Y') }}</td>
-                      <td>RECA-{{ $reca->id }}</td>
-                      <td>{{ count(explode(PHP_EOL, $reca->trackings)) }}</td>
-                      <td class="tx-right">{{ $reca->weight }}LBS</td>
-                    </tr>
-                  @endforeach
-                </tbody>
-              </table>
-            </div><!-- table-responsive -->
+      @if ($i == 0)
+      <tr>
+        <th>FACTURA</th>
+        <th>FECHA</th>
+        <th>T.FAC/METODO</th>
+        <th class="tx-center">TOTAL</th>
+        <th class="tx-right pdf-a-right">AOBONO/PAGO</th>
+        <th class="tx-right pdf-a-right">PENDIENTE</th>
+      </tr>
+      @endif
 
-          </div><!-- card-body -->
-        </div><!-- card -->
-@if (isset($printing))
-</body>
-</html>
-@endif
+      @foreach ($groups as $key => $payment)
+        <?php
+          if ($pending == 0) $total = $payment->invoice->total;
+          else $total = $pending;
+          $pending = $total - $payment->amount_paid;
+        ?>
+        <tr>
+          <td>{{ request('bcode', $branch->initial) }}-{{ $payment->invoice->manual_id_dsp }}</td>
+          <td>{{ $payment->created_at->format('Y-m-d') }}</td>
+          <td>
+          @if (isset($payment->invoice->warehouse))
+          WH-{{ $payment->invoice->warehouse->manual_id }}
+          @else
+            {{ __('INTERNET') }}
+          @endif
+                  / {{ strtoupper( [1 => __('Cash'), 2 => __('Wire transfer'), 3 => __('Check')][ $payment->payment_method ] )  }} 
+            </td>
+            <td class="tx-center">{{ $sign }}{{ number_format($total, 2) }}</td>
+            <td class="tx-right pdf-a-right">{{ $sign }}
+              @if (!empty($show_total))
+              {{ number_format($payment->amount_paid, 2) }}
+              @else
+              {{ number_format($payment->amount_paid, 2, ".", "") }}
+              @endif
+            </td>
+            <td class="tx-right pdf-a-right">{{ $sign }}{{ number_format($pending, 2) }}</td>
+          </tr>
+          <?php 
+            $earning += $payment->amount_paid;
+            $earningG += $payment->amount_paid;
+          ?>
+        @endforeach
+
+        @if (!empty($show_total))
+        <tr>
+          <td colspan="4" class="tx-right pdf-a-right">Total:</td>
+          <td class="tx-right pdf-a-right">{{ $sign }}{{ number_format($earning, 2) }}</td>
+          <td></td>
+        </tr>
+        @endif
+
+        @php
+            $i++;
+        @endphp
+      @endforeach
+
+
+    <tr>
+      <td colspan="6">
+        <h4>LIBRAS INGRESADAS</h4>
+      </td>
+    </tr>
+
+    <tr>
+      <th>FECHA</th>
+      <th colspan="2">RECA</th>
+      <th>Cant Paquetes</th>
+      <th colspan="2" class="tx-right pdf-a-right">TOTAL LIBRAS</th>
+    </tr>
+    @foreach ($recas as $reca)
+      <tr>
+        <td>{{ $reca->created_at->format('d/m/Y') }}</td>
+        <td colspan="2">RECA-{{ $reca->id }}</td>
+        <td class="tx-center pdf-a-center">{{ count(explode(PHP_EOL, $reca->trackings)) }}</td>
+        <td colspan="2" class="tx-right pdf-a-right">{{ $reca->weight }}LBS</td>
+      </tr>
+    @endforeach
+
+</table>

@@ -45,7 +45,7 @@ class WarehouseController extends Controller
 
     public function export()
     {
-        [$warehouses, $branch] = $this->listWarehouses($this->getTenant());
+        [$warehouses,, $branch] = $this->listWarehouses($this->getTenant());
 
         $data = [
             'warehouses' => $warehouses,
@@ -57,7 +57,9 @@ class WarehouseController extends Controller
         if (request('pdf')) {
             // return view('tenant.export.warehouses-pdf', $data);
 
-            $pdf = \PDF::loadView('tenant.export.warehouses-pdf', $data);
+            $pdf = app('dompdf.wrapper');
+            $pdf->getDomPDF()->set_option("enable_php", true);
+            $pdf->loadView( 'tenant.export.warehouses-pdf', $data);
 
             return $pdf->download(uniqid('warehouses_', true) . '.pdf');
         }

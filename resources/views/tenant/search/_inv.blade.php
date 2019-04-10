@@ -17,6 +17,10 @@
                         <span class="badge badge-danger">{{ __('Pending') }}</span>
                     @endif
                 @endif
+
+                @if ($result->status == 'I')
+                    <span class="badge badge-danger">{{ __('Inactive') }}</span>
+                @endif
             </p>
             <small>
 

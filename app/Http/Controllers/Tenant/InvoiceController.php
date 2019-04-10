@@ -42,6 +42,7 @@ class InvoiceController extends Controller
             'branch' => $branch,
             'sign' => '$',
             'branches' => $branches,
+            'show_total' => true,
         ]);
     }
 
@@ -54,12 +55,15 @@ class InvoiceController extends Controller
             'branch' => $branch,
             'exporting' => true,
             'sign' => '',
+            'show_total' => true,
         ];
 
         if (request('pdf')) {
             // return view('tenant.export.invoices-pdf', $data);
 
-            $pdf = \PDF::loadView('tenant.export.invoices-pdf', $data);
+            $pdf = app('dompdf.wrapper');
+            $pdf->getDomPDF()->set_option("enable_php", true);
+            $pdf->loadView( 'tenant.export.invoices-pdf', $data);
 
             return $pdf->download(uniqid('invoices_', true) . '.pdf');
         }

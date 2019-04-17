@@ -151,6 +151,7 @@ class InvoiceEditionTest extends TestCase
             $this->assertEquals('A', $invoice->status);
             $this->assertEquals('180.0', $invoice->total);
             $this->assertEquals('2017-02-25', $invoice->created_at->format('Y-m-d'));
+            $this->assertEquals('2017-03-04', $invoice->due_at->format('Y-m-d'));
 
             $payment = $payment->fresh()->first();
             $this->assertEquals($tenant->id, $payment->tenant_id);

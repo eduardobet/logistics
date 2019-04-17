@@ -57,7 +57,7 @@
             </div><!-- dropdown-menu -->
           </li>
 
-          <li class="nav-item with-sub {{ active(['tenant.invoice.list','tenant.invoice.create', 'tenant.invoice.edit']) }}">
+          <li class="nav-item with-sub {{ active(['tenant.invoice.list','tenant.invoice.create', 'tenant.invoice.edit', 'tenant.outstandings.list', 'tenant.outstandings.details']) }}">
             <a class="nav-link" href="#">
               <i class="icon ion-ios-calculator-outline"></i>
               <span>{{ __('Invoices') }}</span>

@@ -235,6 +235,7 @@ class WarehouseCreationTest extends TestCase
 
         $this->assertEquals('2017-01-30', $wh->created_at->format('Y-m-d'));
         $this->assertEquals('2017-01-30', $inv->created_at->format('Y-m-d'));
+        $this->assertEquals('2017-02-06', $inv->due_at->format('Y-m-d'));
 
         tap($branchB->invoices->first()->details->first(), function ($detail) use ($client) {
             $this->assertEquals($detail->invoice_id, 1);

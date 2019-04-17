@@ -44,8 +44,9 @@ trait InvoiceList
 
         $now = \Carbon\Carbon::now();
 
-        if (($from = request('from', $now->subDays(15)->format('Y-m-d'))) && ($to = request('to', date('Y-m-d')))) {
+        if (($from = request('from', $now->subYear(1)->format('Y-m-d'))) && ($to = request('to', date('Y-m-d')))) {
             $invoices = $invoices->whereRaw(' date(invoices.created_at) between ? and ? ', [$from, $to]);
+            if( request('from') && request('to'))
             $searching = 'Y';
         }
 
@@ -66,7 +67,7 @@ trait InvoiceList
         if ($searching == 'Y') {
             $invoices = $invoices->orderBy('invoices.manual_id')->get();
         } else {
-            $invoices = $invoices->orderBy('invoices.manual_id')->paginate(20);
+            $invoices = $invoices->orderBy('invoices.manual_id')->paginate(100);
         }
 
         return [$invoices, $searching, $branch];

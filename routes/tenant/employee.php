@@ -72,6 +72,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::patch('payment/update', 'Tenant\PaymentController@update')->name('tenant.payment.update')->middleware(['can:edit-payment']);
     Route::get('payment/{id}/show', 'Tenant\PaymentController@show')->name('tenant.payment.show')->middleware(['can:show-payment']);
 
+    // outstandings
+    Route::get('invoice/outstandings', 'Tenant\Invoice\OutstandingsController@list')->name( 'tenant.outstandings.list')->middleware(['can:show-invoice']);
+    Route::get('invoice/outstandings/details', 'Tenant\Invoice\OutstandingsController@details')->name( 'tenant.outstandings.details')->middleware(['can:show-invoice']);
+
     //incomes
     Route::get('income/list', 'Tenant\IncomeController@index')->name('tenant.income.list')->middleware(['can:show-payment']);
     

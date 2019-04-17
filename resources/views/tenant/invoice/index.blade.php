@@ -37,7 +37,7 @@
                             {{ __('From') }}
                         </div>
                     </div>
-                    <input type="text" class="form-control fc-datepicker hasDatepicker" placeholder="YYYY-MM-DD" value="{{ request('from', Carbon\Carbon::now()->subDays(15)->format('Y-m-d')   ) }}" id="from">
+                    <input type="text" class="form-control fc-datepicker hasDatepicker" placeholder="YYYY-MM-DD" value="{{ request('from', Carbon\Carbon::now()->subYear(1)->format('Y-m-d')   ) }}" id="from">
                 </div>
 
             </div>

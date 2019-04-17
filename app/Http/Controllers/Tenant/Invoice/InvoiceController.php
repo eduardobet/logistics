@@ -105,6 +105,7 @@ class InvoiceController extends Controller
         }
 
         $invoice->created_at = Carbon::create($year, $month, $day);
+        $invoice->due_at = $invoice->created_at->addWeek(1);
 
         $saved = $invoice->save();
 
@@ -254,7 +255,9 @@ class InvoiceController extends Controller
         $invoice->save();
 
         if ($invoice->wasChanged() && $invoice->created_at->format('Y-m-d') != request('created_at')) {
-            $invoice->update(['created_at' => Carbon::create($year, $month, $day)]);
+            $createdAt = Carbon::create($year, $month, $day);
+            $dueAt = Carbon::create($year, $month, $day)->addWeek(1);
+            $invoice->update(['created_at' => $createdAt, 'due_at' => $dueAt]);
         }
 
         if ($invoice) {

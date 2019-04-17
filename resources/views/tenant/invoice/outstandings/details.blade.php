@@ -71,7 +71,7 @@
 
                 @foreach ($client->clientInvoices as $i => $invoice)
                     <tr>
-                        <td>{{ $invoice->manual_id_dsp  }}</td>
+                        <td>{{ $invoice->branch->initial }}-{{ $invoice->manual_id_dsp  }}</td>
                         <td>{{ $invoice->created_at->format('Y-m-d')  }}</td>
                         <td>{{ $invoice->warehouse_id ? __('Warehouse') : 'Internet'  }}</td>
                         <td>$ {{ number_format($invoice->total, 2)  }}</td>

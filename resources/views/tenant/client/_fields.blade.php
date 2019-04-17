@@ -278,6 +278,12 @@
 <div class="row mg-t-25 justify-content-between">
     <div class="col-lg-12">
         <button type="submit" class="btn btn-primary  bd-1 bd-gray-400" id="btn-save-client">{{ __('Save') }}</button>
+        
+        @if ($mode == 'edit')
+            @can('show-invoice')
+                <a class="btn btn-secondary  bd-1 bd-gray-400" href="{{ route('tenant.outstandings.details', [$tenant->domain, 'branch_id' => $client->branch_id, 'client_id' => $client->id, ]) }}"><i class="fa fa-money"></i> {{ __('Pending invoices') }}</a> 
+            @endcan
+        @endif
     </div>
 </div>
 @endif

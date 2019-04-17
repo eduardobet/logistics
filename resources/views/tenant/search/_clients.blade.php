@@ -20,7 +20,7 @@
                 @can('show-invoice')
                 $ {{ number_format( $invoices->sum('total') - $payments->sum('amount_paid'), 2) }}
 
-                <a href="{{ route('tenant.outstandings.details', [$tenant->domain, 'branch_id' => request('branch_id', $branch->id), 'client_id' => $result->id, ]) }}"><i class="fa fa-external-link"></i></a>
+                <a href="{{ route('tenant.outstandings.details', [$tenant->domain, 'branch_id' => request('branch_id', $result->branch ? $result->branch->id : $branch->id), 'client_id' => $result->id, ]) }}"><i class="fa fa-external-link"></i></a>
 
                 @endcan
                 <small class="tx-xthin"> P/P</small>
@@ -44,7 +44,7 @@
             &nbsp;&nbsp;&nbsp;&nbsp;
 
             @can('show-invoice')
-                <a class="btn btn-primary"  href="{{ route('tenant.invoice.list', [$tenant->domain, 'client_id' => $result->id, 'branch_id' => $branch->id, ]) }}">
+                <a class="btn btn-primary"  href="{{ route('tenant.invoice.list', [$tenant->domain, 'client_id' => $result->id, 'branch_id' => $result->branch ? $result->branch->id : $branch->id, ]) }}">
                 <i class="fa fa-file"></i>
                 {{ __('Invoices') }}
                 </a>
@@ -53,7 +53,7 @@
             &nbsp;&nbsp;&nbsp;&nbsp;
 
             @can('show-payment')    
-            <a class="btn btn-primary"  href="{{ route('tenant.payment.list', [$tenant->domain, 'client_id' => $result->id, 'branch_id' => $branch->id, ]) }}">
+            <a class="btn btn-primary"  href="{{ route('tenant.payment.list', [$tenant->domain, 'client_id' => $result->id, 'branch_id' => $result->branch ? $result->branch->id : $branch->id, ]) }}">
                 <i class="fa fa-money"></i>
                 {{ __('Payments') }}
             </a>

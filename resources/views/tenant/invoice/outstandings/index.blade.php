@@ -67,9 +67,13 @@
                 </tr>
               </thead>
               <tbody>
-                  
+                  <?php 
+                  $total = 0;
+                  ?>
                   @foreach ($clients as $client)
-                      
+                      <?php 
+                  $pending = $client->clientInvoices->sum('pending');
+                  ?>
                     <tr>
                       <th scope="row">{{ $client->manual_id_dsp }}</th>
                       <td>{{ $client->first_name }}</td>
@@ -77,7 +81,7 @@
                       <td>{{ $client->branch ? $client->branch->code : null }}{{ $client->manual_id_dsp }}</td>
                       <td>{{ $client->email }}</td>
                       <td>{{ $client->telephones }}</td>
-                      <td>${{ number_format($client->clientInvoices->sum('pending'), 2) }}</td>
+                      <td>${{ number_format($pending , 2) }}</td>
                       <td class="text-center">
                         @can('show-invoice')
                           <a href="{{ route('tenant.outstandings.details', [$tenant->domain, 'branch_id' => request('branch_id', $branch->id), 'client_id' => $client->id, ]) }}"><i class="fa fa-eye"></i></a>
@@ -86,15 +90,17 @@
                       </td>
                     </tr>
 
-                    @if($loop->last)
-                        <tr>
-                            <td colspan="6" style="text-align: right">Total:</td>
-                            <td>$ {{ number_format($client->clientInvoices->sum('pending'), 2)  }}</td>
-                            <td></td>
-                        </tr>
-                    @endif
+                    <?php 
+                  $total = $total + $pending;
+                  ?>
 
                 @endforeach
+
+                <tr>
+                    <td colspan="6" style="text-align: right">Total:</td>
+                    <td>$ {{ number_format($total, 2)  }}</td>
+                    <td></td>
+                </tr>
                
               </tbody>
             </table>

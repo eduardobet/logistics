@@ -28,7 +28,7 @@ class DashboardController extends Controller
 
         $branch = auth()->user()->currentBranch();
 
-        $outstanding = \DB::select( "select sum(aa.pending) as pending from (select invoices.total - COALESCE(( select SUM(p.amount_paid) from payments p where p.status = 'A' and p.invoice_id = invoices.id ),0) as pending from invoices where invoices.status = 'A' and invoices.tenant_id = {$tenant->id} and invoices.branch_id = {$branch->id} and invoices.is_paid = 1 and invoices.due_at <= CURRENT_TIMESTAMP ) aa");
+        $outstanding = \DB::select( "select sum(aa.pending) as pending from (select invoices.total - COALESCE(( select SUM(p.amount_paid) from payments p where p.status = 'A' and p.invoice_id = invoices.id ),0) as pending from invoices where invoices.status = 'A' and invoices.tenant_id = {$tenant->id} and invoices.branch_id = {$branch->id} and invoices.is_paid = 0 and invoices.due_at <= CURRENT_TIMESTAMP ) aa");
 
         $outstanding = $outstanding[0]->pending;
         if (!$outstanding) $outstanding = 0;

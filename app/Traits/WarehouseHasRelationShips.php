@@ -126,11 +126,15 @@ trait WarehouseHasRelationShips
         );
 
         if ($invoice->wasChanged() && $invoice->created_at->format('Y-m-d') != request('created_at')) {
-            $invoice->update(['created_at' => Carbon::create($year, $month, $day) ]);
+            $createdAt = Carbon::create($year, $month, $day);
+            $dueAt = Carbon::create($year, $month, $day)->addWeek(1);
+            $invoice->update(['created_at' => $createdAt, 'due_at' => $dueAt]);
         }
 
         if ($invoice->wasRecentlyCreated) {
-            $invoice->update(['created_at' => Carbon::create($year, $month, $day) ]);
+            $createdAt = Carbon::create($year, $month, $day);
+            $dueAt = Carbon::create($year, $month, $day)->addWeek(1);
+            $invoice->update(['created_at' => $createdAt, 'due_at' => $dueAt ]);
         }
 
         $details = $request->invoice_detail ?: [];

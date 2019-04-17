@@ -146,3 +146,18 @@ Breadcrumbs::for('tenant.income.list', function ($trail) use ($type) {
     $trail->parent("tenant.{$type}.dashboard");
     $trail->add(__('Incomes'), '');
 });
+
+// outstandings
+Breadcrumbs::for( 'tenant.outstandings.list', function ($trail) use ($type) {
+    $trail->parent("tenant.{$type}.dashboard");
+    $trail->add(__( 'Clients with pending invoices'), '');
+});
+
+Breadcrumbs::for('tenant.outstandings.details', function ($trail) use ($type) {
+    $trail->parent("tenant.{$type}.dashboard");
+    $trail->add(__( 'Clients with pending invoices'), route( 'tenant.outstandings.list', [request()->domain, 'branch_id' => request()->branch_id, ]));
+    $trail->add(__( 'Pending invoices'), '');
+});
+
+
+

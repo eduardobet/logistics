@@ -17,8 +17,10 @@ class Invoice extends Model implements Auditable
      * @var array
      */
     protected $fillable = [
-        'created_by_code', 'tenant_id', 'updated_by_code', 'branch_id', 'client_name', 'client_email', 'status', 'volumetric_weight', 'real_weight', 'total','notes', 'warehouse_id', 'client_id', 'is_paid', 'i_using', 'cubic_feet', 'fine_total', 'fine_ref', 'created_at', 'manual_id', 'delivered_trackings',
+        'created_by_code', 'tenant_id', 'updated_by_code', 'branch_id', 'client_name', 'client_email', 'status', 'volumetric_weight', 'real_weight', 'total','notes', 'warehouse_id', 'client_id', 'is_paid', 'i_using', 'cubic_feet', 'fine_total', 'fine_ref', 'created_at', 'manual_id', 'delivered_trackings', 'due_at',
     ];
+
+    protected $dates = ['due_at'];
 
     /**
      * The attributes that should be cast to native types.

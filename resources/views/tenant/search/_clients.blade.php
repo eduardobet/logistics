@@ -17,7 +17,13 @@
             ?>
 
             <h3 class="pull-right tx-bold">
-                $ {{ number_format( $invoices->sum('total') - $payments->sum('amount_paid'), 2) }}  <small class="tx-xthin"> P/P</small>
+                @can('show-invoice')
+                $ {{ number_format( $invoices->sum('total') - $payments->sum('amount_paid'), 2) }}
+
+                <a href="{{ route('tenant.outstandings.details', [$tenant->domain, 'branch_id' => request('branch_id', $branch->id), 'client_id' => $result->id, ]) }}"><i class="fa fa-external-link"></i></a>
+
+                @endcan
+                <small class="tx-xthin"> P/P</small>
             </h3>
             <p></p>
 

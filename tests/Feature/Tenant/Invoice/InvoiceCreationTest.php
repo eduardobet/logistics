@@ -8,7 +8,6 @@ use Logistics\DB\Tenant\Box;
 use Logistics\DB\Tenant\Branch;
 use Logistics\DB\Tenant\Client;
 use Illuminate\Support\Facades\Queue;
-use Illuminate\Foundation\Testing\WithFaker;
 use Logistics\DB\Tenant\Tenant as TenantModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Logistics\Jobs\Tenant\SendInvoiceCreatedEmail;
@@ -140,6 +139,7 @@ class InvoiceCreationTest extends TestCase
             $this->assertEquals(14, $invoice->manual_id);
             $this->assertEquals('160.0', $invoice->total);
             $this->assertEquals('2017-01-30', $invoice->created_at->format('Y-m-d'));
+            $this->assertEquals('2017-02-06', $invoice->due_at->format('Y-m-d'));
 
             $payment = $invoice->payments->first();
             $this->assertEquals($tenant->id, $payment->tenant_id);

@@ -103,6 +103,13 @@
                           </button>
                         @endif
 
+                         @can('show-invoice')
+                         &nbsp;&nbsp;&nbsp;&nbsp; 
+                          <a href="{{ route('tenant.outstandings.details', [$tenant->domain, 'branch_id' => $client->branch_id, 'client_id' => $client->id, ]) }}"
+                            data-toggle="tooltip" data-placement="left" title="{{ __('Pending invoices') }}"
+                            ><i class="fa fa-money"></i></a>
+                          @endcan
+
                       </td>
                     </tr>
 

@@ -86,6 +86,14 @@
                       </td>
                     </tr>
 
+                    @if($loop->last)
+                        <tr>
+                            <td colspan="6" style="text-align: right">Total:</td>
+                            <td>$ {{ number_format($client->clientInvoices->sum('pending'), 2)  }}</td>
+                            <td></td>
+                        </tr>
+                    @endif
+
                 @endforeach
                
               </tbody>

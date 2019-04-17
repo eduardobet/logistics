@@ -78,6 +78,9 @@ class OutstandingsController extends Controller
             ->withAndWhereHas('clientInvoices', function ($invoices) {
                 $invoices->where('status', 'A')->where('is_paid', false)->where('due_at', '<=', \Carbon\Carbon::now()->format('Y-m-d'))
                     ->select(['id','client_id', 'total', 'warehouse_id', 'created_at', 'manual_id', 'branch_id', \DB::raw("invoices.total - COALESCE(( select SUM(p.amount_paid) from payments p where p.status = 'A' and p.invoice_id = invoices.id ),0) as pending ")])
+                    ->with(['branch' => function($branch) {
+                        $branch->select(['id', 'initial']);
+                    }])
                     ->orderBy('manual_id');
             })
             ->firstOrFail();

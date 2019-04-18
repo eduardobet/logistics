@@ -11,19 +11,9 @@
        table.pdf-table th{text-align: left}
        table.pdf-table td{border-bottom: solid 1px}
        table.pdf-table th{border: solid 1px}
-       
-      .page-break {page-break-after: always;}
-      #header,#footer {position: fixed;left: 0;right: 0;font-size: 0.9em;}
-      #header {top: 0;border-bottom: 0.1pt solid #aaa;}
-      #footer {bottom: 0;border-top: 0.1pt solid #aaa;}
-      .page-number:before {content: "{{ __('Page') }} " counter(page);}
     </style>
   </head>
   <body>
-
-    <div id="footer">
-        <div class="page-number"></div>
-    </div>
 
   <table style="width: 100%">
 

@@ -48,7 +48,7 @@
                     <p>{{ __('Last payment by') }} <b>{{ $lPayment->creator->full_name }}</b> | <b>{{ $lPayment->created_at->format('d/m/Y') }}</b> | {{ $lPayment->created_at->format('g:i A') }} </p>
                 @endif
 
-                @if ($invoice && $invoice->is_paid)
+                @if ($invoice && $invoice->is_paid && $lPayment && $lPayment->creator)
                     <p>{{ __('Delivered by') }} <b>{{ $lPayment->creator->full_name }}</b> | <b>{{ $lPayment->created_at->format('d/m/Y') }}</b> | {{ $lPayment->created_at->format('g:i A') }} </p>
                 @endif
                 

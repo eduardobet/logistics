@@ -425,6 +425,80 @@ class PaymentCreationTest extends TestCase
         $this->assertEquals(true, (bool)$invoice->is_paid);
     }
 
+    /** @test */
+    public function the_invoice_is_paid_when_total_payme_equals_to_invoice_total()
+    {
+        // $this->withoutExceptionHandling();
+
+        $tenant = factory(TenantModel::class)->create();
+        $branch = factory(Branch::class)->create(['tenant_id' => $tenant->id,]);
+
+        $admin = factory(User::class)->states('admin')->create(['tenant_id' => $tenant->id,]);
+        $admin->branches()->sync([$branch->id]);
+        $admin->branchesForInvoice()->sync([$branch->id,]);
+
+        $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'pay_volume' => true, 'vol_price' => 2.00]);
+        factory(Box::class)->create([
+            'tenant_id' => $tenant->id,
+            'client_id' => $client->id,
+            'branch_id' => $branch->id,
+            'branch_code' => $branch->code,
+        ]);
+
+        $invoice = $tenant->invoices()->create([
+            'branch_id' => $branch->id,
+            'client_id' => $client->id,
+            'total' => 171.71,
+        ]);
+
+        $invoice->details()->create([
+            'qty' => 1,
+            'type' => 1,
+            'description' => 'Buying from amazon',
+            'id_remote_store' => '122452222',
+            'total' => 166.71,
+        ]);
+
+        $invoice->details()->create([
+            'qty' => 1,
+            'type' => 2,
+            'description' => 'Uso de TC',
+            'id_remote_store' => '0',
+            'total' => 5,
+        ]);
+
+        $invoice->payments()->create([
+            'tenant_id' => $invoice->tenant_id,
+            'amount_paid' => 100,
+            'payment_method' => 1,
+            'payment_ref' => 'The client paid $100.00',
+            'is_first' => true,
+        ]);
+
+        \Gate::define('create-payment', function ($admin) {
+            return true;
+        });
+
+        $response = $this->actingAs($admin)->get(route('tenant.payment.create', [$tenant->domain, $invoice->id]), [], $this->headers());
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'error' => false,
+            'view' => view('tenant.payment.create', ['invoice' => $invoice, 'payments' => $invoice->payments,])->render(),
+        ]);
+
+        $response = $this->actingAs($admin)->post(route('tenant.payment.store', [$tenant->domain]), [
+            'invoice_id' => $invoice->id,
+            'amount_paid' => 71.71,
+            'payment_method' => 1,
+            'payment_ref' => 'Cancelando',
+        ], $this->headers());
+
+        $invoice = $invoice->fresh();
+
+        $this->assertEquals(true, (bool)$invoice->is_paid);
+    }
+
     public function the_warehouse_invoice_should_be_paid_in_totality_in_one_payment()
     {
         $this->withoutExceptionHandling();

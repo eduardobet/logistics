@@ -16,7 +16,7 @@
                             <div class="col-lg-4">
                                 <div class="form-group mg-b-10-force">
                                     <label class="form-control-label">{{ __('Amount paid') }}:<span class="tx-danger">*</span></label>
-                                    <?php $pending = isset($invoice) && isset($payments) ? $invoice->total - $payments->sum('amount_paid') : 0;  ?>
+                                    <?php $pending = isset($invoice) && isset($payments) ? bcsub($invoice->total, $payments->sum('amount_paid'), 2) : 0;  ?>
 
                                     <input type="number" value="{{ $pending }}" name="p_amount_paid" id="p_amount_paid" class="form-control" required step=".01" min="0" max="{{ $pending }}" onclick="this.select()">
                                 </div>

@@ -48,7 +48,7 @@
                 <i class="icon ion-ios-calculator-outline tx-primary"></i>
                 <div class="media-body">
                   <h3>
-                    @can('show-invoice')
+                    @can('show-pending-invoice')
                     <a href="{{ route('tenant.outstandings.list', [$tenant->domain, 'branch_id' => $branch->id,]) }}">
                       {{ number_format($outstanding_invoices, 2) }}
                     </a>

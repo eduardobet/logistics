@@ -100,10 +100,6 @@ class InvoiceController extends Controller
         $invoice->total = $request->total;
         $invoice->notes = $request->notes;
 
-        if ($request->amount_paid) {
-            $invoice->is_paid = $request->amount_paid == $request->total;
-        }
-
         $invoice->created_at = Carbon::create($year, $month, $day);
         $invoice->due_at = $invoice->created_at->addWeek(1);
 
@@ -132,6 +128,11 @@ class InvoiceController extends Controller
                     'created_at' => Carbon::create($year, $month, $day),
                     'is_first' => true,
                 ]);
+
+                if ($payment->amount_paid == $request->total) {
+                    $invoice->update(['is_paid' => true]);
+                }     
+
             } else {
                 $payment = new Payment;
             }
@@ -248,10 +249,6 @@ class InvoiceController extends Controller
         $invoice->total = $request->total;
         $invoice->notes = $request->notes;
 
-        if ($request->amount_paid) {
-            $invoice->is_paid = $request->amount_paid == $request->total;
-        }
-
         $invoice->save();
 
         if ($invoice->wasChanged() && $invoice->created_at->format('Y-m-d') != request('created_at')) {
@@ -283,10 +280,14 @@ class InvoiceController extends Controller
                 $payment->payment_method = $request->payment_method;
                 $payment->payment_ref = $request->payment_ref;
                 $payment->is_first = true;
-                $payment->save();
+                $paid = $payment->save();
 
                 if ($payment->wasChanged() && $payment->created_at->format('Y-m-d') != request('created_at')) {
                     $payment->update(['created_at' => Carbon::create($year, $month, $day)]);
+                }
+
+                if ($paid && $payment->amount_paid == $invoice->total) {
+                    $invoice->update(['is_paid' => true]);
                 }
             }
             

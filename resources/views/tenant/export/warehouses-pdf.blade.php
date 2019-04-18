@@ -46,7 +46,7 @@
                 <?php $logo = storage_path('app/public/'.($branch->logo ? $branch->logo : $tenant->logo)); $mime = @mime_content_type($logo);  ?>
 
                 @if ($mime)
-                <img src="data:{{ $mime }};base64,{{ base64_encode(file_get_contents( $logo )) }}" alt="Company logo" width="200px"   />
+                <img src="data:{{ $mime }};base64,{{ base64_encode(file_get_contents( $logo )) }}" alt="Company logo" width="200px"  height="80px"    />
                 @endif
             </td>
         </tr>

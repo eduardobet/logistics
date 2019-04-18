@@ -38,6 +38,10 @@ trait InvoiceList
                 $query->where('id', $branch->id)->select('id', 'code', 'name', 'initial');
             });
 
+        if (request('paid_with_error') == 1) {
+            $invoices = $invoices->notPaid()->whereRaw( "invoices.total = (select sum(amount_paid) from payments p where p.status = 'A' and p.invoice_id = invoices.id)");
+        }
+
         if ($user->isClient()) {
             $invoices  = $invoices->where('client_id', $user->client_id);
         }

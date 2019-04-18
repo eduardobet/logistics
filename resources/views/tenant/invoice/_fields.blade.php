@@ -23,7 +23,7 @@
                 title="{{ __('New payment') }}" data-invoice-id="{{ $invoice->id }}"
                 data-toggle="modal"
                 data-target="#modal-payment"
-                {{ $invoice->status == 'I' || $invoice->total == $payments->sum('amount_paid') ? ' disabled' : null }}
+                {{ $invoice->status == 'I' || bccomp($invoice->total , $payments->sum('amount_paid'), 2) == 0 ? ' disabled' : null }}
             >
                 <i class="fa fa-money"></i></a>
             </button>
@@ -198,7 +198,7 @@
     <div class="col">
         @if ($invoice->status != 'I')
             <button id="btn-wh-save" type="submit" class="btn btn-primary  bd-1 bd-gray-400"
-        {{ $invoice->status == 'I' || (isset($payments) && $invoice->total == $payments->sum('amount_paid')) ? ' disabled' : null }}
+        {{ $invoice->status == 'I' || (isset($payments) && bccomp($invoice->total , $payments->sum('amount_paid'), 2) == 0) ? ' disabled' : null }}
         >{{ __('Save') }}</button>
         @endif
         @if ((auth()->user()->isSuperAdmin() || auth()->user()->isAdmin()) && $invoice->status)

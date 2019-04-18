@@ -73,7 +73,7 @@
 
                     {!! Form::select('invoice_type', ['' =>  __('Type'), '1' => __('Warehouse'), '2' => __('Internet') ], null, ['class' => 'form-control select2', 'id' => 'invoice_type', 'style' => 'width: 60px !important', ]) !!}
 
-                    @if (!$user->isClient())
+                    @if (!$user->isClient() && request('paid_with_error') != 1)
                     {!! Form::select('show_inactive', ['' =>  __('Status'), '1' => __('Show inactive') ], request('show_inactive'), ['class' => 'form-control', 'id' => 'show_inactive', 'style' => 'width: 70px !important',  ]) !!}
                     @endif
                 </div>
@@ -98,7 +98,7 @@
 
             @if ($searching == 'N')
                 <div id="result-paginated" class="mg-t-25">
-                    {{ $invoices->appends(['invoice_id' => request('invoice_id'), 'branch_id' => request('branch_id'), 'client_id' => request('client_id'), 'no_date' => request('no_date'),])->links() }}
+                    {{ $invoices->appends(['invoice_id' => request('invoice_id'), 'branch_id' => request('branch_id'), 'client_id' => request('client_id'), 'no_date' => request('no_date'), 'paid_with_error' => request('paid_with_error') ])->links() }}
                 </div>
             @endif
 
@@ -322,8 +322,9 @@ select2ize = function($child, items) {
             var branch = $("#branch_id").val();
             var client = $("#client_id").val();
             var invoiceType = $("#invoice_type").val();
-            var showInactive = $("#show_inactive").val();
-            window.location = `{{ route('tenant.invoice.list', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&invoice_type=${invoiceType}&show_inactive=${showInactive}`;
+            var showInactive = $("#show_inactive").val()||'';
+            var pWithError = "{!!request('paid_with_error') == 1 ? '&paid_with_error=1' : null!!}";
+            window.location = `{{ route('tenant.invoice.list', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&invoice_type=${invoiceType}&show_inactive=${showInactive}${pWithError}`;
         });
 
         $("#export-xls, #export-pdf").click(function() {
@@ -331,12 +332,12 @@ select2ize = function($child, items) {
             var to = $.trim($("#to").val());
             var branch = $("#branch_id").val();
             var client = $("#client_id").val();
-            var invoiceType = $("#invoice_type").val();
+            var invoiceType = $("#invoice_type").val()||'';
             var pdf = this.id === 'export-pdf' ? '&pdf=1' : '';
             var baseUrl = this.id === 'export-pdf' ? "{{ route('tenant.invoice.export-pdf', $tenant->domain) }}" : "{{ route('tenant.invoice.export-excel', $tenant->domain) }}";
             var showInactive = $("#show_inactive").val();
-            
-            if(from && to) window.open(`${baseUrl}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&invoice_type=${invoiceType}&show_inactive=${showInactive}${pdf}`, '_blank');
+            var pWithError = "{!!request('paid_with_error') == 1 ? '&paid_with_error=1' : null!!}";
+            if(from && to) window.open(`${baseUrl}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&invoice_type=${invoiceType}&show_inactive=${showInactive}${pdf}${pWithError}`, '_blank');
         });
 
 

@@ -37,7 +37,7 @@
                     <div class="slim-card-title">{{ __('Today profits') }}</div>
                     <div class="media">
                         <div class="media-body">
-                            @can('show-payment')
+                            @can('show-today-earning')
                               <h1>$ {{ number_format($today_earnings, 2) }}</h1>
                             
                               <a href="{{ route('tenant.payment.list', [$tenant->domain, 'branch_id' => $branch->id, 'from' => date('Y-m-d'), 'to' => date('Y-m-d') ]) }}" class="statement-link"> {{ __('Show movements') }} <i class="fa fa-angle-right mg-l-5"></i></a>

@@ -82,4 +82,9 @@ class Client extends Model implements Auditable
         return $this->belongsTo(\Logistics\DB\User::class, 'updated_by_code')
             ->select('id', 'first_name', 'last_name');
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'A');
+    }
 }

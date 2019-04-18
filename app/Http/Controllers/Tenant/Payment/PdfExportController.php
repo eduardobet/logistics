@@ -1,21 +1,21 @@
 <?php
 
-namespace Logistics\Http\Controllers\Tenant\Invoice;
+namespace Logistics\Http\Controllers\Tenant\Payment;
 
 use Logistics\Traits\Tenant;
-use Logistics\Traits\InvoiceList;
+use Logistics\Traits\PaymentList;
 use Logistics\Http\Controllers\Controller;
 
 class PdfExportController extends Controller
 {
-    use Tenant, InvoiceList;
+    use Tenant, PaymentList;
     
     public function export()
     {
-        [$invoices,, $branch] = $this->listInvoices($this->getTenant());
+        [$payments,, $branch] = $this->listPayments($this->getTenant());
 
         $data = [
-            'invoices' => $invoices,
+            'payments' => $payments,
             'branch' => $branch,
             'exporting' => true,
             'sign' => '',
@@ -26,9 +26,9 @@ class PdfExportController extends Controller
 
             $pdf = app('dompdf.wrapper');
             $pdf->getDomPDF()->set_option("enable_php", true);
-            $pdf->loadView( 'tenant.export.invoices-pdf', $data);
+            $pdf->loadView('tenant.export.payments-pdf', $data);
 
-            return $pdf->download(uniqid('invoices_', true) . '.pdf');
+            return $pdf->download(uniqid('payments_', true) . '.pdf');
         }
     }
 }

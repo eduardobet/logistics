@@ -1,6 +1,6 @@
 <?php
 
-namespace Logistics\Http\Controllers\Tenant;
+namespace Logistics\Http\Controllers\Tenant\Warehouse;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -8,7 +8,6 @@ use Logistics\Traits\Tenant;
 use Logistics\DB\Tenant\Client;
 use Logistics\DB\Tenant\Invoice;
 use Logistics\Traits\WarehouseList;
-use Logistics\Exports\WarehousesExport;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Http\Requests\Tenant\WarehouseRequest;
 use Logistics\Jobs\Tenant\SendWarehouseCreatedEmail;
@@ -41,30 +40,6 @@ class WarehouseController extends Controller
             'sign' => '$',
             'branches' => $branches,
         ]);
-    }
-
-    public function export()
-    {
-        [$warehouses,, $branch] = $this->listWarehouses($this->getTenant());
-
-        $data = [
-            'warehouses' => $warehouses,
-            'branch' => $branch,
-            'exporting' => true,
-            'sign' => '',
-        ];
-
-        if (request('pdf')) {
-            // return view('tenant.export.warehouses-pdf', $data);
-
-            $pdf = app('dompdf.wrapper');
-            $pdf->getDomPDF()->set_option("enable_php", true);
-            $pdf->loadView( 'tenant.export.warehouses-pdf', $data);
-
-            return $pdf->download(uniqid('warehouses_', true) . '.pdf');
-        }
-        
-        return (new WarehousesExport)->download(uniqid('warehouses_', true) . '.xlsx');
     }
 
     /**

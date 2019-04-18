@@ -155,9 +155,10 @@ select2ize = function($child, items) {
             var type = $("#type").val();
             var invoice = $("#invoice_id").val() || "{{ request('invoice_id', '') }}";
             var pdf = this.id === 'export-pdf' ? '&pdf=1' : '';
-            var showInactive = $("#show_inactive").val();
+            var showInactive = $("#show_inactive").val() || '';
+            var baseUrl = this.id === 'export-pdf' ? "{{ route('tenant.payment.export-pdf', $tenant->domain) }}" : "{{ route('tenant.payment.export-excel', $tenant->domain) }}";
             
-            if(from && to) window.open(`{{ route('tenant.payment.export', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}&show_inactive=${showInactive}${pdf}`, '_blank');
+            if(from && to) window.open(`${baseUrl}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}&show_inactive=${showInactive}${pdf}`, '_blank');
         });
     });
 </script>

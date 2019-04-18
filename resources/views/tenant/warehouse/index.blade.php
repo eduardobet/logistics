@@ -133,8 +133,9 @@
             var type = $("#type").val();
             var pdf = this.id === 'export-pdf' ? '&pdf=1' : '';
             var showInactive = $("#show_inactive").val();
+            var baseUrl = this.id === 'export-pdf' ? "{{ route('tenant.warehouse.export-pdf', $tenant->domain) }}" : "{{ route('tenant.warehouse.export-excel', $tenant->domain) }}";
             
-            if(from && to) window.open(`{{ route('tenant.warehouse.export', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&type=${type}&show_inactive=${showInactive}${pdf}`, '_blank');
+            if(from && to) window.open(`${baseUrl}?from=${from}&to=${to}&branch_id=${branch}&type=${type}&show_inactive=${showInactive}${pdf}`, '_blank');
         });
     });
 </script>

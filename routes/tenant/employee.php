@@ -29,18 +29,20 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('mailer/mailer-destroy', 'Tenant\MailerController@destroy')->name('tenant.mailer.destroy');
 
     //warehouse
-    Route::get('warehouse/list', 'Tenant\WarehouseController@index')->name('tenant.warehouse.list')->middleware(['can:show-warehouse']);
-    Route::get('warehouses/export', 'Tenant\WarehouseController@export')->name('tenant.warehouse.export')->middleware(['can:show-warehouse']);
-    Route::get('warehouse/invoice-tpl', 'Tenant\WarehouseController@invoiceTpl')->name('tenant.warehouse.invoice-tpl');
-    Route::get('warehouse/{id}/print-sticker', 'Tenant\WarehouseController@sticker')->name('tenant.warehouse.print-sticker');
-    Route::get('warehouse/invoice-detail-tmpl', 'Tenant\WarehouseController@invoiceDetTpl')->name('tenant.warehouse.invoice-detail-tmpl');
-    Route::get('warehouse/create', 'Tenant\WarehouseController@create')->name('tenant.warehouse.create')->middleware(['can:create-warehouse']);
-    Route::post('warehouse/store', 'Tenant\WarehouseController@store')->name('tenant.warehouse.store');
-    Route::get('warehouse/{id}/edit', 'Tenant\WarehouseController@edit')->name('tenant.warehouse.edit')->middleware(['can:edit-warehouse']);
-    Route::get('warehouse/{id}/show', 'Tenant\WarehouseController@show')->name('tenant.warehouse.show')->middleware(['can:show-warehouse']);
-    Route::patch('warehouse/{id}/update', 'Tenant\WarehouseController@update')->name('tenant.warehouse.update');
-    Route::post('warehouse/toggle', 'Tenant\WarehouseController@toggle')->name('tenant.warehouse.toggle');
-    Route::get('warehouse/{id}/receipt', 'Tenant\WarehouseController@receipt')->name('tenant.warehouse.receipt');
+    Route::get('warehouse/list', 'Tenant\Warehouse\WarehouseController@index')->name('tenant.warehouse.list')->middleware(['can:show-warehouse']);
+    Route::get('warehouse/invoice-tpl', 'Tenant\Warehouse\WarehouseController@invoiceTpl')->name('tenant.warehouse.invoice-tpl');
+    Route::get('warehouse/{id}/print-sticker', 'Tenant\Warehouse\WarehouseController@sticker')->name('tenant.warehouse.print-sticker');
+    Route::get('warehouse/invoice-detail-tmpl', 'Tenant\Warehouse\WarehouseController@invoiceDetTpl')->name('tenant.warehouse.invoice-detail-tmpl');
+    Route::get('warehouse/create', 'Tenant\Warehouse\WarehouseController@create')->name('tenant.warehouse.create')->middleware(['can:create-warehouse']);
+    Route::post('warehouse/store', 'Tenant\Warehouse\WarehouseController@store')->name('tenant.warehouse.store');
+    Route::get('warehouse/{id}/edit', 'Tenant\Warehouse\WarehouseController@edit')->name('tenant.warehouse.edit')->middleware(['can:edit-warehouse']);
+    Route::get('warehouse/{id}/show', 'Tenant\Warehouse\WarehouseController@show')->name('tenant.warehouse.show')->middleware(['can:show-warehouse']);
+    Route::patch('warehouse/{id}/update', 'Tenant\Warehouse\WarehouseController@update')->name('tenant.warehouse.update');
+    Route::post('warehouse/toggle', 'Tenant\Warehouse\WarehouseController@toggle')->name('tenant.warehouse.toggle');
+    Route::get('warehouse/{id}/receipt', 'Tenant\Warehouse\WarehouseController@receipt')->name('tenant.warehouse.receipt');
+
+    Route::get('warehouse/export/pdf', 'Tenant\Warehouse\PdfExportController@export')->name('tenant.warehouse.export-pdf')->middleware(['can:show-warehouse']);
+    Route::get('warehouse/export/excel', 'Tenant\Warehouse\ExcelExportController@export')->name('tenant.warehouse.export-excel')->middleware(['can:show-warehouse']);
 
     //cargo entry
     Route::get('cargo-entry/list', 'Tenant\CargoEntryController@index')->name('tenant.warehouse.cargo-entry.list')->middleware('can:show-reca');
@@ -65,19 +67,24 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('invoices/export/excel', 'Tenant\Invoice\ExcelExportController@export')->name('tenant.invoice.export-excel')->middleware(['can:show-invoice']);
 
     // payment
-    Route::get('payment/list', 'Tenant\PaymentController@index')->name('tenant.payment.list')->middleware(['can:show-payment']);
-    Route::get('payments/export', 'Tenant\PaymentController@export')->name('tenant.payment.export')->middleware(['can:show-payment']);
-    Route::get('payment/{invoice_id}/create', 'Tenant\PaymentController@create')->name('tenant.payment.create')->middleware(['can:create-payment']);
-    Route::post('payment/store', 'Tenant\PaymentController@store')->name('tenant.payment.store')->middleware(['can:create-payment']);
-    Route::patch('payment/update', 'Tenant\PaymentController@update')->name('tenant.payment.update')->middleware(['can:edit-payment']);
-    Route::get('payment/{id}/show', 'Tenant\PaymentController@show')->name('tenant.payment.show')->middleware(['can:show-payment']);
+    Route::get('payment/list', 'Tenant\Payment\PaymentController@index')->name('tenant.payment.list')->middleware(['can:show-payment']);
+    Route::get('payment/{invoice_id}/create', 'Tenant\Payment\PaymentController@create')->name('tenant.payment.create')->middleware(['can:create-payment']);
+    Route::post('payment/store', 'Tenant\Payment\PaymentController@store')->name('tenant.payment.store')->middleware(['can:create-payment']);
+    Route::patch('payment/update', 'Tenant\Payment\PaymentController@update')->name('tenant.payment.update')->middleware(['can:edit-payment']);
+    Route::get('payment/{id}/show', 'Tenant\Payment\PaymentController@show')->name('tenant.payment.show')->middleware(['can:show-payment']);
+
+    //Route::get('payments/export', 'Tenant\Payment\PaymentController@export')->name('tenant.payment.export')->middleware(['can:show-payment']);
+    Route::get('payments/export/pdf', 'Tenant\Payment\PdfExportController@export')->name('tenant.payment.export-pdf')->middleware(['can:show-payment']);
+    Route::get('payments/export/excel', 'Tenant\Payment\ExcelExportController@export')->name( 'tenant.payment.export-excel')->middleware(['can:show-payment']);
 
     // outstandings
     Route::get('invoice/outstandings', 'Tenant\Invoice\OutstandingsController@list')->name( 'tenant.outstandings.list')->middleware(['can:show-invoice']);
     Route::get('invoice/outstandings/details', 'Tenant\Invoice\OutstandingsController@details')->name( 'tenant.outstandings.details')->middleware(['can:show-invoice']);
 
     //incomes
-    Route::get('income/list', 'Tenant\IncomeController@index')->name('tenant.income.list')->middleware(['can:show-payment']);
+    Route::get('income/list', 'Tenant\Income\IncomeController@index')->name('tenant.income.list')->middleware(['can:show-payment']);
+    Route::get('income/export/pdf', 'Tenant\Income\PdfExportController@export')->name('tenant.income.export-pdf')->middleware(['can:show-payment']);
+    Route::get('income/export/excel', 'Tenant\Income\ExcelExportController@export')->name('tenant.income.export-excel')->middleware(['can:show-payment']);
     
     // searching
     Route::get('search', 'Tenant\SearchController@search')->name('tenant.get.search')->middleware(['can:search']);

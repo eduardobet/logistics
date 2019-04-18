@@ -1,12 +1,11 @@
 <?php
 
-namespace Logistics\Http\Controllers\Tenant;
+namespace Logistics\Http\Controllers\Tenant\Payment;
 
 use Illuminate\Http\Request;
 use Logistics\Traits\Tenant;
 use Illuminate\Support\Carbon;
 use Logistics\Traits\PaymentList;
-use Logistics\Exports\PaymentsExport;
 use Illuminate\Support\Facades\Validator;
 use Logistics\Http\Controllers\Controller;
 use Logistics\Jobs\Tenant\SendPaymentCreatedEmail;
@@ -39,31 +38,6 @@ class PaymentController extends Controller
             'branches' => $branches,
             'show_total' => true,
         ]);
-    }
-
-    public function export()
-    {
-        [$payments,,$branch] = $this->listPayments($this->getTenant());
-
-        $data = [
-            'payments' => $payments,
-            'branch' => $branch,
-            'exporting' => true,
-            'sign' => '',
-            'show_total' => true,
-        ];
-
-        if (request('pdf')) {
-            // return view('tenant.export.payments-pdf', $data);
-
-            $pdf = app('dompdf.wrapper');
-            $pdf->getDomPDF()->set_option("enable_php", true);
-            $pdf->loadView( 'tenant.export.payments-pdf', $data);
-
-            return $pdf->download(uniqid('payments_', true) . '.pdf');
-        }
-        
-        return (new PaymentsExport)->download(uniqid('payments_', true) . '.xlsx');
     }
 
     /**

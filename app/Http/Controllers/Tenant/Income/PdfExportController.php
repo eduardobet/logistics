@@ -1,29 +1,19 @@
 <?php
 
-namespace Logistics\Http\Controllers\Tenant;
+namespace Logistics\Http\Controllers\Tenant\Income;
 
 use Logistics\Traits\Tenant;
 use Logistics\Traits\IncomeList;
-use Logistics\Exports\IncomesExport;
 use Logistics\Http\Controllers\Controller;
 
-class IncomeController extends Controller
+class PdfExportController extends Controller
 {
     use Tenant, IncomeList;
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    
+    public function export()
     {
-        if (request('_excel_it')) {
-            return (new IncomesExport)->download(uniqid('incomes_', true) . '.xlsx');
-        }
-        
-        [$branches, $incomes, $totCharged, $totIncome, $totInCash, $totInWire, $totInCheck, $totCommission, $totFine, $recas, $totClients] = $this->listIncomes( $this->getTenant());
-        
+        [$branches, $incomes, $totCharged, $totIncome, $totInCash, $totInWire, $totInCheck, $totCommission, $totFine, $recas, $totClients] = $this->listIncomes($this->getTenant());
+
         $data = [
             'branches' => $branches,
             'payments_by_type' => $incomes,
@@ -41,15 +31,14 @@ class IncomeController extends Controller
             'show_total' => true,
         ];
 
-        if (request('_print_it')) {
+        if (request('pdf')) {
 
             $pdf = app('dompdf.wrapper');
             $pdf->getDomPDF()->set_option("enable_php", true);
-            $pdf->loadView( 'tenant.export.incomes-pdf', $data);
+            $pdf->loadView('tenant.export.incomes-pdf', $data);
 
             return $pdf->download(uniqid('income_', true) . '.pdf');
         }
 
-        return view('tenant.income.index', $data);
     }
 }

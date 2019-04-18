@@ -81,7 +81,7 @@ class InvoiceEditionTest extends TestCase
 
         $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'pay_volume' => true, 'vol_price' => 2.00 ]);
 
-        $box = factory(Box::class)->create([
+        factory(Box::class)->create([
             'tenant_id' => $tenant->id,
             'client_id' => $client->id,
             'branch_id' => $branch->id,
@@ -127,17 +127,17 @@ class InvoiceEditionTest extends TestCase
         $response = $this->actingAs($admin)->patch(route('tenant.invoice.update', [$tenant->domain, $invoice->id]), [
             'branch_id' => $branch->id,
             'client_id' => $client->id,
-            'total' => 180,
+            'total' => 171.71,
             'created_at' => '2017-02-25',
             'invoice_detail' => [
-                ['qty' => 1, 'type' => 1, 'description' => 'Buying from amazon update', 'id_remote_store' => 122452222, 'total' => 100, 'idid' => $detailA->id ],
-                ['qty' => 1, 'type' => 2, 'description' => 'Buying from ebay update', 'id_remote_store' => 10448796566, 'total' => 80, 'idid' => $detailB->id],
+                ['qty' => 1, 'type' => 1, 'description' => 'Buying from amazon update', 'id_remote_store' => 122452222, 'total' => 166.71, 'idid' => $detailA->id ],
+                ['qty' => 1, 'type' => 2, 'description' => 'Uso de TC', 'id_remote_store' => 0, 'total' => 5, 'idid' => $detailB->id],
             ],
 
             //payment
-            'amount_paid' => 90,
+            'amount_paid' => 171.71,
             'payment_method' => 1,
-            'payment_ref' => 'The client paid $90.00',
+            'payment_ref' => 'The client paid $171.71',
         ]);
         $response->assertStatus(302);
         $response->assertRedirect(route('tenant.invoice.edit', [$tenant->domain, 1, 'branch_id' => $branch->id, ]));
@@ -149,16 +149,17 @@ class InvoiceEditionTest extends TestCase
             $this->assertEquals($admin->id, $invoice->updated_by_code);
             $this->assertEquals($client->id, $invoice->client_id);
             $this->assertEquals('A', $invoice->status);
-            $this->assertEquals('180.0', $invoice->total);
+            $this->assertEquals('171.71', $invoice->total);
             $this->assertEquals('2017-02-25', $invoice->created_at->format('Y-m-d'));
             $this->assertEquals('2017-03-04', $invoice->due_at->format('Y-m-d'));
+            $this->assertTrue($invoice->is_paid);
 
             $payment = $payment->fresh()->first();
             $this->assertEquals($tenant->id, $payment->tenant_id);
             $this->assertEquals($invoice->id, $payment->invoice_id);
-            $this->assertEquals('90.0', $payment->amount_paid);
+            $this->assertEquals('171.71', $payment->amount_paid);
             $this->assertEquals('1', $payment->payment_method);
-            $this->assertEquals('The client paid $90.00', $payment->payment_ref);
+            $this->assertEquals('The client paid $171.71', $payment->payment_ref);
         });
 
         tap($invoice->details->first(), function ($detail) {
@@ -167,16 +168,16 @@ class InvoiceEditionTest extends TestCase
             $this->assertEquals($detail->type, 1);
             $this->assertEquals('Buying from amazon update', $detail->description);
             $this->assertEquals('122452222', $detail->id_remote_store);
-            $this->assertEquals('100.0', $detail->total);
+            $this->assertEquals('166.71', $detail->total);
         });
 
         tap($invoice->details->last(), function ($detail) {
             $this->assertEquals($detail->invoice_id, 1);
             $this->assertEquals($detail->qty, 1);
             $this->assertEquals($detail->type, 2);
-            $this->assertEquals('Buying from ebay update', $detail->description);
-            $this->assertEquals('10448796566', $detail->id_remote_store);
-            $this->assertEquals('80.0', $detail->total);
+            $this->assertEquals( 'Uso de TC', $detail->description);
+            $this->assertEquals('0', $detail->id_remote_store);
+            $this->assertEquals('5.0', $detail->total);
         });
     }
 

@@ -72,12 +72,12 @@
             @endcan
             
             
-            <?php $pending = $invoice->total - $invoice->payments->sum('amount_paid'); ?>
+            <?php $pending = bcsub($invoice->total, $invoice->payments->sum('amount_paid'), 2); ?>
             
             @can('create-payment')
                 @if ($invoice->status == 'A')
                     &nbsp;&nbsp;&nbsp;
-                    <a href="#!" class="{{ $pending ? 'create-payment' : 'already-paid' }}"
+                    <a href="#!" class="{{ (float)$pending ? 'create-payment' : 'already-paid' }}"
                         data-url="{{ route('tenant.payment.create', [$tenant->domain, $invoice->id, ]) }}"
                         title="{{ __('New payment') }}" data-invoice-id="{{ $invoice->id }}"
                         data-toggle="modal"
@@ -86,7 +86,7 @@
                         data-pending="{{ $pending }}"
                         data-wh="{{ $invoice->warehouse_id }}"
                         >
-                        <i class="fa fa-money"></i>
+                        <i class="fa fa-money"></i> 
                     </a>
                 @endif 
             @endcan
@@ -101,7 +101,7 @@
             @endcan
             @endif
             
-            @if ($invoice->status == 'A')
+            @if ($invoice->status == 'A' && request('paid_with_error') != 1 )
             &nbsp;&nbsp;&nbsp;
             <a title="{{ __('Email') }}" href="#!" class="email-invoice{{ $tenant->email_allowed_dup===$invoice->client->email ? '-nope' : null }}"
                 data-toggle="tooltip" data-placement="left" title="{{ __('Resend invoice email') }}" data-invoice-id="{{ $invoice->id }}"

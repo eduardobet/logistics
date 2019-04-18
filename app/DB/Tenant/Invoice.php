@@ -98,6 +98,11 @@ class Invoice extends Model implements Auditable
         return $query->where('is_paid', true);
     }
 
+    public function scopeNotPaid($query)
+    {
+        return $query->where('is_paid', false);
+    }
+
     public function details()
     {
         return $this->hasMany(InvoiceDetail::class);

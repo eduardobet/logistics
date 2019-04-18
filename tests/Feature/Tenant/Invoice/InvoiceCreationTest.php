@@ -353,7 +353,7 @@ class InvoiceCreationTest extends TestCase
 
         $client = factory(Client::class)->create(['tenant_id' => $tenant->id, 'pay_volume' => true, 'vol_price' => 2.00]);
 
-        $box = factory(Box::class)->create([
+        factory(Box::class)->create([
             'tenant_id' => $tenant->id,
             'client_id' => $client->id,
             'branch_id' => $branch->id,
@@ -368,16 +368,16 @@ class InvoiceCreationTest extends TestCase
         $response = $this->actingAs($admin)->post(route('tenant.invoice.store', $tenant->domain), [
             'branch_id' => $branch->id,
             'client_id' => $client->id,
-            'total' => 160,
+            'total' => 171.71,
             'manual_id' => 14,
             'created_at' => '2017-01-30',
             'invoice_detail' => [
-                ['qty' => 1, 'type' => 1, 'description' => 'Buying from amazon', 'id_remote_store' => 122452222, 'total' => 100,  ],
-                ['qty' => 1, 'type' => 2, 'description' => 'Buying from ebay', 'id_remote_store' => 10448796566, 'total' => 60, ],
+                ['qty' => 1, 'type' => 1, 'description' => 'Buying from amazon', 'id_remote_store' => 122452222, 'total' => 166.71,  ],
+                ['qty' => 1, 'type' => 2, 'description' => 'Uso de TC', 'id_remote_store' => 0, 'total' => 5, ],
             ],
 
             //payment
-            'amount_paid' => 160,
+            'amount_paid' => 171.71,
             'payment_method' => 1,
             'payment_ref' => 'The invoice is completely paid.',
         ]);
@@ -387,12 +387,12 @@ class InvoiceCreationTest extends TestCase
         $invoice = $client->clientInvoices->first();
 
         tap($invoice, function ($invoice) use ($tenant, $admin, $client) {
-            $this->assertEquals('160.0', $invoice->total);
+            $this->assertEquals('171.71', $invoice->total);
             $this->assertEquals('2017-01-30', $invoice->created_at->format('Y-m-d'));
             $this->assertTrue($invoice->is_paid);
 
             $payment = $invoice->payments->first();
-            $this->assertEquals('160.0', $payment->amount_paid);
+            $this->assertEquals( '171.71', $payment->amount_paid);
             $this->assertEquals('1', $payment->payment_method);
             $this->assertEquals('The invoice is completely paid.', $payment->payment_ref);
             $this->assertEquals('2017-01-30', $payment->created_at->format('Y-m-d'));

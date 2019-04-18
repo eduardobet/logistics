@@ -15,7 +15,7 @@
   </tr>
   
   <tr>
-    <td colspan="2"><b>FECHA:</b></td>
+    <td colspan="2">Total clientes: {{ $tot_clients }}</td>
     <td>Total Cobrado:</td>
     <td>{{ $sign }}{{ number_format($tot_income, 2) }}</td>
     <td>Comision Tarjeta:</td>

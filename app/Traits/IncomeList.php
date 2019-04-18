@@ -74,9 +74,10 @@ trait IncomeList
         $totInCheck = $incomes->where('payment_method', 3)->sum('amount_paid');
         $totCommission = $commissions->sum('total');
         $totFine = $invoices->sum('fine_total');
+        $totClients = $tenant->clients()->whereBetween('created_at', [$from, $to])->active()->where('branch_id', request('branch_id', $cBranch->id))->get()->count();
 
         return [
-            $branches, $incomes, $totCharged, $totIncome, $totInCash, $totInWire, $totInCheck, $totCommission, $totFine, $recas
+            $branches, $incomes, $totCharged, $totIncome, $totInCash, $totInWire, $totInCheck, $totCommission, $totFine, $recas, $totClients
         ];
     }
 }

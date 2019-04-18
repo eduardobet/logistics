@@ -14,7 +14,7 @@ class IncomesExport implements FromView
 
     public function view() : View
     {
-        [$branches, $incomes, $totCharged, $totIncome, $totInCash, $totInWire, $totInCheck, $totCommission, $totFine, $recas] = $this->listIncomes($this->getTenant());
+        [$branches, $incomes, $totCharged, $totIncome, $totInCash, $totInWire, $totInCheck, $totCommission, $totFine, $recas, $totClients] = $this->listIncomes($this->getTenant());
 
         return view('tenant.export.incomes-excel', [
             'branches' => $branches,
@@ -27,6 +27,7 @@ class IncomesExport implements FromView
             'tot_commission' => $totCommission,
             'tot_fine' => $totFine,
             'recas' => $recas,
+            'tot_clients' => $totClients,
             'exporting' => true,
             'sign' => '',
             'show_total' => false,

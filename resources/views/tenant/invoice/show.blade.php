@@ -188,8 +188,8 @@
                         </tr>
 
                         <tr>
-                          <td class="tx-right tx-uppercase tx-bold tx-inverse">{{ __('Total') }} {{ __('Pendiente') }}</td> <!-- MONTO RESTANTE EN LA FACTURA, SI ES PAGADO COMPLETO ESTE CAMPO DEBE SER IGUAL A CERO 0-->
-                          <td colspan="2" class="tx-right"><h4 class="tx-primary tx-bold tx-lato">$<span id="pending-dsp">{{ number_format( $pending = $invoice->total - $invoice->payments->sum('amount_paid'), 2) }}</span></h4></td>
+                          <td class="tx-right tx-uppercase tx-bold tx-inverse">{{ __('Total') }} {{ __('Pendiente') }}</td> <!-- MONTO RESTANTE EN LA FACTURA, SI ES PAGADO COMPLETO ESTE CAMPO DEBE SER IGUAL A CERO 0--> 
+                          <td colspan="2" class="tx-right"><h4 class="tx-primary tx-bold tx-lato">$<span id="pending-dsp">{{ $pending = bcsub($invoice->total, $invoice->payments->sum('amount_paid'), 2) }}</span></h4></td>
                         </tr>
                       </tbody>
                     </table>
@@ -200,7 +200,7 @@
 
                     <div class="col-md-2 mg-t-10">
                         @if (!$user->isClient())
-                            <button type="button" id="pay" class="btn btn-outline-success btn-block terminate"{{ !$pending || $invoice->status == 'I' ? ' disabled' : null }} data-toggle="modal" data-target="#modal-payment">
+                            <button type="button" id="pay" class="btn btn-outline-success btn-block terminate"{{ !(float)$pending || $invoice->status == 'I' ? ' disabled' : null }} data-toggle="modal" data-target="#modal-payment">
                                 {{ strtoupper( __('New payment') ) }}
                             </button>
                         @endif
@@ -320,7 +320,7 @@
                             <p>{{ __('Last payment by') }} <b>{{ $lPayment->creator->full_name }}</b> | <b>{{ $lPayment->created_at->format('d/m/Y') }}</b> | {{ $lPayment->created_at->format('g:i A') }} </p>
                         @endif
 
-                        @if ($invoice && $invoice->is_paid)
+                        @if ($invoice && $invoice->is_paid && $lPayment && $lPayment->creator)
                             <p>{{ __('Delivered by') }} 
                                 <b>{{ $lPayment->creator->full_name }}</b> | <b>{{ $lPayment->created_at->format('d/m/Y') }}</b> | {{ $lPayment->created_at->format('g:i A') }} </p>
 
@@ -397,7 +397,7 @@
         var $pAmount = $("#p_amount_paid");
         var $launcherPayment = null;
         var wh = "{{ $invoice->warehouse_id }}";
-        var pending = "{{ $pending = $invoice->total - $invoice->payments->sum('amount_paid') }}"
+        var pending = "{{ $pending = bcsub($invoice->total, $invoice->payments->sum('amount_paid'), 2) }}"
 
        $("#pay").click(function(e) {
             $launcherPayment = $(this);

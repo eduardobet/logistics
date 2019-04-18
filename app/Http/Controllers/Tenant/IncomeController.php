@@ -22,7 +22,7 @@ class IncomeController extends Controller
             return (new IncomesExport)->download(uniqid('incomes_', true) . '.xlsx');
         }
         
-        [$branches, $incomes, $totCharged, $totIncome, $totInCash, $totInWire, $totInCheck, $totCommission, $totFine, $recas] = $this->listIncomes( $this->getTenant());
+        [$branches, $incomes, $totCharged, $totIncome, $totInCash, $totInWire, $totInCheck, $totCommission, $totFine, $recas, $totClients] = $this->listIncomes( $this->getTenant());
         
         $data = [
             'branches' => $branches,
@@ -35,6 +35,7 @@ class IncomeController extends Controller
             'tot_commission' => $totCommission,
             'tot_fine' => $totFine,
             'recas' => $recas,
+            'tot_clients' => $totClients,
             'printing' => 1,
             'sign' => '$',
             'show_total' => true,

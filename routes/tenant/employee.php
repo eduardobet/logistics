@@ -60,7 +60,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('invoice/{id}/resend-invoice-email', 'Tenant\Invoice\InvoiceController@resendInvoice')->name('tenant.invoice.invoice.resend');
     Route::post('invoice/penalize', 'Tenant\Invoice\InvoiceController@penalize')->name('tenant.invoice.penalize');
     Route::post('invoice/inactive', 'Tenant\Invoice\InvoiceController@inactive')->name('tenant.invoice.inactive');
-
+    
     Route::get('invoices/export/pdf', 'Tenant\Invoice\PdfExportController@export')->name('tenant.invoice.export-pdf')->middleware(['can:show-invoice']);
     Route::get('invoices/export/excel', 'Tenant\Invoice\ExcelExportController@export')->name('tenant.invoice.export-excel')->middleware(['can:show-invoice']);
 

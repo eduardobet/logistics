@@ -70,6 +70,7 @@
                 
                 @can('show-invoice')
                 <li><a href="{{ route('tenant.invoice.list', $tenant->domain) }}">{{ __('Invoices list') }}</a></li>
+                <li><a href="{{ route('tenant.invoice.list', [$tenant->domain, 'paid_with_error' => 1, ]) }}">{{ __('Not paid by error') }}</a></li>
                 @endcan
               </ul>
             </div><!-- dropdown-menu -->

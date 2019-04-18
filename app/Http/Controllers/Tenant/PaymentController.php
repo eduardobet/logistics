@@ -166,9 +166,9 @@ class PaymentController extends Controller
             $invoice->branch->notify(new PaymentActivity($payment, $invoice->client_id, $tenant->lang, auth()->user()->full_name, $invoice->manual_id_dsp));
 
             $totalPaid = $invoice->fresh()->payments->where('status', 'A')->fresh()->sum('amount_paid');
-            $pending = $invoice->total - $totalPaid;
+            $pending = bcsub($invoice->total, $totalPaid, 2);
 
-            if (!$pending) {
+            if (!(float)$pending) {
                 $invoice->update(['is_paid' => true, 'delivered_trackings' => $request->delivered_trackings, ]);
             }
             if ($invoice->client->email !== $tenant->email_allowed_dup) {

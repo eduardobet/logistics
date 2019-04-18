@@ -142,29 +142,33 @@
 
 
             $("#frm-wh").submit(function(e) {
-            var $form = $(this).get(0);
-            if ($form.checkValidity()){
-                @if (config("app.migrations.{$tenant->id}.warehouses", false))
+                e.preventDefault();
+                var $form = $(this).get(0);
+                var $btn = $("#btn-wh-save");
+                $btn.prop("disabled", true);
+                
+                if ($form.checkValidity()){
+                    @if (config("app.migrations.{$tenant->id}.warehouses", false))
 
-                swal({
-                    title: '{{__("Are you sure") }}?',                    
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: '{{ __("No") }}',
-                    confirmButtonText: '{{ __("Yes") }}'
-                })
-                .then((result) => {
-                    if (result.value) {
-                        $form.submit();
-                    }
-                });
-                @else
-                  $form.submit();  
-                @endif
-            }
-            e.preventDefault();
+                    swal({
+                        title: '{{__("Are you sure") }}?',                    
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        cancelButtonText: '{{ __("No") }}',
+                        confirmButtonText: '{{ __("Yes") }}'
+                    })
+                    .then((result) => {
+                        if (result.value) {
+                            $form.submit();
+                        }
+                    });
+                    @else
+                    $form.submit();  
+                    @endif
+                }
+            
           });
 
           //

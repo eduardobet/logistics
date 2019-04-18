@@ -33,9 +33,8 @@ class PdfExportController extends Controller
 
         if (request('pdf')) {
 
-            $pdf = app('dompdf.wrapper');
-            $pdf->getDomPDF()->set_option("enable_php", true);
-            $pdf->loadView('tenant.export.incomes-pdf', $data);
+            $pdf = app('snappy.pdf.wrapper');
+            $pdf->loadView('tenant.export.incomes-pdf', $data)->setOption("footer-right", "Pag. [page] / [topage]");
 
             return $pdf->download(uniqid('income_', true) . '.pdf');
         }

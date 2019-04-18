@@ -10,27 +10,20 @@
        table.pdf-table td.pdf-mt-5{padding-top: 20px}
        table.pdf-table th{text-align: left}
        table.pdf-table td{border-bottom: solid 1px}
-       table.pdf-table th{border: solid 1px}       
+       table.pdf-table th{border: solid 1px}
+       
+      .page-break {page-break-after: always;}
+      #header,#footer {position: fixed;left: 0;right: 0;font-size: 0.9em;}
+      #header {top: 0;border-bottom: 0.1pt solid #aaa;}
+      #footer {bottom: 0;border-top: 0.1pt solid #aaa;}
+      .page-number:before {content: "{{ __('Page') }} " counter(page);}
     </style>
   </head>
   <body>
 
-    <script type="text/php">
-        $pdf->page_script('
-            //if($PAGE_COUNT > 1) {
-                $x = 250;
-        $y = 10;
-        $text = "Pag. {PAGE_NUM} of {PAGE_COUNT}";
-        $font = null;
-        $size = 14;
-        $color = array(255,0,0);
-        $word_space = 0.0;  //  default
-        $char_space = 0.0;  //  default
-        $angle = 0.0;   //  default
-        $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
-            //}
-        ');
-    </script>
+    <div id="footer">
+        <div class="page-number"></div>
+    </div>
 
   <table style="width: 100%">
 

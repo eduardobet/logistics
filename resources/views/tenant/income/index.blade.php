@@ -83,11 +83,11 @@
             </div>
 
             <div class="col-lg-2">
-                <a class="btn btn-outline-primary" title="PDF" href="{{ route('tenant.income.list', ['domain' => $tenant->domain, 'branch_id' => request('branch_id'), 'from' => request('from'), 'to' => request('to'), 'type' => request('type'), 'bcode' => request('bcode'), 'bname' => request('bname'), '_print_it' => 1, ]) }}">
+                <a class="btn btn-outline-primary" title="PDF" id="export-pdf" href="#!" data-href="{{ route('tenant.income.list', ['domain' => $tenant->domain, 'branch_id' => request('branch_id'), 'from' => request('from'), 'to' => request('to'), 'type' => request('type'), 'bcode' => request('bcode'), 'bname' => request('bname'), '_print_it' => 1, ]) }}">
                     <i class="fa fa-file-pdf-o"></i>
                 </a>
 
-                <a class="btn btn-outline-primary" title="Excel" href="{{ route('tenant.income.list', ['domain' => $tenant->domain, 'branch_id' => request('branch_id'), 'from' => request('from'), 'to' => request('to'), 'type' => request('type'), 'bcode' => request('bcode'), 'bname' => request('bname'), '_excel_it' => 1, ]) }}">
+                <a class="btn btn-outline-primary" title="Excel" id="export-xls" href="#!" data-href="{{ route('tenant.income.list', ['domain' => $tenant->domain, 'branch_id' => request('branch_id'), 'from' => request('from'), 'to' => request('to'), 'type' => request('type'), 'bcode' => request('bcode'), 'bname' => request('bname'), '_excel_it' => 1, ]) }}">
                     <i class="fa fa-file-excel-o"></i>
                 </a>
 
@@ -146,8 +146,9 @@
             var manualId = $("#manual_id").val();
             var invoice = $("#invoice_id").val() || "{{ request('invoice_id', '') }}";
             var pdf = this.id === 'export-pdf' ? '&pdf=1' : '';
-            
-            if(from && to) window.open(`{{ route('tenant.payment.export', $tenant->domain) }}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}&bcode=${bcode}&manual_id=${manualId}${pdf}`, '_blank');
+            var baseUrl = this.id === 'export-pdf' ? "{{ route('tenant.income.export-pdf', $tenant->domain) }}" : "{{ route('tenant.income.export-excel', $tenant->domain) }}";
+
+            if(from && to) window.open(`${baseUrl}?from=${from}&to=${to}&branch_id=${branch}&client_id=${client}&type=${type}&invoice_id=${invoice}&bcode=${bcode}&manual_id=${manualId}${pdf}`, '_blank');
         });
     });
 </script>

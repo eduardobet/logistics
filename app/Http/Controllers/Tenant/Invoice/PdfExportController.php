@@ -27,8 +27,6 @@ class PdfExportController extends Controller
             $pdf = app('snappy.pdf.wrapper');
             $pdf->loadView('tenant.export.invoices-pdf', $data)->setOption("footer-right", "Pag. [page] / [topage]");
             return $pdf->download(uniqid('invoices_', true) . '.pdf');
-
-            return $pdf->download(uniqid('invoices_', true) . '.pdf');
         }
     }
 }

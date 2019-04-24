@@ -61,7 +61,7 @@ $key = isset($key) ? $key : ':index:';
             <div class="col-3">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ __('P/Real') }}:</label>
-                    {!! Form::number("invoice_detail[{$key}][real_weight]", $idetail->real_weight, ['class' => 'form-control form-control-sm inline-calc real_weight', 'data-i' => "{$key}", 'id' => "real_weight-{$key}", 'step' => ".01", 'min' => "0", ]) !!}
+                    {!! Form::number("invoice_detail[{$key}][real_weight]", $idetail->real_weight ?: 1, ['class' => 'form-control form-control-sm inline-calc real_weight', 'data-i' => "{$key}", 'id' => "real_weight-{$key}", 'step' => ".01", 'min' => "0", ]) !!}
                 </div>
             </div>
             

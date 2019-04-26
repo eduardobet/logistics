@@ -195,8 +195,13 @@
                 doCal()
             });
 
-            $(document).on("click", ".is_dhll", function() {
-                doCal()
+            $(document).on("click", ".is_dhll", function(e) {
+                var $b = $('#branch_to');
+                var $c = $('#client_id');
+                var rp = parseFloat($c.find(':selected').attr('data-real_price') || $b.find(':selected').attr('data-real_price') || '0');
+                if (rp <= 2.25) {
+                    e.preventDefault();
+                } else doCal();
             });
 
             $(document).on("click", ".rem-row", function() {

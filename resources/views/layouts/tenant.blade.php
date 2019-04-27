@@ -12,6 +12,14 @@
     <title>@yield('title', config('app.name', ''))</title>
 
     <link href="{{ asset(mix('css/tenant.css')) }}" rel="stylesheet">
+    <style>
+         @media (min-width: 392px) {
+    .search-box {
+      display: flex;
+      width: 80%;
+      margin-left: 5%;
+    } }
+    </style>
     @yield('xtra_styles')
 </head>
 <body class="dasbhoard-3">

@@ -22,6 +22,14 @@
 
             @include('tenant.common._notifications')
 
+            @if (request('type') == 'M')
+                <div class="row row-xs">
+                    <div class="col-sm-12">
+                        <h3 style="color:red !important">CARGA MAL IDENTIFICADA</h3>
+                    </div>
+                </div>
+            @endif
+
             <div class="row row-xs">
                 <div class="col-sm-12">
                     <div class="card card-status">

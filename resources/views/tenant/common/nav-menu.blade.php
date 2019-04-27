@@ -38,7 +38,10 @@
                 @endcan
 
                 @can('create-reca')
-                  <li><a href="{{ route('tenant.warehouse.cargo-entry.create', $tenant->domain) }}">{{ __('Register Cargo entry') }}</a></li>
+                  <li><a href="{{ route('tenant.warehouse.cargo-entry.create', [$tenant->domain, 'type' => 'N']) }}">{{ __('Register Cargo entry') }}</a></li>
+                  <li>
+                    <a style="color:red !important" href="{{ route('tenant.warehouse.cargo-entry.create', [$tenant->domain, 'type' => 'M']) }}">{{ __('Registro de carga mal identificada') }}</a>
+                  </li>
                 @endcan
 
                 @can('show-reca')
